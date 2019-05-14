@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="2019_01_04_024600" author="masgeek" dbms="h2,oracle,mysql,mariadb">
+
+        <createTable tableName="request_fertilizer">
+            <column name="fertilizer_id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="request_id" type="bigint"/>
+            <column name="fertilizer_type" type="varchar(100)"/>
+            <column name="available" type="boolean" defaultValueBoolean="false"/>
+            <column name="price" type="decimal(10,2)"/>
+            <column name="weight" type="decimal(10,2)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="request_id"
+                                 baseTableName="request_fertilizer"
+                                 constraintName="fk_request_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="yield_request"/>
+    </changeSet>
+
+</databaseChangeLog>
