@@ -1,7 +1,7 @@
 version: "3"
 services:
   cropmanager:
-    image: tsobu/spring-cropmanager:latest
+    image: iita/acai-akilimo-api:latest
     hostname: spring-cropmanager
     container_name: spring-cropmanager
     restart: always
