@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
 
-
 @RequestMapping("/api/v2/recommendations")
 @RestController
 class RecommendationsController @Autowired
@@ -37,13 +36,14 @@ constructor(private val yieldRequestServiceImp: RecommendationServiceImp, privat
     fun processYieldRequest(@RequestBody recommendationRequest: RecommendationRequestDto): RecommendationResponseDto? {
         val modelMapper = ModelMapper()
 
-        val request = modelMapper.map(recommendationRequest,RecommendationRequest::class.java)
+        val request = modelMapper.map(recommendationRequest, RecommendationRequest::class.java)
 
-        val response =  yieldRequestServiceImp.saveRecommendationRequest(request!!)
+        val response = yieldRequestServiceImp.saveRecommendationRequest(request!!)
+        if (response != null) {
+            return modelMapper.map(response, RecommendationResponseDto::class.java)
+        }
 
-        val responseDto = modelMapper.map(response,RecommendationResponseDto::class.java)
-
-        return responseDto
+        return null
     }
 
     @Deprecated("Will be removed")

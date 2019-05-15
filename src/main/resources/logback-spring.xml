@@ -7,28 +7,41 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>log/application/akilimo.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/akilimo/cropmanager.%d{yyyyMMdd}.log</fileNamePattern>
+            <fileNamePattern>log/akilimo/archived/akilimo.%d{yyyyMMdd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <totalSizeCap>10MB</totalSizeCap>
+            <totalSizeCap>5MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <charset>utf-8</charset>
-            <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+            <pattern>
+                %d %-5level [%thread] %logger{0}: %msg%n
+            </pattern>
         </encoder>
     </appender>
 
-    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <queueSize>512</queueSize>
-        <appender-ref ref="FILE"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n
+            </pattern>
+        </encoder>
     </appender>
 
-    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
-        <resetJUL>true</resetJUL>
-    </contextListener>
+    <springProfile name="dev,uat">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>>
+    </springProfile>
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
 
-    <root level="INFO">
+    <!--<root level="WARN">
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
-    </root>
+    </root>-->
 
 </configuration>

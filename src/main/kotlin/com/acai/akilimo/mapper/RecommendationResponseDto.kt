@@ -3,7 +3,7 @@ package com.acai.akilimo.mapper
 import com.acai.akilimo.entities.RecommendationRequest
 import lombok.Data
 
-//@Data
+@Data
 open class RecommendationResponseDto : RecommendationRequestDto() {
 
     /*var areaUnits: String? = null

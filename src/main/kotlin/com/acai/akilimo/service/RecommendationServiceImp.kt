@@ -23,7 +23,7 @@ constructor(private val recommendationRepository: RecommendationRepository) : IR
             logger.info("Logging requests for recommendations ")
             return recommendationRepository.save(recommendationRequest)
         } catch (ex: Exception) {
-            logger.error(ex.message,ex)
+            logger.error(ex.message)
         }
 
         return null
