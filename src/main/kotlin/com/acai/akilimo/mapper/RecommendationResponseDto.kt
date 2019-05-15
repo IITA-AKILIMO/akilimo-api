@@ -18,6 +18,6 @@ open class RecommendationResponseDto : RecommendationRequestDto() {
     var updatedAt: LocalDateTime? = null
     var createdAt: LocalDateTime? = null
 
-    var reccomendationText:String?= null
+    var recommendationText:String?= null
 
 }

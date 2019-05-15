@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("/api/v2/recommendations")
 @RestController
 class RecommendationsController @Autowired
-constructor(private val yieldRequestServiceImp: RecommendationServiceImp, private val restTemplate: RestTemplate, configProperties: ConfigProperties) {
+constructor(private val recommendationServiceImp: RecommendationServiceImp, private val restTemplate: RestTemplate, configProperties: ConfigProperties) {
 
     private val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
 
@@ -29,7 +29,7 @@ constructor(private val yieldRequestServiceImp: RecommendationServiceImp, privat
 
     @GetMapping
     fun listYieldRequests(): List<RecommendationRequest> {
-        return yieldRequestServiceImp.findAll()
+        return recommendationServiceImp.findAll()
     }
 
     @PostMapping("/compute")
@@ -38,7 +38,7 @@ constructor(private val yieldRequestServiceImp: RecommendationServiceImp, privat
 
         val request = modelMapper.map(recommendationRequest, RecommendationRequest::class.java)
 
-        val response = yieldRequestServiceImp.saveRecommendationRequest(request!!)
+        val response = recommendationServiceImp.saveRecommendationRequest(request!!)
         if (response != null) {
             return modelMapper.map(response, RecommendationResponseDto::class.java)
         }
@@ -67,7 +67,7 @@ constructor(private val yieldRequestServiceImp: RecommendationServiceImp, privat
         val objects = response.body
 
         if (objects != null) {
-            recommendationResponseDto.reccomendationText = objects[2].toString()
+            recommendationResponseDto.recommendationText = objects[2].toString()
         }
 
         logger.info("Returning response to requesting client")
