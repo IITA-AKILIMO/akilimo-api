@@ -32,7 +32,7 @@ fi
 
 exec java $JAVA_OPTS \
     -Djavax.net.ssl.trustStorePassword=changeit \
-    -Djavax.net.ssl.trustStore=keystore.jks \
+    #-Djavax.net.ssl.trustStore=keystore.jks \
     -Djava.security.egd=file:/dev/./urandom \
     -jar \
     /app.jar
