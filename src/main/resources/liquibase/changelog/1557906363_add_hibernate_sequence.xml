@@ -4,7 +4,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="2019_01_03_000000" author="masgeek" dbms="h2,oracle">
+    <changeSet id="1557906364" author="masgeek" dbms="h2,oracle">
         <createSequence sequenceName="HIBERNATE_SEQUENCE" startValue="1000" incrementBy="1"/>
     </changeSet>
 

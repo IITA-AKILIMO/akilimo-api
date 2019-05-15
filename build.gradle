@@ -10,7 +10,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.acai'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -31,6 +31,9 @@ dependencies {
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+	implementation "io.springfox:springfox-swagger2:2.9.2"
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation "com.github.rholder.fauxflake:fauxflake-core:1.1.0"
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'

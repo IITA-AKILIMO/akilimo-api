@@ -8,7 +8,7 @@
     <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
     <property name="autoIncrement" value="false" dbms="oracle"/>
 
-    <changeSet id="2019_01_04_004600" author="masgeek" dbms="h2,oracle,mysql,mariadb">
+    <changeSet id="1557906364" author="masgeek" dbms="h2,oracle,mysql,mariadb">
 
         <createTable tableName="yield_request">
             <!-- <column name="id" type="bigint" autoIncrement="${autoIncrement}">
@@ -42,7 +42,9 @@
             <column name="created_at" type="datetime"/>
             <column name="updated_at" type="datetime"/>
         </createTable>
-
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
     </changeSet>
 
 </databaseChangeLog>

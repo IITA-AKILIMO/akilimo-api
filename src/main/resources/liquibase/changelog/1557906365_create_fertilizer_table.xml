@@ -8,7 +8,7 @@
     <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
     <property name="autoIncrement" value="false" dbms="oracle"/>
 
-    <changeSet id="2019_01_04_024600" author="masgeek" dbms="h2,oracle,mysql,mariadb">
+    <changeSet id="1557906363" author="masgeek" dbms="h2,oracle,mysql,mariadb">
 
         <createTable tableName="request_fertilizer">
             <column name="fertilizer_id" type="bigint" autoIncrement="${autoIncrement}">
@@ -22,13 +22,9 @@
             <column name="weight" type="decimal(10,2)"/>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="request_id"
-                                 baseTableName="request_fertilizer"
-                                 constraintName="fk_request_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="yield_request"/>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
     </changeSet>
 
 </databaseChangeLog>

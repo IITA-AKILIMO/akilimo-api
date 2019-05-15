@@ -4,8 +4,9 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="/liquibase/changelog/2019_01_03_000000_add_hibernate_sequence.xml"/>
-    <include file="/liquibase/changelog/2019_01_04_004600_create_yield_request_table.xml"/>
-    <include file="/liquibase/changelog/2019_01_04_024600_create_fertilizer_table.xml"/>
+    <include file="/liquibase/changelog/1557906363_add_hibernate_sequence.xml"/>
+    <include file="/liquibase/changelog/1557906364_create_yield_request_table.xml"/>
+    <include file="/liquibase/changelog/1557906365_create_fertilizer_table.xml"/>
+    <include file="/liquibase/changelog/11557907050_add_constraint_to_fertilizer_table.xml"/>
 
 </databaseChangeLog>
