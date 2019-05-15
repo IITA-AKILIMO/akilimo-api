@@ -46,6 +46,7 @@ constructor(private val yieldRequestServiceImp: RecommendationServiceImp, privat
         return responseDto
     }
 
+    @Deprecated("Will be removed")
     @PostMapping("/compute/direct")
     fun processDirectYieldRequest(@RequestBody recommendationRequestDto: RecommendationRequestDto): RecommendationResponseDto {
         val recommendationResponseDto = RecommendationResponseDto()
