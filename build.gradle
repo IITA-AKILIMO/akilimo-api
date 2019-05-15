@@ -31,10 +31,16 @@ dependencies {
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
-	implementation "io.springfox:springfox-swagger2:2.9.2"
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-	implementation "com.github.rholder.fauxflake:fauxflake-core:1.1.0"
+	implementation 'com.github.rholder.fauxflake:fauxflake-core:1.1.0'
 	implementation 'com.github.rozidan:modelmapper-spring-boot-starter:1.0.0'
+
+	implementation 'com.itextpdf:io:7.0.2'
+	implementation 'com.itextpdf:tool:7.0.2'
+	implementation 'com.itextpdf:kernel:7.0.2'
+	implementation 'com.itextpdf:layout:7.0.2'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'

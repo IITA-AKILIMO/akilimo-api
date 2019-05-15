@@ -4,6 +4,7 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.config.ConfigProperties
 import com.acai.akilimo.entities.RecommendationRequest
 import com.acai.akilimo.entities.RecommendationResponse
+import com.acai.akilimo.generators.HtmlFileToPdfGenerator
 import com.acai.akilimo.mapper.RecommendationRequestDto
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.Plumber
@@ -36,6 +37,13 @@ constructor(private val recommendationServiceImp: RecommendationServiceImp, priv
     fun processYieldRequest(@RequestBody recommendationRequest: RecommendationRequestDto): RecommendationResponseDto? {
         val modelMapper = ModelMapper()
 
+
+        val g = HtmlFileToPdfGenerator()
+
+        val j = g.readHtmlFile()
+
+        return null;
+        /*
         val request = modelMapper.map(recommendationRequest, RecommendationRequest::class.java)
 
         val response = recommendationServiceImp.saveRecommendationRequest(request!!)
@@ -43,7 +51,7 @@ constructor(private val recommendationServiceImp: RecommendationServiceImp, priv
             return modelMapper.map(response, RecommendationResponseDto::class.java)
         }
 
-        return null
+        return null*/
     }
 
     @Deprecated("Will be removed")
