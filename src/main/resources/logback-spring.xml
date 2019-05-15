@@ -5,9 +5,9 @@
 
     <!-- The FILE and ASYNC appenders are here as examples for a production configuration -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/application/cropmanager.log</file>
+        <file>log/application/akilimo.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/cropmanager/cropmanager.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/akilimo/cropmanager.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
             <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
