@@ -36,10 +36,10 @@ dependencies {
 	implementation 'com.github.rholder.fauxflake:fauxflake-core:1.1.0'
 	implementation 'com.github.rozidan:modelmapper-spring-boot-starter:1.0.0'
 
-	implementation 'com.itextpdf:io:7.0.2'
-	implementation 'com.itextpdf:tool:7.0.2'
-	implementation 'com.itextpdf:kernel:7.0.2'
-	implementation 'com.itextpdf:layout:7.0.2'
+	implementation 'com.itextpdf:io:7.0.4'
+	implementation 'com.itextpdf:tool:7.0.4'
+	implementation 'com.itextpdf:kernel:7.0.4'
+	implementation 'com.itextpdf:layout:7.0.4'
 
 
 	compileOnly 'org.projectlombok:lombok'
