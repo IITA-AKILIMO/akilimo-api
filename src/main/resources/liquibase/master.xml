@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <include file="/liquibase/changelog/1557906363_add_hibernate_sequence.xml"/>
+    <include file="/liquibase/changelog/1557906364_create_yield_request_table.xml"/>
+    <include file="/liquibase/changelog/1557906365_create_fertilizer_table.xml"/>
+    <include file="/liquibase/changelog/11557907050_add_constraint_to_fertilizer_table.xml"/>
+
+</databaseChangeLog>
