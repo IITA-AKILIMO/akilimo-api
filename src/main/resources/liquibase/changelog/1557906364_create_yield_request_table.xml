@@ -18,25 +18,47 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="map_lat" type="decimal(12,8)"/>
-            <column name="map_long" type="decimal(12,8)"/>
+            <column name="map_lat" type="decimal(12,8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="map_long" type="decimal(12,8)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="cassava_unit_weight" type="decimal(10,2)"/>
             <column name="cassava_unit_price" type="decimal(10,2)"/>
+
             <column name="max_investment" type="decimal(10,2)"/>
+
             <column name="field_area" type="decimal(10,2)"/>
 
-            <column name="planting_date" type="datetime"/>
-            <column name="harvest_date" type="datetime"/>
+            <column name="planting_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
 
-            <column name="country" type="varchar(3)"/>
+            <column name="harvest_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="country" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="client" type="varchar(18)" defaultValue="android"/>
             <column name="area_units" type="varchar(18)"/>
+
             <column name="user_name" type="varchar(18)"/>
+
             <column name="user_phone_code" type="varchar(5)"/>
+
             <column name="user_phone_number" type="varchar(18)"/>
+
             <column name="cassava_pd" type="varchar(18)"/>
+
             <column name="field_description" type="varchar(255)"/>
+
             <column name="user_email" type="varchar(50)"/>
+
             <column name="processed" type="boolean" defaultValue="false"/>
 
             <column name="created_at" type="datetime"/>

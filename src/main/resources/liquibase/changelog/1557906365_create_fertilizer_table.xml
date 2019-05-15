@@ -16,10 +16,19 @@
             </column>
 
             <column name="request_id" type="bigint"/>
-            <column name="fertilizer_type" type="varchar(100)"/>
+            <column name="fertilizer_type" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="available" type="boolean" defaultValueBoolean="false"/>
-            <column name="price" type="decimal(10,2)"/>
-            <column name="weight" type="decimal(10,2)"/>
+
+            <column name="price" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="weight" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+
         </createTable>
 
         <modifySql dbms="mysql">
