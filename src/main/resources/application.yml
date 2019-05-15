@@ -1,0 +1,24 @@
+debug: false
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+  config: file:src/main/resources/logback-spring.xml
+server:
+  port: 8098
+  #servlet:
+  #  context-path: /api/v2/recommendations
+  error:
+    whitelabel:
+      enabled: false
+spring:
+  application:
+    name: cropmanager
+  profiles:
+    active: dev
+  liquibase:
+    change-log: "classpath:liquibase/master.xml"
+
+plumber:
+  endpoint: http://192.168.100.4:8000/api/v1

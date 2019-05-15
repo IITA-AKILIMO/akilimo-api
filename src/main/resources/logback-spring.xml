@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- The FILE and ASYNC appenders are here as examples for a production configuration -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/application/akilimo.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/akilimo/archived/akilimo.%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>5MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>
+                %d %-5level [%thread] %logger{0}: %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="uat">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+    <!--
+   <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+    -->
+
+</configuration>
