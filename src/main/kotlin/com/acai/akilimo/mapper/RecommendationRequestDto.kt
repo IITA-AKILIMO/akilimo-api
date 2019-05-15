@@ -20,7 +20,7 @@ open class RecommendationRequestDto {
 
     var fieldArea: Double? =null
 
-    //var plantingDate: LocalDateTime? = null
+    var plantingDate: LocalDateTime? = null
 
     var harvestDate: LocalDateTime? = null
 

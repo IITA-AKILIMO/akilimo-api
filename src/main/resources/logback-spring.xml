@@ -19,29 +19,29 @@
         </encoder>
     </appender>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>
-                %d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n
-            </pattern>
-        </encoder>
-    </appender>
-
-    <springProfile name="dev,uat">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE" />
-        </root>>
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
     </springProfile>
+
+    <springProfile name="uat">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
     <springProfile name="prod">
         <root level="WARN">
-            <appender-ref ref="CONSOLE" />
             <appender-ref ref="FILE" />
         </root>
     </springProfile>
 
-    <!--<root level="WARN">
-        <appender-ref ref="FILE"/>
+    <!--
+   <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-    </root>-->
+    </root>
+    -->
 
 </configuration>
