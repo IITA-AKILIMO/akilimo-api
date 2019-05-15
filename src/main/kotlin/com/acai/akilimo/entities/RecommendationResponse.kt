@@ -12,7 +12,7 @@ import java.util.HashMap
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder("lat", "lon", "rateUrea", "rateNPK151515", "rateNPK201010", "currentY", "targetY", "WLY", "netRev", "totalCost", "N", "P", "K", "plDate", "areaUnits", "area", "rateUrea_user", "rateNPK151515_user", "rateNPK201010_user", "currentY_user", "targetY_user", "WLY_user", "netRev_user", "totalCost_user", "N_user", "P_user", "K_user")
-class YieldResponse {
+class RecommendationResponse {
 
     @JsonProperty("lat")
     var lat: Double? = null

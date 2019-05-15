@@ -7,9 +7,9 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>log/application/akilimo.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/akilimo/cropmanager.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/akilimo/cropmanager.%d{yyyyMMdd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <totalSizeCap>100MB</totalSizeCap>
+            <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <charset>utf-8</charset>

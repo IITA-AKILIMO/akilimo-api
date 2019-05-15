@@ -12,8 +12,8 @@ import java.io.Serializable
 
 @Data
 @Entity
-@ToString(exclude = ["yieldRequest"])
-@EqualsAndHashCode(exclude = ["yieldRequest"])
+@ToString(exclude = ["recommendationRequest"])
+@EqualsAndHashCode(exclude = ["recommendationRequest"])
 @Table(name = "request_fertilizer")
 class Fertilizer : Serializable {
 
@@ -46,5 +46,5 @@ class Fertilizer : Serializable {
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     @JsonIgnore
-    var yieldRequest: YieldRequest? = null
+    var recommendationRequest: RecommendationRequest? = null
 }
