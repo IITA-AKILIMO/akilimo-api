@@ -4,16 +4,11 @@ package com.acai.akilimo.generators
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 import java.nio.file.Files
 import java.sql.Timestamp
-import java.io.File
 import com.github.jhonnymertz.wkhtmltopdf.wrapper.Pdf
 import com.github.jhonnymertz.wkhtmltopdf.wrapper.configurations.WrapperConfig
-import com.github.jhonnymertz.wkhtmltopdf.wrapper.page.PageType
 import com.github.jhonnymertz.wkhtmltopdf.wrapper.params.Param
-import com.github.jhonnymertz.wkhtmltopdf.wrapper.params.Params
 
 
 class HtmlFileToPdfGenerator {
@@ -34,32 +29,12 @@ class HtmlFileToPdfGenerator {
 
             wrapperConfig.wkhtmltopdfCommand = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"
 
-            val params = Params()
-
-            val param = Param("-O","")
-            params.add(param)
-
             val pdf = Pdf(wrapperConfig)
 
-
-            //pdf.addPageFromString("<html><head><meta charset=\"utf-8\"></head><h1>Müller</h1></html>")
             pdf.addPageFromString(text)
             pdf.addParam(Param("-O", "Landscape"))
-           //pdf.addPageFromUrl("http://www.google.com")
-            //pdf.addPageFromFile(url)
-
-// Add a Table of Contents
-            //pdf.addToc()
-
-// The `wkhtmltopdf` shell command accepts different types of options such as global, page, headers and footers, and toc. Please see `wkhtmltopdf -H` for a full explanation.
-// All options are passed as array, for example:
-            //pdf.addParam(Param("--no-footer-line"), Param("--header-html", "file:///header.html"))
-            //pdf.addParam(Param("--enable-javascript"))
-
-// Add styling for Table of Contents
-
-
-// Save the PDF
+            pdf.addParam(Param("--page-size", "Legal"))
+            pdf.addParam(Param("--enable-javascript"))
             pdf.saveAs("$time.pdf")
         } catch (e: Exception) {
             e.printStackTrace()

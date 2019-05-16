@@ -1,6 +1,5 @@
 package com.acai.akilimo.service
 
-import com.acai.akilimo.controllers.RecommendationsController
 import com.acai.akilimo.entities.RecommendationRequest
 import com.acai.akilimo.repositories.RecommendationRepository
 import com.acai.akilimo.interfaces.IRecommendationService

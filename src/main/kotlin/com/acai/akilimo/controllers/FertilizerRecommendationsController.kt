@@ -4,7 +4,6 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.config.ConfigProperties
 import com.acai.akilimo.entities.RecommendationRequest
 import com.acai.akilimo.entities.RecommendationResponse
-import com.acai.akilimo.generators.HtmlFileToPdfGenerator
 import com.acai.akilimo.mapper.RecommendationRequestDto
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.Plumber
@@ -21,30 +20,22 @@ import org.springframework.web.client.RestTemplate
 
 @RequestMapping("/api/v2/recommendations")
 @RestController
-class RecommendationsController @Autowired
+class FertilizerRecommendationsController @Autowired
 constructor(private val recommendationServiceImp: RecommendationServiceImp, private val restTemplate: RestTemplate, configProperties: ConfigProperties) {
 
-    private val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
+    private val logger = LoggerFactory.getLogger(FertilizerRecommendationsController::class.java)
 
     private val plumberProperties: Plumber = configProperties.plumber()
 
-    @GetMapping
-    fun listYieldRequests(): List<RecommendationRequest> {
+    @GetMapping("/fertilizer/requests")
+    fun request(): List<RecommendationRequest> {
         return recommendationServiceImp.findAll()
     }
 
-    @PostMapping("/compute")
-    fun processYieldRequest(@RequestBody recommendationRequest: RecommendationRequestDto): RecommendationResponseDto? {
+    @PostMapping("/fertilizer")
+    fun request(@RequestBody recommendationRequest: RecommendationRequestDto): RecommendationResponseDto? {
         val modelMapper = ModelMapper()
 
-
-        val g = HtmlFileToPdfGenerator()
-
-        g.readHtmlFileTest()
-        //val j = g.readHtmlFile()
-
-        return null;
-        /*
         val request = modelMapper.map(recommendationRequest, RecommendationRequest::class.java)
 
         val response = recommendationServiceImp.saveRecommendationRequest(request!!)
@@ -52,11 +43,11 @@ constructor(private val recommendationServiceImp: RecommendationServiceImp, priv
             return modelMapper.map(response, RecommendationResponseDto::class.java)
         }
 
-        return null*/
+        return null
     }
 
-    @Deprecated("Will be removed")
-    @PostMapping("/compute/direct")
+    //@Deprecated("Will be removed")
+    //@PostMapping("/compute/direct")
     fun processDirectYieldRequest(@RequestBody recommendationRequestDto: RecommendationRequestDto): RecommendationResponseDto {
         val recommendationResponseDto = RecommendationResponseDto()
 

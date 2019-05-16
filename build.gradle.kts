@@ -44,8 +44,8 @@ dependencies {
 
 	implementation("com.h2database:h2")
 	implementation ("org.liquibase:liquibase-core")
+	implementation ("org.mariadb.jdbc:mariadb-java-client:2.4.1")
 
-	implementation ("org.mariadb.jdbc:mariadb-java-client:2.1.2")
 	implementation ("io.springfox:springfox-swagger2:2.9.2")
 	implementation ("io.springfox:springfox-swagger-ui:2.9.2")
 
