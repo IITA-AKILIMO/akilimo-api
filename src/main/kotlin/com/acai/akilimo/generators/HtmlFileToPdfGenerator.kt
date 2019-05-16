@@ -1,35 +1,112 @@
 package com.acai.akilimo.generators
 
-import com.google.common.io.CharStreams
-import org.springframework.core.io.ResourceLoader
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.Resource
-import org.springframework.stereotype.Service
-import java.io.IOException
-import java.io.InputStreamReader
-import java.nio.file.Files.readAllBytes
+
+import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
-import java.nio.file.Files
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import com.itextpdf.kernel.pdf.PdfWriter
-import com.itextpdf.layout.Document
-import com.itextpdf.kernel.pdf.PdfDocument
-
-
+import java.io.IOException
+import java.nio.file.Files
+import java.sql.Timestamp
+import java.io.File
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.Pdf
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.configurations.WrapperConfig
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.page.PageType
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.params.Param
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.params.Params
 
 
 class HtmlFileToPdfGenerator {
-    @Throws(IOException::class)
+    private val logger = LoggerFactory.getLogger(HtmlFileToPdfGenerator::class.java)
+
+    fun readHtmlFileTest() {
+        try {
+            val timestamp = Timestamp(System.currentTimeMillis())
+
+            val time  = timestamp.time
+
+            val url = ClassPathResource("computed/fertilizer_advice_pp.html").file
+            val text = String(Files.readAllBytes(url.toPath()))
+            //val url = ClassPathResource("computed/test.html").file.toURI().toString()
+            logger.info("URL: $url")
+
+            val wrapperConfig = WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+
+            wrapperConfig.wkhtmltopdfCommand = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"
+
+            val params = Params()
+
+            val param = Param("-O","")
+            params.add(param)
+
+            val pdf = Pdf(wrapperConfig)
+
+
+            //pdf.addPageFromString("<html><head><meta charset=\"utf-8\"></head><h1>Müller</h1></html>")
+            pdf.addPageFromString(text)
+            pdf.addParam(Param("-O", "Landscape"))
+           //pdf.addPageFromUrl("http://www.google.com")
+            //pdf.addPageFromFile(url)
+
+// Add a Table of Contents
+            //pdf.addToc()
+
+// The `wkhtmltopdf` shell command accepts different types of options such as global, page, headers and footers, and toc. Please see `wkhtmltopdf -H` for a full explanation.
+// All options are passed as array, for example:
+            //pdf.addParam(Param("--no-footer-line"), Param("--header-html", "file:///header.html"))
+            //pdf.addParam(Param("--enable-javascript"))
+
+// Add styling for Table of Contents
+
+
+// Save the PDF
+            pdf.saveAs("$time.pdf")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+
     fun readHtmlFile(): String {
+
+        val timestamp = Timestamp(System.currentTimeMillis())
+
+        val time  = timestamp.time
+
+        val htmlSource = ClassPathResource("computed/fertilizer_advice_pp.html").file
+        //val htmlSource = ClassPathResource("computed/test.html").file
+
+        val targetStream = FileInputStream(htmlSource)
+
+        /*
+
+        val tidy = Tidy()
+        tidy.xhtml = true
+        tidy.xmlTags = true
+
+        tidy.parse(targetStream, System.out)
+
+
+        val document = Document(PageSize.A4.rotate(),0F,0F,0F,0F)
+        val writer = PdfWriter.getInstance(document,FileOutputStream("$time.pdf"))
+        document.open()
+
+        XMLWorkerHelper.getInstance().parseXHtml(writer, document,targetStream)
+        document.close()*/
+
+        return "9000"
+    }
+
+    fun readHtmlFileOld(): String {
         val resource = ClassPathResource("computed/fertilizer_advice_pp.html").file
         val text = String(Files.readAllBytes(resource.toPath()))
 
 
-        /*
+
+
         // step 1
-        val document = Document()
+        /*val document = Document()
         // step 2
         val writer = PdfWriter.getInstance(document, FileOutputStream("pdf.pdf"))
         // step 3
@@ -41,24 +118,25 @@ class HtmlFileToPdfGenerator {
         document.close()
 
         println("PDF Created!")
-         */
+*/
 
         // Creating a PdfWriter
-        val dest = "akilimo.pdf"
-        val writer = PdfWriter(dest)
+       // val dest = "akilimo.pdf"
+       // val writer = PdfWriter(dest)
 
         // Creating a PdfDocument
-        val pdfDoc = PdfDocument(writer)
+       // val pdfDoc = PdfDocument(writer)
 
         // Adding a new page
-        pdfDoc.addNewPage()
+        //pdfDoc.addNewPage()
 
         // Creating a Document
-        val document = Document(pdfDoc)
+        //val document = Document(pdfDoc)
+
 
         // Closing the document
-        document.close()
-        println("PDF Created")
+       // document.close()
+        logger.info("PDF Created")
 
 
         return "9"

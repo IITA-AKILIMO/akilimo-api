@@ -40,7 +40,8 @@ constructor(private val recommendationServiceImp: RecommendationServiceImp, priv
 
         val g = HtmlFileToPdfGenerator()
 
-        val j = g.readHtmlFile()
+        g.readHtmlFileTest()
+        //val j = g.readHtmlFile()
 
         return null;
         /*
