@@ -21,4 +21,8 @@ spring:
     change-log: "classpath:liquibase/master.xml"
 
 plumber:
-  endpoint: http://192.168.100.4:8000/api/v1
+  fertilizer-recommendation: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
+  planting-practices: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
+  intercropping: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
+  scheduled-planting: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
+  high-starch: http://localhost:8000/api/v2/estimate/fertilizer-recommendation

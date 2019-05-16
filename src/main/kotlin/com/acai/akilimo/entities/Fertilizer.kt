@@ -36,11 +36,11 @@ class Fertilizer : Serializable {
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
     @ApiModelProperty(example = "10.50", required = true)
-    var price: Double = 0.0
+    var price: Float = 0.0F
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
     @ApiModelProperty(example = "50", required = true)
-    var weight: Double?= 0.0
+    var weight: Float?= 0.0F
 
 
     @ManyToOne(cascade = [CascadeType.ALL])

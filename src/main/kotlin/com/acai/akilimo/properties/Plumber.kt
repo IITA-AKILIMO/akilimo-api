@@ -8,6 +8,19 @@ import javax.validation.constraints.NotBlank
 
 @Data
 class Plumber {
+
     @NotBlank
-    var endpoint: String? = null
+    var fertilizerRecommendation: String? = null
+
+    @NotBlank
+    var plantingPractices: String? = null
+
+    @NotBlank
+    var interCropping: String? = null
+
+    @NotBlank
+    var scheduledPlanting: String? = null
+
+    @NotBlank
+    var highStarch: String? = null
 }

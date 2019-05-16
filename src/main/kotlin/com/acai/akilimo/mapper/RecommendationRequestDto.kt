@@ -8,17 +8,17 @@ import javax.persistence.Column
 @Data
 open class RecommendationRequestDto {
 
-    var mapLat: Long? =null
+    var mapLat: Float? =null
 
-    var mapLong:Long?=null
+    var mapLong:Float?=null
 
-    var cassavaUnitWeight: Double? =null
+    var cassavaUnitWeight: Float? =null
 
-    var cassavaUnitPrice: Double?=null
+    var cassavaUnitPrice: Float?=null
 
-    var maxInvestment: Double? =null
+    var maxInvestment: Float? =null
 
-    var fieldArea: Double? =null
+    var fieldArea: Float? =null
 
     var plantingDate: LocalDateTime? = null
 

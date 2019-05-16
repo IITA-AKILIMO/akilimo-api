@@ -13,28 +13,28 @@ import java.util.HashMap
 class RecommendationResponse {
 
     @JsonProperty("lat")
-    var mapLat: Double? = null
+    var mapLat: Float? = null
 
     @JsonProperty("lon")
-    var mapLong: Double? = null
+    var mapLong: Float? = null
 
     @JsonProperty("rateUrea")
-    var rateUrea: Double? = null
+    var rateUrea: Float? = null
 
     @JsonProperty("rateNPK151515")
-    var rateNPK151515: Double? = null
+    var rateNPK151515: Float? = null
 
     @JsonProperty("rateNPK201010")
-    var rateNPK201010: Double? = null
+    var rateNPK201010: Float? = null
 
     @JsonProperty("currentY")
-    var currentieldY: Double? = null
+    var currentieldY: Float? = null
 
     @JsonProperty("targetY")
-    var targetYield: Double? = null
+    var targetYield: Float? = null
 
     @JsonProperty("WLY")
-    var wly: Double? = null
+    var wly: Float? = null
 
     @JsonProperty("netRev")
     var netRevenue: Int? = null
@@ -58,25 +58,25 @@ class RecommendationResponse {
     var areaUnits: String? = null
 
     @JsonProperty("area")
-    var area: Double? = null
+    var area: Float? = null
 
     @JsonProperty("rateUrea_user")
-    var rateUreaUser: Double? = null
+    var rateUreaUser: Float? = null
 
     @JsonProperty("rateNPK151515_user")
-    var rateNPK151515User: Double? = null
+    var rateNPK151515User: Float? = null
 
     @JsonProperty("rateNPK201010_user")
-    var rateNPK201010User: Double? = null
+    var rateNPK201010User: Float? = null
 
     @JsonProperty("currentY_user")
-    var currentYUser: Double? = null
+    var currentYUser: Float? = null
 
     @JsonProperty("targetY_user")
-    var targetYUser: Double? = null
+    var targetYUser: Float? = null
 
     @JsonProperty("WLY_user")
-    var wlyUser: Double? = null
+    var wlyUser: Float? = null
 
     @JsonProperty("netRev_user")
     var netRevUser: Int? = null
@@ -85,13 +85,13 @@ class RecommendationResponse {
     var totalCostUser: Int? = null
 
     @JsonProperty("N_user")
-    var nUser: Double? = null
+    var nUser: Float? = null
 
     @JsonProperty("P_user")
-    var pUser: Double? = null
+    var pUser: Float? = null
 
     @JsonProperty("K_user")
-    var kUser: Double? = null
+    var kUser: Float? = null
 
     @JsonProperty("recommendation")
     var recommendationText: String? = null
