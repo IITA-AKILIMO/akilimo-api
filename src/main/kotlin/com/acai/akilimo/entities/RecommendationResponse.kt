@@ -5,96 +5,125 @@ import com.fasterxml.jackson.annotation.*
 import lombok.Data
 
 import java.util.HashMap
+import com.fasterxml.jackson.annotation.JsonProperty
 
+
+
+@Suppress("unused")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder("lat", "lon", "rateUrea", "rateNPK151515", "rateNPK201010", "currentY", "targetY", "WLY", "netRev", "totalCost", "N", "P", "K", "plDate", "areaUnits", "area", "rateUrea_user", "rateNPK151515_user", "rateNPK201010_user", "currentY_user", "targetY_user", "WLY_user", "netRev_user", "totalCost_user", "N_user", "P_user", "K_user")
 class RecommendationResponse {
+    @JsonProperty("name")
+    var userName: String? = null
 
-    @JsonProperty("lat")
+    @JsonProperty("phone")
+    var phone: String? = null
+
+    @JsonProperty("email")
+    var email: String? = null
+
+    @JsonProperty("field")
+    var fieldDescription: String? = null
+
+    @JsonProperty("field_area")
+    var fieldArea: String? = null
+
+    @JsonProperty("unit_field")
+    var fieldSizeUnit: String? = null
+
+    @JsonProperty("plant_date")
+    var plantingDate: String? = null
+
+    @JsonProperty("hvst_date")
+    var harvestDate: String? = null
+
+    @JsonProperty("current_yield")
+    var currentYield: String? = null
+
+
+    @JsonProperty("latitude")
     var mapLat: Float? = null
 
-    @JsonProperty("lon")
+    @JsonProperty("longitude")
     var mapLong: Float? = null
 
-    @JsonProperty("rateUrea")
-    var rateUrea: Float? = null
+    @JsonProperty("currency")
+    var currency: String? = null
 
-    @JsonProperty("rateNPK151515")
-    var rateNPK151515: Float? = null
+    @JsonProperty("fertilizer1")
+    var fertilizerOne: String? = null
 
-    @JsonProperty("rateNPK201010")
-    var rateNPK201010: Float? = null
+    @JsonProperty("cost1")
+    var fertilizerOnecost: Float? = null
 
-    @JsonProperty("currentY")
-    var currentieldY: Float? = null
+    @JsonProperty("unit1")
+    var fertilizerOneUnit: String? = null
 
-    @JsonProperty("targetY")
-    var targetYield: Float? = null
+    @JsonProperty("kgs1")
+    var fertilizerOneKillo: Float? = null
 
-    @JsonProperty("WLY")
-    var wly: Float? = null
+    @JsonProperty("fertilizer2")
+    var fertilizerTwo: String? = null
 
-    @JsonProperty("netRev")
-    var netRevenue: Int? = null
+    @JsonProperty("cost2")
+    var fertilizerTwoCost: Float? = null
 
-    @JsonProperty("totalCost")
-    var totalCost: Int? = null
+    @JsonProperty("unit2")
+    var fertilizerTwoUnit: String? = null
 
-    @JsonProperty("N")
-    var nitrogenAmount: Int? = null
+    @JsonProperty("kgs2")
+    var fertilizerTwoKilo: Float? = null
 
-    @JsonProperty("P")
-    var phospateAmount: Int? = null
+    @JsonProperty("fertilizer3")
+    var fertilizerThree: String? = null
 
-    @JsonProperty("K")
-    var potassiumAmount: Int? = null
+    @JsonProperty("cost3")
+    var fertilizerThreeCost: Float? = null
 
-    @JsonProperty("plDate")
-    var plantingDate: Int? = null
+    @JsonProperty("unit3")
+    var fertilizerThreeUnit: String? = null
 
-    @JsonProperty("areaUnits")
-    var areaUnits: String? = null
+    @JsonProperty("kgs3")
+    var fertilizerThreeKilo: Long? = null
 
-    @JsonProperty("area")
-    var area: Float? = null
+    @JsonProperty("fertilizer4")
+    var fertilizerFour: String? = null
 
-    @JsonProperty("rateUrea_user")
-    var rateUreaUser: Float? = null
+    @JsonProperty("costcassava")
+    var cassavaCost: Float? = null
 
-    @JsonProperty("rateNPK151515_user")
-    var rateNPK151515User: Float? = null
+    @JsonProperty("unitcassava")
+    var cassavaUnit: String? = null
 
-    @JsonProperty("rateNPK201010_user")
-    var rateNPK201010User: Float? = null
+    @JsonProperty("maxinvest")
+    var maximumInvestment: Float? = null
 
-    @JsonProperty("currentY_user")
-    var currentYUser: Float? = null
+    @JsonProperty("bags1")
+    var bagsOne: Float? = null
+    @JsonProperty("bags2")
+    var bagsTwo: Long? = null
 
-    @JsonProperty("targetY_user")
-    var targetYUser: Float? = null
-
-    @JsonProperty("WLY_user")
-    var wlyUser: Float? = null
-
-    @JsonProperty("netRev_user")
-    var netRevUser: Int? = null
-
-    @JsonProperty("totalCost_user")
-    var totalCostUser: Int? = null
-
-    @JsonProperty("N_user")
-    var nUser: Float? = null
-
-    @JsonProperty("P_user")
-    var pUser: Float? = null
-
-    @JsonProperty("K_user")
-    var kUser: Float? = null
-
-    @JsonProperty("recommendation")
-    var recommendationText: String? = null
+    @JsonProperty("total_cost1")
+    var totalCostOne: Float? = null
+    @JsonProperty("total_cost2")
+    var totalCostTwo: Float? = null
 
 
+    @JsonProperty("sum_total")
+    var sumTotal: Float? = null
+
+    @JsonProperty("bags_total")
+    var bagsTotal: Float? = null
+
+    @JsonProperty("product")
+    var cassavaProduct: String? = null
+
+    @JsonProperty("unit")
+    var weightunit: String? = null
+
+    @JsonProperty("totalSalePrice")
+    var totalSalePrice: Float? = null
+
+    @JsonProperty("revenue")
+    var totalRevenue: Float? = null
 }

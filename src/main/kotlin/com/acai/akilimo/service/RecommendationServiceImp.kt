@@ -81,15 +81,11 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
             if (objects != null) {
 
-                val computedData:ArrayList<Objects> = objects[0] as ArrayList<Objects>
-
-                val usercomputedData = objects[1]
-                val recommendationText = objects[2]
-
+                val computedData= objects[0] as ArrayList<Objects>
+                val usercomputedData = objects[1]  as ArrayList<Objects>
+                val recommendationText = objects[2]  as ArrayList<Objects>
 
                 val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<RecommendationResponse>::class.java)
-
-                val asArray = modelMapper.map(computedData, Array<RecommendationResponse>::class.java)
 
 
                 recommendationResponseDto.recommendationText = objects[2].toString()
