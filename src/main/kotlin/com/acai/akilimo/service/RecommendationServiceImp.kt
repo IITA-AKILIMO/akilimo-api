@@ -14,6 +14,16 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import org.springframework.http.ResponseEntity
+import java.util.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.modelmapper.ModelMapper
+import kotlin.collections.ArrayList
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json
+import org.h2.value.DataType.readValue
+
+
+
 
 @Service
 class RecommendationServiceImp @Autowired
@@ -33,8 +43,13 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
             recommendationRequest.fertilizers = fertilizerList
 
-            logger.info("Logging requests for fertilizer recommendations",6)
-            return recommendationRepository.save(recommendationRequest)
+            logger.info("Logging requests for fertilizer recommendations", 6)
+
+            val savedRequest = recommendationRepository.save(recommendationRequest)
+
+            val computed = this.sendToComputeTool(savedRequest)
+
+            return savedRequest
         } catch (ex: Exception) {
             logger.error(ex.message)
         }
@@ -42,7 +57,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         return null
     }
 
-    override fun sendToComputeTool(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
+    private fun sendToComputeTool(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val recommendationResponseDto = RecommendationResponseDto()
 
         val headers = HttpHeaders()
@@ -50,18 +65,37 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
         logger.info("Payload is $recommendationRequest")
         logger.info("Request has entered here, proceeding " + recommendationRequest.harvestDate!!)
+
+        val mapper = ObjectMapper()
+        val modelMapper = ModelMapper()
         //send to plumber
-        val entity = HttpEntity(recommendationRequest, headers)
-        val fertilizerRecommendationUrl = plumberProperties.fertilizerRecommendation!!
+        try {
+            val entity = HttpEntity(recommendationRequest, headers)
+            val fertilizerRecommendationUrl = plumberProperties.fertilizerRecommendation!!
 
-        logger.info("Going to endpoint $fertilizerRecommendationUrl")
-        val response = restTemplate.postForEntity(
-                fertilizerRecommendationUrl, entity, Array<RecommendationResponse>::class.java)
+            logger.info("Going to endpoint $fertilizerRecommendationUrl")
+            val response = restTemplate.postForEntity(
+                    fertilizerRecommendationUrl, entity, Array<Any>::class.java)
 
-        val objects = response.body
+            val objects = response.body
 
-        if (objects != null) {
-            recommendationResponseDto.recommendationText = objects[2].toString()
+            if (objects != null) {
+
+                val computedData:ArrayList<Objects> = objects[0] as ArrayList<Objects>
+
+                val usercomputedData = objects[1]
+                val recommendationText = objects[2]
+
+
+                val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<RecommendationResponse>::class.java)
+
+                val asArray = modelMapper.map(computedData, Array<RecommendationResponse>::class.java)
+
+
+                recommendationResponseDto.recommendationText = objects[2].toString()
+            }
+        } catch (ex: Exception) {
+            logger.error(ex.message)
         }
 
         logger.info("Returning response to requesting client")

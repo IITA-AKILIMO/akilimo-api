@@ -10,5 +10,5 @@ interface IRecommendationService {
 
     fun saveRecommendationRequest(recommendationRequest: RecommendationRequest): RecommendationRequest?
 
-    fun sendToComputeTool(recommendationRequest: RecommendationRequest): RecommendationResponseDto?
+    //fun sendToComputeTool(recommendationRequest: RecommendationRequest): RecommendationResponseDto?
 }

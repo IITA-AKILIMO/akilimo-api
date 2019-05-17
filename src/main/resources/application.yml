@@ -21,8 +21,8 @@ spring:
     change-log: "classpath:liquibase/master.xml"
 
 plumber:
-  fertilizer-recommendation: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
-  planting-practices: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
-  intercropping: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
-  scheduled-planting: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
-  high-starch: http://localhost:8000/api/v2/estimate/fertilizer-recommendation
+  fertilizer-recommendation: http://localhost:8000/api/v2/dst/fertilizer-recommendation
+  planting-practices: http://localhost:8000/api/v2/dst/fertilizer-recommendation
+  intercropping: http://localhost:8000/api/v2/dst/fertilizer-recommendation
+  scheduled-planting: http://localhost:8000/api/v2/dst/fertilizer-recommendation
+  high-starch: http://localhost:8000/api/v2/dst/fertilizer-recommendation
