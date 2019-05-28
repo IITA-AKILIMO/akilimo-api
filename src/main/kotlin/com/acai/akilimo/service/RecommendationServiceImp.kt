@@ -23,8 +23,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json
 import org.h2.value.DataType.readValue
 
 
-
-
 @Service
 class RecommendationServiceImp @Autowired
 constructor(private val recommendationRepository: RecommendationRepository, private val restTemplate: RestTemplate, configProperties: ConfigProperties) : IRecommendationService {
@@ -48,6 +46,8 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
             val savedRequest = recommendationRepository.save(recommendationRequest)
 
             val computed = this.sendToComputeTool(savedRequest)
+
+            savedRequest.recommendationText = computed?.recommendationText;
 
             return savedRequest
         } catch (ex: Exception) {
@@ -81,9 +81,9 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
             if (objects != null) {
 
-                val computedData= objects[0] as ArrayList<Objects>
-                val usercomputedData = objects[1]  as ArrayList<Objects>
-                val recommendationText = objects[2]  as ArrayList<Objects>
+                val computedData = objects[0] as ArrayList<Objects>
+                val usercomputedData = objects[1] as ArrayList<Objects>
+                val recommendationText = objects[2] as ArrayList<Objects>
 
                 val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<RecommendationResponse>::class.java)
 

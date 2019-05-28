@@ -24,25 +24,25 @@ class RecommendationRequest : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
     @GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
-    var id: Long ?=null
+    var id: Long? = null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLat: Float? =null
+    var mapLat: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLong:Float?=null
+    var mapLong: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitWeight: Float? =null
+    var cassavaUnitWeight: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitPrice: Float?=null
+    var cassavaUnitPrice: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var maxInvestment: Float? =null
+    var maxInvestment: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var fieldArea: Float? =null
+    var fieldArea: Float? = null
 
     var plantingDate: LocalDateTime? = null
 
@@ -76,6 +76,9 @@ class RecommendationRequest : Serializable {
     @ApiModelProperty(example = "user@mail.com", required = true)
     var userEmail: String? = null
 
+    @Column(name = "recommendation_text")
+    var recommendationText: String? = null
+
     @Column(name = "processed")
     @ApiModelProperty(example = "false", required = true)
     var isProcessed: Boolean = false
@@ -88,6 +91,7 @@ class RecommendationRequest : Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at", insertable = false)
     var updatedAt: LocalDateTime? = null
+
 
     @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendationRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
