@@ -25,6 +25,7 @@ chmod 555 docker-entrypoint.sh && sh -c 'touch /app.jar'
 
 COPY build/libs/akilimo*.jar /app.jar
 COPY src/main/resources/logback-spring.xml /src/main/resources/logback-spring.xml
+
 COPY src/main/resources/keystore.jks keystore.jks
 
 EXPOSE $SERVER_PORT
