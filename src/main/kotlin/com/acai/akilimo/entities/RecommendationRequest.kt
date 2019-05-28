@@ -27,22 +27,22 @@ class RecommendationRequest : Serializable {
     var id: Long ?=null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLat: Long? =null
+    var mapLat: Float? =null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLong:Long?=null
+    var mapLong:Float?=null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitWeight: Double? =null
+    var cassavaUnitWeight: Float? =null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitPrice: Double?=null
+    var cassavaUnitPrice: Float?=null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var maxInvestment: Double? =null
+    var maxInvestment: Float? =null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var fieldArea: Double? =null
+    var fieldArea: Float? =null
 
     var plantingDate: LocalDateTime? = null
 

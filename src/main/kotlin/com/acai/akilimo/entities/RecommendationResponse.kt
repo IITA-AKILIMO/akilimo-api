@@ -1,148 +1,129 @@
 package com.acai.akilimo.entities
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import com.fasterxml.jackson.annotation.*
 import lombok.Data
 
 import java.util.HashMap
+import com.fasterxml.jackson.annotation.JsonProperty
 
+
+
+@Suppress("unused")
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder("lat", "lon", "rateUrea", "rateNPK151515", "rateNPK201010", "currentY", "targetY", "WLY", "netRev", "totalCost", "N", "P", "K", "plDate", "areaUnits", "area", "rateUrea_user", "rateNPK151515_user", "rateNPK201010_user", "currentY_user", "targetY_user", "WLY_user", "netRev_user", "totalCost_user", "N_user", "P_user", "K_user")
+@JsonIgnoreProperties(ignoreUnknown = true)
 class RecommendationResponse {
+    @JsonProperty("name")
+    var userName: String? = null
 
-    @JsonProperty("lat")
-    var lat: Double? = null
-        set(lat) {
-            field = this.lat
-        }
-    @JsonProperty("lon")
-    var lon: Double? = null
-        set(lon) {
-            field = this.lon
-        }
-    @JsonProperty("rateUrea")
-    var rateUrea: Double? = null
-        set(rateUrea) {
-            field = this.rateUrea
-        }
-    @JsonProperty("rateNPK151515")
-    var rateNPK151515: Double? = null
-        set(rateNPK151515) {
-            field = this.rateNPK151515
-        }
-    @JsonProperty("rateNPK201010")
-    var rateNPK201010: Double? = null
-        set(rateNPK201010) {
-            field = this.rateNPK201010
-        }
-    @JsonProperty("currentY")
-    var currentY: Double? = null
-        set(currentY) {
-            field = this.currentY
-        }
-    @JsonProperty("targetY")
-    var targetY: Double? = null
-        set(targetY) {
-            field = this.targetY
-        }
-    @JsonProperty("WLY")
-    var wly: Double? = null
-        set(wLY) {
-            field = wly
-        }
-    @JsonProperty("netRev")
-    var netRev: Int? = null
-        set(netRev) {
-            field = this.netRev
-        }
-    @JsonProperty("totalCost")
-    var totalCost: Int? = null
-        set(totalCost) {
-            field = this.totalCost
-        }
-    @JsonProperty("N")
-    var n: Int? = null
-        set(n) {
-            field = this.n
-        }
-    @JsonProperty("P")
-    var p: Int? = null
-        set(p) {
-            field = this.p
-        }
-    @JsonProperty("K")
-    var k: Int? = null
-        set(k) {
-            field = this.k
-        }
-    @JsonProperty("plDate")
-    var plDate: Int? = null
-        set(plDate) {
-            field = this.plDate
-        }
-    @JsonProperty("areaUnits")
-    var areaUnits: String? = null
-        set(areaUnits) {
-            field = this.areaUnits
-        }
-    @JsonProperty("area")
-    var area: Double? = null
-        set(area) {
-            field = this.area
-        }
-    @JsonProperty("rateUrea_user")
-    var rateUreaUser: Double? = null
-        set(rateUreaUser) {
-            field = this.rateUreaUser
-        }
-    @JsonProperty("rateNPK151515_user")
-    var rateNPK151515User: Double? = null
-        set(rateNPK151515User) {
-            field = this.rateNPK151515User
-        }
-    @JsonProperty("rateNPK201010_user")
-    var rateNPK201010User: Double? = null
-        set(rateNPK201010User) {
-            field = this.rateNPK201010User
-        }
-    @JsonProperty("currentY_user")
-    var currentYUser: Double? = null
-        set(currentYUser) {
-            field = this.currentYUser
-        }
-    @JsonProperty("targetY_user")
-    var targetYUser: Double? = null
-        set(targetYUser) {
-            field = this.targetYUser
-        }
-    @JsonProperty("WLY_user")
-    var wlyUser: Double? = null
-        set(wLYUser) {
-            field = wlyUser
-        }
-    @JsonProperty("netRev_user")
-    var netRevUser: Int? = null
+    @JsonProperty("phone")
+    var phone: String? = null
 
-    @JsonProperty("totalCost_user")
-    var totalCostUser: Int? = null
+    @JsonProperty("email")
+    var email: String? = null
 
-    @JsonProperty("N_user")
-    var nUser: Double? = null
+    @JsonProperty("field")
+    var fieldDescription: String? = null
 
-    @JsonProperty("P_user")
-    var pUser: Double? = null
+    @JsonProperty("field_area")
+    var fieldArea: String? = null
 
-    @JsonProperty("K_user")
-    var kUser: Double? = null
+    @JsonProperty("unit_field")
+    var fieldSizeUnit: String? = null
 
-    @JsonProperty("recommendation")
-    var reccomendationText: String? = null
-    @JsonIgnore
-    var additionalProperties: Map<String, Any> = HashMap()
+    @JsonProperty("plant_date")
+    var plantingDate: String? = null
+
+    @JsonProperty("hvst_date")
+    var harvestDate: String? = null
+
+    @JsonProperty("current_yield")
+    var currentYield: String? = null
 
 
+    @JsonProperty("latitude")
+    var mapLat: Float? = null
+
+    @JsonProperty("longitude")
+    var mapLong: Float? = null
+
+    @JsonProperty("currency")
+    var currency: String? = null
+
+    @JsonProperty("fertilizer1")
+    var fertilizerOne: String? = null
+
+    @JsonProperty("cost1")
+    var fertilizerOnecost: Float? = null
+
+    @JsonProperty("unit1")
+    var fertilizerOneUnit: String? = null
+
+    @JsonProperty("kgs1")
+    var fertilizerOneKillo: Float? = null
+
+    @JsonProperty("fertilizer2")
+    var fertilizerTwo: String? = null
+
+    @JsonProperty("cost2")
+    var fertilizerTwoCost: Float? = null
+
+    @JsonProperty("unit2")
+    var fertilizerTwoUnit: String? = null
+
+    @JsonProperty("kgs2")
+    var fertilizerTwoKilo: Float? = null
+
+    @JsonProperty("fertilizer3")
+    var fertilizerThree: String? = null
+
+    @JsonProperty("cost3")
+    var fertilizerThreeCost: Float? = null
+
+    @JsonProperty("unit3")
+    var fertilizerThreeUnit: String? = null
+
+    @JsonProperty("kgs3")
+    var fertilizerThreeKilo: Long? = null
+
+    @JsonProperty("fertilizer4")
+    var fertilizerFour: String? = null
+
+    @JsonProperty("costcassava")
+    var cassavaCost: Float? = null
+
+    @JsonProperty("unitcassava")
+    var cassavaUnit: String? = null
+
+    @JsonProperty("maxinvest")
+    var maximumInvestment: Float? = null
+
+    @JsonProperty("bags1")
+    var bagsOne: Float? = null
+    @JsonProperty("bags2")
+    var bagsTwo: Long? = null
+
+    @JsonProperty("total_cost1")
+    var totalCostOne: Float? = null
+    @JsonProperty("total_cost2")
+    var totalCostTwo: Float? = null
+
+
+    @JsonProperty("sum_total")
+    var sumTotal: Float? = null
+
+    @JsonProperty("bags_total")
+    var bagsTotal: Float? = null
+
+    @JsonProperty("product")
+    var cassavaProduct: String? = null
+
+    @JsonProperty("unit")
+    var weightunit: String? = null
+
+    @JsonProperty("totalSalePrice")
+    var totalSalePrice: Float? = null
+
+    @JsonProperty("revenue")
+    var totalRevenue: Float? = null
 }
