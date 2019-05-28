@@ -14,8 +14,7 @@ COPY docker-entrypoint.sh docker-entrypoint.sh
 
 #RUN apk update && apk add bash && apk add curl && rm -rf /var/cache/apk/*
 
-RUN apt-get update && apt-get install -y \
-curl
+#RUN apt-get update && apt-get install -y curl
 
 RUN addgroup -S $SPRING_BOOT_USER && adduser -S -g $SPRING_BOOT_GROUP $SPRING_BOOT_USER && \
 chmod 555 docker-entrypoint.sh && sh -c 'touch /app.jar'
