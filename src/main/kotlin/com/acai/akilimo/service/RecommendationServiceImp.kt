@@ -71,7 +71,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         //send to plumber
         try {
             val entity = HttpEntity(recommendationRequest, headers)
-            val fertilizerRecommendationUrl = plumberProperties.fertilizerRecommendation!!
+            val fertilizerRecommendationUrl =plumberProperties.baseUrl+ plumberProperties.fertilizerRecommendation!!
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl")
             val response = restTemplate.postForEntity(

@@ -10,6 +10,9 @@ import javax.validation.constraints.NotBlank
 class Plumber {
 
     @NotBlank
+    var baseUrl: String? = null
+
+    @NotBlank
     var fertilizerRecommendation: String? = null
 
     @NotBlank
