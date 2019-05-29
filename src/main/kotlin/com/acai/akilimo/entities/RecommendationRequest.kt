@@ -60,10 +60,10 @@ class RecommendationRequest : Serializable {
     @ApiModelProperty(example = "sammy", required = true)
     var userName: String? = null
 
-    @ApiModelProperty(example = "254", required = true)
+    @ApiModelProperty(example = "254", required = false)
     var userPhoneCode: String? = null
 
-    @ApiModelProperty(example = "713456789", required = true)
+    @ApiModelProperty(example = "713456789", required = false)
     var userPhoneNumber: String? = null
 
     @ApiModelProperty(example = "\"roots\", \"chips\", \"flour\", \"gari\"", required = true)
@@ -73,7 +73,7 @@ class RecommendationRequest : Serializable {
     var fieldDescription: String? = null
 
     @Email
-    @ApiModelProperty(example = "user@mail.com", required = true)
+    @ApiModelProperty(example = "user@mail.com", required = false)
     var userEmail: String? = null
 
     @Column(name = "recommendation_text")
