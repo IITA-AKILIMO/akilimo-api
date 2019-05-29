@@ -91,7 +91,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
                 recommendationResponseDto.recommendationText = objects[2].toString()
             }
         } catch (ex: Exception) {
-            logger.error(ex.message)
+            logger.error("An error occurred "+ex.message)
         }
 
         logger.info("Returning response to requesting client")
