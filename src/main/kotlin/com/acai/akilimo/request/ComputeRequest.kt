@@ -2,6 +2,7 @@ package com.acai.akilimo.request
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.swagger.annotations.ApiModelProperty
 
 import lombok.Data
 
@@ -48,8 +49,11 @@ class ComputeRequest {
     var scheduledHarvestRec: Boolean = false
 
     @JsonProperty("PD")
+    @ApiModelProperty(example = "2019-05-15", required = true)
     var plantingDate: LocalDate? = null
+
     @JsonProperty("HD")
+    @ApiModelProperty(example = "2019-05-15", required = true)
     var harvestDate: LocalDate? = null
 
     @JsonProperty("PD_window")
