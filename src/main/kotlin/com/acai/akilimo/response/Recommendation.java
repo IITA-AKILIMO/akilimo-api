@@ -5,14 +5,13 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "FertilizerRecommendation",
     "InterCropping",
     "PlantingPractices",
-    "SP"
+    "ScheduledPlanting"
 })
 public class Recommendation {
 
@@ -22,7 +21,7 @@ public class Recommendation {
     public List<InterCropping> iC = null;
     @JsonProperty("PlantingPractices")
     public List<PlantingPractices> pP = null;
-    @JsonProperty("SP")
+    @JsonProperty("ScheduledPlanting")
     public List<String> sP = null;
 
     /**
@@ -46,10 +45,4 @@ public class Recommendation {
         this.pP = pP;
         this.sP = sP;
     }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("fR", fR).append("iC", iC).append("pP", pP).append("sP", sP).toString();
-    }
-
 }

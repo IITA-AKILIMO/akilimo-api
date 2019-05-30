@@ -7,6 +7,7 @@ import com.acai.akilimo.repositories.RecommendationRepository
 import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.Plumber
+import com.acai.akilimo.request.ComputeRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -14,15 +15,15 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import org.springframework.http.ResponseEntity
 import java.util.*
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.joda.time.LocalDateTime
+import org.joda.time.Seconds
 import org.modelmapper.ModelMapper
 import kotlin.collections.ArrayList
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json
-import org.h2.value.DataType.readValue
 
 
+@Suppress("UNCHECKED_CAST")
 @Service
 class RecommendationServiceImp @Autowired
 constructor(private val recommendationRepository: RecommendationRepository, private val restTemplate: RestTemplate, configProperties: ConfigProperties) : IRecommendationService {
@@ -47,7 +48,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
             val computed = this.sendToComputeTool(savedRequest)
 
-            savedRequest.recommendationText = computed?.recommendationText;
+            savedRequest.recommendationText = computed?.fertilizerRecText;
 
             return savedRequest
         } catch (ex: Exception) {
@@ -57,11 +58,83 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         return null
     }
 
+
+    fun computeRecommendations(computeRequest: ComputeRequest): RecommendationResponseDto? {
+        val recommendationResponseDto = RecommendationResponseDto()
+
+        val headers = this.setHTTPHeaders()
+
+        logger.info("Payload is $computeRequest")
+        //logger.info("Request has entered here, proceeding " + computeRequest.harvestDate!!)
+
+        val mapper = ObjectMapper()
+        val modelMapper = ModelMapper()
+        //send to plumber
+        val dateTime = LocalDateTime.now()
+        try {
+            val entity = HttpEntity(computeRequest, headers)
+            val fertilizerRecommendationUrl = plumberProperties.baseUrl + plumberProperties.fertilizerRecommendation!!
+
+            logger.info("Going to endpoint $fertilizerRecommendationUrl at: $dateTime")
+
+            val response = restTemplate.postForEntity(fertilizerRecommendationUrl, entity, Array<Any>::class.java)
+
+            val objects = response.body
+
+            if (objects != null) {
+
+                val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
+                val recommendationHashMap = objects[1] as LinkedHashMap<String, ArrayList<Objects>>
+
+                /*val computedData = objects[0] as ArrayList<Objects>
+                    val usercomputedData = objects[1] as ArrayList<Objects>
+                    val fertilizerRecText = objects[2] as ArrayList<Objects>
+                    val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<RecommendationResponse>::class.java)
+                */
+
+                if (computedHashMap.containsKey("FR")) {
+                    //extract the fertilizer recommendations
+                    val recommendation = computedHashMap.get("rec")
+                }
+
+                if (recommendationHashMap.containsKey("FR")) {
+                    val frText = recommendationHashMap.getValue("FR") as ArrayList<String?>
+                    recommendationResponseDto.fertilizerRecText = frText[0]
+                }
+
+                if (recommendationHashMap.containsKey("IC")) {
+                    val icText = recommendationHashMap.getValue("IC") as ArrayList<String?>
+                    recommendationResponseDto.interCroppingRecText = icText[0]
+                }
+
+                if (recommendationHashMap.containsKey("PP")) {
+                    val ppText = recommendationHashMap.getValue("PP") as ArrayList<String?>
+                    recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                }
+
+                if (recommendationHashMap.containsKey("SP")) {
+                    val spText = recommendationHashMap.getValue("SP") as ArrayList<String?>
+                    recommendationResponseDto.scheduledPlantingRec = spText[0]
+                }
+            }
+
+        } catch (ex: Exception) {
+            logger.error("An error occurred " + ex.message)
+        }
+
+        val now = LocalDateTime.now()
+        val secondsLapsed = Seconds.secondsBetween(now, dateTime)
+        logger.info("Returning response to requesting client seconds $secondsLapsed passed between $dateTime and {$now}")
+
+        //perhaps we should send sms now?
+        return recommendationResponseDto
+    }
+
+    @Deprecated("This function is subject to modification")
     private fun sendToComputeTool(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val recommendationResponseDto = RecommendationResponseDto()
 
-        val headers = HttpHeaders()
-        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString())
+        val headers = this.setHTTPHeaders()
 
         logger.info("Payload is $recommendationRequest")
         logger.info("Request has entered here, proceeding " + recommendationRequest.harvestDate!!)
@@ -71,7 +144,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         //send to plumber
         try {
             val entity = HttpEntity(recommendationRequest, headers)
-            val fertilizerRecommendationUrl =plumberProperties.baseUrl+ plumberProperties.fertilizerRecommendation!!
+            val fertilizerRecommendationUrl = plumberProperties.baseUrl + plumberProperties.fertilizerRecommendation!!
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl")
             val response = restTemplate.postForEntity(
@@ -88,14 +161,20 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
                 val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<RecommendationResponse>::class.java)
 
 
-                recommendationResponseDto.recommendationText = objects[2].toString()
+                recommendationResponseDto.fertilizerRecText = objects[2].toString()
             }
         } catch (ex: Exception) {
-            logger.error("An error occurred "+ex.message)
+            logger.error("An error occurred " + ex.message)
         }
 
         logger.info("Returning response to requesting client")
 
         return recommendationResponseDto
+    }
+
+    private fun setHTTPHeaders(): HttpHeaders {
+        val headers = HttpHeaders()
+        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString())
+        return headers
     }
 }

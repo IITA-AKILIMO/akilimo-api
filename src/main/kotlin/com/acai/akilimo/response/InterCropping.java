@@ -4,7 +4,6 @@ package com.acai.akilimo.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -64,11 +63,6 @@ public class InterCropping {
         this.reasonD = reasonD;
         this.urea = urea;
         this.nPK151515 = nPK151515;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("dMP", dMP).append("dNR", dNR).append("dTC", dTC).append("recF", recF).append("recD", recD).append("reasonD", reasonD).append("urea", urea).append("nPK151515", nPK151515).toString();
     }
 
 }

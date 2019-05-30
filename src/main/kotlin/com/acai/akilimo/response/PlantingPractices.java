@@ -4,7 +4,7 @@ package com.acai.akilimo.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.modelmapper.internal.util.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -89,11 +89,6 @@ public class PlantingPractices {
         this.dRP = dRP;
         this.dGR = dGR;
         this.dNR = dNR;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("ploughing", ploughing).append("ridging", ridging).append("methodPloughing", methodPloughing).append("methodRidging", methodRidging).append("rP", rP).append("tC", tC).append("gR", gR).append("nR", nR).append("cP", cP).append("dTC", dTC).append("dRP", dRP).append("dGR", dGR).append("dNR", dNR).toString();
     }
 
 }

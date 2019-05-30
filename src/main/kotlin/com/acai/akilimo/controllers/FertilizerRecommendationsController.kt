@@ -4,6 +4,7 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.entities.RecommendationRequest
 import com.acai.akilimo.mapper.RecommendationRequestDto
 import com.acai.akilimo.mapper.RecommendationResponseDto
+import com.acai.akilimo.request.ComputeRequest
 import com.acai.akilimo.service.RecommendationServiceImp
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
@@ -22,12 +23,12 @@ constructor(private val recommendationServiceImp: RecommendationServiceImp) {
     private val logger = LoggerFactory.getLogger(FertilizerRecommendationsController::class.java)
 
 
-    @GetMapping("/fertilizer/requests")
+    //@GetMapping("/fertilizer/requests")
     fun request(): List<RecommendationRequest> {
         return recommendationServiceImp.listAllRequests()
     }
 
-    @PostMapping("/fertilizer")
+    //@PostMapping("/fertilizer")
     fun request(@RequestBody recommendationRequest: RecommendationRequestDto): ResponseEntity<RecommendationResponseDto> {
         val modelMapper = ModelMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
@@ -41,6 +42,26 @@ constructor(private val recommendationServiceImp: RecommendationServiceImp) {
                 logger.info("Returning a response after logging")
                 recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
 
+                ResponseEntity(recommendationResponseDto, HttpStatus.OK)
+            }
+            else -> ResponseEntity(recommendationResponseDto, HttpStatus.NOT_FOUND)
+        }
+
+    }
+
+    @PostMapping("/fertilizer-test")
+    fun requestTest(@RequestBody computeRequest: ComputeRequest): ResponseEntity<RecommendationResponseDto> {
+        val modelMapper = ModelMapper()
+        var recommendationResponseDto: RecommendationResponseDto? = null
+
+        //val request = modelMapper.map(computeRequest, RecommendationRequest::class.java)
+
+        //val response = recommendationServiceImp.saveRecommendationRequest(request!!)
+        val response = recommendationServiceImp.computeRecommendations(computeRequest)
+
+        return when {
+            response != null -> {
+                recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
                 ResponseEntity(recommendationResponseDto, HttpStatus.OK)
             }
             else -> ResponseEntity(recommendationResponseDto, HttpStatus.NOT_FOUND)

@@ -1,6 +1,7 @@
 package com.acai.akilimo.mapper
 
 import com.acai.akilimo.entities.RecommendationRequest
+import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 import java.time.LocalDateTime
 
@@ -18,6 +19,16 @@ open class RecommendationResponseDto : RecommendationRequestDto() {
     var updatedAt: LocalDateTime? = null
     var createdAt: LocalDateTime? = null
 
-    var recommendationText:String?= null
+    @JsonProperty("FR")
+    var fertilizerRecText:String?= null
+
+    @JsonProperty("IC")
+    var interCroppingRecText:String?= null
+
+    @JsonProperty("PP")
+    var plantingPracticeRecText:String?= null
+
+    @JsonProperty("SP")
+    var scheduledPlantingRec:String?= null
 
 }

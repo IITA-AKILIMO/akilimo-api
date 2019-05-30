@@ -52,20 +52,7 @@ dependencies {
 	implementation ("com.github.rholder.fauxflake:fauxflake-core:1.1.0")
 	implementation("com.github.rozidan:modelmapper-spring-boot-starter:1.0.0")
 
-
-	//implementation("com.itextpdf:itextpdf:5.5.13")
-	//implementation("com.itextpdf.tool:xmlworker:5.5.13")
-
-	//implementation "com.itextpdf:html2pdf:2.1.3"
-	///implementation "com.itextpdf:itext7-core:7.0.2"
-
-	//implementation("net.sf.cssbox:pdf2dom:1.7")
-	//implementation("hu.blackbelt.bundles.poi:org.apache.poi:4.0.1_1")
-
-	//implementation ("com.oliphantllc:jtidy:2.2.12")
-
-	//compile("org.xhtmlrenderer:flying-saucer-pdf:9.1.18")
-	compile("com.github.jhonnymertz:java-wkhtmltopdf-wrapper:1.1.10-RELEASE")
+	implementation("joda-time:joda-time:2.10.1")
 
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
@@ -77,6 +64,7 @@ dependencies {
 	testCompile("org.springframework.boot:spring-boot-starter-test") {
 		//exclude(module = "junit")
 	}
+
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
