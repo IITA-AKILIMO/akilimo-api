@@ -50,10 +50,10 @@ else
     JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.end-point=$INFOBIP_ENDPOINT"
 fi
 
-if [ -z "$INFOBIP_USER" ]; then
-    echo 'No infobip user given'
+if [ -z "$INFOBIP_USER_NAME" ]; then
+    echo 'No infobip user name'
 else
-    JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.user-name=$INFOBIP_USER"
+    JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.user-name=$INFOBIP_USER_NAME"
 fi
 
 if [ -z "$INFOBIP_USER_PASS" ]; then
@@ -63,16 +63,17 @@ else
 fi
 
 
+if [ -z "$INFOBIP_SENDER" ]; then
+    echo 'No infobip sender given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.sender=$INFOBIP_SENDER"
+fi
+
+
 if [ -z "$INFOBIP_AUTH_KEY" ]; then
     echo 'No infobip auth key given'
 else
     JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.auth-key=$INFOBIP_AUTH_KEY"
-fi
-
-if [ -z "$INFOBIP_USER_NAME" ]; then
-    echo 'No infobip user name'
-else
-    JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.user-name=$INFOBIP_USER_NAME"
 fi
 
 # Plivo setup
