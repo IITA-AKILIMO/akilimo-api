@@ -1,12 +1,12 @@
 package com.acai.akilimo.service
 
-import com.acai.akilimo.config.ConfigProperties
+import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.RecommendationRequest
 import com.acai.akilimo.entities.RecommendationResponse
 import com.acai.akilimo.repositories.RecommendationRepository
 import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
-import com.acai.akilimo.properties.Plumber
+import com.acai.akilimo.properties.PlumberProperties
 import com.acai.akilimo.request.ComputeRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,12 +25,13 @@ import kotlin.collections.ArrayList
 
 @Suppress("UNCHECKED_CAST")
 @Service
-class RecommendationServiceImp @Autowired
-constructor(private val recommendationRepository: RecommendationRepository, private val restTemplate: RestTemplate, configProperties: ConfigProperties) : IRecommendationService {
+class RecommendationService
+@Autowired
+constructor(private val recommendationRepository: RecommendationRepository, private val restTemplate: RestTemplate, akilimoConfigProperties: AkilimoConfigProperties) : IRecommendationService {
 
     private val logger = LoggerFactory.getLogger(IRecommendationService::class.java)
 
-    private val plumberProperties: Plumber = configProperties.plumber()
+    private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
 
     override fun listAllRequests(): List<RecommendationRequest> {
         return recommendationRepository.findAll()
@@ -60,7 +61,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
 
     fun computeRecommendations(computeRequest: ComputeRequest): RecommendationResponseDto? {
-        val recommendationResponseDto = RecommendationResponseDto()
+        var recommendationResponseDto: RecommendationResponseDto? = null
 
         val headers = this.setHTTPHeaders()
 
@@ -73,13 +74,16 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         val dateTime = LocalDateTime.now()
         try {
             val entity = HttpEntity(computeRequest, headers)
-            val fertilizerRecommendationUrl = plumberProperties.baseUrl + plumberProperties.fertilizerRecommendation!!
+            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl + plumberPropertiesProperties.fertilizerRecommendation!!
+
+            recommendationResponseDto = modelMapper.map(computeRequest, RecommendationResponseDto::class.java)
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl at: $dateTime")
 
             val response = restTemplate.postForEntity(fertilizerRecommendationUrl, entity, Array<Any>::class.java)
 
             val objects = response.body
+
 
             if (objects != null) {
 
@@ -114,7 +118,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
 
                 if (recommendationHashMap.containsKey("SP")) {
                     val spText = recommendationHashMap.getValue("SP") as ArrayList<String?>
-                    recommendationResponseDto.scheduledPlantingRec = spText[0]
+                    recommendationResponseDto.scheduledPlantingRecText = spText[0]
                 }
             }
 
@@ -144,7 +148,7 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         //send to plumber
         try {
             val entity = HttpEntity(recommendationRequest, headers)
-            val fertilizerRecommendationUrl = plumberProperties.baseUrl + plumberProperties.fertilizerRecommendation!!
+            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl + plumberPropertiesProperties.fertilizerRecommendation!!
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl")
             val response = restTemplate.postForEntity(

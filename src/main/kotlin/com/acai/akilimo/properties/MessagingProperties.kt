@@ -7,23 +7,28 @@ import org.springframework.stereotype.Component
 import javax.validation.constraints.NotBlank
 
 @Data
-class Plumber {
+class MessagingProperties {
 
     @NotBlank
-    var baseUrl: String? = null
+    var endPoint: String? = null
 
     @NotBlank
-    var fertilizerRecommendation: String? = null
+    var authId: String? = null
 
     @NotBlank
-    var plantingPractices: String? = null
+    var authKey: String? = null
 
     @NotBlank
-    var interCropping: String? = null
+    var userName: String? = null
 
     @NotBlank
-    var scheduledPlanting: String? = null
+    var userPass: String? = null
 
     @NotBlank
-    var highStarch: String? = null
+    var sender: String? = null
+
+    var webHookUrl: String? = null
+
+    var testNumbers: List<String>? = null
+
 }

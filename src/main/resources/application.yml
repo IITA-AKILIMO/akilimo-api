@@ -27,3 +27,22 @@ plumber:
   intercropping: v2/dst/fertilizer-recommendation
   scheduled-planting: v2/dst/fertilizer-recommendation
   high-starch: v2/dst/fertilizer-recommendation
+
+messaging:
+  test-numbers:
+  web-hook-url: https://enj4dfsqm8xr.x.pipedream.net
+  plivo:
+    end-point: https://api.plivo.com/v1/Account
+    auth-id:
+    auth-key:
+    sender:
+  infobip:
+    end-point:
+    user-name:
+    user-pass:
+    auth-key:
+    sender:
+  email:
+    sender:
+    pass:
+

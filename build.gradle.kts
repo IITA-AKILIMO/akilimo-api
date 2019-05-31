@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+	//implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -53,6 +53,10 @@ dependencies {
 	implementation("com.github.rozidan:modelmapper-spring-boot-starter:1.0.0")
 
 	implementation("joda-time:joda-time:2.10.1")
+	implementation("com.googlecode.libphonenumber:libphonenumber:8.10.13")
+
+	implementation("com.infobip:infobip-api-java-client:2.1.0")
+	implementation ("com.plivo:plivo-java:4.4.1")
 
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
@@ -61,6 +65,7 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 
+	
 	testCompile("org.springframework.boot:spring-boot-starter-test") {
 		//exclude(module = "junit")
 	}

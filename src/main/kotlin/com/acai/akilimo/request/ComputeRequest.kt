@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 @Data
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
-class ComputeRequest {
+open class ComputeRequest {
     companion object {
         const val DEFAULT_UNAVAILABLE = "NA"
     }
@@ -163,7 +163,7 @@ class ComputeRequest {
     var sendSms: Boolean = false
 
     @JsonProperty("email")
-    var sendEmail: Boolean = false
+    var email: Boolean = false
 
     @JsonProperty("userPhoneCC")
     var mobileCountryCode: String? = null
