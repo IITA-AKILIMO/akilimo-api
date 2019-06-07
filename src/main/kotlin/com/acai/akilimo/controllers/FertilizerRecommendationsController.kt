@@ -55,9 +55,6 @@ constructor(private val recommendationService: RecommendationService, private va
         var recommendationResponseDto: RecommendationResponseDto? = null
 
         //val request = modelMapper.map(computeRequest, RecommendationRequest::class.java)
-
-        computeRequest.fertilizerRec = false
-        computeRequest.scheduledPlantingRec = true
         //val response = recommendationService.saveRecommendationRequest(request!!)
         val response = recommendationService.computeRecommendations(computeRequest)
 

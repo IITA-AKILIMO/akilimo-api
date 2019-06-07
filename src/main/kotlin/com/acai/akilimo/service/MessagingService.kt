@@ -41,7 +41,7 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
     @Throws(RetrofitError::class)
     override fun sendTextMessage(response: RecommendationResponseDto): SMSResponse? {
         val basicAuthConfiguration = BasicAuthConfiguration(infobipSms.userName, infobipSms.userPass)
-        val destinationNumber = convertToInternationalNumber(response)
+        val destinationNumber =response.fullPhoneNumber //convertToInternationalNumber(response)
         val messageText = response.fertilizerRecText
         val webHookUrl = globalParams.webHookUrl
 

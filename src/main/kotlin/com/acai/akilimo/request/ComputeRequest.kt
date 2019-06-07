@@ -327,6 +327,10 @@ open class ComputeRequest {
     @ApiModelProperty(example = "0711898343", required = true)
     var mobileNumber: String? = null
 
+    @JsonProperty("fullPhoneNumber")
+    @ApiModelProperty(example = "254711898343", required = true)
+    var fullPhoneNumber: String? = null
+
     @JsonProperty("userName")
     @ApiModelProperty(example = "Akilimo", required = true)
     var userName: String? = null
