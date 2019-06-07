@@ -73,12 +73,20 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
         //send to plumber
         val dateTime = LocalDateTime.now()
         try {
+
+            val jsonString = mapper.writeValueAsString(computeRequest)
+
+            logger.info("Json: $jsonString")
+
             val entity = HttpEntity(computeRequest, headers)
             val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl + plumberPropertiesProperties.fertilizerRecommendation!!
 
             recommendationResponseDto = modelMapper.map(computeRequest, RecommendationResponseDto::class.java)
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl at: $dateTime")
+
+
+            //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
 
             val response = restTemplate.postForEntity(fertilizerRecommendationUrl, entity, Array<Any>::class.java)
 
