@@ -62,12 +62,15 @@ constructor(private val recommendationService: RecommendationService, private va
             response != null -> {
                 //send sms
                 if (computeRequest.sendSms) {
-                    //val resp = messagingService.sendTextMessage(response)
-                    //logger.info("Sms sending response ${resp.toString()}")
-                    logger.info("Sms sending has been disabled");
+                    if (response.hasResponse) {
+                        val resp = messagingService.sendTextMessage(response)
+                        logger.info("Sms sending response ${resp.toString()}")
+                    } else {
+                        logger.info("There are no responses for sending the sms")
+                    }
                 }
 
-                if(computeRequest.email){
+                if (computeRequest.email) {
                     val resp = messagingService.sendEmailMessage(response)
                     logger.info("email sending response ${resp.toString()}")
                 }

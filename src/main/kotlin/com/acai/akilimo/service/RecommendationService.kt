@@ -112,26 +112,31 @@ constructor(private val recommendationRepository: RecommendationRepository, priv
                 if (recommendationHashMap.containsKey("FR")) {
                     val frText = recommendationHashMap.getValue("FR") as ArrayList<String?>
                     recommendationResponseDto.fertilizerRecText = frText[0]
+                    recommendationResponseDto.hasResponse = true;
                 }
 
                 if (recommendationHashMap.containsKey("IC")) {
                     val icText = recommendationHashMap.getValue("IC") as ArrayList<String?>
                     recommendationResponseDto.interCroppingRecText = icText[0]
+                    recommendationResponseDto.hasResponse = true;
                 }
 
                 if (recommendationHashMap.containsKey("PP")) {
                     val ppText = recommendationHashMap.getValue("PP") as ArrayList<String?>
                     recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                    recommendationResponseDto.hasResponse = true;
                 }
 
                 if (recommendationHashMap.containsKey("SP")) {
                     val spText = recommendationHashMap.getValue("SP") as ArrayList<String?>
                     recommendationResponseDto.scheduledPlantingRecText = spText[0]
+                    recommendationResponseDto.hasResponse = true;
                 }
             }
 
         } catch (ex: Exception) {
             logger.error("An error occurred " + ex.message)
+            recommendationResponseDto?.hasResponse = false
         }
 
         val now = LocalDateTime.now()

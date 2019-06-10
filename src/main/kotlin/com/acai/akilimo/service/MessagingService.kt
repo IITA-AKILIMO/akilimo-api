@@ -19,6 +19,7 @@ import retrofit.RetrofitError
 import infobip.api.model.sms.mt.send.textual.SMSAdvancedTextualRequest
 import infobip.api.client.SendMultipleTextualSmsAdvanced
 import org.slf4j.LoggerFactory
+import kotlin.collections.ArrayList
 
 
 @Service
@@ -41,25 +42,61 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
     @Throws(RetrofitError::class)
     override fun sendTextMessage(response: RecommendationResponseDto): SMSResponse? {
         val basicAuthConfiguration = BasicAuthConfiguration(infobipSms.userName, infobipSms.userPass)
-        val destinationNumber =response.fullPhoneNumber //convertToInternationalNumber(response)
-        val messageText = response.fertilizerRecText
-        val webHookUrl = globalParams.webHookUrl
-
-        val destination = Destination()
-        destination.to = destinationNumber
-
-        val message = Message()
-        message.from = infobipSms.sender
-        message.destinations = Collections.singletonList(destination)
-        message.text = messageText
-        message.notifyUrl = webHookUrl
-
+        val messageList = buildMessagePayload(response)
         val client = SendMultipleTextualSmsAdvanced(basicAuthConfiguration)
 
         val requestBody = SMSAdvancedTextualRequest()
-        requestBody.messages = Collections.singletonList(message)
+        if (messageList.size > 0) {
+            //requestBody.messages = Collections.singletonList(message)
+            requestBody.messages = messageList
 
-        return client.execute(requestBody)
+            return client.execute(requestBody)
+        }
+        return null
+    }
+
+    private fun buildMessagePayload(response: RecommendationResponseDto): ArrayList<Message> {
+        val messageList = arrayListOf<Message>()
+        val webHookUrl = globalParams.webHookUrl
+        val destination = Destination()
+        destination.to = response.fullPhoneNumber
+
+        if (response.fertilizerRecText != null) {
+            val message = Message()
+            message.from = infobipSms.sender
+            message.destinations = Collections.singletonList(destination)
+            message.text = response.fertilizerRecText
+            message.notifyUrl = webHookUrl
+            messageList.add(message)
+        }
+
+        if (response.interCroppingRecText != null) {
+            val message = Message()
+            message.from = infobipSms.sender
+            message.destinations = Collections.singletonList(destination)
+            message.text = response.interCroppingRecText
+            message.notifyUrl = webHookUrl
+            messageList.add(message)
+        }
+
+        if (response.plantingPracticeRecText != null) {
+            val message = Message()
+            message.from = infobipSms.sender
+            message.destinations = Collections.singletonList(destination)
+            message.text = response.plantingPracticeRecText
+            message.notifyUrl = webHookUrl
+            messageList.add(message)
+        }
+
+        if (response.scheduledPlantingRecText != null) {
+            val message = Message()
+            message.from = infobipSms.sender
+            message.destinations = Collections.singletonList(destination)
+            message.text = response.scheduledPlantingRecText
+            message.notifyUrl = webHookUrl
+            messageList.add(message)
+        }
+        return messageList
     }
 
     fun sendTextMessageOld(response: RecommendationResponseDto): SMSResponse? {

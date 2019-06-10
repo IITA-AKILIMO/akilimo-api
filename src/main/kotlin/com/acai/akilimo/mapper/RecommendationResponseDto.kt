@@ -41,4 +41,6 @@ open class RecommendationResponseDto {
     @JsonProperty("SP")
     var scheduledPlantingRecText: String? = null
 
+    var hasResponse: Boolean = false
+
 }
