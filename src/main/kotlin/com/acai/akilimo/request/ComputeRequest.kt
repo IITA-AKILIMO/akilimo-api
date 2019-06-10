@@ -141,7 +141,7 @@ open class ComputeRequest {
     var fertilizerRec: Boolean = false
 
     @JsonProperty("PP")
-    var plantingPRacticesRec: Boolean = false
+    var plantingPracticesRec: Boolean = false
 
     @JsonProperty("SPP")
     var scheduledPlantingRec: Boolean = false
