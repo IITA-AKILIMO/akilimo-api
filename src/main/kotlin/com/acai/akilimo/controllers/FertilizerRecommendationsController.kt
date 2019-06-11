@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpStatus
+import javax.validation.Valid
 
 
 @RequestMapping("/api/v2/recommendations")
@@ -50,7 +51,7 @@ constructor(private val recommendationService: RecommendationService, private va
     }*/
 
     @PostMapping("/fertilizer-test")
-    fun requestTest(@RequestBody computeRequest: ComputeRequest): ResponseEntity<RecommendationResponseDto> {
+    fun requestTest(@Valid @RequestBody computeRequest: ComputeRequest): ResponseEntity<RecommendationResponseDto> {
         val modelMapper = ModelMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
 

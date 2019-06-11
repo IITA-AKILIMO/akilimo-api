@@ -9,9 +9,9 @@ server:
   port: 8098
   #servlet:
   #  context-path: /api/v2/recommendations
-  error:
-    whitelabel:
-      enabled: false
+  #error:
+  #  whitelabel:
+  #    enabled: false
 spring:
   application:
     name: cropmanager
