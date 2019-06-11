@@ -8,10 +8,7 @@ import io.swagger.annotations.ApiModelProperty
 import lombok.Data
 
 import java.time.LocalDate
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
+import javax.validation.constraints.*
 
 @Data
 @JsonPropertyOrder(
@@ -106,22 +103,17 @@ import javax.validation.constraints.NotNull
         "userPhoneCC",
         "userPhoneNr")
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
-open class ComputeRequest(
-        @NotBlank(message= "Country is required")
-        @NotNull(message= "Country is required")
-        @JsonProperty("country")
-        @ApiModelProperty(example = "NG", required = true)
-        var country: String
-) {
+open class ComputeRequest{
     companion object {
+        const val DEFAULT_EMPTY_VALUE = ""
         const val DEFAULT_UNAVAILABLE = "NA"
         const val DEFAULT_BAG_WEIGHT = "50"
     }
 
-    /*@NotNull
+    @NotEmpty(message = "Country is required")
     @JsonProperty("country")
     @ApiModelProperty(example = "NG", required = true)
-    var country: String = null*/
+    var country: String = DEFAULT_EMPTY_VALUE
 
     @JsonProperty("lat")
     @ApiModelProperty(example = "8.725", required = true)
@@ -328,8 +320,6 @@ open class ComputeRequest(
 
     @JsonProperty("userPhoneCC")
     @ApiModelProperty(example = "254", required = true)
-    @Max(4)
-    @Min(3)
     var mobileCountryCode: String? = null
 
     @JsonProperty("userPhoneNr")
