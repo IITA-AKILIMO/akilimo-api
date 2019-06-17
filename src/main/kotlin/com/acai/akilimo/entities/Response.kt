@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @Suppress("unused")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-class RecommendationResponse {
+class Response {
     @JsonProperty("name")
     var userName: String? = null
 

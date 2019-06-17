@@ -19,7 +19,7 @@ import java.util.HashSet
 @Data
 @Table(name = "yield_request")
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
-class RecommendationRequest : Serializable {
+class Recommendation : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
@@ -93,16 +93,16 @@ class RecommendationRequest : Serializable {
     var updatedAt: LocalDateTime? = null
 
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendationRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendation", cascade = [CascadeType.ALL], orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
     @NonNull
     var fertilizers: Set<Fertilizer>? = null
 
-    fun addFertilizers(recommendationRequest: RecommendationRequest): Set<Fertilizer> {
+    fun addFertilizers(recommendation: Recommendation): Set<Fertilizer> {
         val fertilizerSet = HashSet<Fertilizer>()
 
-        recommendationRequest.fertilizers!!.forEach { requestFertilizer ->
-            requestFertilizer.recommendationRequest = recommendationRequest
+        recommendation.fertilizers!!.forEach { requestFertilizer ->
+            requestFertilizer.recommendation = recommendation
             fertilizerSet.add(requestFertilizer)
         }
         return fertilizerSet
