@@ -1,5 +1,6 @@
-FROM openjdk:8-jdk-alpine
+#FROM openjdk:8-jdk-alpine
 #FROM openjdk:8-jdk-slim
+FROM openjdk:11-jre-slim
 VOLUME /tmp
 LABEL maintainer="barsamms@gmail.com"
 
@@ -11,14 +12,21 @@ ENV SPRING_BOOT_GROUP akilimo
 
 COPY docker-entrypoint.sh docker-entrypoint.sh
 
-RUN apk update && apk add bash && apk add curl && rm -rf /var/cache/apk/*
+#RUN apk update && apk add bash && apk add curl && rm -rf /var/cache/apk/*
 
-RUN addgroup -S $SPRING_BOOT_USER && adduser -S -g $SPRING_BOOT_GROUP $SPRING_BOOT_USER && \
+#RUN apt-get update && apt-get install -y bash
+RUN apt-get update && apt-get install -y curl && apt-get install -y iputils-ping
+
+#RUN addgroup -S $SPRING_BOOT_USER && adduser -S -g $SPRING_BOOT_GROUP $SPRING_BOOT_USER && \
+#chmod 555 docker-entrypoint.sh && sh -c 'touch /app.jar'
+
+RUN useradd $SPRING_BOOT_USER && usermod -aG $SPRING_BOOT_GROUP $SPRING_BOOT_USER && \
 chmod 555 docker-entrypoint.sh && sh -c 'touch /app.jar'
 
 COPY build/libs/akilimo*.jar /app.jar
 COPY src/main/resources/logback-spring.xml /src/main/resources/logback-spring.xml
-#COPY src/main/resources/keystore.jks keystore.jks
+
+COPY src/main/resources/keystore.jks keystore.jks
 
 EXPOSE $SERVER_PORT
 ENTRYPOINT ["./docker-entrypoint.sh"]

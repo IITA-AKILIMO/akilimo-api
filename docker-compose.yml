@@ -1,9 +1,9 @@
 version: "3"
 services:
   cropmanager:
-    image: tsobu/spring-cropmanager:latest
-    hostname: spring-cropmanager
-    container_name: spring-cropmanager
+    image: iita/acai-akilimo-api:latest
+    hostname: akilimo
+    container_name: akilimo
     restart: always
     ports:
       - 8098:8098

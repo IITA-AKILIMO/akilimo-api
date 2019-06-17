@@ -12,8 +12,8 @@ import java.io.Serializable
 
 @Data
 @Entity
-@ToString(exclude = ["recommendationRequest"])
-@EqualsAndHashCode(exclude = ["recommendationRequest"])
+@ToString(exclude = ["recommendation"])
+@EqualsAndHashCode(exclude = ["recommendation"])
 @Table(name = "request_fertilizer")
 class Fertilizer : Serializable {
 
@@ -36,15 +36,15 @@ class Fertilizer : Serializable {
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
     @ApiModelProperty(example = "10.50", required = true)
-    var price: Double = 0.0
+    var price: Float = 0.0F
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
     @ApiModelProperty(example = "50", required = true)
-    var weight: Double?= 0.0
+    var weight: Float?= 0.0F
 
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     @JsonIgnore
-    var recommendationRequest: RecommendationRequest? = null
+    var recommendation: Recommendation? = null
 }

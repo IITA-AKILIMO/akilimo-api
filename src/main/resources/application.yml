@@ -9,9 +9,9 @@ server:
   port: 8098
   #servlet:
   #  context-path: /api/v2/recommendations
-  error:
-    whitelabel:
-      enabled: false
+  #error:
+  #  whitelabel:
+  #    enabled: false
 spring:
   application:
     name: cropmanager
@@ -21,4 +21,28 @@ spring:
     change-log: "classpath:liquibase/master.xml"
 
 plumber:
-  endpoint: http://192.168.100.4:8000/api/v1
+  base-url: http://142.93.160.27:8000/api/ #http://localhost:8000/api/
+  fertilizer-recommendation: v2/dst/fertilizer-recommendation
+  planting-practices: v2/dst/fertilizer-recommendation
+  intercropping: v2/dst/fertilizer-recommendation
+  scheduled-planting: v2/dst/fertilizer-recommendation
+  high-starch: v2/dst/fertilizer-recommendation
+
+messaging:
+  test-numbers:
+  web-hook-url: https://enj4dfsqm8xr.x.pipedream.net
+  plivo:
+    end-point: https://api.plivo.com/v1/Account
+    auth-id:
+    auth-key:
+    sender:
+  infobip:
+    end-point:
+    user-name:
+    user-pass:
+    auth-key:
+    sender:
+  email:
+    sender:
+    pass:
+

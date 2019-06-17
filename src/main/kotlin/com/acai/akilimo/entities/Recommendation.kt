@@ -19,30 +19,30 @@ import java.util.HashSet
 @Data
 @Table(name = "yield_request")
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
-class RecommendationRequest : Serializable {
+class Recommendation : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
     @GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
-    var id: Long ?=null
+    var id: Long? = null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLat: Long? =null
+    var mapLat: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLong:Long?=null
+    var mapLong: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitWeight: Double? =null
+    var cassavaUnitWeight: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitPrice: Double?=null
+    var cassavaUnitPrice: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var maxInvestment: Double? =null
+    var maxInvestment: Float? = null
 
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var fieldArea: Double? =null
+    var fieldArea: Float? = null
 
     var plantingDate: LocalDateTime? = null
 
@@ -60,10 +60,10 @@ class RecommendationRequest : Serializable {
     @ApiModelProperty(example = "sammy", required = true)
     var userName: String? = null
 
-    @ApiModelProperty(example = "254", required = true)
+    @ApiModelProperty(example = "254", required = false)
     var userPhoneCode: String? = null
 
-    @ApiModelProperty(example = "713456789", required = true)
+    @ApiModelProperty(example = "713456789", required = false)
     var userPhoneNumber: String? = null
 
     @ApiModelProperty(example = "\"roots\", \"chips\", \"flour\", \"gari\"", required = true)
@@ -73,8 +73,11 @@ class RecommendationRequest : Serializable {
     var fieldDescription: String? = null
 
     @Email
-    @ApiModelProperty(example = "user@mail.com", required = true)
+    @ApiModelProperty(example = "user@mail.com", required = false)
     var userEmail: String? = null
+
+    @Column(name = "recommendation_text")
+    var recommendationText: String? = null
 
     @Column(name = "processed")
     @ApiModelProperty(example = "false", required = true)
@@ -89,17 +92,17 @@ class RecommendationRequest : Serializable {
     @Column(name = "updated_at", insertable = false)
     var updatedAt: LocalDateTime? = null
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendationRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
+
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendation", cascade = [CascadeType.ALL], orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
     @NonNull
     var fertilizers: Set<Fertilizer>? = null
 
-    @Deprecated("Will need revision when logging to database is needed")
-    fun addFertilizers(recommendationRequest: RecommendationRequest): Set<Fertilizer> {
+    fun addFertilizers(recommendation: Recommendation): Set<Fertilizer> {
         val fertilizerSet = HashSet<Fertilizer>()
 
-        recommendationRequest.fertilizers!!.forEach { requestFertilizer ->
-            //requestFertilizer.recommendationRequest = recommendationRequest
+        recommendation.fertilizers!!.forEach { requestFertilizer ->
+            requestFertilizer.recommendation = recommendation
             fertilizerSet.add(requestFertilizer)
         }
         return fertilizerSet

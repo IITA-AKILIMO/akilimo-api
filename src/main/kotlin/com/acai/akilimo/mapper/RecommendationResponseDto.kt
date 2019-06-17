@@ -1,23 +1,45 @@
 package com.acai.akilimo.mapper
 
-import com.acai.akilimo.entities.RecommendationRequest
+import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
-import java.time.LocalDateTime
 
 @Data
-open class RecommendationResponseDto : RecommendationRequestDto() {
+open class RecommendationResponseDto {
 
-    /*var areaUnits: String? = null
 
-    var area: Double? = null
+    var country: String? = null
 
-    var plantingDate: String? = null
+    @JsonProperty("userPhoneCC")
+    var mobileCountryCode: String? = null
 
-    var harvestDate: String? = null*/
+    @JsonProperty("userPhoneNr")
+    var mobileNumber: String? = null
 
-    var updatedAt: LocalDateTime? = null
-    var createdAt: LocalDateTime? = null
+    @JsonProperty("fullPhoneNumber")
+    var fullPhoneNumber: String? = null
 
-    var reccomendationText:String?= null
+    @JsonProperty("userName")
+    var userName: String? = null
+
+    @JsonProperty("userEmail")
+    var userEmail: String? = null
+
+    @JsonProperty("FR")
+    var fertilizerRecText: String? = null
+
+    @JsonProperty("IC")
+    var interCroppingRecText: String? = null
+
+    @JsonProperty("PP")
+    var plantingPracticeRecText: String? = null
+
+    @JsonProperty("SP")
+    var scheduledPlantingRecText: String? = null
+
+    var hasResponse: Boolean = false
+
+
+    //var updatedAt: LocalDateTime? = null
+    //var createdAt: LocalDateTime? = null
 
 }

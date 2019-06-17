@@ -1,11 +1,12 @@
 package com.acai.akilimo.interfaces
 
 
-import com.acai.akilimo.entities.RecommendationRequest
+import com.acai.akilimo.entities.Recommendation
 
 interface IRecommendationService {
+    fun listAllRequests(): List<Recommendation>
 
-    fun saveRecommendationRequest(recommendationRequest: RecommendationRequest): RecommendationRequest?
+    fun saveRecommendationRequest(recommendation: Recommendation): Recommendation?
 
-    fun findAll(): List<RecommendationRequest>
+    //fun sendToComputeTool(recommendation: Recommendation): RecommendationResponseDto?
 }
