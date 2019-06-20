@@ -27,7 +27,7 @@ fi
 if [ -z "$PLUMBER_ENDPOINT" ]; then
     echo 'No plumber endpoint given'
 else
-    JAVA_OPTS="$JAVA_OPTS -Dplumber.endpoint=$PLUMBER_ENDPOINT"
+    JAVA_OPTS="$JAVA_OPTS -Dplumber.base-url=$PLUMBER_ENDPOINT"
 fi
 
 #global messaging parameters

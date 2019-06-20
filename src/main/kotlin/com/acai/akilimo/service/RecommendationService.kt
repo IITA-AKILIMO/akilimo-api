@@ -30,9 +30,11 @@ import java.util.LinkedHashMap
 @Service
 class RecommendationService
 @Autowired
-constructor(private val recommendationRepository: RecommendationRepository, private val restTemplate: RestTemplate, akilimoConfigProperties: AkilimoConfigProperties) : IRecommendationService {
+constructor(private val recommendationRepository: RecommendationRepository,
+            private val restTemplate: RestTemplate,
+            akilimoConfigProperties: AkilimoConfigProperties) : IRecommendationService {
 
-    private val logger = LoggerFactory.getLogger(IRecommendationService::class.java)
+    private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
     private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
 
