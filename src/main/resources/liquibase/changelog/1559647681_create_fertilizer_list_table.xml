@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="1559647681" author="masgeek" dbms="h2,oracle,mysql,mariadb">
+
+        <createTable tableName="available_fertilizer">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+
+            <column name="fertilizer_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="active" type="boolean" defaultValueBoolean="true"/>
+
+            <column name="n" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="p" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="k" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bag_weight" type="int" defaultValue="50">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost_per_bag" type="varchar(5)" defaultValue="NA">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+
+        </createTable>
+
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+
+</databaseChangeLog>
