@@ -10,4 +10,7 @@
     <include file="/liquibase/changelog/1559025752_add_constraint_to_fertilizer_table.xml"/>
     <include file="/liquibase/changelog/1559025794_add_recommendation_text_column_to_request.xml"/>
 
+    <include file="/liquibase/changelog/1562134797_create_fertilizer_price_table.xml"/>
+    <include file="/liquibase/changelog/1562135660_load_default_fertilizer_prices.xml"/>
+
 </databaseChangeLog>
