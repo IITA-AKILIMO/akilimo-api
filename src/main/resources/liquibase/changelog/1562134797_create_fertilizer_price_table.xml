@@ -8,26 +8,24 @@
     <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
     <property name="autoIncrement" value="false" dbms="oracle"/>
 
-    <changeSet id="1557906363" author="masgeek" dbms="h2,oracle,mysql,mariadb">
+    <changeSet id="1562134797" author="masgeek" dbms="h2,oracle,mysql,mariadb">
 
-        <createTable tableName="request_fertilizer">
-            <column name="fertilizer_id" type="bigint" autoIncrement="${autoIncrement}">
+        <createTable tableName="fertilizer_prices">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="request_id" type="bigint"/>
-            <column name="fertilizer_type" type="varchar(100)">
+            <column name="min_usd" type="decimal(10,2)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="available" type="boolean" defaultValueBoolean="false"/>
+            <column name="max_usd" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
 
-            <column name="price" type="decimal(10,2)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="weight" type="decimal(10,2)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="price_active" type="boolean" defaultValueBoolean="false"/>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
 
         </createTable>
 

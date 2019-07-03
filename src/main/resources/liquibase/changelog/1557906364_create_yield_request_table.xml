@@ -64,7 +64,7 @@
             <column name="created_at" type="datetime"/>
             <column name="updated_at" type="datetime"/>
         </createTable>
-        <modifySql dbms="mysql">
+        <modifySql dbms="mysql,mariadb">
             <append value=" engine innodb"/>
         </modifySql>
     </changeSet>
