@@ -31,7 +31,7 @@
 
         </createTable>
 
-        <modifySql dbms="mysql">
+        <modifySql dbms="mysql,mariadb">
             <append value=" engine innodb"/>
         </modifySql>
     </changeSet>

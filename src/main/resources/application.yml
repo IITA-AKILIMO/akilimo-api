@@ -20,6 +20,11 @@ spring:
   liquibase:
     change-log: "classpath:liquibase/master.xml"
 
+akilimo:
+  currency:
+    ngn-usd-rate: 360
+    tzs-usd-rate: 2250
+    kes-usd-rate: 103
 plumber:
   base-url: http://142.93.160.27:8000/api/ #http://localhost:8000/api/
   fertilizer-recommendation: v2/dst/fertilizer-recommendation

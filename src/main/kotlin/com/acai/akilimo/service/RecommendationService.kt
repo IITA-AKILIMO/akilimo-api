@@ -77,7 +77,8 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
     fun computeRecommendations(computeRequest: ComputeRequest, fertilizerList: LinkedHashMap<String, FertilizerList>): RecommendationResponseDto? {
         var recommendationResponseDto: RecommendationResponseDto? = null
-
+        val mapper = ObjectMapper()
+        val modelMapper = ModelMapper()
         // val requestPayload = computeRequest;
         //prepare the fertillizers
         val requestPayload = this.prepareFertilizerPayload(computeRequest, fertilizerList)
@@ -85,22 +86,18 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
         val headers = this.setHTTPHeaders()
 
-        logger.info("Payload is $requestPayload")
-        //logger.info("Request has entered here, proceeding " + computeRequest.harvestDate!!)
+        logger.info("Plumber payload is")
+        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestPayload))
 
-        val mapper = ObjectMapper()
-        val modelMapper = ModelMapper()
+
         //send to plumber
         val dateTime = LocalDateTime.now()
         try {
-            val jsonString = mapper.writeValueAsString(requestPayload)
 
-            logger.info("Plumber payload: $jsonString")
-
-            val entity = HttpEntity(computeRequest, headers)
+            val entity = HttpEntity(requestPayload, headers)
             val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl + plumberPropertiesProperties.fertilizerRecommendation!!
 
-            recommendationResponseDto = modelMapper.map(computeRequest, RecommendationResponseDto::class.java)
+            recommendationResponseDto = modelMapper.map(requestPayload, RecommendationResponseDto::class.java)
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl at: $dateTime")
 
@@ -115,6 +112,7 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
                 if (objects[0] is LinkedHashMap<*, *>) {
                     val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
+
                     /*val computedData = objects[0] as ArrayList<Objects>
                         val usercomputedData = objects[1] as ArrayList<Objects>
                         val fertilizerRecText = objects[2] as ArrayList<Objects>

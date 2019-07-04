@@ -5,6 +5,7 @@ import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.request.RecommendationRequest
 import com.acai.akilimo.service.MessagingService
 import com.acai.akilimo.service.RecommendationService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,17 +20,20 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v2/recommendations")
 @RestController
-class FertilizerRecommendationsController
+class RecommendationsController
 @Autowired
 constructor(private val recommendationService: RecommendationService, private val messagingService: MessagingService) {
 
-    private val logger = LoggerFactory.getLogger(FertilizerRecommendationsController::class.java)
+    private val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
 
-    @PostMapping("/fertilizer-test")
-    fun requestTest(@Valid @RequestBody recommendationRequest: RecommendationRequest): ResponseEntity<RecommendationResponseDto> {
+    @PostMapping
+    fun computeRecommendations(@Valid @RequestBody recommendationRequest: RecommendationRequest): ResponseEntity<RecommendationResponseDto> {
         val modelMapper = ModelMapper()
+        val mapper = ObjectMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
 
+        logger.info("Request from mobile application is");
+        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
         //val response = recommendationService.saveRecommendationRequest(request!!)
         val fertilizerList = recommendationService.prepareFertilizerList(recommendationRequest.fertilizerList)
         val response = recommendationService.computeRecommendations(recommendationRequest.computeRequest, fertilizerList)
