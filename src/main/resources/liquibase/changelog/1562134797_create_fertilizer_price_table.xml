@@ -23,7 +23,18 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="price_per_bag" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="price_active" type="boolean" defaultValueBoolean="false"/>
+
+            <column name="sort_order" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="desc" type="varchar(100)"/>
+
             <column name="created_at" type="datetime"/>
             <column name="updated_at" type="datetime"/>
 

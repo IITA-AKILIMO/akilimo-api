@@ -7,15 +7,17 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import javax.validation.Valid
 
 
 @RequestMapping("/api/v2/fertilizer-prices")
 @RestController
-class FertilizerPricesController
-constructor(private val fertilizerPriceService: FertilizerPriceService) {
+class FertilizerPricesController(private val fertilizerPriceService: FertilizerPriceService) : BaseController() {
 
-    private val logger = LoggerFactory.getLogger(FertilizerPricesController::class.java)
+    companion object {
+        val logger = LoggerFactory.getLogger(FertilizerPricesController::class.java)
+    }
 
     @GetMapping
     fun listPrices(@RequestHeader("country-code") countryCode: String): ResponseEntity<List<FertilizerPriceDto>> {
@@ -46,6 +48,7 @@ constructor(private val fertilizerPriceService: FertilizerPriceService) {
     @DeleteMapping("/{id}/delete")
     fun deleteFertilizerPrice(@PathVariable id: Long): ResponseEntity<Boolean> {
 
+        logger.info("The id being passed here is by the name $id")
         val recordDeleted = fertilizerPriceService.deleteFertilizerPrice(id)
 
         return when {

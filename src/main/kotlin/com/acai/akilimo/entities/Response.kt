@@ -60,7 +60,7 @@ class Response {
     var fertilizerOneUnit: String? = null
 
     @JsonProperty("kgs1")
-    var fertilizerOneKillo: Float? = null
+    var fertilizerOneKilo: Float? = null
 
     @JsonProperty("fertilizer2")
     var fertilizerTwo: String? = null

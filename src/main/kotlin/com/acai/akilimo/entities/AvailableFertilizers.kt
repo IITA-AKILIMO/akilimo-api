@@ -1,9 +1,6 @@
 package com.acai.akilimo.entities
 
 import io.swagger.annotations.ApiModelProperty
-import lombok.Data
-import lombok.EqualsAndHashCode
-import lombok.ToString
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.UpdateTimestamp
@@ -20,29 +17,39 @@ class AvailableFertilizers : Serializable {
     @GenericGenerator(name = "native", strategy = "native")
     var id: Long? = null
 
-    @ApiModelProperty(example = "NPK151060", required = true)
+    @Column(name = "name")
+    @ApiModelProperty(example = "NPK151010", required = true)
     var fertilizerName: String? = null
 
-    @Column(name = "N")
+    @Column(name = "n")
     @ApiModelProperty(example = "10", required = true)
     var nContent: Int? = null
 
-    @Column(name = "P")
+    @Column(name = "p")
     @ApiModelProperty(example = "10", required = true)
     var pContent: Int? = null
 
-    @Column(name = "K")
+    @Column(name = "k")
     @ApiModelProperty(example = "5", required = true)
     var kContent: Int? = null
 
+    @Column(name = "weight")
     @ApiModelProperty(example = "50", required = true)
     var bagWeight: Int = 50
 
+    @Column(name = "price")
     var costPerBag: String? = "50"
 
-    @Column(name = "active")
+    @Column(name = "available")
     @ApiModelProperty(example = "false", required = true)
-    var isActive: Boolean = false
+    var isAvailable: Boolean = false
+
+    @Column(name = "custom")
+    @ApiModelProperty(example = "false", required = true)
+    var isCustom: Boolean = false
+
+    @Column(name = "country")
+    var countryCode: String? = "50"
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)

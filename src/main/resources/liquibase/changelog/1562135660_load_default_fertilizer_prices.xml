@@ -9,6 +9,7 @@
 
             <column name="min_usd" header="min_usd" type="numeric"/>
             <column name="max_usd" header="max_usd" type="numeric"/>
+            <column name="price_per_bag" header="price_per_bag" type="numeric"/>
             <column name="price_active" header="price_active" type="boolean"/>
             <column name="created_at" header="created_at" type="date"/>
             <column name="updated_at" header="created_at" type="date"/>

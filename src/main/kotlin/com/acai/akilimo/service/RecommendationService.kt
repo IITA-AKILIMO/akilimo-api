@@ -305,6 +305,9 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
         //clear the fertilizer list
 
+        //hard code coordinates
+        requestPayload.mapLat = 8.725
+        requestPayload.mapLong = 4.025
         return requestPayload
     }
 }

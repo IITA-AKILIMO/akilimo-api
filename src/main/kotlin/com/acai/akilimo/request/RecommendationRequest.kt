@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 
 @Data
-
 open class RecommendationRequest(
         @JsonProperty("computeValues")
         var computeRequest: ComputeRequest,

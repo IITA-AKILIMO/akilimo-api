@@ -13,11 +13,12 @@ import javax.persistence.*
 class FertilizerPrices {
 
     @Id
+    @Column(name = "id")
     //@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
     //@GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    var id: Long? = null
+    var priceId: Long? = null
 
     @Column(name = "min_usd", columnDefinition = "decimal", precision = 10, scale = 2)
     var minUsd: Double? = null
@@ -25,8 +26,18 @@ class FertilizerPrices {
     @Column(name = "max_usd", columnDefinition = "decimal", precision = 10, scale = 2)
     var maxUsd: Double? = null
 
+    @Column(name = "price_per_bag", columnDefinition = "decimal", precision = 10, scale = 2)
+    var pricePerBag: Double? = null
+
     @Column(name = "price_active")
     var active: Boolean = false
+
+
+    @Column(name = "sort_order")
+    var sortOrder: Int = 0
+
+    @Column(name = "desc")
+    var description: String? = null
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)

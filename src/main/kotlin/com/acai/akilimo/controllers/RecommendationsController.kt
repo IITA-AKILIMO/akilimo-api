@@ -20,11 +20,11 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v2/recommendations")
 @RestController
-class RecommendationsController
-@Autowired
-constructor(private val recommendationService: RecommendationService, private val messagingService: MessagingService) {
+class RecommendationsController(private val recommendationService: RecommendationService, private val messagingService: MessagingService) : BaseController() {
 
-    private val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
+    companion object {
+        val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
+    }
 
     @PostMapping
     fun computeRecommendations(@Valid @RequestBody recommendationRequest: RecommendationRequest): ResponseEntity<RecommendationResponseDto> {

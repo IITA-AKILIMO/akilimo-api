@@ -36,7 +36,8 @@ constructor(
     private val modelMapper = ModelMapper()
 
     override fun fertilizers(countryCode: String): List<FertilizerPriceDto> {
-        val fertilizerList = fertilizerPriceRepository.findByActiveIsTrue()
+//        val fertilizerList = fertilizerPriceRepository.findByActiveIsTrueOrderBySortOrderDesc()
+        val fertilizerList = fertilizerPriceRepository.findByActiveIsTrueOrderBySortOrderAsc()
         val fertilizerPriceDtoList = ArrayList<FertilizerPriceDto>()
 
         var toCurrency = "USD"
@@ -60,7 +61,12 @@ constructor(
                     minUsd = fertilizerPrice.minUsd!!,
                     maxUsd = fertilizerPrice.maxUsd!!,
                     currencyRate = currencyRate,
-                    toCurrency = toCurrency)
+                    toCurrency = toCurrency,
+                    nearestValue = 1000.0)
+
+            val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
+            fertilizerPriceDto.pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
+            fertilizerPriceDto.country = countryCode.toUpperCase()
 
             fertilizerPriceDtoList.add(fertilizerPriceDto)
         }
@@ -80,7 +86,8 @@ constructor(
                 minUsd = saved.minUsd!!,
                 maxUsd = saved.maxUsd!!,
                 currencyRate = 1.00,
-                toCurrency = "USD")
+                toCurrency = "USD",
+                nearestValue = 1000.0)
 
         return resp
     }
@@ -105,14 +112,15 @@ constructor(
     @Transactional
     override fun deleteFertilizerPrice(id: Long): Boolean {
 
-        val entity = fertilizerPriceRepository.findById(id)
+        val entity = fertilizerPriceRepository.findByPriceId(id)
 
-        if (entity.isPresent) {
-            return false
+        return when {
+            entity != null -> {
+                fertilizerPriceRepository.deleteById(id)
+                true
+            }
+            else -> false
         }
-
-        fertilizerPriceRepository.deleteById(id)
-        return true
 
     }
 

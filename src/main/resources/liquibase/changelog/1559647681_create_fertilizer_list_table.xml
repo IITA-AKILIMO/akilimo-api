@@ -16,11 +16,13 @@
             </column>
 
 
-            <column name="fertilizer_name" type="varchar(100)">
-                <constraints nullable="false"/>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
             </column>
 
-            <column name="active" type="boolean" defaultValueBoolean="true"/>
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
 
             <column name="n" type="int">
                 <constraints nullable="false"/>
@@ -34,12 +36,19 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="bag_weight" type="int" defaultValue="50">
+            <column name="weight" type="int" defaultValue="50">
                 <constraints nullable="false"/>
             </column>
-            <column name="cost_per_bag" type="varchar(5)" defaultValue="NA">
+            <column name="price" type="varchar(5)" defaultValue="NA">
                 <constraints nullable="false"/>
             </column>
+
+            <column name="country" type="varchar(5)" defaultValue="NA">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="available" type="boolean" defaultValueBoolean="true"/>
+            <column name="custom" type="boolean" defaultValueBoolean="true"/>
 
             <column name="created_at" type="datetime"/>
             <column name="updated_at" type="datetime"/>
