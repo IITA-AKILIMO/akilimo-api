@@ -95,16 +95,32 @@ constructor(private val recommendationRepository: RecommendationRepository,
         try {
 
             val entity = HttpEntity(requestPayload, headers)
-            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl + plumberPropertiesProperties.fertilizerRecommendation!!
-
+            val country  = computeRequest.country//this indicates the responses has a message that needs to be processed
+            //check if it is an array
+            //extract the fertilizer recommendations
+            /*val computedData = objects[0] as ArrayList<Objects>
+                        val usercomputedData = objects[1] as ArrayList<Objects>
+                        val fertilizerRecText = objects[2] as ArrayList<Objects>
+                        val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
+                    */
+            var recommendationUrl =  "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.fertilizerRecommendation!!}"
+            when (country) {
+                "NG" ->
+                     recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.fertilizerRecommendation!!}/ng"
+                "TZ" ->
+                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.fertilizerRecommendation!!}/tz"
+            }
             recommendationResponseDto = modelMapper.map(requestPayload, RecommendationResponseDto::class.java)
 
-            logger.info("Going to endpoint $fertilizerRecommendationUrl at: $dateTime")
+            logger.info("Going to endpoint $recommendationUrl at: $dateTime")
+
+
+                    //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
 
 
             //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
 
-            val response = restTemplate.postForEntity(fertilizerRecommendationUrl, entity, Array<Any>::class.java)
+            val response = restTemplate.postForEntity(recommendationUrl, entity, Array<Any>::class.java)
 
             val objects = response.body
 
