@@ -21,13 +21,44 @@ fi
 if [ -z "$VERIFY_CERT" ]; then
     echo 'Certificate will be verified'
 else
-    JAVA_OPTS="$JAVA_OPTS -Dcom.sun.net.ssl.checkRevocation=false=$VERIFY_CERT"
+    JAVA_OPTS="$JAVA_OPTS -Dcom.sun.net.ssl.checkRevocation=$VERIFY_CERT"
+fi
+#currency rates
+if [ -z "$NGN_USD_RATE" ]; then
+    echo 'No Nigerian exchange rate given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dakilimo.currency.ngn-usd-rate=$NGN_USD_RATE"
 fi
 
+if [ -z "$TZS_USD_RATE" ]; then
+    echo 'No Tanzanian exchange rate given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dakilimo.currency.tzs-usd-rate=$TZS_USD_RATE"
+fi
+
+if [ -z "$KES_USD_RATE" ]; then
+    echo 'No Kenyan exchange rate given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dakilimo.currency.kes-usd-rate=$KES_USD_RATE"
+fi
+
+# plumber resources
 if [ -z "$PLUMBER_ENDPOINT" ]; then
     echo 'No plumber endpoint given'
 else
     JAVA_OPTS="$JAVA_OPTS -Dplumber.base-url=$PLUMBER_ENDPOINT"
+fi
+
+if [ -z "$TZ_ENDPOINT" ]; then
+    echo 'No tanzanian endpoint given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-tz=$TZ_ENDPOINT"
+fi
+
+if [ -z "$NG_ENDPOINT" ]; then
+    echo 'No nigerian endpoint given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-ng=$NG_ENDPOINT"
 fi
 
 #global messaging parameters

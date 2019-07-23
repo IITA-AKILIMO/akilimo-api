@@ -14,7 +14,7 @@ server:
   #    enabled: false
 spring:
   application:
-    name: cropmanager
+    name: akilimo
   profiles:
     active: dev
   liquibase:
