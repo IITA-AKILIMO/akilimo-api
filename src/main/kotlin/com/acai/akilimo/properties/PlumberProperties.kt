@@ -13,16 +13,8 @@ class PlumberProperties {
     var baseUrl: String? = null
 
     @NotBlank
-    var fertilizerRecommendation: String? = null
+    var recommendationNg: String? = null
 
     @NotBlank
-    var plantingPractices: String? = null
-    @NotBlank
-    var interCropping: String? = null
-
-    @NotBlank
-    var scheduledPlanting: String? = null
-
-    @NotBlank
-    var highStarch: String? = null
+    var recommendationTz: String? = null
 }

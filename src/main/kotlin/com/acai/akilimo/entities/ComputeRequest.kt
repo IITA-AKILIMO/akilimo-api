@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import io.swagger.annotations.ApiModelProperty
-
 import lombok.Data
-
-import javax.validation.constraints.*
+import javax.validation.constraints.NotEmpty
 
 @Data
 @JsonPropertyOrder(
@@ -83,6 +81,9 @@ import javax.validation.constraints.*
         "maizePD",
         "maizeUP",
         "maizeUW",
+        "sweetPotatoPD",
+        "sweetPotatoUW",
+        "sweetPotatoUP",
         "maxInv",
         "method_harrowing",
         "method_ploughing",
@@ -308,6 +309,19 @@ open class ComputeRequest {
     @JsonProperty("maizeUP")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var maizeUnitPrice: String? = null
+
+    @JsonProperty("sweetPotatoPD")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sweetPotatoProduceType: String? = null
+
+    @JsonProperty("sweetPotatoUW")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sweetPotatoUnitWeight: String? = null
+
+    @JsonProperty("sweetPotatoUP")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sweetPotatoUnitPrice: String? = null
+
 
     @JsonProperty("maxInv")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)

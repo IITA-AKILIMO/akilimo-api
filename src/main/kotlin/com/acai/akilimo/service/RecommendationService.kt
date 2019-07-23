@@ -2,14 +2,18 @@ package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.ComputeRequest
+import com.acai.akilimo.entities.FertilizerList
 import com.acai.akilimo.entities.Recommendation
 import com.acai.akilimo.entities.Response
 import com.acai.akilimo.enum.EnumFertilizer
-import com.acai.akilimo.repositories.RecommendationRepository
 import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
-import com.acai.akilimo.entities.FertilizerList
+import com.acai.akilimo.repositories.RecommendationRepository
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.joda.time.LocalDateTime
+import org.joda.time.Seconds
+import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -18,12 +22,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.util.*
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.joda.time.LocalDateTime
-import org.joda.time.Seconds
-import org.modelmapper.ModelMapper
-import kotlin.collections.ArrayList
-import java.util.LinkedHashMap
 
 
 @Suppress("UNCHECKED_CAST")
@@ -42,6 +40,7 @@ constructor(private val recommendationRepository: RecommendationRepository,
         return recommendationRepository.findAll()
     }
 
+    @Deprecated("To be removed")
     override fun saveRecommendationRequest(recommendation: Recommendation): Recommendation? {
         try {
             val fertilizerList = recommendation.addFertilizers(recommendation)
@@ -95,7 +94,7 @@ constructor(private val recommendationRepository: RecommendationRepository,
         try {
 
             val entity = HttpEntity(requestPayload, headers)
-            val country  = computeRequest.country//this indicates the responses has a message that needs to be processed
+            val country = computeRequest.country//this indicates the responses has a message that needs to be processed
             //check if it is an array
             //extract the fertilizer recommendations
             /*val computedData = objects[0] as ArrayList<Objects>
@@ -103,24 +102,25 @@ constructor(private val recommendationRepository: RecommendationRepository,
                         val fertilizerRecText = objects[2] as ArrayList<Objects>
                         val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
                     */
-            var recommendationUrl =  "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.fertilizerRecommendation!!}"
+
+            var recommendationUrl: String? = null
             when (country) {
                 "NG" ->
-                     recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.fertilizerRecommendation!!}/ng"
+                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
                 "TZ" ->
-                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.fertilizerRecommendation!!}/tz"
+                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
             }
             recommendationResponseDto = modelMapper.map(requestPayload, RecommendationResponseDto::class.java)
 
             logger.info("Going to endpoint $recommendationUrl at: $dateTime")
 
 
-                    //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
+            //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
 
 
             //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
 
-            val response = restTemplate.postForEntity(recommendationUrl, entity, Array<Any>::class.java)
+            val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
 
             val objects = response.body
 
@@ -191,7 +191,7 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
         val now = LocalDateTime.now()
         val secondsLapsed = Seconds.secondsBetween(now, dateTime)
-        logger.info("Returning response to requesting client seconds $secondsLapsed passed between $dateTime and {$now}")
+        logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
 
 
         return recommendationResponseDto
@@ -212,7 +212,7 @@ constructor(private val recommendationRepository: RecommendationRepository,
         //send to plumber
         try {
             val entity = HttpEntity(recommendation, headers)
-            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl + plumberPropertiesProperties.fertilizerRecommendation!!
+            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl!!
 
             logger.info("Going to endpoint $fertilizerRecommendationUrl")
             val response = restTemplate.postForEntity(
