@@ -319,11 +319,22 @@ constructor(private val recommendationRepository: RecommendationRepository,
             requestPayload.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
         }
 
+        if (fertilizerList.containsKey(EnumFertilizer.CUSTOM_FERT_ONE.name)) {
+            val customFertilizerOne = fertilizerList[EnumFertilizer.CUSTOM_FERT_ONE.name]!!
+            requestPayload.newFert1name = customFertilizerOne.fertilizerTypeName!!
+            requestPayload.newFert1BagWeight = customFertilizerOne.fertilizerWeight!!
+            requestPayload.newFertCostPerBag = customFertilizerOne.fertilizerCostPerBag!!
+            requestPayload.newFert1NitrogenContent = customFertilizerOne.nitrogenContent
+            requestPayload.newFert1PhosphateContent = customFertilizerOne.phosphateContent
+            requestPayload.newFertPotassiumContent = customFertilizerOne.potassiumContent
+        }
+
         //clear the fertilizer list
 
         //hard code coordinates
-        requestPayload.mapLat = 8.725
-        requestPayload.mapLong = 4.025
+//        requestPayload.mapLat = 8.725
+//        requestPayload.mapLong = 4.025
+
         return requestPayload
     }
 }

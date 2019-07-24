@@ -17,4 +17,13 @@ class FertilizerList {
 
     @JsonProperty("available")
     var available: Boolean? = null
+
+    @JsonProperty("nContent")
+    var nitrogenContent: String? = null
+
+    @JsonProperty("kContent")
+    var potassiumContent: String? = null
+
+    @JsonProperty("pContent")
+    var phosphateContent: String? = null
 }
