@@ -5,7 +5,7 @@ import com.acai.akilimo.entities.ComputeRequest
 import com.acai.akilimo.entities.FertilizerList
 import com.acai.akilimo.entities.Recommendation
 import com.acai.akilimo.entities.Response
-import com.acai.akilimo.enum.EnumFertilizer
+import com.acai.akilimo.enums.EnumFertilizer
 import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
@@ -319,17 +319,23 @@ constructor(private val recommendationRepository: RecommendationRepository,
             requestPayload.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
         }
 
-        if (fertilizerList.containsKey(EnumFertilizer.CUSTOM_FERT_ONE.name)) {
-            val customFertilizerOne = fertilizerList[EnumFertilizer.CUSTOM_FERT_ONE.name]!!
-            requestPayload.newFert1name = customFertilizerOne.fertilizerTypeName!!
-            requestPayload.newFert1BagWeight = customFertilizerOne.fertilizerWeight!!
-            requestPayload.newFertCostPerBag = customFertilizerOne.fertilizerCostPerBag!!
-            requestPayload.newFert1NitrogenContent = customFertilizerOne.nitrogenContent
-            requestPayload.newFert1PhosphateContent = customFertilizerOne.phosphateContent
-            requestPayload.newFertPotassiumContent = customFertilizerOne.potassiumContent
-        }
 
-        //clear the fertilizer list
+        //process custom fertilizers
+        val fertilizerOneNames = EnumFertilizer.CUSTOM_FERT_ONE.fertilizerKey
+
+        fertilizerOneNames.forEach { fertNameKey ->
+
+            if (fertilizerList.containsKey(fertNameKey)) {
+                val customFertilizerOne = fertilizerList[fertNameKey]!!
+                requestPayload.newFert1name = customFertilizerOne.fertilizerTypeName!!
+                requestPayload.newFert1BagWeight = customFertilizerOne.fertilizerWeight!!
+                requestPayload.newFertCostPerBag = customFertilizerOne.fertilizerCostPerBag!!
+                requestPayload.newFert1NitrogenContent = customFertilizerOne.nitrogenContent
+                requestPayload.newFert1PhosphateContent = customFertilizerOne.phosphateContent
+                requestPayload.newFertPotassiumContent = customFertilizerOne.potassiumContent
+            }
+
+        }
 
         //hard code coordinates
 //        requestPayload.mapLat = 8.725
