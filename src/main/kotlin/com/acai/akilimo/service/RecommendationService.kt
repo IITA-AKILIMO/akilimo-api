@@ -5,7 +5,7 @@ import com.acai.akilimo.entities.ComputeRequest
 import com.acai.akilimo.entities.FertilizerList
 import com.acai.akilimo.entities.Recommendation
 import com.acai.akilimo.entities.Response
-import com.acai.akilimo.enums.EnumFertilizer
+import com.acai.akilimo.enum.EnumFertilizer
 import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
@@ -297,6 +297,14 @@ constructor(private val recommendationRepository: RecommendationRepository,
             requestPayload.nafakaCostPerBag = can.fertilizerCostPerBag!!
         }
 
+        if (fertilizerList.containsKey(EnumFertilizer.YARAMILA_UNIK.name)) {
+            val yaramilaUnik = fertilizerList[EnumFertilizer.YARAMILA_UNIK.name]!!
+            requestPayload.yaramilaUnikAvailable = yaramilaUnik.available!!
+            requestPayload.yaramilaUnikBagWeight = yaramilaUnik.fertilizerWeight!!
+            requestPayload.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag!!
+        }
+
+
         if (fertilizerList.containsKey(EnumFertilizer.NPK20_10_10.name)) {
             val can = fertilizerList[EnumFertilizer.NPK20_10_10.name]!!
             requestPayload.npkTwentyAvailable = can.available!!
@@ -336,10 +344,6 @@ constructor(private val recommendationRepository: RecommendationRepository,
             }
 
         }
-
-        //hard code coordinates
-//        requestPayload.mapLat = 8.725
-//        requestPayload.mapLong = 4.025
 
         return requestPayload
     }

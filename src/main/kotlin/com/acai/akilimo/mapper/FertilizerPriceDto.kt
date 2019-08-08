@@ -1,9 +1,7 @@
 package com.acai.akilimo.mapper
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.utils.CurrencyConversion
-import com.fasterxml.jackson.annotation.JsonIgnore
 import lombok.Data
+import java.time.LocalDateTime
 
 @Data
 class FertilizerPriceDto {
@@ -21,5 +19,12 @@ class FertilizerPriceDto {
     var description: String? = null
 
     var priceRange: String? = null
+
     var country: String? = null
+
+    var fertilizerCountry: String? = null
+
+    var createdAt: LocalDateTime? = null
+
+    var updatedAt: LocalDateTime? = null
 }

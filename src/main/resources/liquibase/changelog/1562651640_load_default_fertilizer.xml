@@ -13,6 +13,9 @@
             <column name="name" header="name"/>
             <column name="type" header="type"/>
             <column name="price" header="price"/>
+            <column name="n_content" header="n"/>
+            <column name="p_content" header="p"/>
+            <column name="k_content" header="k"/>
             <column name="country" header="country"/>
             <column name="weight" header="weight" type="numeric"/>
             <column name="available" header="available" type="boolean"/>

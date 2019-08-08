@@ -24,15 +24,15 @@
                 <constraints nullable="false" unique="true"/>
             </column>
 
-            <column name="n" type="int">
+            <column name="n_content" type="int">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="p" type="int">
+            <column name="p_content" type="int">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="k" type="int">
+            <column name="k_content" type="int">
                 <constraints nullable="false"/>
             </column>
 

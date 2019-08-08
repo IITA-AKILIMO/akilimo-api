@@ -7,7 +7,7 @@
     <include file="/liquibase/changelog/1557906363_add_hibernate_sequence.xml"/>
     <include file="/liquibase/changelog/1557906364_create_yield_request_table.xml"/>
     <include file="/liquibase/changelog/1557906365_create_fertilizer_table.xml"/>
-<!--    <include file="/liquibase/changelog/1559025752_add_constraint_to_fertilizer_table.xml"/>-->
+    <!--    <include file="/liquibase/changelog/1559025752_add_constraint_to_fertilizer_table.xml"/>-->
     <include file="/liquibase/changelog/1559025794_add_recommendation_text_column_to_request.xml"/>
     <include file="/liquibase/changelog/1559647681_create_fertilizer_list_table.xml"/>
 
@@ -21,6 +21,7 @@
 
     <include file="/liquibase/changelog/1562135660_load_default_fertilizer_prices.xml"/>
 
-    <include file="/liquibase/changelog/1562651640 _load_default_fertilizer.xml"/>
+    <include file="/liquibase/changelog/1562651640_load_default_fertilizer.xml"/>
+    <include file="/liquibase/changelog/1565248454_load_default_fertilizer_b.xml"/>
 
 </databaseChangeLog>

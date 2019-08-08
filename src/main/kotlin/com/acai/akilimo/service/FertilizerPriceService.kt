@@ -1,5 +1,6 @@
 package com.acai.akilimo.service
 
+
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.FertilizerPrices
 import com.acai.akilimo.interfaces.IFertilizerPriceService
@@ -12,14 +13,8 @@ import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
-
-
-import org.modelmapper.Condition
-import org.modelmapper.Conditions
-import org.modelmapper.PropertyMap
-import org.modelmapper.spi.MappingContext
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class FertilizerPriceService
@@ -42,8 +37,9 @@ constructor(
 
         var toCurrency = "USD"
         var currencyRate = 1.00
+        val country = countryCode.toUpperCase()
 
-        when (countryCode.toUpperCase()) {
+        when (country) {
             "TZ" -> {
                 toCurrency = "TZS"
                 currencyRate = currencyProperties.tzsUsdRate!!
@@ -65,8 +61,10 @@ constructor(
                     nearestValue = 1000.0)
 
             val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
-            fertilizerPriceDto.pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
-            fertilizerPriceDto.country = countryCode.toUpperCase()
+            val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
+            fertilizerPriceDto.pricePerBag = pricePerBag
+            fertilizerPriceDto.country = country
+            fertilizerPriceDto.fertilizerCountry = "$country-$pricePerBagRaw"
 
             fertilizerPriceDtoList.add(fertilizerPriceDto)
         }

@@ -28,6 +28,11 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.bootRun {
+	//main = "com.example.demo.Demo"
+	args("--spring.profiles.active=cmd")
+}
+
 repositories {
 	mavenCentral()
 }
@@ -60,6 +65,7 @@ dependencies {
 
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
+
 	//runtimeOnly("com.h2database:h2")
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

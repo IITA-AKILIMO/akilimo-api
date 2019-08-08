@@ -13,43 +13,46 @@ import javax.persistence.*
 class AvailableFertilizers : Serializable {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    var id: Long? = null
+    var fertilizerId: Long? = null
 
     @Column(name = "name")
-    @ApiModelProperty(example = "NPK151010", required = true)
-    var fertilizerName: String? = null
+    @ApiModelProperty(example = "NPK 15:10:10", required = true)
+    var name: String? = null
 
-    @Column(name = "n")
+    @Column(name = "type")
+    @ApiModelProperty(example = "NPK151010", required = true)
+    var type: String? = null
+
+
     @ApiModelProperty(example = "10", required = true)
     var nContent: Int? = null
 
-    @Column(name = "p")
     @ApiModelProperty(example = "10", required = true)
     var pContent: Int? = null
 
-    @Column(name = "k")
     @ApiModelProperty(example = "5", required = true)
     var kContent: Int? = null
 
     @Column(name = "weight")
     @ApiModelProperty(example = "50", required = true)
-    var bagWeight: Int = 50
+    var weight: Int = 50
 
     @Column(name = "price")
-    var costPerBag: String? = "50"
+    var price: String? = "50"
 
     @Column(name = "available")
     @ApiModelProperty(example = "false", required = true)
-    var isAvailable: Boolean = false
+    var available: Boolean = false
 
     @Column(name = "custom")
     @ApiModelProperty(example = "false", required = true)
-    var isCustom: Boolean = false
+    var custom: Boolean = false
 
     @Column(name = "country")
-    var countryCode: String? = "50"
+    var country: String? = null
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
