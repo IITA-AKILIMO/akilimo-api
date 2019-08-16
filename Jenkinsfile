@@ -29,6 +29,17 @@ pipeline {
             }
         }
 
+        stage('Here we are ') {
+            when{
+                branch 'fix/*'
+            }
+            steps {
+                echo "Cleaning project"
+                sh './gradlew clean'
+            }
+        }
+
+
         stage('Build binary files for release branches') {
             when {
                 anyOf {
