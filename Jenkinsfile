@@ -16,7 +16,7 @@ pipeline {
                 branch "feature/*"
             }
             steps{
-                echo "Hello universe"
+                echo "Hello universe try me"
             }
         }
 
