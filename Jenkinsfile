@@ -14,7 +14,7 @@ pipeline {
 
         stage('Test feature branches'){
             when{
-                branch 'feature/*'
+                branch 'feature/**'
             }
             steps{
                 echo "Hello universe try me"
