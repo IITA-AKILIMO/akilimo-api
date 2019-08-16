@@ -25,18 +25,28 @@ pipeline {
             }
         }
         stage('Build binary files for release branches') {
-            steps {
-                when {
-                    not {
-                        anyOf {
-                            branch 'master';
-                            branch 'develop'
-                        }
+            when {
+                not {
+                    anyOf {
+                        branch 'master';
+                        branch 'develop'
                     }
                 }
+            }
+            steps {
                 echo "Running tests"
                 sh './gradlew build assemble'
             }
         }
+        stage('Build latest') {
+            when {
+                not { branch 'master'; branch 'develop' }
+            }
+            steps {
+                echo "Building docker image"
+                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:latest ."
+            }
+        }
+
     }
 }
