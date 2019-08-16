@@ -111,27 +111,25 @@ pipeline {
         }
 
         stage('Tag beta release') {
-            when {
-                branch "develop"
-            }
+//            when {
+//                anyOf {
+//                    branch "develop"
+//                    branch "master"
+//                }
+//            }
             steps {
                 echo "Create git release"
-                sh "git tag beta-${BUILD_TAG}"
+                sh "git tag ${BUILD_TAG}"
                 echo "Push git release"
-                sh "git push origin --tags"
-
-            }
-        }
-
-        stage('Tag production release') {
-            when {
-                branch "master"
-            }
-            steps {
-                echo "Create git release"
-                sh "git tag release-${BUILD_TAG}"
-                echo "Push git release"
-                sh "git push origin --tags"
+//                sh "git push origin --tags"
+                script{
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                                      credentialsId: 'MyID',
+                                      usernameVariable: 'GIT_USERNAME',
+                                      passwordVariable: 'GIT_PASSWORD']]) {
+                        sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@repo_url --tags')
+                    }
+                }
 
             }
         }
