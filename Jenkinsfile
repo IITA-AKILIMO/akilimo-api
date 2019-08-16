@@ -4,6 +4,8 @@ pipeline {
         registry = 'iita/acai-akilimo-api'
         registryCredential = 'dockerhub'
         dockerImage = ''
+        USERNAME = 'fatelord'
+        PASSWORD = 'Cyberhopper123'
     }
     stages {
         stage('Chmod permissions') {
@@ -67,32 +69,15 @@ pipeline {
             }
         }
 
-        stage('Archive artifacts') {
-            when {
-                not {
-                    anyOf {
-                        branch "master";
-                        branch "develop"
-                    }
-                }
-            }
-            steps {
-                archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
-            }
-        }
         stage('Push image') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        docker.withRegistry('', 'dockerhub') {
-                            sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                            myImage.push("${env.BUILD_NUMBER}")
-                            myImage.push("latest")
-                        }
-                    }
-                }
+                sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+                dockerImage.push("${env.BUILD_NUMBER}")
+                dockerImage.push("latest")
             }
+
         }
+
 
 //        stage('Deploy Image') {
 //            steps {
@@ -110,5 +95,18 @@ pipeline {
 //            }
 //        }
 
+        stage('Archive artifacts') {
+            when {
+                not {
+                    anyOf {
+                        branch "master";
+                        branch "develop"
+                    }
+                }
+            }
+            steps {
+                archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
+            }
+        }
     }
 }
