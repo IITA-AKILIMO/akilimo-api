@@ -3,6 +3,7 @@ pipeline {
     environment {
         registry = 'iita/acai-akilimo-api'
         registryCredential = 'dockerhub'
+        dockerImage = ''
     }
     stages {
         stage('Chmod permissions') {
@@ -61,7 +62,7 @@ pipeline {
 //                echo "Building docker image"
 //                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:${BUILD_NUMBER} ."
                 script {
-                    docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":${BUILD_NUMBER}"
                 }
             }
         }
@@ -80,33 +81,21 @@ pipeline {
             }
         }
 
-//        stage('Tag latest images') {
-//            when {
-//                not {
-//                    anyOf {
-//                        branch "master";
-//                        branch "develop"
-//                    }
-//                }
-//            }
-//            steps {
-//                sh "docker tag iita/acai-akilimo-api:${BUILD_NUMBER} iita/acai-akilimo-api:latest"
-//            }
-//        }
-//
-//        stage('Tag production images') {
-//            when {
-//                not {
-//                    anyOf {
-//                        branch "master";
-//                        branch "develop"
-//                    }
-//                }
-//            }
-//            steps {
-//                sh "docker tag iita/acai-akilimo-api:${BUILD_NUMBER} iita/acai-akilimo-api:production"
-//            }
-//        }
+        stage('Deploy Image') {
+            steps {
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Remove Unused docker image') {
+            steps{
+                sh "docker rmi $registry:$BUILD_NUMBER"
+            }
+        }
 
     }
 }
