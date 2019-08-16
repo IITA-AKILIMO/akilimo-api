@@ -40,7 +40,8 @@ when {
 
 
 group = "com.acai"
-version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
+//version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
+version = "$versionNumber.$minorRelease.$buildNumber"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {

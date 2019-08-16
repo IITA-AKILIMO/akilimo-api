@@ -12,16 +12,6 @@ pipeline {
                 sh 'chmod +x ./gradlew'
             }
         }
-        stage('Three') {
-            when {
-                not {
-                    branch "master"
-                }
-            }
-            steps {
-                echo "Hello not master"
-            }
-        }
         stage('Clean code base') {
             steps {
                 echo "Cleaning project"
@@ -37,12 +27,11 @@ pipeline {
         }
         stage('Build binary files for release branches') {
             when {
-                not {
-                    anyOf {
-                        branch 'master';
-                        branch 'develop'
-                    }
+                anyOf {
+                    branch 'master';
+                    branch 'develop'
                 }
+
             }
             steps {
                 echo "Running tests"
@@ -59,8 +48,7 @@ pipeline {
                 }
             }
             steps {
-//                echo "Building docker image"
-//                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:${BUILD_NUMBER} ."
+                echo "Building docker image"
                 script {
                     dockerImage = docker.build registry + ":${BUILD_NUMBER}"
                 }
@@ -68,18 +56,67 @@ pipeline {
         }
 
 
-
-        stage('Deploy Image') {
+        stage('Deploy latest image') {
+            when {
+                not {
+                    anyOf {
+                        branch "develop";
+                        branch "master"
+                    }
+                }
+            }
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
-                        dockerImage.push('sammy-test')
+                        dockerImage.push('latest')
+                    }
+                }
+                echo "Create git release"
+                sh "git tag ${BUILD_TAG}"
+
+            }
+        }
+
+        stage('Tag release') {
+            when {
+                not {
+                    anyOf {
+                        branch "develop";
+                        branch "master"
+                    }
+                }
+            }
+            steps {
+                echo "Create git release"
+                sh "git tag ${BUILD_TAG}"
+                echo "Push git release"
+                sh "git push origin --tags"
+
+            }
+        }
+
+        stage('Deploy production image') {
+            when {
+                anyOf {
+                    branch "master"
+                }
+            }
+            steps {
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push('production')
                     }
                 }
             }
         }
 
         stage('Remove Unused docker image') {
+            when {
+                anyOf {
+                    branch "master";
+                    branch "develop"
+                }
+            }
             steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
@@ -87,11 +124,9 @@ pipeline {
 
         stage('Archive artifacts') {
             when {
-                not {
-                    anyOf {
-                        branch "master";
-                        branch "develop"
-                    }
+                anyOf {
+                    branch "master";
+                    branch "develop"
                 }
             }
             steps {
