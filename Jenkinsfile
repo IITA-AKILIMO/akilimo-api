@@ -1,6 +1,9 @@
 pipeline {
     agent any
-
+    environment {
+        registry = 'iita/acai-akilimo-api'
+        registryCredential = 'dockerhub'
+    }
     stages {
         stage('Chmod permissions') {
             steps {
@@ -55,8 +58,11 @@ pipeline {
                 }
             }
             steps {
-                echo "Building docker image"
-                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:${BUILD_NUMBER} ."
+//                echo "Building docker image"
+//                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:${BUILD_NUMBER} ."
+                script {
+                    docker.build registry + ":$BUILD_NUMBER"
+                }
             }
         }
 
@@ -73,6 +79,34 @@ pipeline {
                 archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
             }
         }
+
+//        stage('Tag latest images') {
+//            when {
+//                not {
+//                    anyOf {
+//                        branch "master";
+//                        branch "develop"
+//                    }
+//                }
+//            }
+//            steps {
+//                sh "docker tag iita/acai-akilimo-api:${BUILD_NUMBER} iita/acai-akilimo-api:latest"
+//            }
+//        }
+//
+//        stage('Tag production images') {
+//            when {
+//                not {
+//                    anyOf {
+//                        branch "master";
+//                        branch "develop"
+//                    }
+//                }
+//            }
+//            steps {
+//                sh "docker tag iita/acai-akilimo-api:${BUILD_NUMBER} iita/acai-akilimo-api:production"
+//            }
+//        }
 
     }
 }
