@@ -1,4 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Calendar
+
+
 
 plugins {
     val kotlinVersion = "1.2.71"
@@ -17,16 +20,18 @@ plugins {
 //def localPropertyApiToken = "3"
 //def systemEnvApiToken = … // read api token from system environment variable
 //ext.api_token = localPropertyApiToken != null ? localPropertyApiToken : systemEnvApiToken
+val date = Calendar.getInstance()
+
 var versionNumber: String? = System.getenv("VERSION_NUMBER")
 var minorRelease: String? = System.getenv("MINOR_NUMBER")
 var buildNumber: String? = System.getenv("BUILD_NUMBER")
 
 
 when {
-    versionNumber.isNullOrBlank() -> versionNumber = "3"
+    versionNumber.isNullOrBlank() -> versionNumber = date.get(Calendar.YEAR).toString()
 }
 when {
-    minorRelease.isNullOrBlank() -> minorRelease = "0"
+    minorRelease.isNullOrBlank() -> minorRelease = date.get(Calendar.DAY_OF_WEEK_IN_MONTH).toString()
 }
 when {
     buildNumber.isNullOrBlank() -> buildNumber = "0"
