@@ -11,15 +11,43 @@ pipeline {
                 echo "Hello not master"
             }
         }
-
-        stage('Test feature branches'){
-             when { branch "*/feature" }
-            steps{
-                echo "Hello universe try me"
-                sh './gradlew clean test --no-daemon' //run a gradle task
+        stage('Clean code base') {
+            steps {
+                echo "Cleaning project"
+                sh './gradlew clean'
             }
         }
 
+        stage('Run tests and check coverage') {
+            steps {
+                echo "Running tests"
+                sh './gradlew check"
+            }
+        }
+        stage('Build binary files for release branches') {
+            steps {
+//                when { anyOf { branch 'master'; branch 'develop' } }
+                echo "Running tests"
+                sh './gradlew build assemble"
+            }
+        }
+
+        stage('Build latest') {
+            when {
+                not {
+                    branch "develop"
+                }
+            }
+            when {
+                not {
+                    branch "master"
+                }
+            }
+            steps {
+                echo "Building docker image"
+                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:latest ."
+            }
+        }
 
     }
 }
