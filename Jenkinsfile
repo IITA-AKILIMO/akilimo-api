@@ -30,7 +30,7 @@ pipeline {
         }
 
         stage('Here we are ') {
-            when{
+            when {
                 branch 'fix/*'
             }
             steps {
@@ -43,7 +43,7 @@ pipeline {
         stage('Build binary files for release branches') {
             when {
                 anyOf {
-                    branch 'master';branch 'develop'
+                    branch 'master'; branch 'develop'
                 }
 
             }
@@ -118,16 +118,17 @@ pipeline {
 //                }
 //            }
             steps {
-                echo "Create git release"
-                sh "git tag ${BUILD_TAG}"
-                echo "Push git release"
-//                sh "git push origin --tags"
-                script{
-                    withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                                      credentialsId: 'github',
+
+                script {
+                    withCredentials([[$class          : 'UsernamePasswordMultiBinding',
+                                      credentialsId   : 'github',
                                       usernameVariable: 'GIT_USERNAME',
                                       passwordVariable: 'GIT_PASSWORD']]) {
-                        sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}/akilimo-api.git -f --tags')
+                        echo "Create git release"
+                        sh "git tag ${BUILD_TAG}"
+                        echo "Push git release"
+                        sh "git push origin -f --tags"
+//                        sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}/akilimo-api.git -f --tags')
                     }
                 }
 
