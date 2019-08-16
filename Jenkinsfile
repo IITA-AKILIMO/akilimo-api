@@ -4,7 +4,7 @@ pipeline {
         stage('Chmod permisions') {
             steps {
                 echo "Chmod permissions"
-                sh 'sudo chmod +x ./gradlew'
+                sh 'chmod +x ./gradlew'
             }
         }
         stage('Three') {
