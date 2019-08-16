@@ -27,9 +27,7 @@ pipeline {
         stage('Build binary files for release branches') {
             steps {
                 when {
-                    not {
-                        anyOf { branch 'master'; branch 'develop' }
-                    }
+                    not { branch 'master'; branch 'develop' }
                 }
                 echo "Running tests"
                 sh './gradlew build assemble'
@@ -37,9 +35,7 @@ pipeline {
         }
         stage('Build latest') {
             when {
-                not {
-                    anyOf { branch 'master'; branch 'develop' }
-                }
+                not { branch 'master'; branch 'develop' }
             }
             steps {
                 echo "Building docker image"
