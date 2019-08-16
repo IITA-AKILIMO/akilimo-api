@@ -80,6 +80,15 @@ pipeline {
                 archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
             }
         }
+        stage('Push image') {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                docker.withRegistry('', 'docker-hub-credentials') {
+                    sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+                    myImage.push("${env.BUILD_NUMBER}")
+                    myImage.push("latest")
+                }
+            }
+        }
 
         stage('Deploy Image') {
             steps {
@@ -92,7 +101,7 @@ pipeline {
         }
 
         stage('Remove Unused docker image') {
-            steps{
+            steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
