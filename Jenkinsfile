@@ -55,7 +55,7 @@ pipeline {
             }
             steps {
                 echo "Building docker image"
-                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:latest ."
+                sh "docker build -f Dockerfile -t iita/acai-akilimo-api:${BUILD_NUMBER} ."
             }
         }
 
