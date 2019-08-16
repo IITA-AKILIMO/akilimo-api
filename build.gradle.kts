@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Calendar
-
+import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
 
 
 plugins {
@@ -21,18 +22,17 @@ plugins {
 //def systemEnvApiToken = … // read api token from system environment variable
 //ext.api_token = localPropertyApiToken != null ? localPropertyApiToken : systemEnvApiToken
 val date = Calendar.getInstance()
+val current = LocalDateTime.now()
+val formatter = DateTimeFormatter.BASIC_ISO_DATE
+val timestamp = current.format(formatter)
 
-var versionNumber: String? = System.getenv("VERSION_NUMBER")
-var minorRelease: String? = System.getenv("MINOR_NUMBER")
+var versionNumber: String? = date.get(Calendar.DAY_OF_YEAR).toString()
+var minorRelease: String? = date.get(Calendar.DAY_OF_WEEK_IN_MONTH).toString()
 var buildNumber: String? = System.getenv("BUILD_NUMBER")
+var revisionNumber: String? = timestamp
 
 
-when {
-    versionNumber.isNullOrBlank() -> versionNumber = date.get(Calendar.YEAR).toString()
-}
-when {
-    minorRelease.isNullOrBlank() -> minorRelease = date.get(Calendar.DAY_OF_WEEK_IN_MONTH).toString()
-}
+
 when {
     buildNumber.isNullOrBlank() -> buildNumber = "0"
 }
@@ -40,7 +40,7 @@ when {
 
 
 group = "com.acai"
-version = "$versionNumber.$minorRelease.$buildNumber"
+version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
