@@ -18,7 +18,7 @@ pipeline {
                 }
             }
             steps {
-                echo "Hello not master"
+                echo "Hello not master here"
             }
         }
            stage('Build') {
