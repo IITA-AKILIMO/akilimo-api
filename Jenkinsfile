@@ -1,7 +1,14 @@
 pipeline {
     agent any
+
+     environment {
+            VERSION_NUMBER = 'true'
+            MINOR_NUMBER    = 'sqlite'
+            BUILD_NUMBER    = 'sqlite'
+        }
+
     stages {
-        stage('Chmod permisions') {
+        stage('Chmod permissions') {
             steps {
                 echo "Chmod permissions"
                 sh 'chmod +x ./gradlew'
@@ -57,6 +64,19 @@ pipeline {
                 echo "Building docker image"
                 sh "docker build -f Dockerfile -t iita/acai-akilimo-api:${BUILD_NUMBER} ."
             }
+        }
+
+        stage('Archive artifacts'){
+            when{
+                not{
+                    anyOf{
+                        branch "master";
+                        branch "develop"
+                    }
+                }
+            }
+
+            archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
         }
 
     }
