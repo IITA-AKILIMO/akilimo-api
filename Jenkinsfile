@@ -13,7 +13,7 @@ pipeline {
         }
 
         stage('Test feature branches'){
-             when { branch "origin/feature/*" }
+             when { branch "feature/*" }
             steps{
                 echo "Hello universe try me"
                 sh './gradlew clean test --no-daemon' //run a gradle task
