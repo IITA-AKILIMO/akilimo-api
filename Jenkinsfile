@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-//        VERSION_NUMBER = Calendar.YEAR
-//        MINOR_NUMBER = Calendar.DAY_OF_WEEK_IN_MONTH
-    }
-
     stages {
         stage('Chmod permissions') {
             steps {
