@@ -59,11 +59,9 @@ pipeline {
 
         stage('Push latest image') {
             when {
-                not {
-                    anyOf {
-                        branch "develop";
-                        branch "master"
-                    }
+                anyOf {
+                    branch "develop";
+                    branch "master"
                 }
             }
             steps {
@@ -108,11 +106,9 @@ pipeline {
 
         stage('Tag release') {
             when {
-                not {
-                    anyOf {
-                        branch "develop";
-                        branch "master"
-                    }
+                anyOf {
+                    branch "develop";
+                    branch "master"
                 }
             }
             steps {
