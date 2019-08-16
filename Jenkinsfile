@@ -56,7 +56,7 @@ pipeline {
         }
 
 
-        stage('Deploy latest image') {
+        stage('Push latest image') {
             when {
                 not {
                     anyOf {
@@ -77,25 +77,8 @@ pipeline {
             }
         }
 
-        stage('Tag release') {
-            when {
-                not {
-                    anyOf {
-                        branch "develop";
-                        branch "master"
-                    }
-                }
-            }
-            steps {
-                echo "Create git release"
-                sh "git tag ${BUILD_TAG}"
-                echo "Push git release"
-                sh "git push origin --tags"
 
-            }
-        }
-
-        stage('Deploy production image') {
+        stage('Push production image') {
             when {
                 anyOf {
                     branch "master"
@@ -119,6 +102,24 @@ pipeline {
             }
             steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
+            }
+        }
+
+        stage('Tag release') {
+            when {
+                not {
+                    anyOf {
+                        branch "develop";
+                        branch "master"
+                    }
+                }
+            }
+            steps {
+                echo "Create git release"
+                sh "git tag ${BUILD_TAG}"
+                echo "Push git release"
+                sh "git push origin --tags"
+
             }
         }
 
