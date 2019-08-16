@@ -74,8 +74,9 @@ pipeline {
                     }
                 }
             }
-
-            archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
+            steps {
+                archiveArtifacts artifacts: 'build/libs/akilimo*.jar'
+            }
         }
 
     }
