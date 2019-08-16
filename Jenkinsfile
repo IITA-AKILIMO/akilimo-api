@@ -7,12 +7,14 @@ pipeline {
         dockerImage = ''
     }
     stages {
+
         stage('Chmod permissions') {
             steps {
                 echo "Chmod permissions"
                 sh 'chmod +x ./gradlew'
             }
         }
+
         stage('Clean code base') {
             steps {
                 echo "Cleaning project"
@@ -26,6 +28,7 @@ pipeline {
                 sh './gradlew check'
             }
         }
+
         stage('Build binary files for release branches') {
             when {
                 anyOf {
@@ -39,13 +42,12 @@ pipeline {
                 sh './gradlew build assemble'
             }
         }
+
         stage('Build latest') {
             when {
-                not {
-                    anyOf {
-                        branch 'master';
-                        branch 'develop'
-                    }
+                anyOf {
+                    branch 'master';
+                    branch 'develop'
                 }
             }
             steps {
