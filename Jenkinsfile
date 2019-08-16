@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     environment {
         registry = 'iita/acai-akilimo-api'
         registryCredential = 'dockerhub'
