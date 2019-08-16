@@ -21,6 +21,12 @@ pipeline {
                 echo "Hello not master"
             }
         }
+           stage('Build') {
+              steps {
+                sh 'docker build -f "Dockerfile-terraform" -t brightbox/terraform:latest .'
+                sh 'docker build -f "Dockerfile-cli" -t brightbox/cli:latest .'
+              }
+            }
             stage('Publish') {
               when {
                 branch 'master'
