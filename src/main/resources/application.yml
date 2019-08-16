@@ -14,19 +14,21 @@ server:
   #    enabled: false
 spring:
   application:
-    name: cropmanager
+    name: akilimo
   profiles:
     active: dev
   liquibase:
     change-log: "classpath:liquibase/master.xml"
 
+akilimo:
+  currency:
+    ngn-usd-rate: 360
+    tzs-usd-rate: 2250
+    kes-usd-rate: 103
 plumber:
   base-url: http://142.93.160.27:8000/api/ #http://localhost:8000/api/
-  fertilizer-recommendation: v2/dst/fertilizer-recommendation
-  planting-practices: v2/dst/fertilizer-recommendation
-  intercropping: v2/dst/fertilizer-recommendation
-  scheduled-planting: v2/dst/fertilizer-recommendation
-  high-starch: v2/dst/fertilizer-recommendation
+  recommendation-ng: v2/dst/recommendation/ng/compute
+  recommendation-tz: v2/dst/recommendation/tz/compute
 
 messaging:
   test-numbers:
