@@ -40,7 +40,12 @@ pipeline {
         }
         stage('Build latest') {
             when {
-                not { branch 'master'; branch 'develop' }
+                not {
+                    anyOf {
+                        branch 'master';
+                        branch 'develop'
+                    }
+                }
             }
             steps {
                 echo "Building docker image"
