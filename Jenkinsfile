@@ -11,12 +11,13 @@ pipeline {
                 echo "Hello not master"
             }
         }
-        stage('Generate jar file'){
+        stage('Test feature branches'){
             when{
                 branch "feature/*"
             }
             steps{
                 echo "Hello universe try me"
+                sh './gradlew clean test --no-daemon' //run a gradle task
             }
         }
 
