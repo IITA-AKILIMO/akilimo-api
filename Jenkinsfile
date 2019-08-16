@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-     environment {
-            VERSION_NUMBER = '3'
-            MINOR_NUMBER    = '1'
-        }
+    environment {
+        VERSION_NUMBER = Calendar.YEAR
+        MINOR_NUMBER = Calendar.DAY_OF_WEEK_IN_MONTH
+    }
 
     stages {
         stage('Chmod permissions') {
@@ -65,10 +65,10 @@ pipeline {
             }
         }
 
-        stage('Archive artifacts'){
-            when{
-                not{
-                    anyOf{
+        stage('Archive artifacts') {
+            when {
+                not {
+                    anyOf {
                         branch "master";
                         branch "develop"
                     }
