@@ -81,12 +81,14 @@ pipeline {
             }
         }
         stage('Push image') {
-            script {
-                withCredentials([usernamePassword(credentialsId: 'registryCredentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    docker.withRegistry('', 'registryCredential') {
-                        sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                        myImage.push("${env.BUILD_NUMBER}")
-                        myImage.push("latest")
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'registryCredentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        docker.withRegistry('', 'registryCredential') {
+                            sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+                            myImage.push("${env.BUILD_NUMBER}")
+                            myImage.push("latest")
+                        }
                     }
                 }
             }
