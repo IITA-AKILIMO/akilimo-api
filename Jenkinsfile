@@ -32,8 +32,7 @@ pipeline {
         stage('Build binary files for release branches') {
             when {
                 anyOf {
-                    branch 'master';
-                    branch 'develop'
+                    branch 'master';branch 'develop'
                 }
 
             }
@@ -46,8 +45,7 @@ pipeline {
         stage('Build latest') {
             when {
                 anyOf {
-                    branch 'master';
-                    branch 'develop'
+                    branch 'master'; branch 'develop'
                 }
             }
             steps {
@@ -61,7 +59,7 @@ pipeline {
 
         stage('Push latest image') {
             when {
-                branch "develop";
+                branch "develop"
             }
             steps {
                 script {
