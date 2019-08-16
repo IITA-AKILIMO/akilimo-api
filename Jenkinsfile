@@ -13,8 +13,8 @@ pipeline {
         }
 
         stage('Test feature branches'){
-            when{
-                branch '*/feature/**'
+            when {
+                expression { BRANCH_NAME ==~ /(feature|staging)/ }
             }
             steps{
                 echo "Hello universe try me"
