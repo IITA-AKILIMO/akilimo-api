@@ -26,21 +26,19 @@ pipeline {
         }
         stage('Build binary files for release branches') {
             steps {
-//                when { anyOf { branch 'master'; branch 'develop' } }
+                when {
+                    not {
+                        anyOf { branch 'master'; branch 'develop' }
+                    }
+                }
                 echo "Running tests"
                 sh './gradlew build assemble'
             }
         }
-
         stage('Build latest') {
             when {
                 not {
-                    branch "develop"
-                }
-            }
-            when {
-                not {
-                    branch "master"
+                    anyOf { branch 'master'; branch 'develop' }
                 }
             }
             steps {
