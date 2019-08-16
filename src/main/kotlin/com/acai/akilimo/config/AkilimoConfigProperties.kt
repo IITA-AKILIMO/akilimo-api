@@ -1,5 +1,6 @@
 package com.acai.akilimo.config
 
+import com.acai.akilimo.properties.CurrencyProperties
 import com.acai.akilimo.properties.MessagingProperties
 import com.acai.akilimo.properties.PlumberProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -11,15 +12,23 @@ import org.springframework.context.annotation.Configuration
 class AkilimoConfigProperties {
 
     @Bean
-    @ConfigurationProperties(prefix = "plumber")
-    fun plumber(): PlumberProperties {
-        return PlumberProperties()
+    @ConfigurationProperties(prefix = "akilimo.currency")
+    fun currency(): CurrencyProperties {
+        return CurrencyProperties()
     }
+
 
     @Bean
     @ConfigurationProperties(prefix = "messaging")
     fun globalProperties(): MessagingProperties {
         return MessagingProperties()
+    }
+
+
+    @Bean
+    @ConfigurationProperties(prefix = "plumber")
+    fun plumber(): PlumberProperties {
+        return PlumberProperties()
     }
 
 

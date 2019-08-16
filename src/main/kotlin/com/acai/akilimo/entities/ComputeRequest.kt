@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import io.swagger.annotations.ApiModelProperty
-
 import lombok.Data
-
-import javax.validation.constraints.*
+import javax.validation.constraints.NotEmpty
 
 @Data
 @JsonPropertyOrder(
@@ -83,6 +81,9 @@ import javax.validation.constraints.*
         "maizePD",
         "maizeUP",
         "maizeUW",
+        "sweetPotatoPD",
+        "sweetPotatoUW",
+        "sweetPotatoUP",
         "maxInv",
         "method_harrowing",
         "method_ploughing",
@@ -309,6 +310,19 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var maizeUnitPrice: String? = null
 
+    @JsonProperty("sweetPotatoPD")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sweetPotatoProduceType: String? = null
+
+    @JsonProperty("sweetPotatoUW")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sweetPotatoUnitWeight: String? = null
+
+    @JsonProperty("sweetPotatoUP")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sweetPotatoUnitPrice: String? = null
+
+
     @JsonProperty("maxInv")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var maxInvestment: String? = null
@@ -418,6 +432,15 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var nafakaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
+    @JsonProperty("YaraMila_UNIKavailable")
+    var yaramilaUnikAvailable: Boolean = false
+    @JsonProperty("YaraMila_UNIKCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var yaramilaUnikCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("YaraMila_UNIKBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var yaramilaUnikBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
     @JsonProperty("CANavailable")
     var canAvailable: Boolean = false
     @JsonProperty("CANCostperBag")
@@ -436,19 +459,19 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var sspBagWeight: Int = 0
 
-    /*
+
     @JsonProperty("newFert1name")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var newFert1name: String? = null
     @JsonProperty("newFert1N_cont")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var newFert1NCont: String? = null
+    var newFert1NitrogenContent: String? = null
     @JsonProperty("newFert1P2O5")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var newFert1P2O5: String? = null
+    var newFert1PhosphateContent: String? = null
     @JsonProperty("newFertK2O")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var newFertK2O: String? = null
+    var newFertPotassiumContent: String? = null
     @JsonProperty("newFertCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var newFertCostPerBag: String? = null
@@ -456,7 +479,7 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var newFert1BagWeight: Int = 0
 
-
+/*
     @JsonProperty("newFert2name")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var newFert2name: String? = null

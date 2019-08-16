@@ -7,14 +7,12 @@ import org.springframework.stereotype.Component
 import javax.validation.constraints.NotBlank
 
 @Data
-class PlumberProperties {
+class CurrencyProperties {
 
     @NotBlank
-    var baseUrl: String? = null
+    var ngnUsdRate: Double? = null
 
     @NotBlank
-    var recommendationNg: String? = null
+    var tzsUsdRate: Double? = null
 
-    @NotBlank
-    var recommendationTz: String? = null
 }
