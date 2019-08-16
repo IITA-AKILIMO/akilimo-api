@@ -4,8 +4,6 @@ pipeline {
         registry = 'iita/acai-akilimo-api'
         registryCredential = 'dockerhub'
         dockerImage = ''
-        USERNAME = 'fatelord'
-        PASSWORD = 'Cyberhopper123'
     }
     stages {
         stage('Chmod permissions') {
@@ -69,31 +67,23 @@ pipeline {
             }
         }
 
-        stage('Push image') {
-            steps {
-                sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-//                dockerImage.push("${env.BUILD_NUMBER}")
-//                dockerImage.push("latest")
-            }
 
+
+        stage('Deploy Image') {
+            steps {
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push('sammy-test')
+                    }
+                }
+            }
         }
 
-
-//        stage('Deploy Image') {
-//            steps {
-//                script {
-//                    docker.withRegistry('', registryCredential) {
-//                        dockerImage.push()
-//                    }
-//                }
-//            }
-//        }
-
-//        stage('Remove Unused docker image') {
-//            steps {
-//                sh "docker rmi $registry:$BUILD_NUMBER"
-//            }
-//        }
+        stage('Remove Unused docker image') {
+            steps {
+                sh "docker rmi $registry:$BUILD_NUMBER"
+            }
+        }
 
         stage('Archive artifacts') {
             when {
