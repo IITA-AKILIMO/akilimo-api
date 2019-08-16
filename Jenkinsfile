@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo "Chmod permissions"
                 sh 'chmod +x ./gradlew'
-                sh 'apt install gnupg2 pass'
+                sh 'sudo apt install gnupg2 pass'
             }
         }
         stage('Three') {
