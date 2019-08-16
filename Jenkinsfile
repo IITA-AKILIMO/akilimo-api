@@ -61,10 +61,7 @@ pipeline {
 
         stage('Push latest image') {
             when {
-                anyOf {
-                    branch "develop";
-                    branch "master"
-                }
+                branch "develop";
             }
             steps {
                 script {
@@ -81,9 +78,7 @@ pipeline {
 
         stage('Push production image') {
             when {
-                anyOf {
-                    branch "master"
-                }
+                branch "master"
             }
             steps {
                 script {
@@ -106,16 +101,26 @@ pipeline {
             }
         }
 
-        stage('Tag release') {
+        stage('Tag beta release') {
             when {
-                anyOf {
-                    branch "develop";
-                    branch "master"
-                }
+                branch "develop"
             }
             steps {
                 echo "Create git release"
-                sh "git tag ${BUILD_TAG}"
+                sh "git tag beta-${BUILD_TAG}"
+                echo "Push git release"
+                sh "git push origin --tags"
+
+            }
+        }
+
+        stage('Tag production release') {
+            when {
+                branch "master"
+            }
+            steps {
+                echo "Create git release"
+                sh "git tag release-${BUILD_TAG}"
                 echo "Push git release"
                 sh "git push origin --tags"
 
