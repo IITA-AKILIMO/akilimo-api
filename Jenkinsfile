@@ -21,7 +21,7 @@ pipeline {
         stage('Run tests and check coverage') {
             steps {
                 echo "Running tests"
-                sh './gradlew check"
+                sh './gradlew check'
             }
         }
         stage('Build binary files for release branches') {
