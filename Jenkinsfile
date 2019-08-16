@@ -72,8 +72,8 @@ pipeline {
         stage('Push image') {
             steps {
                 sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                dockerImage.push("${env.BUILD_NUMBER}")
-                dockerImage.push("latest")
+//                dockerImage.push("${env.BUILD_NUMBER}")
+//                dockerImage.push("latest")
             }
 
         }
