@@ -28,7 +28,7 @@ pipeline {
             steps {
 //                when { anyOf { branch 'master'; branch 'develop' } }
                 echo "Running tests"
-                sh './gradlew build assemble"
+                sh './gradlew build assemble'
             }
         }
 
