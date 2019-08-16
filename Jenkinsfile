@@ -2,9 +2,8 @@ pipeline {
     agent any
 
      environment {
-            VERSION_NUMBER = 'true'
-            MINOR_NUMBER    = 'sqlite'
-            BUILD_NUMBER    = 'sqlite'
+            VERSION_NUMBER = '3'
+            MINOR_NUMBER    = '1'
         }
 
     stages {
