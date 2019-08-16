@@ -26,8 +26,8 @@ val current = LocalDateTime.now()
 val formatter = DateTimeFormatter.BASIC_ISO_DATE
 val timestamp = current.format(formatter)
 
-var versionNumber: String? = date.get(Calendar.DAY_OF_YEAR).toString()
-var minorRelease: String? = date.get(Calendar.DAY_OF_WEEK_IN_MONTH).toString()
+var versionNumber: String? = "3"//date.get(Calendar.DAY_OF_YEAR).toString()
+var minorRelease: String? = date.get(Calendar.DAY_OF_YEAR).toString()
 var buildNumber: String? = System.getenv("BUILD_NUMBER")
 var revisionNumber: String? = timestamp
 
