@@ -1,6 +1,12 @@
 pipeline {
     agent any
     stages {
+        stage('Chmod permisions') {
+            steps {
+                echo "Chmod permissions"
+                sh 'sudo chmod +x ./gradlew'
+            }
+        }
         stage('Three') {
             when {
                 not {
