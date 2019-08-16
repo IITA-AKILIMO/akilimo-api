@@ -124,7 +124,7 @@ pipeline {
 //                sh "git push origin --tags"
                 script{
                     withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                                      credentialsId: 'MyID',
+                                      credentialsId: 'github',
                                       usernameVariable: 'GIT_USERNAME',
                                       passwordVariable: 'GIT_PASSWORD']]) {
                         sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@repo_url --tags')
