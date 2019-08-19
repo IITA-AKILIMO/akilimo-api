@@ -29,10 +29,21 @@ pipeline {
             }
         }
 
+        stage('Here we are ') {
+            when {
+                branch 'fix/*'
+            }
+            steps {
+                echo "Cleaning project"
+                sh './gradlew clean'
+            }
+        }
+
+
         stage('Build binary files for release branches') {
             when {
                 anyOf {
-                    branch 'master';branch 'develop'
+                    branch 'master'; branch 'develop'
                 }
 
             }
@@ -100,27 +111,26 @@ pipeline {
         }
 
         stage('Tag beta release') {
-            when {
-                branch "develop"
-            }
+//            when {
+//                anyOf {
+//                    branch "develop"
+//                    branch "master"
+//                }
+//            }
             steps {
-                echo "Create git release"
-                sh "git tag beta-${BUILD_TAG}"
-                echo "Push git release"
-                sh "git push origin --tags"
 
-            }
-        }
-
-        stage('Tag production release') {
-            when {
-                branch "master"
-            }
-            steps {
-                echo "Create git release"
-                sh "git tag release-${BUILD_TAG}"
-                echo "Push git release"
-                sh "git push origin --tags"
+                script {
+                    withCredentials([[$class          : 'UsernamePasswordMultiBinding',
+                                      credentialsId   : 'github',
+                                      usernameVariable: 'GIT_USERNAME',
+                                      passwordVariable: 'GIT_PASSWORD']]) {
+                        echo "Create git release"
+                        sh "git tag ${BUILD_TAG}"
+                        echo "Push git release"
+                        sh "git push origin -f --tags"
+//                        sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}/akilimo-api.git -f --tags')
+                    }
+                }
 
             }
         }
