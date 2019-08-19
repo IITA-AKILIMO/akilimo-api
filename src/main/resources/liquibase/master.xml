@@ -24,4 +24,7 @@
     <include file="/liquibase/changelog/1562651640_load_default_fertilizer.xml"/>
     <include file="/liquibase/changelog/1565248454_load_default_fertilizer_b.xml"/>
 
+    <include file="/liquibase/changelog/1566214834_create_starch_factory_table.xml"/>
+    <include file="/liquibase/changelog/1566215447_load_default_starch_factories.xml"/>
+
 </databaseChangeLog>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="masgeek" id="1566215447">
+        <loadData
+                file="/liquibase/changelog/data/starch_factories.csv"
+                tableName="starch_factory">
+            <column name="factory_name" header="factory_name"/>
+            <column name="factory_label" header="factory_label"/>
+            <column name="country" header="country"/>
+            <column name="factory_active" header="factory_active"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
