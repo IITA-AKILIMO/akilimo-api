@@ -3,17 +3,20 @@ package com.acai.akilimo.entities
 import com.fasterxml.jackson.annotation.JsonProperty
 
 class FertilizerList {
-    @JsonProperty("weight")
-    var fertilizerWeight: Int? = null
 
-    @JsonProperty("price")
-    var fertilizerCostPerBag: String? = null
+    @JsonProperty("fertilizerTypeName")
+    var fertilizerTypeName: String? = null
 
-    @JsonProperty("type")
+
+    @JsonProperty("fertilizerType")
     var fertilizerType: String? = null
 
-    @JsonProperty("name")
-    var fertilizerTypeName: String? = null
+    @JsonProperty("fertilizerWeight")
+    var fertilizerWeight: Int? = null
+
+    @JsonProperty("fertilizerPrice")
+    var fertilizerCostPerBag: String? = null
+
 
     @JsonProperty("available")
     var available: Boolean? = null
