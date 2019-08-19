@@ -3,17 +3,13 @@ package com.acai.akilimo.entities
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModelProperty
 import lombok.Data
-import org.hibernate.annotations.*
-import org.springframework.lang.NonNull
-
-import javax.persistence.CascadeType
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.*
-import javax.validation.constraints.Email
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.UpdateTimestamp
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.HashSet
+import javax.persistence.*
+import javax.validation.constraints.Email
 
 @Entity
 @Data
@@ -88,20 +84,20 @@ class RecommendationRequest : Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at", insertable = false)
     var updatedAt: LocalDateTime? = null
+//
+//    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendationRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
+//    @Fetch(FetchMode.JOIN)
+//    @NonNull
+//    var fertilizers: Set<Fertilizer>? = null
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendationRequest", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @Fetch(FetchMode.JOIN)
-    @NonNull
-    var fertilizers: Set<Fertilizer>? = null
-
-    @Deprecated("Will need revision when logging to database is needed")
-    fun addFertilizers(recommendationRequest: RecommendationRequest): Set<Fertilizer> {
-        val fertilizerSet = HashSet<Fertilizer>()
-
-        recommendationRequest.fertilizers!!.forEach { requestFertilizer ->
-            //requestFertilizer.recommendationRequest = recommendationRequest
-            fertilizerSet.add(requestFertilizer)
-        }
-        return fertilizerSet
-    }
+//    @Deprecated("Will need revision when logging to database is needed")
+//    fun addFertilizers(recommendationRequest: RecommendationRequest): Set<Fertilizer> {
+//        val fertilizerSet = HashSet<Fertilizer>()
+//
+//        recommendationRequest.fertilizers!!.forEach { requestFertilizer ->
+//            //requestFertilizer.recommendationRequest = recommendationRequest
+//            fertilizerSet.add(requestFertilizer)
+//        }
+//        return fertilizerSet
+//    }
 }
