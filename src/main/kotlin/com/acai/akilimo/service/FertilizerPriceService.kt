@@ -3,6 +3,7 @@ package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.FertilizerPrices
+import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.interfaces.IFertilizerPriceService
 import com.acai.akilimo.mapper.FertilizerPriceDto
 import com.acai.akilimo.repositories.FertilizerPriceRepository
@@ -40,11 +41,11 @@ constructor(
         val country = countryCode.toUpperCase()
 
         when (country) {
-            "TZ" -> {
+            EnumCountry.TZ.name -> {
                 toCurrency = "TZS"
                 currencyRate = currencyProperties.tzsUsdRate!!
             }
-            "NG" -> {
+            EnumCountry.NG.name -> {
                 toCurrency = "NGN"
                 currencyRate = currencyProperties.ngnUsdRate!!
             }

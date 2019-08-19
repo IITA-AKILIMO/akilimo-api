@@ -24,7 +24,7 @@ constructor(private val recommendationRepository: RecommendationRepository) : IR
 
             recommendation.fertilizers = fertilizerList
 
-            logger.info("Logging requests for recommendations", 6)
+            logger.info("Logging requests for recommendations", fertilizerList.size)
             return recommendationRepository.save(recommendation)
         } catch (ex: Exception) {
             logger.error(ex.message)

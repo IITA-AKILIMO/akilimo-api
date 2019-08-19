@@ -6,6 +6,7 @@ import com.acai.akilimo.entities.FertilizerList
 import com.acai.akilimo.entities.Recommendation
 import com.acai.akilimo.entities.Response
 import com.acai.akilimo.enum.EnumFertilizer
+import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
@@ -105,9 +106,9 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
             var recommendationUrl: String? = null
             when (country) {
-                "NG" ->
+                EnumCountry.NG.name ->
                     recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
-                "TZ" ->
+                EnumCountry.TZ.name ->
                     recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
             }
             recommendationResponseDto = modelMapper.map(requestPayload, RecommendationResponseDto::class.java)
