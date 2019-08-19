@@ -141,13 +141,65 @@ constructor(private val recommendationRepository: RecommendationRepository,
                         try {
                             val rec = computedHashMap["FR"] as LinkedHashMap<String, ArrayList<Objects>>
                         } catch (ex: Exception) {
-                            logger.error("Error processing linked hash, must be array, going to array next ${ex.message}")
+                            logger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
                             //check if it is an array
                             val recommendation = computedHashMap["FR"]
                             if (recommendation is ArrayList<*>) {
                                 //this indicates the responses has a message that needs to be processed
                                 val frText = computedHashMap.getValue("FR") as ArrayList<String>
                                 recommendationResponseDto.fertilizerRecText = frText[0]
+                                recommendationResponseDto.hasResponse = true
+                            }
+                        }
+                    }
+
+                    if (computedHashMap.containsKey("SP")) {
+                        //extract the scheduled planting recommendations recommendations
+                        try {
+                            val rec = computedHashMap["SP"] as LinkedHashMap<String, ArrayList<Objects>>
+                        } catch (ex: Exception) {
+                            logger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
+                            //check if it is an array
+                            val recommendation = computedHashMap["SP"]
+                            if (recommendation is ArrayList<*>) {
+                                //this indicates the responses has a message that needs to be processed
+                                val spText = computedHashMap.getValue("SP") as ArrayList<String>
+                                recommendationResponseDto.scheduledPlantingRecText = spText[0]
+                                recommendationResponseDto.hasResponse = true
+                            }
+                        }
+                    }
+
+                    if (computedHashMap.containsKey("PP")) {
+                        //extract the scheduled planting recommendations recommendations
+                        try {
+                            val rec = computedHashMap["PP"] as LinkedHashMap<String, ArrayList<Objects>>
+                        } catch (ex: Exception) {
+                            logger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
+                            //check if it is an array
+                            val recommendation = computedHashMap["PP"]
+                            if (recommendation is ArrayList<*>) {
+                                //this indicates the responses has a message that needs to be processed
+                                val ppText = computedHashMap.getValue("PP") as ArrayList<String>
+                                recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                                recommendationResponseDto.hasResponse = true
+                            }
+                        }
+                    }
+
+
+                    if (computedHashMap.containsKey("IC")) {
+                        //extract the scheduled planting recommendations recommendations
+                        try {
+                            val rec = computedHashMap["IC"] as LinkedHashMap<String, ArrayList<Objects>>
+                        } catch (ex: Exception) {
+                            logger.error("Error processing linked hash for IC, must be array, going to array next ${ex.message}")
+                            //check if it is an array
+                            val recommendation = computedHashMap["IC"]
+                            if (recommendation is ArrayList<*>) {
+                                //this indicates the responses has a message that needs to be processed
+                                val icText = computedHashMap.getValue("PP") as ArrayList<String>
+                                recommendationResponseDto.interCroppingRecText = icText[0]
                                 recommendationResponseDto.hasResponse = true
                             }
                         }
