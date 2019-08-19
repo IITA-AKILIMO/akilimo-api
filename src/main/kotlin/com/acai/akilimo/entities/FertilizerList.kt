@@ -4,17 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 class FertilizerList {
 
-    @JsonProperty("fertilizerTypeName")
+    @JsonProperty("name")
     var fertilizerTypeName: String? = null
 
 
-    @JsonProperty("fertilizerType")
+    @JsonProperty("type")
     var fertilizerType: String? = null
 
-    @JsonProperty("fertilizerWeight")
+    @JsonProperty("weight")
     var fertilizerWeight: Int? = null
 
-    @JsonProperty("fertilizerPrice")
+    @JsonProperty("price")
     var fertilizerCostPerBag: String? = null
 
 
