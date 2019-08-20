@@ -41,8 +41,15 @@ constructor(private val starchFactoryRepository: StarchFactoryRepository) : ISta
 
         for (starchFactory in factoryList) {
             val starchFactoryDto = modelMapper.map(starchFactory, StarchFactoryDto::class.java)
+            var factoryNameCountry: String = ""
             starchFactoryDto.countryCode = country
-            starchFactoryDto.factoryNameCountry = "${starchFactory.factoryName}-${starchFactory.country}"
+
+            factoryNameCountry = when {
+                starchFactory.factoryName.equals("NA") -> "${starchFactory.factoryName}-${countryCode}"
+                else -> "${starchFactory.factoryName}-${starchFactory.country}"
+            }
+
+            starchFactoryDto.factoryNameCountry = factoryNameCountry
 
             factoryDtoList.add(starchFactoryDto)
         }
