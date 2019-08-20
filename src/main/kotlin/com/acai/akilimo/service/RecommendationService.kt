@@ -1,7 +1,7 @@
 package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.ComputeRequest
+import com.acai.akilimo.request.ComputeRequest
 import com.acai.akilimo.request.FertilizerList
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.enums.EnumFertilizer

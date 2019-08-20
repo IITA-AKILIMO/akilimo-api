@@ -1,6 +1,5 @@
 package com.acai.akilimo.request
 
-import com.acai.akilimo.entities.ComputeRequest
 import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 
