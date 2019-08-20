@@ -20,14 +20,8 @@ import java.util.*
 @Service
 class FertilizerService
 @Autowired
-constructor(
-        private val fertilizerRepository: FertilizerRepository,
-        akilimoConfigProperties: AkilimoConfigProperties
-) : IFertilizerService {
+constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
-    private val currencyProperties = akilimoConfigProperties.currency()
-
-    val conversion: CurrencyConversion = CurrencyConversion()
 
     private val modelMapper = ModelMapper()
 
@@ -37,7 +31,7 @@ constructor(
         countries.add(EnumCountry.ALL.name)
         countries.add(countryCode)
 
-        val fertilizerList = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderByNameAsc(countries)
+        val fertilizerList = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
         var currencyCode = EnumCountry.ALL.currency()

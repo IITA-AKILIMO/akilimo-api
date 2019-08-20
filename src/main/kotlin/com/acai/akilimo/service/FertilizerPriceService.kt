@@ -32,21 +32,20 @@ constructor(
     private val modelMapper = ModelMapper()
 
     override fun fertilizers(countryCode: String): List<FertilizerPriceDto> {
-//        val fertilizerList = fertilizerPriceRepository.findByActiveIsTrueOrderBySortOrderDesc()
         val fertilizerList = fertilizerPriceRepository.findByActiveIsTrueOrderBySortOrderAsc()
         val fertilizerPriceDtoList = ArrayList<FertilizerPriceDto>()
 
-        var toCurrency = "USD"
+        var toCurrency = EnumCountry.ALL.currency()
         var currencyRate = 1.00
         val country = countryCode.toUpperCase()
 
         when (country) {
             EnumCountry.TZ.name -> {
-                toCurrency = "TZS"
+                toCurrency = EnumCountry.TZ.currency()
                 currencyRate = currencyProperties.tzsUsdRate!!
             }
             EnumCountry.NG.name -> {
-                toCurrency = "NGN"
+                toCurrency = EnumCountry.NG.currency()
                 currencyRate = currencyProperties.ngnUsdRate!!
             }
         }
@@ -80,12 +79,11 @@ constructor(
 
         val resp = modelMapper.map(saved, FertilizerPriceDto::class.java)
 
-        //default conversions
         resp.priceRange = conversion.convertFertilizerPriceToLocalCurrency(
                 minUsd = saved.minUsd!!,
                 maxUsd = saved.maxUsd!!,
                 currencyRate = 1.00,
-                toCurrency = "USD",
+                toCurrency = EnumCountry.ALL.currency(),
                 nearestValue = 1000.0)
 
         return resp
@@ -98,8 +96,6 @@ constructor(
         modelMapper.configuration.propertyCondition
         modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
 
-
-        //BeanUtils.copyProperties(fertilizerPriceRequest, entity)
         modelMapper.map(fertilizerPriceRequest, entity)
 
 

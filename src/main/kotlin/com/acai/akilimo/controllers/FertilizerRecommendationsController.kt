@@ -1,7 +1,5 @@
 package com.acai.akilimo.controllers
 
-
-import com.acai.akilimo.entities.Recommendation
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.request.RecommendationRequest
 import com.acai.akilimo.service.MessagingService

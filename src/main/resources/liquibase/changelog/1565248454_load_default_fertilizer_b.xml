@@ -9,7 +9,6 @@
                 file="/liquibase/changelog/data/fertilizer_list_b.csv"
                 tableName="available_fertilizer">
 
-
             <column name="name" header="name"/>
             <column name="type" header="type"/>
             <column name="price" header="price"/>
