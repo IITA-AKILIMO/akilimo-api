@@ -1,7 +1,6 @@
 package com.acai.akilimo.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import javax.persistence.Column
 
 class FertilizerList {
 

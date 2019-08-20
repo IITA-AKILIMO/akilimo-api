@@ -15,6 +15,7 @@ import java.io.Serializable
 @ToString(exclude = ["recommendation"])
 @EqualsAndHashCode(exclude = ["recommendation"])
 @Table(name = "request_fertilizer")
+@Deprecated("To be removed")
 class Fertilizer : Serializable {
 
     @Id
