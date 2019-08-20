@@ -1,6 +1,7 @@
 package com.acai.akilimo.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import javax.persistence.Column
 
 class FertilizerList {
 
@@ -29,4 +30,7 @@ class FertilizerList {
 
     @JsonProperty("pContent")
     var phosphateContent: String? = null
+
+    @Column(name = "sort_order")
+    var sortOrder: Int = 0
 }
