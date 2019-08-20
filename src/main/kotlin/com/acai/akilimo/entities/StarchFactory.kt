@@ -30,6 +30,8 @@ class StarchFactory {
     @Column(name = "factory_active")
     var factoryActive: Boolean = false
 
+    @Column(name = "sort_order")
+    var sortOrder: Int = 0
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)

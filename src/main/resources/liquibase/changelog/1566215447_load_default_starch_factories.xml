@@ -12,6 +12,7 @@
             <column name="factory_label" header="factory_label"/>
             <column name="country" header="country"/>
             <column name="factory_active" header="factory_active"/>
+            <column name="sort_order" header="sort_order"/>
         </loadData>
     </changeSet>
 

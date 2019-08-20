@@ -28,6 +28,7 @@
 
             <column name="factory_active" type="boolean" defaultValueBoolean="false"/>
 
+            <column name="sort_order" type="int" defaultValue="0"/>
 
             <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>

@@ -2,6 +2,7 @@ package com.acai.akilimo.service
 
 
 import com.acai.akilimo.entities.StarchFactory
+import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.interfaces.IStarchFactoryService
 import com.acai.akilimo.mapper.FertilizerDto
 import com.acai.akilimo.mapper.StarchFactoryDto
@@ -26,10 +27,10 @@ constructor(private val starchFactoryRepository: StarchFactoryRepository) : ISta
     override fun factories(countryCode: String): List<StarchFactoryDto> {
 
         val countries = ArrayList<String>()
-        countries.add("ALL")
+        countries.add(EnumCountry.ALL.name)
         countries.add(countryCode)
 
-        val factoryList = starchFactoryRepository.findByFactoryActiveIsTrueAndCountryInOrderByFactoryNameAsc(countries)
+        val factoryList = starchFactoryRepository.findByFactoryActiveIsTrueAndCountryInOrderBySortOrderAscFactoryNameAsc(countries)
         val factoryDtoList = ArrayList<StarchFactoryDto>()
 
         val country = countryCode.toUpperCase()

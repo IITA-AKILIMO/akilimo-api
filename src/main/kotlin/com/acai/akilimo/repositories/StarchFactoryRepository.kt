@@ -10,4 +10,6 @@ interface StarchFactoryRepository : JpaRepository<StarchFactory, Long> {
 fun findByFactoryActiveIsTrueAndCountryInOrderByFactoryNameDesc(countryCode: Collection<String>): List<StarchFactory>
 
 fun findByFactoryActiveIsTrueAndCountryInOrderByFactoryNameAsc(countryCode: Collection<String>): List<StarchFactory>
+
+fun findByFactoryActiveIsTrueAndCountryInOrderBySortOrderAscFactoryNameAsc(countryCode: Collection<String>): List<StarchFactory>
 }
