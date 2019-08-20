@@ -3,6 +3,7 @@ package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.AvailableFertilizers
+import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.interfaces.IFertilizerService
 import com.acai.akilimo.mapper.FertilizerDto
 import com.acai.akilimo.repositories.FertilizerRepository
@@ -33,21 +34,21 @@ constructor(
     override fun fertilizers(countryCode: String): List<FertilizerDto> {
 
         val countries = ArrayList<String>()
-        countries.add("ALL")
+        countries.add(EnumCountry.ALL.name)
         countries.add(countryCode)
 
         val fertilizerList = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderByNameAsc(countries)
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
-        var currencyCode = "USD"
+        var currencyCode = EnumCountry.ALL.currency()
         val country = countryCode.toUpperCase()
 
         when (country) {
-            "TZ" -> {
-                currencyCode = "TZS"
+            EnumCountry.TZ.name -> {
+                currencyCode = EnumCountry.TZ.currency()
             }
-            "NG" -> {
-                currencyCode = "NGN"
+            EnumCountry.NG.name -> {
+                currencyCode = EnumCountry.NG.currency()
             }
         }
 
