@@ -46,8 +46,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         var recommendationResponseDto: RecommendationResponseDto? = null
         val mapper = ObjectMapper()
         val modelMapper = ModelMapper()
-        // val requestPayload = computeRequest;
-        //prepare the fertillizers
         val requestPayload = this.prepareFertilizerPayload(computeRequest, fertilizerList)
 
 
@@ -62,14 +60,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         try {
 
             val entity = HttpEntity(requestPayload, headers)
-            val country = computeRequest.country//this indicates the responses has a message that needs to be processed
-            //check if it is an array
-            //extract the fertilizer recommendations
-            /*val computedData = objects[0] as ArrayList<Objects>
-                        val usercomputedData = objects[1] as ArrayList<Objects>
-                        val fertilizerRecText = objects[2] as ArrayList<Objects>
-                        val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
-                    */
+            val country = computeRequest.country
 
             var recommendationUrl: String? = null
             when (country) {
@@ -82,12 +73,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
             logger.info("Going to endpoint $recommendationUrl at: $dateTime")
 
-
-            //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
-
-
-            //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
-
             val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
 
             val objects = response.body
@@ -96,23 +81,13 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
                 if (objects[0] is LinkedHashMap<*, *>) {
                     val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
-
-                    /*val computedData = objects[0] as ArrayList<Objects>
-                        val usercomputedData = objects[1] as ArrayList<Objects>
-                        val fertilizerRecText = objects[2] as ArrayList<Objects>
-                        val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
-                    */
-
                     if (computedHashMap.containsKey("FR")) {
-                        //extract the fertilizer recommendations
                         try {
                             val rec = computedHashMap["FR"] as LinkedHashMap<String, ArrayList<Objects>>
                         } catch (ex: Exception) {
                             logger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
-                            //check if it is an array
                             val recommendation = computedHashMap["FR"]
                             if (recommendation is ArrayList<*>) {
-                                //this indicates the responses has a message that needs to be processed
                                 val frText = computedHashMap.getValue("FR") as ArrayList<String>
                                 recommendationResponseDto.fertilizerRecText = frText[0]
                                 recommendationResponseDto.hasResponse = true
@@ -121,15 +96,12 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                     }
 
                     if (computedHashMap.containsKey("SP")) {
-                        //extract the scheduled planting recommendations recommendations
                         try {
                             val rec = computedHashMap["SP"] as LinkedHashMap<String, ArrayList<Objects>>
                         } catch (ex: Exception) {
                             logger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
-                            //check if it is an array
                             val recommendation = computedHashMap["SP"]
                             if (recommendation is ArrayList<*>) {
-                                //this indicates the responses has a message that needs to be processed
                                 val spText = computedHashMap.getValue("SP") as ArrayList<String>
                                 recommendationResponseDto.scheduledPlantingRecText = spText[0]
                                 recommendationResponseDto.hasResponse = true
@@ -138,15 +110,12 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                     }
 
                     if (computedHashMap.containsKey("PP")) {
-                        //extract the scheduled planting recommendations recommendations
                         try {
                             val rec = computedHashMap["PP"] as LinkedHashMap<String, ArrayList<Objects>>
                         } catch (ex: Exception) {
                             logger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
-                            //check if it is an array
                             val recommendation = computedHashMap["PP"]
                             if (recommendation is ArrayList<*>) {
-                                //this indicates the responses has a message that needs to be processed
                                 val ppText = computedHashMap.getValue("PP") as ArrayList<String>
                                 recommendationResponseDto.plantingPracticeRecText = ppText[0]
                                 recommendationResponseDto.hasResponse = true
@@ -156,7 +125,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
 
                     if (computedHashMap.containsKey("IC")) {
-                        //extract the scheduled planting recommendations recommendations
                         try {
                             val rec = computedHashMap["IC"] as LinkedHashMap<String, ArrayList<Objects>>
                         } catch (ex: Exception) {
@@ -164,7 +132,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                             //check if it is an array
                             val recommendation = computedHashMap["IC"]
                             if (recommendation is ArrayList<*>) {
-                                //this indicates the responses has a message that needs to be processed
                                 val icText = computedHashMap.getValue("PP") as ArrayList<String>
                                 recommendationResponseDto.interCroppingRecText = icText[0]
                                 recommendationResponseDto.hasResponse = true
@@ -306,7 +273,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         }
 
 
-        //process custom fertilizers
         val fertilizerOneNames = EnumFertilizer.CUSTOM_FERT_ONE.fertilizerKey
 
         fertilizerOneNames.forEach { fertNameKey ->

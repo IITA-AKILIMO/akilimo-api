@@ -20,14 +20,8 @@ import java.util.*
 @Service
 class FertilizerService
 @Autowired
-constructor(
-        private val fertilizerRepository: FertilizerRepository,
-        akilimoConfigProperties: AkilimoConfigProperties
-) : IFertilizerService {
+constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
-    private val currencyProperties = akilimoConfigProperties.currency()
-
-    val conversion: CurrencyConversion = CurrencyConversion()
 
     private val modelMapper = ModelMapper()
 
