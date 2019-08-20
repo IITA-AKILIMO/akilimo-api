@@ -37,7 +37,7 @@ constructor(
         countries.add(EnumCountry.ALL.name)
         countries.add(countryCode)
 
-        val fertilizerList = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderByNameAsc(countries)
+        val fertilizerList = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
         var currencyCode = EnumCountry.ALL.currency()

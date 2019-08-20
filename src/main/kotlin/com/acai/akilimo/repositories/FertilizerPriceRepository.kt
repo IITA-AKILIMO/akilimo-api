@@ -13,6 +13,7 @@ interface FertilizerPriceRepository : JpaRepository<FertilizerPrices, Long> {
     fun findByActiveIsTrue(): List<FertilizerPrices>
 
     fun findByActiveIsTrueOrderBySortOrderDesc(): List<FertilizerPrices>
+
     fun findByActiveIsTrueOrderBySortOrderAsc(): List<FertilizerPrices>
-    //fun findByPriceActiveIsFalse():List<FertilizerPrices>
+
 }
