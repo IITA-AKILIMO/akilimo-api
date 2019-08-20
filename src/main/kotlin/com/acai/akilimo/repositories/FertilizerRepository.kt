@@ -10,6 +10,7 @@ interface FertilizerRepository : JpaRepository<AvailableFertilizers, Long> {
     fun findByFertilizerId(priceId: Long): AvailableFertilizers?
 
     fun findByAvailableIsTrueAndCountryInOrderByNameDesc(countryCode: Collection<String>): List<AvailableFertilizers>
-    fun findByAvailableIsTrueAndCountryInOrderByNameAsc(countryCode: Collection<String>): List<AvailableFertilizers>
+
+    fun findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countryCode: Collection<String>): List<AvailableFertilizers>
 
 }

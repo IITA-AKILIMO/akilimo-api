@@ -37,9 +37,4 @@ open class RecommendationResponseDto {
     var scheduledPlantingRecText: String? = null
 
     var hasResponse: Boolean = false
-
-
-    //var updatedAt: LocalDateTime? = null
-    //var createdAt: LocalDateTime? = null
-
 }

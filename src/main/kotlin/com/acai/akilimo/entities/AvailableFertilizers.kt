@@ -43,6 +43,7 @@ class AvailableFertilizers : Serializable {
     @Column(name = "price")
     var price: String? = "50"
 
+
     @Column(name = "available")
     @ApiModelProperty(example = "false", required = true)
     var available: Boolean = false
@@ -53,6 +54,9 @@ class AvailableFertilizers : Serializable {
 
     @Column(name = "country")
     var country: String? = null
+
+    @Column(name = "sort_order")
+    var sortOrder: Int = 0
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
