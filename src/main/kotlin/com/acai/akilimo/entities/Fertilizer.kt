@@ -42,10 +42,4 @@ class Fertilizer : Serializable {
     @Column(columnDefinition = "decimal", precision = 10, scale = 2)
     @ApiModelProperty(example = "50", required = true)
     var weight: Float?= 0.0F
-
-
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "request_id", referencedColumnName = "id")
-    @JsonIgnore
-    var recommendation: Recommendation? = null
 }

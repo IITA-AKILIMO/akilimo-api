@@ -2,15 +2,11 @@ package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.ComputeRequest
-import com.acai.akilimo.entities.FertilizerList
-import com.acai.akilimo.entities.Recommendation
-import com.acai.akilimo.entities.Response
+import com.acai.akilimo.request.FertilizerList
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.enums.EnumFertilizer
-import com.acai.akilimo.interfaces.IRecommendationService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
-import com.acai.akilimo.repositories.RecommendationRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
@@ -29,40 +25,11 @@ import java.util.*
 @Service
 class RecommendationService
 @Autowired
-constructor(private val recommendationRepository: RecommendationRepository,
-            private val restTemplate: RestTemplate,
-            akilimoConfigProperties: AkilimoConfigProperties) : IRecommendationService {
+constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: AkilimoConfigProperties) {
 
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
     private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
-
-    override fun listAllRequests(): List<Recommendation> {
-        return recommendationRepository.findAll()
-    }
-
-    @Deprecated("To be removed")
-    override fun saveRecommendationRequest(recommendation: Recommendation): Recommendation? {
-        try {
-            val fertilizerList = recommendation.addFertilizers(recommendation)
-
-            recommendation.fertilizers = fertilizerList
-
-            logger.info("Logging requests for fertilizer recommendations", 6)
-
-            val savedRequest = recommendationRepository.save(recommendation)
-
-            val computed = this.sendToComputeTool(savedRequest)
-
-            savedRequest.recommendationText = computed?.fertilizerRecText;
-
-            return savedRequest
-        } catch (ex: Exception) {
-            logger.error(ex.message)
-        }
-
-        return null
-    }
 
 
     fun prepareFertilizerList(fertilizers: Set<FertilizerList>): LinkedHashMap<String, FertilizerList> {
@@ -250,48 +217,6 @@ constructor(private val recommendationRepository: RecommendationRepository,
         return recommendationResponseDto
     }
 
-
-    @Deprecated("This function is subject to modification")
-    private fun sendToComputeTool(recommendation: Recommendation): RecommendationResponseDto? {
-        val recommendationResponseDto = RecommendationResponseDto()
-
-        val headers = this.setHTTPHeaders()
-
-        logger.info("Payload is $recommendation")
-        logger.info("Request has entered here, proceeding " + recommendation.harvestDate!!)
-
-        val mapper = ObjectMapper()
-        val modelMapper = ModelMapper()
-        //send to plumber
-        try {
-            val entity = HttpEntity(recommendation, headers)
-            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl!!
-
-            logger.info("Going to endpoint $fertilizerRecommendationUrl")
-            val response = restTemplate.postForEntity(
-                    fertilizerRecommendationUrl, entity, Array<Any>::class.java)
-
-            val objects = response.body
-
-            if (objects != null) {
-
-                val computedData = objects[0] as ArrayList<Objects>
-                val usercomputedData = objects[1] as ArrayList<Objects>
-                val recommendationText = objects[2] as ArrayList<Objects>
-
-                val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
-
-
-                recommendationResponseDto.fertilizerRecText = objects[2].toString()
-            }
-        } catch (ex: Exception) {
-            logger.error("An error occurred " + ex.message)
-        }
-
-        logger.info("Returning response to requesting client")
-
-        return recommendationResponseDto
-    }
 
     private fun setHTTPHeaders(): HttpHeaders {
         val headers = HttpHeaders()

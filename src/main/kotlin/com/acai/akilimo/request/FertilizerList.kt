@@ -1,4 +1,4 @@
-package com.acai.akilimo.entities
+package com.acai.akilimo.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
