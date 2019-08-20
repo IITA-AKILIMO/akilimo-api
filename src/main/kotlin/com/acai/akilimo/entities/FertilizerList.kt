@@ -30,7 +30,4 @@ class FertilizerList {
 
     @JsonProperty("pContent")
     var phosphateContent: String? = null
-
-    @Column(name = "sort_order")
-    var sortOrder: Int = 0
 }
