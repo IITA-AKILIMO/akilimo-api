@@ -60,27 +60,24 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         val message = Message()
         message.from = infobipSms.sender
         message.destinations = Collections.singletonList(destination)
+        message.notifyUrl = webHookUrl
         if (response.fertilizerRecText != null) {
             message.text = response.fertilizerRecText
-            message.notifyUrl = webHookUrl
             messageList.add(message)
         }
 
         if (response.interCroppingRecText != null) {
             message.text = response.interCroppingRecText
-            message.notifyUrl = webHookUrl
             messageList.add(message)
         }
 
         if (response.plantingPracticeRecText != null) {
             message.text = response.plantingPracticeRecText
-            message.notifyUrl = webHookUrl
             messageList.add(message)
         }
 
         if (response.scheduledPlantingRecText != null) {
             message.text = response.scheduledPlantingRecText
-            message.notifyUrl = webHookUrl
             messageList.add(message)
         }
         return messageList
