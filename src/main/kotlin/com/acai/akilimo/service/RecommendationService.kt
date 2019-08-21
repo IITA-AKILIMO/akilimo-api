@@ -89,8 +89,10 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                             val recommendation = computedHashMap["FR"]
                             if (recommendation is ArrayList<*>) {
                                 val frText = computedHashMap.getValue("FR") as ArrayList<String>
-                                recommendationResponseDto.fertilizerRecText = frText[0]
-                                recommendationResponseDto.hasResponse = true
+                                if (frText.size == 1) {
+                                    recommendationResponseDto.fertilizerRecText = frText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
                             }
                         }
                     }
@@ -103,8 +105,10 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                             val recommendation = computedHashMap["SP"]
                             if (recommendation is ArrayList<*>) {
                                 val spText = computedHashMap.getValue("SP") as ArrayList<String>
-                                recommendationResponseDto.scheduledPlantingRecText = spText[0]
-                                recommendationResponseDto.hasResponse = true
+                                if (spText.size == 1) {
+                                    recommendationResponseDto.scheduledPlantingRecText = spText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
                             }
                         }
                     }
@@ -117,8 +121,10 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                             val recommendation = computedHashMap["PP"]
                             if (recommendation is ArrayList<*>) {
                                 val ppText = computedHashMap.getValue("PP") as ArrayList<String>
-                                recommendationResponseDto.plantingPracticeRecText = ppText[0]
-                                recommendationResponseDto.hasResponse = true
+                                if (ppText.size == 1) {
+                                    recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
                             }
                         }
                     }
@@ -133,8 +139,10 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                             val recommendation = computedHashMap["IC"]
                             if (recommendation is ArrayList<*>) {
                                 val icText = computedHashMap.getValue("PP") as ArrayList<String>
-                                recommendationResponseDto.interCroppingRecText = icText[0]
-                                recommendationResponseDto.hasResponse = true
+                                if (icText.size == 1) {
+                                    recommendationResponseDto.interCroppingRecText = icText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
                             }
                         }
                     }
