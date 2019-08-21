@@ -36,7 +36,7 @@ constructor(private val recommendationService: RecommendationService, private va
                 //send sms
                 when {
                     recommendationRequest.computeRequest.sendSms && response.hasResponse -> {
-                        val resp = messagingService.sendTextMessage(response)
+                        val resp = messagingService.sendTextMessage(response, recommendationRequest.computeRequest.sendSms)
                         logger.debug("Sms sending response ${resp.toString()}")
                     }
                     else -> logger.info("There are no responses for sending the sms")
@@ -44,7 +44,7 @@ constructor(private val recommendationService: RecommendationService, private va
 
                 when {
                     recommendationRequest.computeRequest.email && response.hasResponse -> {
-                        val resp = messagingService.sendEmailMessage(response)
+                        val resp = messagingService.sendEmailMessage(response, recommendationRequest.computeRequest.email)
                         logger.info("email sending response $resp")
                     }
                 }

@@ -39,8 +39,10 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
                  .create()
      }*/
 
-    @Throws(RetrofitError::class)
-    override fun sendTextMessage(response: RecommendationResponseDto): SMSResponse? {
+    override fun sendTextMessage(response: RecommendationResponseDto, sendSms: Boolean) {
+        if (!sendSms) {
+            return
+        }
         val basicAuthConfiguration = BasicAuthConfiguration(infobipSms.userName, infobipSms.userPass)
         val messageList = buildMessagePayload(response)
         val client = SendMultipleTextualSmsAdvanced(basicAuthConfiguration)
@@ -49,10 +51,8 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         if (messageList.size > 0) {
             //requestBody.messages = Collections.singletonList(message)
             requestBody.messages = messageList
-
-            return client.execute(requestBody)
+            client.execute(requestBody)
         }
-        return null
     }
 
     private fun buildMessagePayload(response: RecommendationResponseDto): ArrayList<Message> {
@@ -125,7 +125,10 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         return null
     }
 
-    override fun sendEmailMessage(response: RecommendationResponseDto) {
+    override fun sendEmailMessage(response: RecommendationResponseDto, email: Boolean) {
+        if (!email) {
+            return
+        }
         logger.info("This feature for sending emails has not been implemented yet, please try again later ${response.userEmail}")
     }
 
