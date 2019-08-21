@@ -5,7 +5,7 @@ import lombok.Data
 
 @Data
 open class RecommendationRequest(
-        @JsonProperty("computeValues")
+        @JsonProperty("computeRequest")
         var computeRequest: ComputeRequest,
 
         @JsonProperty("fertilizerList")
