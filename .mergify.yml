@@ -2,7 +2,7 @@
 pull_request_rules:
   - name: automatic merge
     conditions:
-      - label!=DNM
+#      - label!=DNM
       - '#approved-reviews-by>=1'
       - 'status-success=ci/circleci'
 #      - 'status-success=continuous-integration/travis-ci/pr'
