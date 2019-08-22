@@ -1,12 +1,12 @@
 package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.request.ComputeRequest
-import com.acai.akilimo.request.FertilizerList
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.enums.EnumFertilizer
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
+import com.acai.akilimo.request.ComputeRequest
+import com.acai.akilimo.request.FertilizerList
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
@@ -295,6 +295,15 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                 requestPayload.newFertPotassiumContent = customFertilizerOne.potassiumContent
             }
 
+        }
+
+        //@TODO Make sure to remove harcoded values
+        if (requestPayload.country == EnumCountry.TZ.name) {
+            requestPayload.mapLat = -7.725
+            requestPayload.mapLong = -37.875
+        } else if (requestPayload.country == EnumCountry.TZ.name) {
+            requestPayload.mapLat = -8.725
+            requestPayload.mapLong = -4.025
         }
 
         return requestPayload

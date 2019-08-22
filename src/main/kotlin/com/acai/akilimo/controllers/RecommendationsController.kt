@@ -44,7 +44,7 @@ class RecommendationsController(private val recommendationService: Recommendatio
                     messagingService.sendTextMessage(response, recommendationRequest.computeRequest.sendSms)
                 }
                 recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
-                ResponseEntity(recommendationResponseDto, HttpStatus.OK)
+                return ResponseEntity(recommendationResponseDto, HttpStatus.OK)
             }
         }
         return ResponseEntity(recommendationResponseDto, HttpStatus.EXPECTATION_FAILED)
