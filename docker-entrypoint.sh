@@ -55,7 +55,6 @@ else
     JAVA_OPTS="$JAVA_OPTS -Dplumber.demo-mode=$DEMO_MODE"
 fi
 
-
 if [ -z "$TZ_DEMO_ENDPOINT" ]; then
     echo 'No tanzanian demo endpoint given'
 else
