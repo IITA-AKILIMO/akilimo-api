@@ -112,6 +112,9 @@ open class ComputeRequest {
         const val DEFAULT_BAG_WEIGHT_INT = 50
     }
 
+    @JsonProperty("demo")
+    var demo: Boolean = false
+
     @NotEmpty(message = "Country is required")
     @JsonProperty("country")
     @ApiModelProperty(example = "NG", required = true)

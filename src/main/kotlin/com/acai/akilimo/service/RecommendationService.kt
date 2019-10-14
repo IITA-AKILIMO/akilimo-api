@@ -61,6 +61,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
             val entity = HttpEntity(requestPayload, headers)
             val country = computeRequest.country
+            val demo = computeRequest.demo
 
             var recommendationUrl: String? = null
             when (country) {

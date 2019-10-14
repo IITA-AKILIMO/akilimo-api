@@ -16,5 +16,11 @@ class PlumberProperties {
     var recommendationNg: String? = null
 
     @NotBlank
+    var recommendationNgDemo: String? = null
+
+    @NotBlank
+    var recommendationTzDemo: String? = null
+
+    @NotBlank
     var recommendationTz: String? = null
 }
