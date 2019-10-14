@@ -49,6 +49,13 @@ else
     JAVA_OPTS="$JAVA_OPTS -Dplumber.base-url=$PLUMBER_ENDPOINT"
 fi
 
+if [ -z "$DEMO_MODE" ]; then
+    echo 'No demo flag given defaulting to false'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dplumber.demo-mode=$DEMO_MODE"
+fi
+
+
 if [ -z "$TZ_DEMO_ENDPOINT" ]; then
     echo 'No tanzanian demo endpoint given'
 else
