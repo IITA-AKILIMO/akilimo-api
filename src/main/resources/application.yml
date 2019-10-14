@@ -31,7 +31,7 @@ plumber:
   recommendation-tz: v2/dst/recommendation/tz/compute
   recommendation-ng-demo: v2/dst/recommendation/demo/ng/compute
   recommendation-tz-demo: v2/dst/recommendation/demo/tz/compute
-  demo: false
+  demo-mode: false
 
 messaging:
   test-numbers:

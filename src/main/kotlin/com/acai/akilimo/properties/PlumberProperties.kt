@@ -21,7 +21,7 @@ class PlumberProperties {
     var recommendationTz: String? = null
 
     @NotBlank
-    val demo: Boolean = false
+    var demoMode: Boolean  = false
 
     @NotBlank
     var recommendationNgDemo: String? = null
