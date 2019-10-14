@@ -49,17 +49,32 @@ else
     JAVA_OPTS="$JAVA_OPTS -Dplumber.base-url=$PLUMBER_ENDPOINT"
 fi
 
+if [ -z "$TZ_DEMO_ENDPOINT" ]; then
+    echo 'No tanzanian demo endpoint given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-tz-demo=$TZ_DEMO_ENDPOINT"
+fi
+
+if [ -z "$NG_DEMO_ENDPOINT" ]; then
+    echo 'No nigerian demo endpoint given'
+else
+    JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-ng-demo=$NG_DEMO_ENDPOINT"
+fi
+
+
 if [ -z "$TZ_ENDPOINT" ]; then
     echo 'No tanzanian endpoint given'
 else
     JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-tz=$TZ_ENDPOINT"
 fi
 
+
 if [ -z "$NG_ENDPOINT" ]; then
     echo 'No nigerian endpoint given'
 else
     JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-ng=$NG_ENDPOINT"
 fi
+
 
 #global messaging parameters
 if [ -z "$MS_WEBHOOK" ]; then

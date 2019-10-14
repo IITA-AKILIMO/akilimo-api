@@ -61,13 +61,19 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
             val entity = HttpEntity(requestPayload, headers)
             val country = computeRequest.country
+            val demoMode = plumberPropertiesProperties.demo
 
             var recommendationUrl: String? = null
+
             when (country) {
-                EnumCountry.NG.name ->
-                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
-                EnumCountry.TZ.name ->
-                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
+                EnumCountry.NG.name -> recommendationUrl = when {
+                    demoMode -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNgDemo!!}"
+                    else -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
+                }
+                EnumCountry.TZ.name -> recommendationUrl = when {
+                    demoMode -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTzDemo!!}"
+                    else -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
+                }
             }
             recommendationResponseDto = modelMapper.map(requestPayload, RecommendationResponseDto::class.java)
 
