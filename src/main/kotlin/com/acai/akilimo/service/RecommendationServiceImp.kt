@@ -1,7 +1,6 @@
 package com.acai.akilimo.service
 
 import com.acai.akilimo.entities.Recommendation
-import com.acai.akilimo.entities.RecommendationRequest
 import com.acai.akilimo.repositories.RecommendationRepository
 import com.acai.akilimo.interfaces.IRecommendationService
 import org.slf4j.LoggerFactory
