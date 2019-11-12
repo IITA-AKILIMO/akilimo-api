@@ -31,8 +31,8 @@ class SwaggerConfiguration {
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
                 .title("Crop manager API")
-                .description("This page lists all the rest apis the Akilimo api.")
-                .version("1.0.0")
+                .description("This page lists all the endpoints the Akilimo api.")
+                .version("2.0.0")
                 .build()
     }
 
