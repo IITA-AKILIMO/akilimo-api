@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate
 import java.util.*
 
 
-@Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS")
+@Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS", "DuplicatedCode")
 @Service
 class RecommendationService
 @Autowired
@@ -301,16 +301,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             }
 
         }
-
-        //@TODO Make sure to remove harcoded values
-        if (requestPayload.country == EnumCountry.TZ.name) {
-            requestPayload.mapLat = -7.725
-            requestPayload.mapLong = -37.875
-        } else if (requestPayload.country == EnumCountry.TZ.name) {
-            requestPayload.mapLat = -8.725
-            requestPayload.mapLong = -4.025
-        }
-
         return requestPayload
     }
 }
