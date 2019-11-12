@@ -5,8 +5,7 @@ import infobip.api.model.sms.mt.send.SMSResponse
 import retrofit.RetrofitError
 
 interface IMessagingService {
-    fun sendEmailMessage(response: RecommendationResponseDto)
+    fun sendEmailMessage(response: RecommendationResponseDto, email: Boolean)
 
-    @Throws(RetrofitError::class)
-    fun sendTextMessage(response: RecommendationResponseDto): SMSResponse?
+    fun sendTextMessage(response: RecommendationResponseDto, sendSms: Boolean)
 }

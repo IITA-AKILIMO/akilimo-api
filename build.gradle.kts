@@ -28,7 +28,7 @@ val timestamp = current.format(formatter)
 
 var versionNumber: String? = "3"//date.get(Calendar.DAY_OF_YEAR).toString()
 var minorRelease: String? = date.get(Calendar.DAY_OF_YEAR).toString()
-var buildNumber: String? = System.getenv("BUILD_NUMBER")
+var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
 var revisionNumber: String? = timestamp
 
 
