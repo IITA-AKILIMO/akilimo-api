@@ -1,15 +1,12 @@
 package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.ComputeRequest
-import com.acai.akilimo.entities.FertilizerList
-import com.acai.akilimo.entities.Recommendation
-import com.acai.akilimo.entities.Response
-import com.acai.akilimo.enum.EnumFertilizer
-import com.acai.akilimo.interfaces.IRecommendationService
+import com.acai.akilimo.enums.EnumCountry
+import com.acai.akilimo.enums.EnumFertilizer
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
-import com.acai.akilimo.repositories.RecommendationRepository
+import com.acai.akilimo.request.ComputeRequest
+import com.acai.akilimo.request.FertilizerList
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
@@ -24,44 +21,15 @@ import org.springframework.web.client.RestTemplate
 import java.util.*
 
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS")
 @Service
 class RecommendationService
 @Autowired
-constructor(private val recommendationRepository: RecommendationRepository,
-            private val restTemplate: RestTemplate,
-            akilimoConfigProperties: AkilimoConfigProperties) : IRecommendationService {
+constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: AkilimoConfigProperties) {
 
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
     private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
-
-    override fun listAllRequests(): List<Recommendation> {
-        return recommendationRepository.findAll()
-    }
-
-    @Deprecated("To be removed")
-    override fun saveRecommendationRequest(recommendation: Recommendation): Recommendation? {
-        try {
-            val fertilizerList = recommendation.addFertilizers(recommendation)
-
-            recommendation.fertilizers = fertilizerList
-
-            logger.info("Logging requests for fertilizer recommendations", 6)
-
-            val savedRequest = recommendationRepository.save(recommendation)
-
-            val computed = this.sendToComputeTool(savedRequest)
-
-            savedRequest.recommendationText = computed?.fertilizerRecText;
-
-            return savedRequest
-        } catch (ex: Exception) {
-            logger.error(ex.message)
-        }
-
-        return null
-    }
 
 
     fun prepareFertilizerList(fertilizers: Set<FertilizerList>): LinkedHashMap<String, FertilizerList> {
@@ -78,8 +46,6 @@ constructor(private val recommendationRepository: RecommendationRepository,
         var recommendationResponseDto: RecommendationResponseDto? = null
         val mapper = ObjectMapper()
         val modelMapper = ModelMapper()
-        // val requestPayload = computeRequest;
-        //prepare the fertillizers
         val requestPayload = this.prepareFertilizerPayload(computeRequest, fertilizerList)
 
 
@@ -94,31 +60,23 @@ constructor(private val recommendationRepository: RecommendationRepository,
         try {
 
             val entity = HttpEntity(requestPayload, headers)
-            val country = computeRequest.country//this indicates the responses has a message that needs to be processed
-            //check if it is an array
-            //extract the fertilizer recommendations
-            /*val computedData = objects[0] as ArrayList<Objects>
-                        val usercomputedData = objects[1] as ArrayList<Objects>
-                        val fertilizerRecText = objects[2] as ArrayList<Objects>
-                        val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
-                    */
-
+            val country = computeRequest.country
+            val demoMode = plumberPropertiesProperties.demoMode
             var recommendationUrl: String? = null
+
             when (country) {
-                "NG" ->
-                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
-                "TZ" ->
-                    recommendationUrl = "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
+                EnumCountry.NG.name -> recommendationUrl = when {
+                    demoMode -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNgDemo!!}"
+                    else -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
+                }
+                EnumCountry.TZ.name -> recommendationUrl = when {
+                    demoMode -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTzDemo!!}"
+                    else -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
+                }
             }
             recommendationResponseDto = modelMapper.map(requestPayload, RecommendationResponseDto::class.java)
 
             logger.info("Going to endpoint $recommendationUrl at: $dateTime")
-
-
-            //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
-
-
-            //val response = restTemplate.postForEntity(fertilizerRecommendationUrl, jsonString, Array<Any>::class.java)
 
             val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
 
@@ -128,26 +86,68 @@ constructor(private val recommendationRepository: RecommendationRepository,
 
                 if (objects[0] is LinkedHashMap<*, *>) {
                     val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
-
-                    /*val computedData = objects[0] as ArrayList<Objects>
-                        val usercomputedData = objects[1] as ArrayList<Objects>
-                        val fertilizerRecText = objects[2] as ArrayList<Objects>
-                        val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
-                    */
-
                     if (computedHashMap.containsKey("FR")) {
-                        //extract the fertilizer recommendations
                         try {
                             val rec = computedHashMap["FR"] as LinkedHashMap<String, ArrayList<Objects>>
                         } catch (ex: Exception) {
-                            logger.error("Error processing linked hash, must be array, going to array next ${ex.message}")
-                            //check if it is an array
+                            logger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
                             val recommendation = computedHashMap["FR"]
                             if (recommendation is ArrayList<*>) {
-                                //this indicates the responses has a message that needs to be processed
                                 val frText = computedHashMap.getValue("FR") as ArrayList<String>
-                                recommendationResponseDto.fertilizerRecText = frText[0]
-                                recommendationResponseDto.hasResponse = true
+                                if (frText.size == 1) {
+                                    recommendationResponseDto.fertilizerRecText = frText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
+                            }
+                        }
+                    }
+
+                    if (computedHashMap.containsKey("SP")) {
+                        try {
+                            val rec = computedHashMap["SP"] as LinkedHashMap<String, ArrayList<Objects>>
+                        } catch (ex: Exception) {
+                            logger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
+                            val recommendation = computedHashMap["SP"]
+                            if (recommendation is ArrayList<*>) {
+                                val spText = computedHashMap.getValue("SP") as ArrayList<String>
+                                if (spText.size == 1) {
+                                    recommendationResponseDto.scheduledPlantingRecText = spText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
+                            }
+                        }
+                    }
+
+                    if (computedHashMap.containsKey("PP")) {
+                        try {
+                            val rec = computedHashMap["PP"] as LinkedHashMap<String, ArrayList<Objects>>
+                        } catch (ex: Exception) {
+                            logger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
+                            val recommendation = computedHashMap["PP"]
+                            if (recommendation is ArrayList<*>) {
+                                val ppText = computedHashMap.getValue("PP") as ArrayList<String>
+                                if (ppText.size == 1) {
+                                    recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
+                            }
+                        }
+                    }
+
+
+                    if (computedHashMap.containsKey("IC")) {
+                        try {
+                            val rec = computedHashMap["IC"] as LinkedHashMap<String, ArrayList<Objects>>
+                        } catch (ex: Exception) {
+                            logger.error("Error processing linked hash for IC, must be array, going to array next ${ex.message}")
+                            //check if it is an array
+                            val recommendation = computedHashMap["IC"]
+                            if (recommendation is ArrayList<*>) {
+                                val icText = computedHashMap.getValue("PP") as ArrayList<String>
+                                if (icText.size == 1) {
+                                    recommendationResponseDto.interCroppingRecText = icText[0]
+                                    recommendationResponseDto.hasResponse = true
+                                }
                             }
                         }
                     }
@@ -197,48 +197,6 @@ constructor(private val recommendationRepository: RecommendationRepository,
         return recommendationResponseDto
     }
 
-
-    @Deprecated("This function is subject to modification")
-    private fun sendToComputeTool(recommendation: Recommendation): RecommendationResponseDto? {
-        val recommendationResponseDto = RecommendationResponseDto()
-
-        val headers = this.setHTTPHeaders()
-
-        logger.info("Payload is $recommendation")
-        logger.info("Request has entered here, proceeding " + recommendation.harvestDate!!)
-
-        val mapper = ObjectMapper()
-        val modelMapper = ModelMapper()
-        //send to plumber
-        try {
-            val entity = HttpEntity(recommendation, headers)
-            val fertilizerRecommendationUrl = plumberPropertiesProperties.baseUrl!!
-
-            logger.info("Going to endpoint $fertilizerRecommendationUrl")
-            val response = restTemplate.postForEntity(
-                    fertilizerRecommendationUrl, entity, Array<Any>::class.java)
-
-            val objects = response.body
-
-            if (objects != null) {
-
-                val computedData = objects[0] as ArrayList<Objects>
-                val usercomputedData = objects[1] as ArrayList<Objects>
-                val recommendationText = objects[2] as ArrayList<Objects>
-
-                val values = mapper.readValue(mapper.writeValueAsString(computedData), Array<Response>::class.java)
-
-
-                recommendationResponseDto.fertilizerRecText = objects[2].toString()
-            }
-        } catch (ex: Exception) {
-            logger.error("An error occurred " + ex.message)
-        }
-
-        logger.info("Returning response to requesting client")
-
-        return recommendationResponseDto
-    }
 
     private fun setHTTPHeaders(): HttpHeaders {
         val headers = HttpHeaders()
@@ -328,7 +286,6 @@ constructor(private val recommendationRepository: RecommendationRepository,
         }
 
 
-        //process custom fertilizers
         val fertilizerOneNames = EnumFertilizer.CUSTOM_FERT_ONE.fertilizerKey
 
         fertilizerOneNames.forEach { fertNameKey ->
@@ -343,6 +300,15 @@ constructor(private val recommendationRepository: RecommendationRepository,
                 requestPayload.newFertPotassiumContent = customFertilizerOne.potassiumContent
             }
 
+        }
+
+        //@TODO Make sure to remove harcoded values
+        if (requestPayload.country == EnumCountry.TZ.name) {
+            requestPayload.mapLat = -7.725
+            requestPayload.mapLong = -37.875
+        } else if (requestPayload.country == EnumCountry.TZ.name) {
+            requestPayload.mapLat = -8.725
+            requestPayload.mapLong = -4.025
         }
 
         return requestPayload

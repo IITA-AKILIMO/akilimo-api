@@ -1,0 +1,5 @@
+{
+  "KOTLIN": {
+    "TOO_MANY_IVARS": [15, 19, 30]
+  }
+}

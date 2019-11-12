@@ -8,7 +8,6 @@ import com.acai.akilimo.service.RecommendationService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -38,29 +37,16 @@ class RecommendationsController(private val recommendationService: Recommendatio
         val fertilizerList = recommendationService.prepareFertilizerList(recommendationRequest.fertilizerList)
         val response = recommendationService.computeRecommendations(recommendationRequest.computeRequest, fertilizerList)
 
-
-        return when {
+        when {
             response != null -> {
-                //send sms
-                when {
-                    recommendationRequest.computeRequest.sendSms && response.hasResponse -> {
-                        val resp = messagingService.sendTextMessage(response)
-                        logger.debug("Sms sending response ${resp.toString()}")
-                    }
-                    else -> logger.info("There are no responses for sending the sms")
-                }
-
-                when {
-                    recommendationRequest.computeRequest.email && response.hasResponse -> {
-                        val resp = messagingService.sendEmailMessage(response)
-                        logger.info("email sending response $resp")
-                    }
+                if (response.hasResponse) {
+                    messagingService.sendEmailMessage(response, recommendationRequest.computeRequest.email)
+                    messagingService.sendTextMessage(response, recommendationRequest.computeRequest.sendSms)
                 }
                 recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
-                ResponseEntity(recommendationResponseDto, HttpStatus.OK)
+                return ResponseEntity(recommendationResponseDto, HttpStatus.OK)
             }
-            else -> ResponseEntity(recommendationResponseDto, HttpStatus.EXPECTATION_FAILED)
         }
-
+        return ResponseEntity(recommendationResponseDto, HttpStatus.EXPECTATION_FAILED)
     }
 }
