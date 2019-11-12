@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.util.*
 
-
 @Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS", "DuplicatedCode")
 @Service
 class RecommendationService
@@ -301,6 +300,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             }
 
         }
+      
         return requestPayload
     }
 }
