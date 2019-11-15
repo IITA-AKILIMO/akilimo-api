@@ -459,7 +459,7 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var sspBagWeight: Int = 0
 
-
+/*
     @JsonProperty("newFert1name")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var newFert1name: String? = null
@@ -479,7 +479,7 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var newFert1BagWeight: Int = 0
 
-/*
+
     @JsonProperty("newFert2name")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var newFert2name: String? = null

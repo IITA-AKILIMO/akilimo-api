@@ -285,22 +285,14 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         }
 
 
-        val fertilizerOneNames = EnumFertilizer.CUSTOM_FERT_ONE.fertilizerKey
-
-        fertilizerOneNames.forEach { fertNameKey ->
-
-            if (fertilizerList.containsKey(fertNameKey)) {
-                val customFertilizerOne = fertilizerList[fertNameKey]!!
-                requestPayload.newFert1name = customFertilizerOne.fertilizerTypeName!!
-                requestPayload.newFert1BagWeight = customFertilizerOne.fertilizerWeight!!
-                requestPayload.newFertCostPerBag = customFertilizerOne.fertilizerCostPerBag!!
-                requestPayload.newFert1NitrogenContent = customFertilizerOne.nitrogenContent
-                requestPayload.newFert1PhosphateContent = customFertilizerOne.phosphateContent
-                requestPayload.newFertPotassiumContent = customFertilizerOne.potassiumContent
-            }
-
+        //@TODO fix this in the mobile app
+        when {
+            requestPayload.cassavaProduceType == "NA" -> requestPayload.cassavaProduceType = "root"
         }
-      
+
+        when{
+            requestPayload.cassavaUnitWeight == 0 -> requestPayload.cassavaUnitWeight = 50
+        }
         return requestPayload
     }
 }
