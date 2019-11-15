@@ -289,6 +289,10 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         when {
             requestPayload.cassavaProduceType == "NA" -> requestPayload.cassavaProduceType = "root"
         }
+
+        when{
+            requestPayload.cassavaUnitWeight == 0 -> requestPayload.cassavaUnitWeight = 50
+        }
         return requestPayload
     }
 }
