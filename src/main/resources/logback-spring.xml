@@ -14,8 +14,11 @@
         <encoder>
             <charset>utf-8</charset>
             <pattern>
-                %d %-5level [%thread] %logger{0}: %msg%n
+                %msg%n
             </pattern>
+<!--            <pattern>-->
+<!--                %d %-5level [%thread] %logger{0}: %msg%n-->
+<!--            </pattern>-->
         </encoder>
     </appender>
 

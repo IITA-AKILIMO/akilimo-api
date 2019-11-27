@@ -33,15 +33,13 @@ class RecommendationsController(private val recommendationService: Recommendatio
 
         myLogger.info("Request from mobile application is");
         myLogger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
-        //val response = recommendationService.saveRecommendationRequest(request!!)
-        val fertilizerList = recommendationService.prepareFertilizerList(recommendationRequest.fertilizerList)
-        val response = recommendationService.computeRecommendations(recommendationRequest.computeRequest, fertilizerList)
+        val response = recommendationService.computeRecommendations(recommendationRequest)
 
         when {
             response != null -> {
                 if (response.hasResponse) {
-                    messagingService.sendEmailMessage(response, recommendationRequest.computeRequest.email)
-                    messagingService.sendTextMessage(response, recommendationRequest.computeRequest.sendSms)
+                    messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
+                    messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
                 }
                 recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
                 return ResponseEntity(recommendationResponseDto, HttpStatus.OK)

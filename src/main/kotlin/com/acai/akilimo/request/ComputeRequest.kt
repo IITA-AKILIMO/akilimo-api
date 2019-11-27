@@ -297,36 +297,6 @@ open class ComputeRequest {
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var maxInvestment: String? = null
 
-    @JsonProperty("SMS")
-    var sendSms: Boolean = false
-
-    @JsonProperty("email")
-    var email: Boolean = false
-
-    @JsonProperty("userPhoneCC")
-    @ApiModelProperty(example = "254", required = true)
-    var mobileCountryCode: String? = null
-
-    @JsonProperty("userPhoneNr")
-    @ApiModelProperty(example = "0711898343", required = true)
-    var mobileNumber: String? = null
-
-    @JsonProperty("fullPhoneNumber")
-    @ApiModelProperty(example = "254711898343", required = true)
-    var fullPhoneNumber: String? = null
-
-    @JsonProperty("userName")
-    @ApiModelProperty(example = "Akilimo", required = true)
-    var userName: String? = null
-
-    @JsonProperty("userEmail")
-    @ApiModelProperty(example = "akilimo@akilimo.org", required = true)
-    var userEmail: String? = null
-
-    @JsonProperty("userField")
-    @ApiModelProperty(example = "Field description", required = true)
-    var fieldDescription: String? = null
-
     @JsonProperty("riskAtt")
     var riskAttitude: Int = 0
 }

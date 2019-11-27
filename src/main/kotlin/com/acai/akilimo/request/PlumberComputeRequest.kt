@@ -367,7 +367,7 @@ open class PlumberComputeRequest {
     var ureaCostPerBag: String = DEFAULT_UNAVAILABLE
     @JsonProperty("ureaBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var ureaBagWeight: Int = 0
+    var ureaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("MOPavailable")
     var mopAvailable: Boolean = false
@@ -376,7 +376,7 @@ open class PlumberComputeRequest {
     var mopCostPerBag: String = DEFAULT_UNAVAILABLE
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     @JsonProperty("MOPBagWt")
-    var mopBagWeight: Int = 0
+    var mopBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("DAPavailable")
     var dapAvailable: Boolean = false
@@ -385,7 +385,7 @@ open class PlumberComputeRequest {
     var dapCostPerBag: String = DEFAULT_UNAVAILABLE
     @JsonProperty("DAPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var dapBagWeight: Int = 0
+    var dapBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("NPK201010available")
     var npkTwentyAvailable: Boolean = false
@@ -394,7 +394,7 @@ open class PlumberComputeRequest {
     var npkTwentyCostPerBag: String = DEFAULT_UNAVAILABLE
     @JsonProperty("NPK201010BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var npkTwentyBagWeight: Int = 0
+    var npkTwentyBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("NPK151515available")
     var npkFifteenAvailable: Boolean = false
@@ -448,7 +448,7 @@ open class PlumberComputeRequest {
     var canCostPerBag: String = DEFAULT_UNAVAILABLE
     @JsonProperty("CANBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var canBagWeight: Int = 0
+    var canBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("SSPavailable")
     var sspAvailable: Boolean = false
@@ -457,7 +457,7 @@ open class PlumberComputeRequest {
     var sspCostPerBag: String = DEFAULT_UNAVAILABLE
     @JsonProperty("SSPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var sspBagWeight: Int = 0
+    var sspBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
 /*
     @JsonProperty("newFert1name")

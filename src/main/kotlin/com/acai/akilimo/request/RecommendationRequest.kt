@@ -5,9 +5,10 @@ import lombok.Data
 
 @Data
 open class RecommendationRequest(
+        @JsonProperty("userInfo")
+        var userInfo: UserInfo,
         @JsonProperty("computeRequest")
         var computeRequest: ComputeRequest,
-
         @JsonProperty("fertilizerList")
         var fertilizerList: Set<FertilizerList>
 )

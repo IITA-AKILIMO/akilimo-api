@@ -5,9 +5,9 @@ import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.enums.EnumFertilizer
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
-import com.acai.akilimo.request.ComputeRequest
 import com.acai.akilimo.request.FertilizerList
 import com.acai.akilimo.request.PlumberComputeRequest
+import com.acai.akilimo.request.RecommendationRequest
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
@@ -30,37 +30,25 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
     private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
+    private val mapper = ObjectMapper()
+    private val modelMapper = ModelMapper()
 
-
-    fun prepareFertilizerList(fertilizers: Set<FertilizerList>): LinkedHashMap<String, FertilizerList> {
-        val fertilizerHashMap = LinkedHashMap<String, FertilizerList>()
-
-        fertilizers.forEach { fertilizer ->
-            fertilizerHashMap[fertilizer.fertilizerType!!] = fertilizer
-        }
-
-        return fertilizerHashMap
-    }
-
-    fun computeRecommendations(computeRequest: ComputeRequest, fertilizerList: LinkedHashMap<String, FertilizerList>): RecommendationResponseDto? {
+    fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         var recommendationResponseDto: RecommendationResponseDto? = null
-        val mapper = ObjectMapper()
-        val modelMapper = ModelMapper()
-        val plumberComputeRequest = this.prepareFertilizerPayload(computeRequest, fertilizerList)
 
 
+        val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
+        val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
         val headers = this.setHTTPHeaders()
 
         logger.info("Plumber payload is")
         logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest))
 
-
-        //send to plumber
         val dateTime = LocalDateTime.now()
         try {
 
             val entity = HttpEntity(plumberComputeRequest, headers)
-            val country = computeRequest.country
+            val country = plumberComputeRequest.country
             val demoMode = plumberPropertiesProperties.demoMode
             var recommendationUrl: String? = null
 
@@ -204,11 +192,22 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         return headers
     }
 
+    private fun prepareFertilizerList(fertilizers: Set<FertilizerList>): LinkedHashMap<String, FertilizerList> {
+        val fertilizerHashMap = LinkedHashMap<String, FertilizerList>()
 
-    private fun prepareFertilizerPayload(computeRequest: ComputeRequest, fertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
+        fertilizers.forEach { fertilizer ->
+            fertilizerHashMap[fertilizer.fertilizerType!!] = fertilizer
+        }
+
+        return fertilizerHashMap
+    }
+
+
+    private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, fertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
         val modelMapper = ModelMapper()
 
-        val requestPayloadPlumber: PlumberComputeRequest = modelMapper.map(computeRequest, PlumberComputeRequest::class.java)
+        val requestPayloadPlumber = modelMapper.map(recommendationRequest.userInfo, PlumberComputeRequest::class.java)
+        modelMapper.map(recommendationRequest.computeRequest, requestPayloadPlumber)
 
         if (fertilizerList.containsKey(EnumFertilizer.UREA.name)) {
             val urea = fertilizerList[EnumFertilizer.UREA.name]!!
@@ -289,15 +288,26 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
         }
 
-
-        //@TODO fix this in the mobile app
-        when {
-            requestPayloadPlumber.cassavaProduceType == "NA" -> requestPayloadPlumber.cassavaProduceType = "root"
+        when (requestPayloadPlumber.country) {
+            EnumCountry.NG.name -> {
+                requestPayloadPlumber.mapLat = 8.725
+                requestPayloadPlumber.mapLong = 4.025
+            }
+            EnumCountry.TZ.name -> {
+                requestPayloadPlumber.mapLat = -7.725
+                requestPayloadPlumber.mapLong = 37.875
+            }
         }
 
-        when {
-            requestPayloadPlumber.cassavaUnitWeight == 0 -> requestPayloadPlumber.cassavaUnitWeight = 50
+        when (requestPayloadPlumber.cassavaProduceType) {
+            "NA" -> requestPayloadPlumber.cassavaProduceType = "root"
         }
+
+        when (requestPayloadPlumber.cassavaUnitWeight) {
+            0 -> requestPayloadPlumber.cassavaUnitWeight = 50
+        }
+
         return requestPayloadPlumber
     }
+
 }
