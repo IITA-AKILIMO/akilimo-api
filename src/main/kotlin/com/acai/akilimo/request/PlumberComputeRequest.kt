@@ -16,6 +16,36 @@ import javax.validation.constraints.NotEmpty
         "PP",
         "SPH",
         "SPP",
+        "ureaBagWt",
+        "ureaCostperBag",
+        "ureaavailable",
+        "MOPBagWt",
+        "MOPCostperBag",
+        "MOPavailable",
+        "CANBagWt",
+        "CANCostperBag",
+        "CANavailable",
+        "DAPBagWt",
+        "DAPCostperBag",
+        "DAPavailable",
+        "NPK151515BagWt",
+        "NPK151515CostperBag",
+        "NPK151515available",
+        "NPK171717BagWt",
+        "NPK171717CostperBag",
+        "NPK171717available",
+        "NPK201010BagWt",
+        "NPK201010CostperBag",
+        "NPK201010available",
+        "NafakaBagWt",
+        "NafakaCostperBag",
+        "Nafakaavailable",
+        "SSPBagWt",
+        "SSPCostperBag",
+        "SSPavailable",
+        "TSPBagWt",
+        "TSPCostperBag",
+        "TSPavailable",
         "PD",
         "PD_window",
         "HD",
@@ -73,7 +103,7 @@ import javax.validation.constraints.NotEmpty
         "userPhoneCC",
         "userPhoneNr")
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
-open class ComputeRequest {
+open class PlumberComputeRequest {
     companion object {
         const val DEFAULT_EMPTY_VALUE = ""
         const val DEFAULT_UNAVAILABLE = "NA"
@@ -329,4 +359,205 @@ open class ComputeRequest {
 
     @JsonProperty("riskAtt")
     var riskAttitude: Int = 0
+
+    @JsonProperty("ureaavailable")
+    var ureaAvailable: Boolean = false
+    @JsonProperty("ureaCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var ureaCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("ureaBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var ureaBagWeight: Int = 0
+
+    @JsonProperty("MOPavailable")
+    var mopAvailable: Boolean = false
+    @JsonProperty("MOPCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var mopCostPerBag: String = DEFAULT_UNAVAILABLE
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    @JsonProperty("MOPBagWt")
+    var mopBagWeight: Int = 0
+
+    @JsonProperty("DAPavailable")
+    var dapAvailable: Boolean = false
+    @JsonProperty("DAPCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var dapCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("DAPBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var dapBagWeight: Int = 0
+
+    @JsonProperty("NPK201010available")
+    var npkTwentyAvailable: Boolean = false
+    @JsonProperty("NPK201010CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var npkTwentyCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("NPK201010BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var npkTwentyBagWeight: Int = 0
+
+    @JsonProperty("NPK151515available")
+    var npkFifteenAvailable: Boolean = false
+    @JsonProperty("NPK151515CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var npkFifteenCostPerBag: String = DEFAULT_BAG_WEIGHT_STRING
+    @JsonProperty("NPK151515BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var npkFifteenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    @JsonProperty("TSPavailable")
+    var tspAvailable: Boolean = false
+    @JsonProperty("TSPCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var tspCostPerBag: String = DEFAULT_BAG_WEIGHT_STRING
+    @JsonProperty("TSPBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var tspBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    @JsonProperty("NPK171717available")
+    var npkSeventeenAvailable: Boolean = false
+    @JsonProperty("NPK171717CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var npkSeventeenCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("NPK171717BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var npkSeventeenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    @JsonProperty("Nafakaavailable")
+    var nafakaAvailable: Boolean = false
+    @JsonProperty("NafakaCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var nafakaCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("NafakaBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var nafakaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    @JsonProperty("YaraMila_UNIKavailable")
+    var yaramilaUnikAvailable: Boolean = false
+    @JsonProperty("YaraMila_UNIKCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var yaramilaUnikCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("YaraMila_UNIKBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var yaramilaUnikBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    @JsonProperty("CANavailable")
+    var canAvailable: Boolean = false
+    @JsonProperty("CANCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var canCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("CANBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var canBagWeight: Int = 0
+
+    @JsonProperty("SSPavailable")
+    var sspAvailable: Boolean = false
+    @JsonProperty("SSPCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var sspCostPerBag: String = DEFAULT_UNAVAILABLE
+    @JsonProperty("SSPBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var sspBagWeight: Int = 0
+
+/*
+    @JsonProperty("newFert1name")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert1name: String? = null
+    @JsonProperty("newFert1N_cont")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert1NitrogenContent: String? = null
+    @JsonProperty("newFert1P2O5")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert1PhosphateContent: String? = null
+    @JsonProperty("newFertK2O")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFertPotassiumContent: String? = null
+    @JsonProperty("newFertCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFertCostPerBag: String? = null
+    @JsonProperty("newFert1BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var newFert1BagWeight: Int = 0
+
+
+    @JsonProperty("newFert2name")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert2name: String? = null
+    @JsonProperty("newFert2N_cont")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert2NCont: String? = null
+    @JsonProperty("newFert2P2O5")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert2P2O5: String? = null
+    @JsonProperty("newFert2K2O")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert2K2O: String? = null
+    @JsonProperty("newFert2CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert2CostPerBag: String? = null
+    @JsonProperty("newFert2BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var newFert2BagWeight: Int = 0
+
+
+    @JsonProperty("newFert3name")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert3name: String? = null
+    @JsonProperty("newFert3N_cont")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert3NCont: String? = null
+    @JsonProperty("newFert3P2O5")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert3P2O5: String? = null
+    @JsonProperty("newFert3K2O")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert3K2O: String? = null
+    @JsonProperty("newFert3CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert3CostPerBag: String? = null
+    @JsonProperty("newFert3BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var newFert3BagWeight: Int = 0
+
+
+    @JsonProperty("newFert4name")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert4name: String? = null
+    @JsonProperty("newFert4N_cont")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert4NCont: String? = null
+    @JsonProperty("newFert4P2O5")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert4P2O5: String? = null
+    @JsonProperty("newFert4K2O")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert4K2O: String? = null
+    @JsonProperty("newFert4CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert4CostPerBag: String? = null
+    @JsonProperty("newFert4BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var newFert4BagWeight: Int = 0
+
+
+    @JsonProperty("newFert5name")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert5name: String? = null
+    @JsonProperty("newFert5N_cont")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert5NCont: String? = null
+    @JsonProperty("newFert5P2O5")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert5P2O5: String? = null
+    @JsonProperty("newFert5K2O")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert5K2O: String? = null
+    @JsonProperty("newFert5CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var newFert5CostPerBag: String? = null
+    @JsonProperty("newFert5BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var newFert5BagWeight: Int = 0
+
+     */
 }

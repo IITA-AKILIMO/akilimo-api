@@ -22,7 +22,7 @@ import javax.validation.Valid
 class RecommendationsController(private val recommendationService: RecommendationService, private val messagingService: MessagingService) : BaseController() {
 
     companion object {
-        val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
+        private val myLogger = LoggerFactory.getLogger(RecommendationsController::class.java)
     }
 
     @PostMapping
@@ -31,8 +31,8 @@ class RecommendationsController(private val recommendationService: Recommendatio
         val mapper = ObjectMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
 
-        logger.info("Request from mobile application is");
-        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
+        myLogger.info("Request from mobile application is");
+        myLogger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
         //val response = recommendationService.saveRecommendationRequest(request!!)
         val fertilizerList = recommendationService.prepareFertilizerList(recommendationRequest.fertilizerList)
         val response = recommendationService.computeRecommendations(recommendationRequest.computeRequest, fertilizerList)
