@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 internal class MessagingPropertiesServiceTest {
 
     private val recommendationResponseDto = RecommendationResponseDto()
-
     private val service = MessagingService(akilimoConfigProperties = AkilimoConfigProperties())
 
     /*@Ignore

@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [ -z "$DEBUG" ]; then
+    echo 'Debugging is disable dby default'
+else
+    JAVA_OPTS="$JAVA_OPTS -Ddebug=$DEBUG"
+fi
+
 if [ -z "$CROP_DATABASE_URL" ]; then
     echo 'Default database URL used'
 else
