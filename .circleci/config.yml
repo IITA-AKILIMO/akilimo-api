@@ -83,7 +83,7 @@ jobs:
             docker push iita/akilimo-spring:latest
 
   push_production:
-    working_directory: ~/application-service
+    working_directory: ~/akilimo
     docker:
       - image: docker:17.05.0-ce-git
     steps:
