@@ -2,15 +2,8 @@ package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.mapper.RecommendationResponseDto
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Ignore
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.springframework.beans.factory.annotation.Autowired
-import retrofit.RetrofitError
-import java.util.NoSuchElementException
 
 
 internal class MessagingPropertiesServiceTest {
@@ -42,7 +35,7 @@ internal class MessagingPropertiesServiceTest {
         recommendationResponseDto.mobileNumber = "0713196504"
         val phone = service.processPhoneNumber(recommendationResponseDto)
 
-        Assert.assertEquals("Country Code: 254 National Number: 713196504", phone.toString())
+        assertEquals("Country Code: 254 National Number: 713196504", phone.toString())
     }
 
     @Test
@@ -51,6 +44,6 @@ internal class MessagingPropertiesServiceTest {
         recommendationResponseDto.mobileNumber = "0713196504"
         val phone = service.convertToInternationalNumber(recommendationResponseDto)
 
-        Assert.assertEquals("+254713196504", phone)
+        assertEquals("+254713196504", phone)
     }
 }
