@@ -1,7 +1,8 @@
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Calendar
-import java.time.format.DateTimeFormatter
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 plugins {
@@ -26,7 +27,7 @@ val current = LocalDateTime.now()
 val formatter = DateTimeFormatter.BASIC_ISO_DATE
 val timestamp = current.format(formatter)
 
-var versionNumber: String? = "3"//date.get(Calendar.DAY_OF_YEAR).toString()
+var versionNumber: String? = "4"//date.get(Calendar.DAY_OF_YEAR).toString()
 var minorRelease: String? = date.get(Calendar.DAY_OF_YEAR).toString()
 var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
 var revisionNumber: String? = timestamp
