@@ -73,6 +73,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                 logger.info("Plumber payload response is")
                 logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects))
 
+                recommendationResponseDto.responsePayload = objects
                 when {
                     !processFirstArray(objects) -> {
                         processSecondArray(objects)
@@ -93,74 +94,74 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
     private fun processFirstArray(objects: Array<Any>): Boolean {
         try {
-                if (objects[0] is LinkedHashMap<*, *>) {
-                    val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
-                    if (computedHashMap.containsKey("FR")) {
-                        try {
-                            val rec = computedHashMap["FR"] as LinkedHashMap<String, ArrayList<Objects>>
-                        } catch (ex: Exception) {
-                            logger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
-                            val recommendation = computedHashMap["FR"]
-                            if (recommendation is ArrayList<*>) {
-                                val frText = computedHashMap.getValue("FR") as ArrayList<String>
-                                if (frText.size == 1) {
-                                    recommendationResponseDto.fertilizerRecText = frText[0]
-                                    recommendationResponseDto.hasResponse = true
-                                }
-                            }
-                        }
-                    }
-
-                    if (computedHashMap.containsKey("SP")) {
-                        try {
-                            val rec = computedHashMap["SP"] as LinkedHashMap<String, ArrayList<Objects>>
-                        } catch (ex: Exception) {
-                            logger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
-                            val recommendation = computedHashMap["SP"]
-                            if (recommendation is ArrayList<*>) {
-                                val spText = computedHashMap.getValue("SP") as ArrayList<String>
-                                if (spText.size == 1) {
-                                    recommendationResponseDto.scheduledPlantingRecText = spText[0]
-                                    recommendationResponseDto.hasResponse = true
-                                }
-                            }
-                        }
-                    }
-
-                    if (computedHashMap.containsKey("PP")) {
-                        try {
-                            val rec = computedHashMap["PP"] as LinkedHashMap<String, ArrayList<Objects>>
-                        } catch (ex: Exception) {
-                            logger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
-                            val recommendation = computedHashMap["PP"]
-                            if (recommendation is ArrayList<*>) {
-                                val ppText = computedHashMap.getValue("PP") as ArrayList<String>
-                                if (ppText.size == 1) {
-                                    recommendationResponseDto.plantingPracticeRecText = ppText[0]
-                                    recommendationResponseDto.hasResponse = true
-                                }
-                            }
-                        }
-                    }
-
-
-                    if (computedHashMap.containsKey("IC")) {
-                        try {
-                            val rec = computedHashMap["IC"] as LinkedHashMap<String, ArrayList<Objects>>
-                        } catch (ex: Exception) {
-                            logger.error("Error processing linked hash for IC, must be array, going to array next ${ex.message}")
-                            //check if it is an array
-                            val recommendation = computedHashMap["IC"]
-                            if (recommendation is ArrayList<*>) {
-                                val icText = computedHashMap.getValue("PP") as ArrayList<String>
-                                if (icText.size == 1) {
-                                    recommendationResponseDto.interCroppingRecText = icText[0]
-                                    recommendationResponseDto.hasResponse = true
-                                }
+            if (objects[0] is LinkedHashMap<*, *>) {
+                val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
+                if (computedHashMap.containsKey("FR")) {
+                    try {
+                        val rec = computedHashMap["FR"] as LinkedHashMap<String, ArrayList<Objects>>
+                    } catch (ex: Exception) {
+                        logger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
+                        val recommendation = computedHashMap["FR"]
+                        if (recommendation is ArrayList<*>) {
+                            val frText = computedHashMap.getValue("FR") as ArrayList<String>
+                            if (frText.size == 1) {
+                                recommendationResponseDto.fertilizerRecText = frText[0]
+                                recommendationResponseDto.hasResponse = true
                             }
                         }
                     }
                 }
+
+                if (computedHashMap.containsKey("SP")) {
+                    try {
+                        val rec = computedHashMap["SP"] as LinkedHashMap<String, ArrayList<Objects>>
+                    } catch (ex: Exception) {
+                        logger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
+                        val recommendation = computedHashMap["SP"]
+                        if (recommendation is ArrayList<*>) {
+                            val spText = computedHashMap.getValue("SP") as ArrayList<String>
+                            if (spText.size == 1) {
+                                recommendationResponseDto.scheduledPlantingRecText = spText[0]
+                                recommendationResponseDto.hasResponse = true
+                            }
+                        }
+                    }
+                }
+
+                if (computedHashMap.containsKey("PP")) {
+                    try {
+                        val rec = computedHashMap["PP"] as LinkedHashMap<String, ArrayList<Objects>>
+                    } catch (ex: Exception) {
+                        logger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
+                        val recommendation = computedHashMap["PP"]
+                        if (recommendation is ArrayList<*>) {
+                            val ppText = computedHashMap.getValue("PP") as ArrayList<String>
+                            if (ppText.size == 1) {
+                                recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                                recommendationResponseDto.hasResponse = true
+                            }
+                        }
+                    }
+                }
+
+
+                if (computedHashMap.containsKey("IC")) {
+                    try {
+                        val rec = computedHashMap["IC"] as LinkedHashMap<String, ArrayList<Objects>>
+                    } catch (ex: Exception) {
+                        logger.error("Error processing linked hash for IC, must be array, going to array next ${ex.message}")
+                        //check if it is an array
+                        val recommendation = computedHashMap["IC"]
+                        if (recommendation is ArrayList<*>) {
+                            val icText = computedHashMap.getValue("PP") as ArrayList<String>
+                            if (icText.size == 1) {
+                                recommendationResponseDto.interCroppingRecText = icText[0]
+                                recommendationResponseDto.hasResponse = true
+                            }
+                        }
+                    }
+                }
+            }
 
         } catch (ex: Exception) {
             recommendationResponseDto.hasResponse = false
