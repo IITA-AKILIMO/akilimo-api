@@ -2,9 +2,6 @@ debug: false
 spring:
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: "jdbc:mariadb://192.168.100.4:3306/cropmanager"
-    username: kodi
-    password: kodi
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
     open-in-view: false
