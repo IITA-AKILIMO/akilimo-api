@@ -70,6 +70,9 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
             val objects = response.body
 
+            logger.info("Plumber payload response is")
+            logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects))
+
             if (objects != null) {
 
                 if (objects[0] is LinkedHashMap<*, *>) {
