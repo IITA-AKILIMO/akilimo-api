@@ -22,7 +22,7 @@ import javax.validation.Valid
 class RecommendationsController(private val recommendationService: RecommendationService, private val messagingService: MessagingService) : BaseController() {
 
     companion object {
-        val logger = LoggerFactory.getLogger(RecommendationsController::class.java)
+        private val myLogger = LoggerFactory.getLogger(RecommendationsController::class.java)
     }
 
     @PostMapping
@@ -31,17 +31,15 @@ class RecommendationsController(private val recommendationService: Recommendatio
         val mapper = ObjectMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
 
-        logger.info("Request from mobile application is");
-        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
-        //val response = recommendationService.saveRecommendationRequest(request!!)
-        val fertilizerList = recommendationService.prepareFertilizerList(recommendationRequest.fertilizerList)
-        val response = recommendationService.computeRecommendations(recommendationRequest.computeRequest, fertilizerList)
+        myLogger.info("Request from mobile application is");
+        myLogger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
+        val response = recommendationService.computeRecommendations(recommendationRequest)
 
         when {
             response != null -> {
                 if (response.hasResponse) {
-                    messagingService.sendEmailMessage(response, recommendationRequest.computeRequest.email)
-                    messagingService.sendTextMessage(response, recommendationRequest.computeRequest.sendSms)
+                    messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
+                    messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
                 }
                 recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
                 return ResponseEntity(recommendationResponseDto, HttpStatus.OK)

@@ -1,9 +1,3 @@
----
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: debug
 spring:
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
