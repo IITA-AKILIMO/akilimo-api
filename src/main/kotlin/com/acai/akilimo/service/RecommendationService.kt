@@ -32,9 +32,9 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
     private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
     private val mapper = ObjectMapper()
     private val modelMapper = ModelMapper()
+    private lateinit var recommendationResponseDto: RecommendationResponseDto
 
     fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
-        var recommendationResponseDto: RecommendationResponseDto? = null
 
 
         val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
@@ -69,12 +69,30 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
 
             val objects = response.body
-
-            logger.info("Plumber payload response is")
-            logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects))
-
             if (objects != null) {
+                logger.info("Plumber payload response is")
+                logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects))
 
+                when {
+                    !processFirstArray(objects) -> {
+                        processSecondArray(objects)
+                    }
+                }
+            }
+        } catch (ex: Exception) {
+            logger.error("An error occurred while processing plumber request ${ex.message}")
+        }
+
+        val now = LocalDateTime.now()
+        val secondsLapsed = Seconds.secondsBetween(now, dateTime)
+        logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
+
+
+        return recommendationResponseDto
+    }
+
+    private fun processFirstArray(objects: Array<Any>): Boolean {
+        try {
                 if (objects[0] is LinkedHashMap<*, *>) {
                     val computedHashMap = objects[0] as LinkedHashMap<String, ArrayList<Objects>>
                     if (computedHashMap.containsKey("FR")) {
@@ -144,48 +162,50 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
                     }
                 }
 
-
-                if (objects[1] is LinkedHashMap<*, *>) {
-                    val recommendationHashMap = objects[1] as LinkedHashMap<String, ArrayList<Objects>>
-
-                    if (recommendationHashMap.containsKey("FR")) {
-                        val frText = recommendationHashMap.getValue("FR") as ArrayList<String?>
-                        recommendationResponseDto.fertilizerRecText = frText[0]
-                        recommendationResponseDto.hasResponse = true
-
-                    }
-
-                    if (recommendationHashMap.containsKey("IC")) {
-                        val icText = recommendationHashMap.getValue("IC") as ArrayList<String?>
-                        recommendationResponseDto.interCroppingRecText = icText[0]
-                        recommendationResponseDto.hasResponse = true
-                    }
-
-                    if (recommendationHashMap.containsKey("PP")) {
-                        val ppText = recommendationHashMap.getValue("PP") as ArrayList<String?>
-                        recommendationResponseDto.plantingPracticeRecText = ppText[0]
-                        recommendationResponseDto.hasResponse = true
-                    }
-
-                    if (recommendationHashMap.containsKey("SP")) {
-                        val spText = recommendationHashMap.getValue("SP") as ArrayList<String?>
-                        recommendationResponseDto.scheduledPlantingRecText = spText[0]
-                        recommendationResponseDto.hasResponse = true
-                    }
-                }
-            }
-
         } catch (ex: Exception) {
-            logger.error("An error occurred " + ex.message)
-            recommendationResponseDto?.hasResponse = false
+            recommendationResponseDto.hasResponse = false
+            logger.error("An error occurred while processing first array object ${ex.message}")
         }
 
-        val now = LocalDateTime.now()
-        val secondsLapsed = Seconds.secondsBetween(now, dateTime)
-        logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
+        return recommendationResponseDto.hasResponse
+    }
 
+    private fun processSecondArray(objects: Array<Any>): Boolean {
+        try {
+            if (objects[1] is LinkedHashMap<*, *>) {
+                val recommendationHashMap = objects[1] as LinkedHashMap<String, ArrayList<Objects>>
 
-        return recommendationResponseDto
+                if (recommendationHashMap.containsKey("FR")) {
+                    val frText = recommendationHashMap.getValue("FR") as ArrayList<String?>
+                    recommendationResponseDto.fertilizerRecText = frText[0]
+                    recommendationResponseDto.hasResponse = true
+
+                }
+
+                if (recommendationHashMap.containsKey("IC")) {
+                    val icText = recommendationHashMap.getValue("IC") as ArrayList<String?>
+                    recommendationResponseDto.interCroppingRecText = icText[0]
+                    recommendationResponseDto.hasResponse = true
+                }
+
+                if (recommendationHashMap.containsKey("PP")) {
+                    val ppText = recommendationHashMap.getValue("PP") as ArrayList<String?>
+                    recommendationResponseDto.plantingPracticeRecText = ppText[0]
+                    recommendationResponseDto.hasResponse = true
+                }
+
+                if (recommendationHashMap.containsKey("SP")) {
+                    val spText = recommendationHashMap.getValue("SP") as ArrayList<String?>
+                    recommendationResponseDto.scheduledPlantingRecText = spText[0]
+                    recommendationResponseDto.hasResponse = true
+                }
+            }
+        } catch (ex: Exception) {
+            recommendationResponseDto.hasResponse = false
+            logger.error("An error occurred while processing first array object ${ex.message}")
+        }
+
+        return false;
     }
 
 
@@ -204,7 +224,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
         return fertilizerHashMap
     }
-
 
     private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, fertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
         val modelMapper = ModelMapper()
@@ -312,5 +331,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
         return requestPayloadPlumber
     }
+
 
 }
