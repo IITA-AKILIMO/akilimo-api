@@ -1,7 +1,14 @@
+---
+debug: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
 spring:
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: "jdbc:mariadb://127.0.0.1:3307/akilimo"
+    url: "jdbc:mariadb://127.0.0.1:3306/akilimo_db"
     username: root
     password:
   jpa:

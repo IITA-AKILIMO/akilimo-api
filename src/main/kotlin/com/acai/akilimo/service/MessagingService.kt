@@ -4,18 +4,17 @@ import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.interfaces.IMessagingService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.MessagingProperties
-import com.google.i18n.phonenumbers.Phonenumber
-import infobip.api.config.BasicAuthConfiguration
-import java.util.*
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.google.i18n.phonenumbers.Phonenumber
+import infobip.api.client.SendMultipleTextualSmsAdvanced
+import infobip.api.config.BasicAuthConfiguration
 import infobip.api.model.Destination
 import infobip.api.model.sms.mt.send.Message
 import infobip.api.model.sms.mt.send.textual.SMSAdvancedTextualRequest
-import infobip.api.client.SendMultipleTextualSmsAdvanced
 import org.slf4j.LoggerFactory
-import kotlin.collections.ArrayList
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import java.util.*
 
 
 @Service
@@ -42,13 +41,17 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         val basicAuthConfiguration = BasicAuthConfiguration(infobipSms.userName, infobipSms.userPass)
         val messageList = buildMessagePayload(response)
         val client = SendMultipleTextualSmsAdvanced(basicAuthConfiguration)
-
         val requestBody = SMSAdvancedTextualRequest()
-        if (messageList.size > 0) {
-            //requestBody.messages = Collections.singletonList(message)
-            requestBody.messages = messageList
-            client.execute(requestBody)
+
+        try {
+            if (messageList.size > 0) {
+                requestBody.messages = messageList
+                client.execute(requestBody)
+            }
+        } catch (ex: Exception) {
+            logger.info("Unable to send SMS message ${ex.message}")
         }
+
     }
 
     private fun buildMessagePayload(response: RecommendationResponseDto): ArrayList<Message> {
