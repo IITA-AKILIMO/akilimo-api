@@ -1,13 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Calendar
-import java.time.format.DateTimeFormatter
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 plugins {
-    val kotlinVersion = "1.2.71"
-    val springVersion = "2.1.4.RELEASE"
-
+    val kotlinVersion = "1.3.50"
+    val springVersion = "2.2.1.RELEASE"
     val javaVersion = JavaVersion.VERSION_11
 
 
@@ -15,26 +14,23 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
-    id("io.spring.dependency-management") version "1.0.7.RELEASE"
+    id("io.spring.dependency-management") version "1.0.8.RELEASE"
 }
 
-//def localPropertyApiToken = "3"
-//def systemEnvApiToken = … // read api token from system environment variable
-//ext.api_token = localPropertyApiToken != null ? localPropertyApiToken : systemEnvApiToken
 val date = Calendar.getInstance()
 val current = LocalDateTime.now()
 val formatter = DateTimeFormatter.BASIC_ISO_DATE
 val timestamp = current.format(formatter)
 
-var versionNumber: String? = "3"//date.get(Calendar.DAY_OF_YEAR).toString()
-var minorRelease: String? = date.get(Calendar.DAY_OF_YEAR).toString()
+var versionNumber: String? = "4"//date.get(Calendar.DAY_OF_YEAR).toString()
+var minorRelease: String? = date.get(Calendar.MONTH).toString()
 var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
 var revisionNumber: String? = timestamp
 
 
 
 when {
-    buildNumber.isNullOrBlank() -> buildNumber = "0"
+    buildNumber.isNullOrBlank() -> buildNumber = timestamp
 }
 
 
@@ -55,7 +51,6 @@ tasks.withType<Test> {
 }
 
 tasks.bootRun {
-    //main = "com.example.demo.Demo"
     args("--spring.profiles.active=cmd")
 }
 
@@ -98,8 +93,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
 
-    testCompile("org.springframework.boot:spring-boot-starter-test") {
-        //exclude(module = "junit")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")

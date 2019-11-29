@@ -3,7 +3,7 @@ logging:
   level:
     org:
       hibernate:
-        SQL: debug
+        SQL: error
   config: file:src/main/resources/logback-spring.xml
 server:
   port: 8098
@@ -17,6 +17,8 @@ spring:
     name: akilimo
   profiles:
     active: dev
+  http:
+    log-request-details: false
   liquibase:
     change-log: "classpath:liquibase/master.xml"
 
