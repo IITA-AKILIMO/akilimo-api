@@ -322,10 +322,6 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             }
         }
 
-//        when (requestPayloadPlumber.cassavaProduceType) { /* ensure the app is defaulted to this */
-//            "NA" -> requestPayloadPlumber.cassavaProduceType = "roots"
-//        }
-
         when (requestPayloadPlumber.cassavaUnitWeight) {
             0 -> requestPayloadPlumber.cassavaUnitWeight = 50
         }
