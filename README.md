@@ -1,14 +1,14 @@
-###Production branch
-[![buddy pipeline](https://app.buddy.works/barsamms/akilimo-api/pipelines/pipeline/187888/badge.svg?token=377cc6ce8e9763f9d2585670b81f9c8b439c108219c7041268ab88e5ee35a7dc "buddy pipeline")](https://app.buddy.works/barsamms/akilimo-api/pipelines/pipeline/187888)
+###### Build status
+[![CircleCI](https://circleci.com/gh/masgeek/akilimo-api.svg?style=svg)](https://circleci.com/gh/masgeek/akilimo-api)
 
-###Staging branch
-[![buddy pipeline](https://app.buddy.works/barsamms/akilimo-api/pipelines/pipeline/187882/badge.svg?token=377cc6ce8e9763f9d2585670b81f9c8b439c108219c7041268ab88e5ee35a7dc "buddy pipeline")](https://app.buddy.works/barsamms/akilimo-api/pipelines/pipeline/187882)
+###CircleCi production branch
+[![CircleCI](https://circleci.com/gh/masgeek/akilimo-api/tree/master.svg?style=svg)](https://circleci.com/gh/masgeek/akilimo-api/tree/master)
+###CircleCi develop branch
+[![CircleCI](https://circleci.com/gh/masgeek/akilimo-api/tree/develop.svg?style=svg)](https://circleci.com/gh/masgeek/akilimo-api/tree/develop)
 
-###Feature branches
-[![buddy pipeline](https://app.buddy.works/barsamms/akilimo-api/pipelines/pipeline/187880/badge.svg?token=377cc6ce8e9763f9d2585670b81f9c8b439c108219c7041268ab88e5ee35a7dc "buddy pipeline")](https://app.buddy.works/barsamms/akilimo-api/pipelines/pipeline/187880)
-
-
-# Jenkins issue
+###Codebat quality assesment
+[![codebeat badge](https://codebeat.co/badges/6db0e476-ae3a-40ae-ae80-f42331e9fab9)](https://codebeat.co/projects/github-com-masgeek-akilimo-api-master)
+> Jenkins issue
 
 ### Docker login
 ####install 

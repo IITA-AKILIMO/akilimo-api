@@ -21,6 +21,9 @@ class FertilizerList {
     @JsonProperty("available")
     var available: Boolean? = null
 
+    @JsonProperty("selected")
+    var selected: Boolean? = null
+
     @JsonProperty("nContent")
     var nitrogenContent: String? = null
 
