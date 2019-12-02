@@ -331,6 +331,4 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
         return requestPayloadPlumber
     }
-
-
 }
