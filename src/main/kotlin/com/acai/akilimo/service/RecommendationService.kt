@@ -234,56 +234,56 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
         if (fertilizerList.containsKey(EnumFertilizer.UREA.name)) {
             val urea = fertilizerList[EnumFertilizer.UREA.name]!!
-            requestPayloadPlumber.ureaAvailable = urea.available!!
+            requestPayloadPlumber.ureaAvailable = urea.selected!!
             requestPayloadPlumber.ureaBagWeight = urea.fertilizerWeight!!
             requestPayloadPlumber.ureaCostPerBag = urea.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.CAN.name)) {
             val can = fertilizerList[EnumFertilizer.CAN.name]!!
-            requestPayloadPlumber.canAvailable = can.available!!
+            requestPayloadPlumber.canAvailable = can.selected!!
             requestPayloadPlumber.canBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.canCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.SSP.name)) {
             val can = fertilizerList[EnumFertilizer.SSP.name]!!
-            requestPayloadPlumber.sspAvailable = can.available!!
+            requestPayloadPlumber.sspAvailable = can.selected!!
             requestPayloadPlumber.sspBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.sspCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.MOP.name)) {
             val can = fertilizerList[EnumFertilizer.MOP.name]!!
-            requestPayloadPlumber.mopAvailable = can.available!!
+            requestPayloadPlumber.mopAvailable = can.selected!!
             requestPayloadPlumber.mopBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.mopCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.DAP.name)) {
             val can = fertilizerList[EnumFertilizer.DAP.name]!!
-            requestPayloadPlumber.dapAvailable = can.available!!
+            requestPayloadPlumber.dapAvailable = can.selected!!
             requestPayloadPlumber.dapBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.dapCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.TSP.name)) {
             val can = fertilizerList[EnumFertilizer.TSP.name]!!
-            requestPayloadPlumber.tspAvailable = can.available!!
+            requestPayloadPlumber.tspAvailable = can.selected!!
             requestPayloadPlumber.tspBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.tspCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.NAFAKAPLUS.name)) {
             val can = fertilizerList[EnumFertilizer.NAFAKAPLUS.name]!!
-            requestPayloadPlumber.nafakaAvailable = can.available!!
+            requestPayloadPlumber.nafakaAvailable = can.selected!!
             requestPayloadPlumber.nafakaBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.nafakaCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.YARAMILA_UNIK.name)) {
             val yaramilaUnik = fertilizerList[EnumFertilizer.YARAMILA_UNIK.name]!!
-            requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.available!!
+            requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.selected!!
             requestPayloadPlumber.yaramilaUnikBagWeight = yaramilaUnik.fertilizerWeight!!
             requestPayloadPlumber.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag!!
         }
@@ -291,22 +291,22 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
         if (fertilizerList.containsKey(EnumFertilizer.NPK20_10_10.name)) {
             val can = fertilizerList[EnumFertilizer.NPK20_10_10.name]!!
-            requestPayloadPlumber.npkTwentyAvailable = can.available!!
+            requestPayloadPlumber.npkTwentyAvailable = can.selected!!
             requestPayloadPlumber.npkTwentyBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkTwentyCostPerBag = can.fertilizerCostPerBag!!
         }
 
 
         if (fertilizerList.containsKey(EnumFertilizer.NPK17_17_17.name)) {
-            val can = fertilizerList[EnumFertilizer.NPK17_17_17.name]!!
-            requestPayloadPlumber.npkSeventeenAvailable = can.available!!
-            requestPayloadPlumber.npkSeventeenBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.npkSeventeenCostPerBag = can.fertilizerCostPerBag!!
+            val npk17 = fertilizerList[EnumFertilizer.NPK17_17_17.name]!!
+            requestPayloadPlumber.npkSeventeenAvailable = npk17.selected!!
+            requestPayloadPlumber.npkSeventeenBagWeight = npk17.fertilizerWeight!!
+            requestPayloadPlumber.npkSeventeenCostPerBag = npk17.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.NPK15_15_15.name)) {
             val can = fertilizerList[EnumFertilizer.NPK15_15_15.name]!!
-            requestPayloadPlumber.npkFifteenAvailable = can.available!!
+            requestPayloadPlumber.npkFifteenAvailable = can.selected!!
             requestPayloadPlumber.npkFifteenBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
         }
@@ -322,13 +322,16 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             }
         }
 
-        when (requestPayloadPlumber.cassavaProduceType) {
-            "NA" -> requestPayloadPlumber.cassavaProduceType = "root"
-        }
+//        when (requestPayloadPlumber.cassavaProduceType) { /* ensure the app is defaulted to this */
+//            "NA" -> requestPayloadPlumber.cassavaProduceType = "roots"
+//        }
 
         when (requestPayloadPlumber.cassavaUnitWeight) {
             0 -> requestPayloadPlumber.cassavaUnitWeight = 50
         }
+
+        requestPayloadPlumber.ploughing = true
+        requestPayloadPlumber.ridging = true
 
         return requestPayloadPlumber
     }
