@@ -30,9 +30,10 @@ class RecommendationsController(private val recommendationService: Recommendatio
         val modelMapper = ModelMapper()
         val mapper = ObjectMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
+        val mobileData = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
+        myLogger.info("Request from mobile application is\n");
+        myLogger.info(mobileData)
 
-        myLogger.info("Request from mobile application is");
-        myLogger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest))
         val response = recommendationService.computeRecommendations(recommendationRequest)
 
         when {
