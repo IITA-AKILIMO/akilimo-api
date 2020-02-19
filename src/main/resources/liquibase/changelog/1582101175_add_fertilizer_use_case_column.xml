@@ -5,9 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="1582101175" author="masgeek">
         <addColumn tableName="available_fertilizer">
-            <column name="use_case" type="varchar(5)" afterColumn="country" defaultValue="ALL">
-                <constraints nullable="false"/>
-            </column>
+            <column name="use_case" type="varchar(5)" afterColumn="country" defaultValue="ALL"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
