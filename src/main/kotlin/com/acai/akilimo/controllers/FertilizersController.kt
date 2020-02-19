@@ -34,14 +34,6 @@ class FertilizersController(private val fertilizerService: FertilizerService
         return ResponseEntity(fertilizerList, HttpStatus.OK)
     }
 
-//    @GetMapping
-//    fun listFertilizers(@RequestHeader("country-code") countryCode: String): ResponseEntity<List<FertilizerDto>> {
-//        val fertilizerList = fertilizerService.fertilizers(countryCode)
-//
-//        return ResponseEntity(fertilizerList, HttpStatus.OK)
-//    }
-
-
     @PostMapping
     fun addFertilizer(@Valid @RequestBody fertilizerRequest: FertilizerRequest): ResponseEntity<FertilizerDto> {
 
