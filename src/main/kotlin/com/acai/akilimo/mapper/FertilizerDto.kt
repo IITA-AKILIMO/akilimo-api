@@ -53,6 +53,8 @@ class FertilizerDto {
 
     var fertilizerCountry: String? = null
 
+    var useCase: String? = null
+
 //    var createdAt: LocalDateTime? = null
 //
 //    var updatedAt: LocalDateTime? = null

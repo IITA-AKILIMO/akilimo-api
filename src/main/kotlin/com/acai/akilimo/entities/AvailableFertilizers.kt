@@ -55,6 +55,9 @@ class AvailableFertilizers : Serializable {
     @Column(name = "country")
     var country: String? = null
 
+    @Column(name = "use_case")
+    var useCase: String? = null
+
     @Column(name = "sort_order")
     var sortOrder: Int = 0
 
