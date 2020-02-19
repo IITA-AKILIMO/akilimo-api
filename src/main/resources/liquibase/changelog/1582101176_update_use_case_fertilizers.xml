@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="1582101176" author="masgeek">
+        <update tableName="available_fertilizer">
+            <column name="use_case" value="CIM"/>
+            <where>type IN ('UREA','NPK_15_15_15')</where>
+        </update>
+
+        <update tableName="available_fertilizer">
+            <column name="use_case" value="CIS"/>
+            <where>type IN ('NPK_17_17_17')</where>
+        </update>
+
+        <update tableName="available_fertilizer">
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <where>created_at IS NULL</where>
+        </update>
+
+        <update tableName="available_fertilizer">
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <where>updated_at IS NULL</where>
+        </update>
+
+        <update tableName="fertilizer_prices">
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </update>
+    </changeSet>
+</databaseChangeLog>

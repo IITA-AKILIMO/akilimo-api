@@ -4,6 +4,7 @@ import com.acai.akilimo.mapper.FertilizerDto
 import com.acai.akilimo.request.FertilizerRequest
 import com.acai.akilimo.service.FertilizerService
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,12 +18,28 @@ class FertilizersController(private val fertilizerService: FertilizerService
         val logger = LoggerFactory.getLogger(FertilizersController::class.java)
     }
 
+
     @GetMapping
-    fun listFertilizers(@RequestHeader("country-code") countryCode: String): ResponseEntity<List<FertilizerDto>> {
-        val fertilizerList = fertilizerService.fertilizers(countryCode)
+    fun listFertilizers(@RequestHeader httpHeaders: Map<String, String>): ResponseEntity<List<FertilizerDto>> {
+
+        var useCase: String? = null;
+        val countryCode: String = httpHeaders.getValue("country-code")
+        if (httpHeaders.containsKey("use-case")) {
+            useCase = httpHeaders.getValue("use-case")
+        }
+
+        val fertilizerList = fertilizerService.fertilizers(countryCode, useCase)
+
 
         return ResponseEntity(fertilizerList, HttpStatus.OK)
     }
+
+//    @GetMapping
+//    fun listFertilizers(@RequestHeader("country-code") countryCode: String): ResponseEntity<List<FertilizerDto>> {
+//        val fertilizerList = fertilizerService.fertilizers(countryCode)
+//
+//        return ResponseEntity(fertilizerList, HttpStatus.OK)
+//    }
 
 
     @PostMapping
