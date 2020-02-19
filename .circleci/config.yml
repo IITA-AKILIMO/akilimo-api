@@ -45,13 +45,13 @@ jobs:
       - run:
           name: Build application web Docker image
           command: |
-            docker build -f Dockerfile -t iita/akilimo-spring:$CIRCLE_SHA1 .
+            docker build -f Dockerfile -t iita/acai-akilimo-api:$CIRCLE_SHA1 .
 
       - run:
           name: Save application Docker image
           command: |
             mkdir /tmp/workspace
-            docker save -o /tmp/workspace/image-akilimo.tar iita/akilimo-spring:$CIRCLE_SHA1
+            docker save -o /tmp/workspace/image-akilimo.tar iita/acai-akilimo-api:$CIRCLE_SHA1
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -75,12 +75,12 @@ jobs:
       - run:
           name: Tag docker image
           command: |
-            docker tag iita/akilimo-spring:$CIRCLE_SHA1 iita/akilimo-spring:latest
+            docker tag iita/acai-akilimo-api:$CIRCLE_SHA1 iita/acai-akilimo-api:latest
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push iita/akilimo-spring:latest
+            docker push iita/acai-akilimo-api:latest
 
   push_production:
     working_directory: ~/akilimo
@@ -97,12 +97,12 @@ jobs:
       - run:
           name: Tag docker image
           command: |
-            docker tag iita/akilimo-spring:$CIRCLE_SHA1 iita/akilimo-spring:production
+            docker tag iita/acai-akilimo-api:$CIRCLE_SHA1 iita/acai-akilimo-api:production
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push iita/akilimo-spring:production
+            docker push iita/acai-akilimo-api:production
 
 workflows:
   version: 2
