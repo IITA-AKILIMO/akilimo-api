@@ -25,13 +25,19 @@ constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService
 
     private val modelMapper = ModelMapper()
 
-    override fun fertilizers(countryCode: String): List<FertilizerDto> {
+    override fun fertilizers(countryCode: String, useCase: String?): List<FertilizerDto> {
 
         val countries = ArrayList<String>()
         countries.add(EnumCountry.ALL.name)
         countries.add(countryCode)
 
-        val fertilizerList = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
+
+        val fertilizerList = if (useCase != null) {
+            fertilizerRepository.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(countries, useCase)
+        } else {
+            fertilizerRepository.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
+        }
+
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
         var currencyCode = EnumCountry.ALL.currency()

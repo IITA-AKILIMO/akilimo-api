@@ -28,5 +28,6 @@
     <include file="/liquibase/changelog/1566215447_load_default_starch_factories.xml"/>
 
     <include file="/liquibase/changelog/1566303020_add_fertilizer_sort_column.xml"/>
+    <include file="/liquibase/changelog/1582101175_add_fertilizer_use_case_column.xml"/>
 
 </databaseChangeLog>
