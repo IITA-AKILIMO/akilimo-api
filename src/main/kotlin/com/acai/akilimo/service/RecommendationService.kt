@@ -38,6 +38,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
 
         val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
+
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
         val headers = this.setHTTPHeaders()
 
@@ -289,27 +290,28 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         }
 
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK20_10_10.name)) {
-            val can = fertilizerList[EnumFertilizer.NPK20_10_10.name]!!
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_20_10_10.name)) {
+            val can = fertilizerList[EnumFertilizer.NPK_20_10_10.name]!!
             requestPayloadPlumber.npkTwentyAvailable = can.selected
             requestPayloadPlumber.npkTwentyBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkTwentyCostPerBag = can.fertilizerCostPerBag!!
         }
 
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK17_17_17.name)) {
-            val npk17 = fertilizerList[EnumFertilizer.NPK17_17_17.name]!!
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_17_17_17.name)) {
+            val npk17 = fertilizerList[EnumFertilizer.NPK_17_17_17.name]!!
             requestPayloadPlumber.npkSeventeenAvailable = npk17.selected
             requestPayloadPlumber.npkSeventeenBagWeight = npk17.fertilizerWeight!!
             requestPayloadPlumber.npkSeventeenCostPerBag = npk17.fertilizerCostPerBag!!
         }
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK15_15_15.name)) {
-            val can = fertilizerList[EnumFertilizer.NPK15_15_15.name]!!
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_15_15_15.name)) {
+            val can = fertilizerList[EnumFertilizer.NPK_15_15_15.name]!!
             requestPayloadPlumber.npkFifteenAvailable = can.selected
             requestPayloadPlumber.npkFifteenBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
         }
+
 
         when (requestPayloadPlumber.country) {
             EnumCountry.NG.name -> {
