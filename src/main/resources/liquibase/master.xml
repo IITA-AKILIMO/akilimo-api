@@ -31,5 +31,7 @@
 
     <include file="/liquibase/changelog/1582101175_add_fertilizer_use_case_column.xml"/>
     <include file="/liquibase/changelog/1582101176_update_use_case_fertilizers.xml"/>
+    <include file="/liquibase/changelog/1582629828_add_operation_cost_table.xml"/>
+    <include file="/liquibase/changelog/1582629829_import_operation_costs_data.xml"/>
 
 </databaseChangeLog>
