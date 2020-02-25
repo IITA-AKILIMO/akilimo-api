@@ -38,6 +38,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
 
         val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
+
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
         val headers = this.setHTTPHeaders()
 
@@ -234,82 +235,83 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
 
         if (fertilizerList.containsKey(EnumFertilizer.UREA.name)) {
             val urea = fertilizerList[EnumFertilizer.UREA.name]!!
-            requestPayloadPlumber.ureaAvailable = urea.selected!!
+            requestPayloadPlumber.ureaAvailable = urea.selected
             requestPayloadPlumber.ureaBagWeight = urea.fertilizerWeight!!
             requestPayloadPlumber.ureaCostPerBag = urea.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.CAN.name)) {
             val can = fertilizerList[EnumFertilizer.CAN.name]!!
-            requestPayloadPlumber.canAvailable = can.selected!!
+            requestPayloadPlumber.canAvailable = can.selected
             requestPayloadPlumber.canBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.canCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.SSP.name)) {
             val can = fertilizerList[EnumFertilizer.SSP.name]!!
-            requestPayloadPlumber.sspAvailable = can.selected!!
+            requestPayloadPlumber.sspAvailable = can.selected
             requestPayloadPlumber.sspBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.sspCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.MOP.name)) {
             val can = fertilizerList[EnumFertilizer.MOP.name]!!
-            requestPayloadPlumber.mopAvailable = can.selected!!
+            requestPayloadPlumber.mopAvailable = can.selected
             requestPayloadPlumber.mopBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.mopCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.DAP.name)) {
             val can = fertilizerList[EnumFertilizer.DAP.name]!!
-            requestPayloadPlumber.dapAvailable = can.selected!!
+            requestPayloadPlumber.dapAvailable = can.selected
             requestPayloadPlumber.dapBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.dapCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.TSP.name)) {
             val can = fertilizerList[EnumFertilizer.TSP.name]!!
-            requestPayloadPlumber.tspAvailable = can.selected!!
+            requestPayloadPlumber.tspAvailable = can.selected
             requestPayloadPlumber.tspBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.tspCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.NAFAKAPLUS.name)) {
             val can = fertilizerList[EnumFertilizer.NAFAKAPLUS.name]!!
-            requestPayloadPlumber.nafakaAvailable = can.selected!!
+            requestPayloadPlumber.nafakaAvailable = can.selected
             requestPayloadPlumber.nafakaBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.nafakaCostPerBag = can.fertilizerCostPerBag!!
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.YARAMILA_UNIK.name)) {
             val yaramilaUnik = fertilizerList[EnumFertilizer.YARAMILA_UNIK.name]!!
-            requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.selected!!
+            requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.selected
             requestPayloadPlumber.yaramilaUnikBagWeight = yaramilaUnik.fertilizerWeight!!
             requestPayloadPlumber.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag!!
         }
 
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK20_10_10.name)) {
-            val can = fertilizerList[EnumFertilizer.NPK20_10_10.name]!!
-            requestPayloadPlumber.npkTwentyAvailable = can.selected!!
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_20_10_10.name)) {
+            val can = fertilizerList[EnumFertilizer.NPK_20_10_10.name]!!
+            requestPayloadPlumber.npkTwentyAvailable = can.selected
             requestPayloadPlumber.npkTwentyBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkTwentyCostPerBag = can.fertilizerCostPerBag!!
         }
 
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK17_17_17.name)) {
-            val npk17 = fertilizerList[EnumFertilizer.NPK17_17_17.name]!!
-            requestPayloadPlumber.npkSeventeenAvailable = npk17.selected!!
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_17_17_17.name)) {
+            val npk17 = fertilizerList[EnumFertilizer.NPK_17_17_17.name]!!
+            requestPayloadPlumber.npkSeventeenAvailable = npk17.selected
             requestPayloadPlumber.npkSeventeenBagWeight = npk17.fertilizerWeight!!
             requestPayloadPlumber.npkSeventeenCostPerBag = npk17.fertilizerCostPerBag!!
         }
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK15_15_15.name)) {
-            val can = fertilizerList[EnumFertilizer.NPK15_15_15.name]!!
-            requestPayloadPlumber.npkFifteenAvailable = can.selected!!
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_15_15_15.name)) {
+            val can = fertilizerList[EnumFertilizer.NPK_15_15_15.name]!!
+            requestPayloadPlumber.npkFifteenAvailable = can.selected
             requestPayloadPlumber.npkFifteenBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
         }
+
 
         when (requestPayloadPlumber.country) {
             EnumCountry.NG.name -> {
