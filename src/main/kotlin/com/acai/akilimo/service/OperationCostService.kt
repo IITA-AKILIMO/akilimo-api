@@ -44,7 +44,7 @@ constructor(
         val operationCostList = operationCostRepository.findByActiveIsTrueAndOperationNameAndOperationTypeOrderByMaxUsdAsc(opName, opType)
         val priceDtoList = ArrayList<OperationCostDto>()
 
-        var index = 1
+        var index = 0
         for (operationCost in operationCostList) {
             val operationCostDto = modelMapper.map(operationCost, OperationCostDto::class.java)
 
@@ -56,6 +56,18 @@ constructor(
             priceDtoList.add(operationCostDto);
             index++
         }
+
+        //add another for manual pricing
+        val exactPrice: OperationCostDto = OperationCostDto()
+        exactPrice.id = 10000
+        exactPrice.listIndex = index
+        exactPrice.operationName = opName
+        exactPrice.operationType = opType
+        exactPrice.averageNgnPrice = -1.0
+        exactPrice.averageTzsPrice = -1.0
+        exactPrice.averageUsdPrice = -1.0
+
+        priceDtoList.add(exactPrice)
         return priceDtoList
     }
 
