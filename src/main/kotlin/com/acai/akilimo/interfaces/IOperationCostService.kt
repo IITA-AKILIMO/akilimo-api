@@ -9,7 +9,9 @@ import com.acai.akilimo.request.FertilizerPriceRequest
 import com.acai.akilimo.request.OperationCostRequest
 
 interface IOperationCostService {
-    fun operationCost(opName: String, opType: String): List<OperationCostDto>
+    fun operationCost(id: Long): OperationCostDto?
+
+    fun operationCostList(opName: String, opType: String): List<OperationCostDto>
 
     fun saveFertilizerPrice(operationCostRequest: OperationCostRequest): OperationCostRequest?
 

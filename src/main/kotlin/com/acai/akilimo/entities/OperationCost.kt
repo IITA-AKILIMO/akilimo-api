@@ -42,7 +42,6 @@ class OperationCost {
     @Column(name = "max_ngn", columnDefinition = "decimal", precision = 10, scale = 2)
     var maxNgn: Double? = null
 
-
     @Column(name = "active")
     var active: Boolean = false
 

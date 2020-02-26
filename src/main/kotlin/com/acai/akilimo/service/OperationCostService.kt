@@ -2,24 +2,16 @@ package com.acai.akilimo.service
 
 
 import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.FertilizerPrices
 import com.acai.akilimo.entities.OperationCost
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.interfaces.IFertilizerPriceService
 import com.acai.akilimo.interfaces.IOperationCostService
-import com.acai.akilimo.mapper.FertilizerPriceDto
 import com.acai.akilimo.mapper.OperationCostDto
-import com.acai.akilimo.repositories.FertilizerPriceRepository
 import com.acai.akilimo.repositories.OperationCostRepository
-import com.acai.akilimo.request.FertilizerPriceRequest
 import com.acai.akilimo.request.OperationCostRequest
 import com.acai.akilimo.utils.CurrencyConversion
 import org.modelmapper.ModelMapper
-import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -35,13 +27,34 @@ constructor(
     val conversion: CurrencyConversion = CurrencyConversion()
 
     private val modelMapper = ModelMapper()
-    override fun operationCost(opName: String, opType: String): List<OperationCostDto> {
-        val operationCostList = operationCostRepository.findByActiveIsTrueAndOperationNameAndOperationType(opName, opType)
+
+    override fun operationCost(id: Long): OperationCostDto? {
+        val operationCost = operationCostRepository.findById(id).get()
+
+        val operationCostDto = modelMapper.map(operationCost, OperationCostDto::class.java)
+
+        operationCostDto.averageNgnPrice = operationCostDto.getAverageNgn()
+        operationCostDto.averageTzsPrice = operationCostDto.getAverageTzs()
+        operationCostDto.averageUsdPrice = operationCostDto.getAverageUsd()
+
+        return operationCostDto
+    }
+
+    override fun operationCostList(opName: String, opType: String): List<OperationCostDto> {
+        val operationCostList = operationCostRepository.findByActiveIsTrueAndOperationNameAndOperationTypeOrderByMaxUsdAsc(opName, opType)
         val priceDtoList = ArrayList<OperationCostDto>()
 
+        var index = 1
         for (operationCost in operationCostList) {
             val operationCostDto = modelMapper.map(operationCost, OperationCostDto::class.java)
+
+            operationCostDto.listIndex = index
+            operationCostDto.averageNgnPrice = operationCostDto.getAverageNgn()
+            operationCostDto.averageTzsPrice = operationCostDto.getAverageTzs()
+            operationCostDto.averageUsdPrice = operationCostDto.getAverageUsd()
+
             priceDtoList.add(operationCostDto);
+            index++
         }
         return priceDtoList
     }

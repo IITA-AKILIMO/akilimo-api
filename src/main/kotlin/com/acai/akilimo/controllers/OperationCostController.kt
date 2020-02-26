@@ -16,13 +16,19 @@ class OperationCostController(private val operationCostService: OperationCostSer
         val logger = LoggerFactory.getLogger(OperationCostController::class.java)
     }
 
+    @GetMapping("/{id}")
+    fun listOperationCost(@PathVariable id: Long): ResponseEntity<OperationCostDto> {
+        val operationCostList = operationCostService.operationCost(id)
+        return ResponseEntity(operationCostList, HttpStatus.OK)
+    }
+
     @GetMapping
-    fun listOperationCost(
+    fun listOperationCosts(
             @RequestHeader("op-name") opName: String,
             @RequestHeader("op-type") opType: String
     ): ResponseEntity<List<OperationCostDto>> {
 
-        val operationCostList = operationCostService.operationCost(opName, opType)
+        val operationCostList = operationCostService.operationCostList(opName.toLowerCase(), opType.toLowerCase())
 
         return ResponseEntity(operationCostList, HttpStatus.OK)
     }

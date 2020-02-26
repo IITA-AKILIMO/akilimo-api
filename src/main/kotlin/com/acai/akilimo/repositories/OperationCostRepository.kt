@@ -12,5 +12,7 @@ interface OperationCostRepository : JpaRepository<OperationCost, Long> {
     fun findByActiveIsTrue(): List<OperationCost>
 
     fun findByActiveIsTrueAndOperationNameAndOperationType(opName: String, opType: String): List<OperationCost>
+    fun findByActiveIsTrueAndOperationNameAndOperationTypeOrderByMaxUsdDesc(opName: String, opType: String): List<OperationCost>
+    fun findByActiveIsTrueAndOperationNameAndOperationTypeOrderByMaxUsdAsc(opName: String, opType: String): List<OperationCost>
 
 }
