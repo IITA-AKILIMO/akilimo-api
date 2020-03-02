@@ -53,7 +53,7 @@ constructor(
 
         for (fertilizerPrice in fertilizerList) {
             val fertilizerPriceDto = modelMapper.map(fertilizerPrice, FertilizerPriceDto::class.java)
-            fertilizerPriceDto.priceRange = conversion.convertFertilizerPriceToLocalCurrency(
+            fertilizerPriceDto.priceRange = conversion.convertPriceToLocalCurrency(
                     minUsd = fertilizerPrice.minUsd!!,
                     maxUsd = fertilizerPrice.maxUsd!!,
                     currencyRate = currencyRate,
@@ -79,7 +79,7 @@ constructor(
 
         val resp = modelMapper.map(saved, FertilizerPriceDto::class.java)
 
-        resp.priceRange = conversion.convertFertilizerPriceToLocalCurrency(
+        resp.priceRange = conversion.convertPriceToLocalCurrency(
                 minUsd = saved.minUsd!!,
                 maxUsd = saved.maxUsd!!,
                 currencyRate = 1.00,

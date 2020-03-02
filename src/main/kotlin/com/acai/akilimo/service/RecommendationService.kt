@@ -313,23 +313,23 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         }
 
 
-        when (requestPayloadPlumber.country) {
-            EnumCountry.NG.name -> {
-                requestPayloadPlumber.mapLat = 8.725
-                requestPayloadPlumber.mapLong = 4.025
-            }
-            EnumCountry.TZ.name -> {
-                requestPayloadPlumber.mapLat = -7.725
-                requestPayloadPlumber.mapLong = 37.875
-            }
-        }
-
-        when (requestPayloadPlumber.cassavaUnitWeight) {
-            0 -> requestPayloadPlumber.cassavaUnitWeight = 50
-        }
-
-        requestPayloadPlumber.ploughing = true
-        requestPayloadPlumber.ridging = true
+//        when (requestPayloadPlumber.country) {
+//            EnumCountry.NG.name -> {
+//                requestPayloadPlumber.mapLat = 8.725
+//                requestPayloadPlumber.mapLong = 4.025
+//            }
+//            EnumCountry.TZ.name -> {
+//                requestPayloadPlumber.mapLat = -7.725
+//                requestPayloadPlumber.mapLong = 37.875
+//            }
+//        }
+//
+//        when (requestPayloadPlumber.cassavaUnitWeight) {
+//            0 -> requestPayloadPlumber.cassavaUnitWeight = 50
+//        }
+//
+//        requestPayloadPlumber.ploughing = true
+//        requestPayloadPlumber.ridging = true
 
         return requestPayloadPlumber
     }
