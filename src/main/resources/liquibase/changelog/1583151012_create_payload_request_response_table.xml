@@ -19,10 +19,15 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="request" type="json">
+            <column name="droid_request" type="json">
                 <constraints nullable="true"/>
             </column>
-            <column name="response" type="json">
+
+            <column name="plumber_request" type="json">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="plumber_response" type="json">
                 <constraints nullable="true"/>
             </column>
 

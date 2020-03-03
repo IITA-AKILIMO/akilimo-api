@@ -6,19 +6,18 @@ import com.acai.akilimo.interfaces.IPayloadCostService
 import com.acai.akilimo.mapper.PayloadDto
 import com.acai.akilimo.repositories.PayloadRepository
 import com.acai.akilimo.utils.CurrencyConversion
-import com.fasterxml.jackson.core.type.TypeReference
 import org.modelmapper.ModelMapper
-import org.modelmapper.TypeToken
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.ArrayList
 
 
 @Service
 class PayloadService
 @Autowired
 constructor(
-        private val operationCostRepository: PayloadRepository,
+        private val payloadRepository: PayloadRepository,
         akilimoConfigProperties: AkilimoConfigProperties
 ) : IPayloadCostService {
     private val logger = LoggerFactory.getLogger(PayloadService::class.java)
@@ -30,11 +29,19 @@ constructor(
 
 
     override fun payloadList(): List<PayloadDto> {
-        val operationCostList = operationCostRepository.findAll()
+        val payloadList = payloadRepository.findAll()
+        val payloadDtoList = ArrayList<PayloadDto>()
+        for (payload in payloadList) {
+            val payloadDto = modelMapper.map(payload, PayloadDto::class.java)
+            payloadDtoList.add(payloadDto)
+        }
 
-//        val myObjects: List<PayloadDto> = modelMapper.map(operationCostList, object : TypeReference<List<PayloadDto() {})
+        return payloadDtoList
+    }
 
-        val h = modelMapper.map(operationCostList, TypeReference < List < PayloadDto::class.java > >{})
+    override fun findPayloadByRequestId(requestId: Long): PayloadDto {
+        val payload = payloadRepository.findByRequestId(requestId)
+        return modelMapper.map(payload, PayloadDto::class.java)
     }
 
 }

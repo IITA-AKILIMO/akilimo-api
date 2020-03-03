@@ -21,10 +21,14 @@ class PayloadDto {
     var requestId: Long = 0
 
     @Type(type = "json")
-    var request: String? = null
+    var droidRequest: String? = null
 
     @Type(type = "json")
-    var response: String? = null
+    var plumberRequest: String? = null
+
+    @Type(type = "json")
+    var plumberResponse: String? = null
+
 
     var createdAt: LocalDateTime? = null
     var updatedAt: LocalDateTime? = null

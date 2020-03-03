@@ -19,10 +19,13 @@ class Payload {
     var requestId: Long = 0
 
     @Type(type = "json")
-    var request: String? = null
+    var droidRequest: String? = null
 
     @Type(type = "json")
-    var response: String? = null
+    var plumberRequest: String? = null
+
+    @Type(type = "json")
+    var plumberResponse: String? = null
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)

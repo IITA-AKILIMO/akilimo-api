@@ -11,4 +11,8 @@ import java.sql.ClientInfoStatus
 interface PayloadRepository : JpaRepository<Payload, Long> {
 
     override fun findAll(): List<Payload>
+
+    fun findByRequestId(requestId: Long): Payload
+
+    fun findAllByRequestId(requestId: Long): List<Payload>
 }

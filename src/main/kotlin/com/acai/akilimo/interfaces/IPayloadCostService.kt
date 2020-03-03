@@ -13,4 +13,6 @@ import com.acai.akilimo.request.OperationCostRequest
 interface IPayloadCostService {
 
     fun payloadList(): List<PayloadDto>
+    
+    fun findPayloadByRequestId(requestId: Long): PayloadDto
 }
