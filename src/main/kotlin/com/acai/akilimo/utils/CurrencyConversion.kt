@@ -8,7 +8,7 @@ class CurrencyConversion {
     private val logger = LoggerFactory.getLogger(CurrencyConversion::class.java)
 
 
-    fun convertFertilizerPriceToLocalCurrency(minUsd: Double, maxUsd: Double, currencyRate: Double, nearestValue: Double, toCurrency: String?): String {
+    fun convertPriceToLocalCurrency(minUsd: Double, maxUsd: Double, currencyRate: Double, nearestValue: Double, toCurrency: String?): String {
         val rangeString: String
         val minAmount: String
         val maxAmount: String

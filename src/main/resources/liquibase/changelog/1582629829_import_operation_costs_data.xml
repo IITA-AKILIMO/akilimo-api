@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="masgeek" id="1562651640">
+        <loadData
+                file="/liquibase/changelog/data/operation_costs.csv"
+                tableName="operation_costs">
+
+
+            <column name="operation_name" header="operation_name"/>
+
+            <column name="operation_type" header="operation_type"/>
+
+            <column name="min_usd" header="min_usd"/>
+            <column name="max_usd" header="max_usd"/>
+
+            <column name="min_tzs" header="min_tzs"/>
+            <column name="max_tzs" header="max_tzs"/>
+
+            <column name="min_ngn" header="min_ngn"/>
+            <column name="max_ngn" header="max_ngn"/>
+
+            <column name="ngn_rate" type="skip"/>
+            <column name="tzs_rate" type="skip"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
