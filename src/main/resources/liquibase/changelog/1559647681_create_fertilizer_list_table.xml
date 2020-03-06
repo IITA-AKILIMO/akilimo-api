@@ -39,11 +39,11 @@
             <column name="weight" type="int" defaultValue="50">
                 <constraints nullable="false"/>
             </column>
-            <column name="price" type="varchar(5)" defaultValue="NA">
+            <column name="price" type="decimal(10,2)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="country" type="varchar(5)" defaultValue="NA">
+            <column name="country" type="varchar(5)" defaultValue="ALL">
                 <constraints nullable="false"/>
             </column>
 

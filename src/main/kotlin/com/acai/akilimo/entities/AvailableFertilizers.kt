@@ -38,10 +38,10 @@ class AvailableFertilizers : Serializable {
 
     @Column(name = "weight")
     @ApiModelProperty(example = "50", required = true)
-    var weight: Int = 50
+    var weight: Int = 0
 
-    @Column(name = "price")
-    var price: String? = "50"
+    @Column(name = "price", columnDefinition = "decimal", precision = 10, scale = 2)
+    var price: Double = 0.0
 
 
     @Column(name = "available")
