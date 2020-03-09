@@ -58,7 +58,7 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         val messageList = arrayListOf<Message>()
         val webHookUrl = globalParams.webHookUrl
         val destination = Destination()
-        destination.to = response.fullPhoneNumber
+        destination.to = response.mobileNumber
 
         val message = Message()
         message.from = infobipSms.sender
