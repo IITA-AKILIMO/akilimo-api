@@ -13,10 +13,7 @@ open class RecommendationResponseDto {
 
     @JsonProperty("userPhoneNr")
     var mobileNumber: String? = null
-
-    @JsonProperty("fullPhoneNumber")
-    var fullPhoneNumber: String? = null
-
+    
     @JsonProperty("userName")
     var userName: String? = null
 
@@ -36,5 +33,6 @@ open class RecommendationResponseDto {
     var scheduledPlantingRecText: String? = null
 
     var hasResponse: Boolean = false
+
     var responsePayload: Array<Any>? = null
 }
