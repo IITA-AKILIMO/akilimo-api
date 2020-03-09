@@ -39,7 +39,7 @@ class FertilizerDto {
 
     var weight: Int? = null
 
-    var price: String? = null
+    var price: Double = 0.0
 
     @JsonProperty("available")
     var isAvailable: Boolean = false
