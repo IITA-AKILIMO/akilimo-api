@@ -110,6 +110,12 @@ open class ComputeRequest {
     @JsonProperty("IC")
     var interCroppingRec: Boolean = false
 
+    @JsonProperty("IC_MAIZE")
+    var interCroppingMaizeRec: Boolean = false
+
+    @JsonProperty("IC_SP")
+    var interCroppingPotatoRec: Boolean = false
+
     @JsonProperty("FR")
     var fertilizerRec: Boolean = false
 
