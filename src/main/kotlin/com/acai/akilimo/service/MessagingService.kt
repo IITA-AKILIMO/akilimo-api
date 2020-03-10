@@ -64,7 +64,7 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         message.from = infobipSms.sender
         message.destinations = Collections.singletonList(destination)
         message.notifyUrl = webHookUrl
-        if (response.fertilizerRecText != null || response.fertilizerRecText == "We donot have fertilizer recommendation for your location.") {
+        if (response.fertilizerRecText != null || response.fertilizerRecText != "We donot have fertilizer recommendation for your location.") {
             message.text = response.fertilizerRecText
             messageList.add(message)
         }
