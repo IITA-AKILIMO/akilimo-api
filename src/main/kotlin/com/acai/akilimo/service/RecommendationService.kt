@@ -210,7 +210,7 @@ constructor(private val restTemplate: RestTemplate,
             logger.error("An error occurred while processing first array object ${ex.message}")
         }
 
-        return false;
+        return recommendationResponseDto.hasResponse
     }
 
 
