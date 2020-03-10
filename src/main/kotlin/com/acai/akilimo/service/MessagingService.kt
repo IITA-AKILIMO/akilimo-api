@@ -4,6 +4,7 @@ import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.interfaces.IMessagingService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.MessagingProperties
+import com.google.common.base.Strings
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
 import infobip.api.client.SendMultipleTextualSmsAdvanced
@@ -64,24 +65,34 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         message.from = infobipSms.sender
         message.destinations = Collections.singletonList(destination)
         message.notifyUrl = webHookUrl
-        if (response.fertilizerRecText != null || response.fertilizerRecText != "We donot have fertilizer recommendation for your location.") {
-            message.text = response.fertilizerRecText
-            messageList.add(message)
+
+        when {
+            !Strings.isNullOrEmpty(response.fertilizerRecText) &&
+                    response.fertilizerRecText != "We donot have fertilizer recommendation for your location." -> {
+                message.text = response.fertilizerRecText
+                messageList.add(message)
+            }
         }
 
-        if (response.interCroppingRecText != null) {
-            message.text = response.interCroppingRecText
-            messageList.add(message)
+        when {
+            !Strings.isNullOrEmpty(response.interCroppingRecText) -> {
+                message.text = response.interCroppingRecText
+                messageList.add(message)
+            }
         }
 
-        if (response.plantingPracticeRecText != null) {
-            message.text = response.plantingPracticeRecText
-            messageList.add(message)
+        when {
+            !Strings.isNullOrEmpty(response.plantingPracticeRecText) -> {
+                message.text = response.plantingPracticeRecText
+                messageList.add(message)
+            }
         }
 
-        if (response.scheduledPlantingRecText != null) {
-            message.text = response.scheduledPlantingRecText
-            messageList.add(message)
+        when {
+            !Strings.isNullOrEmpty(response.scheduledPlantingRecText) -> {
+                message.text = response.scheduledPlantingRecText
+                messageList.add(message)
+            }
         }
         return messageList
     }
