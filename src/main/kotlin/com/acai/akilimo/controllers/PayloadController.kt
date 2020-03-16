@@ -5,7 +5,10 @@ import com.acai.akilimo.service.PayloadService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 
 @RequestMapping("/api/v3/payload")
@@ -17,7 +20,7 @@ class PayloadController(private val payloadService: PayloadService) : BaseContro
     }
 
     @GetMapping("/{requestId}")
-    fun lisPayloadById(@PathVariable requestId: Long): ResponseEntity<PayloadDto> {
+    fun lisPayloadById(@PathVariable requestId: String): ResponseEntity<PayloadDto> {
         val operationCostList = payloadService.findPayloadByRequestId(requestId)
         return ResponseEntity(operationCostList, HttpStatus.OK)
     }

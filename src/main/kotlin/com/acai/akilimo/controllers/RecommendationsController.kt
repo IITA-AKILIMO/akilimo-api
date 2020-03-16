@@ -5,7 +5,6 @@ import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.request.RecommendationRequest
 import com.acai.akilimo.service.MessagingService
 import com.acai.akilimo.service.RecommendationService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -28,12 +27,7 @@ class RecommendationsController(private val recommendationService: Recommendatio
     @PostMapping
     fun computeRecommendations(@Valid @RequestBody recommendationRequest: RecommendationRequest): ResponseEntity<RecommendationResponseDto> {
         val modelMapper = ModelMapper()
-        val mapper = ObjectMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
-        val mobileData = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
-        myLogger.info("Request from mobile application is\n");
-        myLogger.info(mobileData)
-
         val response = recommendationService.computeRecommendations(recommendationRequest)
 
         when {

@@ -15,7 +15,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="request_id" type="bigint">
+            <column name="request_id" type="varchar(200)">
                 <constraints nullable="false"/>
             </column>
 

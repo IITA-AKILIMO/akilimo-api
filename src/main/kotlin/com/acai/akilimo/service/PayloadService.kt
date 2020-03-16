@@ -10,7 +10,7 @@ import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.ArrayList
+import java.util.*
 
 
 @Service
@@ -39,7 +39,7 @@ constructor(
         return payloadDtoList
     }
 
-    override fun findPayloadByRequestId(requestId: Long): PayloadDto {
+    override fun findPayloadByRequestId(requestId: String): PayloadDto {
         val payload = payloadRepository.findByRequestId(requestId)
         return modelMapper.map(payload, PayloadDto::class.java)
     }

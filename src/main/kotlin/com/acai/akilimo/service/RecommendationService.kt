@@ -1,11 +1,13 @@
 package com.acai.akilimo.service
 
 import com.acai.akilimo.config.AkilimoConfigProperties
+import com.acai.akilimo.entities.Payload
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.enums.EnumFertilizer
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
 import com.acai.akilimo.repositories.FertilizerRepository
+import com.acai.akilimo.repositories.PayloadRepository
 import com.acai.akilimo.request.FertilizerList
 import com.acai.akilimo.request.PlumberComputeRequest
 import com.acai.akilimo.request.RecommendationRequest
@@ -28,6 +30,7 @@ class RecommendationService
 @Autowired
 constructor(private val restTemplate: RestTemplate,
             val fertilizerRepository: FertilizerRepository,
+            val payloadRepository: PayloadRepository,
             akilimoConfigProperties: AkilimoConfigProperties) {
 
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
@@ -39,14 +42,18 @@ constructor(private val restTemplate: RestTemplate,
 
     fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
 
-
         val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
 
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
         val headers = this.setHTTPHeaders()
 
-        logger.info("Plumber payload is")
-        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest))
+        val droidRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
+        val plumberRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest)
+        var plumberResponseString = "{}"
+        logger.info("Droid payload is\n")
+        logger.info(droidRequestString)
+        logger.info("Plumber payload is\n")
+        logger.info(plumberRequestString)
 
         val dateTime = LocalDateTime.now()
         try {
@@ -71,11 +78,11 @@ constructor(private val restTemplate: RestTemplate,
             logger.info("Going to endpoint $recommendationUrl at: $dateTime")
 
             val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
-
             val objects = response.body
+            plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest)
             if (objects != null) {
-                logger.info("Plumber payload response is")
-                logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects))
+                logger.info("Plumber payload response is\n")
+                logger.info(plumberRequestString)
 
                 recommendationResponseDto.responsePayload = objects
                 when {
@@ -92,6 +99,15 @@ constructor(private val restTemplate: RestTemplate,
         val secondsLapsed = Seconds.secondsBetween(now, dateTime)
         logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
 
+
+        //let us save the logged requests
+        val payload: Payload = Payload()
+        payload.requestId = recommendationRequest.userInfo.deviceID
+        payload.droidRequest = droidRequestString
+        payload.plumberRequest = plumberRequestString
+        payload.plumberResponse = plumberResponseString
+
+        payloadRepository.save(payload)
 
         return recommendationResponseDto
     }
@@ -220,16 +236,6 @@ constructor(private val restTemplate: RestTemplate,
         return headers
     }
 
-    private fun prepareFertilizerList(fertilizers: Set<FertilizerList>): LinkedHashMap<String, FertilizerList> {
-        val fertilizerHashMap = LinkedHashMap<String, FertilizerList>()
-
-        fertilizers.forEach { fertilizer ->
-            fertilizerHashMap[fertilizer.fertilizerType!!] = fertilizer
-        }
-
-        return fertilizerHashMap
-    }
-
     private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
         val allFertilizers = fertilizerRepository.findAllByAvailableIsTrue()
         allFertilizers.forEach { fertilizer ->
@@ -245,6 +251,16 @@ constructor(private val restTemplate: RestTemplate,
             }
         }
         return tempFertilizerList;
+    }
+
+    private fun prepareFertilizerList(fertilizers: Set<FertilizerList>): LinkedHashMap<String, FertilizerList> {
+        val fertilizerHashMap = LinkedHashMap<String, FertilizerList>()
+
+        fertilizers.forEach { fertilizer ->
+            fertilizerHashMap[fertilizer.fertilizerType!!] = fertilizer
+        }
+
+        return fertilizerHashMap
     }
 
     private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, tempFertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
@@ -336,25 +352,6 @@ constructor(private val restTemplate: RestTemplate,
             requestPayloadPlumber.npkFifteenBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag
         }
-
-
-//        when (requestPayloadPlumber.country) {
-//            EnumCountry.NG.name -> {
-//                requestPayloadPlumber.mapLat = 8.725
-//                requestPayloadPlumber.mapLong = 4.025
-//            }
-//            EnumCountry.TZ.name -> {
-//                requestPayloadPlumber.mapLat = -7.725
-//                requestPayloadPlumber.mapLong = 37.875
-//            }
-//        }
-//
-//        when (requestPayloadPlumber.cassavaUnitWeight) {
-//            0 -> requestPayloadPlumber.cassavaUnitWeight = 50
-//        }
-//
-//        requestPayloadPlumber.ploughing = true
-//        requestPayloadPlumber.ridging = true
 
         return requestPayloadPlumber
     }

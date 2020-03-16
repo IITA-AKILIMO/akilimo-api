@@ -16,7 +16,7 @@ class Payload {
     @GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
     var id: Long = 0
 
-    var requestId: Long = 0
+    var requestId: String? = null
 
     @Type(type = "json")
     var droidRequest: String? = null
