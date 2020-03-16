@@ -263,23 +263,6 @@ constructor(private val restTemplate: RestTemplate,
         return fertilizerHashMap
     }
 
-    private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
-        val allFertilizers = fertilizerRepository.findAllByAvailableIsTrue()
-        allFertilizers.forEach { fertilizer ->
-            if (!tempFertilizerList.containsKey(fertilizer.type)) {
-                val fertName = fertilizer.type!!
-                val fert = modelMapper.map(fertilizer, FertilizerList::class.java)
-                fert.fertilizerType = fertName
-                fert.fertilizerTypeName = fertilizer.name
-                fert.fertilizerWeight = 50
-                fert.fertilizerCostPerBag = 0.0
-
-                tempFertilizerList[fertName] = fert
-            }
-        }
-        return tempFertilizerList;
-    }
-
     private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, tempFertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
         val modelMapper = ModelMapper()
 
