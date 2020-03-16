@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="1583151012" author="masgeek">
+
+        <createTable tableName="request_response">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="request_id" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="droid_request" type="json">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="plumber_request" type="json">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="plumber_response" type="json">
+                <constraints nullable="true"/>
+            </column>
+
+
+            <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+        </createTable>
+
+        <modifySql dbms="mysql,mariadb">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+
+</databaseChangeLog>

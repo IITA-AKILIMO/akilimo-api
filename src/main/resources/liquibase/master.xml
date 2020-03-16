@@ -34,4 +34,6 @@
     <include file="/liquibase/changelog/1582629828_add_operation_cost_table.xml"/>
     <include file="/liquibase/changelog/1582629829_import_operation_costs_data.xml"/>
 
+    <include file="/liquibase/changelog/1583151012_create_payload_request_response_table.xml"/>
+
 </databaseChangeLog>
