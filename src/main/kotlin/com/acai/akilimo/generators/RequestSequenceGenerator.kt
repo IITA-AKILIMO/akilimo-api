@@ -29,7 +29,7 @@ class RequestSequenceGenerator : IdentifierGenerator {
     private fun generateDatabaseSequence(): Long {
 
         val snowflake = IdGenerators.newSnowflakeIdGenerator()
-        val id = snowflake.generateId(1000)
+        val id = snowflake.generateId(3001)
 
         return id.asLong()
     }
