@@ -79,7 +79,7 @@ constructor(private val restTemplate: RestTemplate,
 
             val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
             val objects = response.body
-            plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest)
+            plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
             if (objects != null) {
                 logger.info("Plumber payload response is\n")
                 logger.info(plumberRequestString)
