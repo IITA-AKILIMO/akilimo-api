@@ -15,7 +15,7 @@ class FertilizerList {
     var fertilizerWeight: Int? = null
 
     @JsonProperty("price")
-    var fertilizerCostPerBag: String? = null
+    var fertilizerCostPerBag: Double = 0.0
 
 
     @JsonProperty("available")

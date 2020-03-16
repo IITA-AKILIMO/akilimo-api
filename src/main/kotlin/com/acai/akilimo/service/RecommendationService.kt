@@ -5,6 +5,7 @@ import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.enums.EnumFertilizer
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.PlumberProperties
+import com.acai.akilimo.repositories.FertilizerRepository
 import com.acai.akilimo.request.FertilizerList
 import com.acai.akilimo.request.PlumberComputeRequest
 import com.acai.akilimo.request.RecommendationRequest
@@ -25,7 +26,9 @@ import java.util.*
 @Service
 class RecommendationService
 @Autowired
-constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: AkilimoConfigProperties) {
+constructor(private val restTemplate: RestTemplate,
+            val fertilizerRepository: FertilizerRepository,
+            akilimoConfigProperties: AkilimoConfigProperties) {
 
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
@@ -207,7 +210,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             logger.error("An error occurred while processing first array object ${ex.message}")
         }
 
-        return false;
+        return recommendationResponseDto.hasResponse
     }
 
 
@@ -227,66 +230,88 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
         return fertilizerHashMap
     }
 
-    private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, fertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
+    private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
+        val allFertilizers = fertilizerRepository.findAllByAvailableIsTrue()
+        allFertilizers.forEach { fertilizer ->
+            if (!tempFertilizerList.containsKey(fertilizer.type)) {
+                val fertName = fertilizer.type!!
+                val fert = modelMapper.map(fertilizer, FertilizerList::class.java)
+                fert.fertilizerType = fertName
+                fert.fertilizerTypeName = fertilizer.name
+                fert.fertilizerWeight = 50
+                fert.fertilizerCostPerBag = 0.0
+
+                tempFertilizerList[fertName] = fert
+            }
+        }
+        return tempFertilizerList;
+    }
+
+    private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, tempFertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
         val modelMapper = ModelMapper()
 
+        val fertilizerList = evaluateFertilizers(tempFertilizerList)
         val requestPayloadPlumber = modelMapper.map(recommendationRequest.userInfo, PlumberComputeRequest::class.java)
         modelMapper.map(recommendationRequest.computeRequest, requestPayloadPlumber)
 
+        if (recommendationRequest.computeRequest.interCroppingMaizeRec || recommendationRequest.computeRequest.interCroppingPotatoRec) {
+            requestPayloadPlumber.intercrop = true
+            requestPayloadPlumber.interCroppingRec = true
+        }
         if (fertilizerList.containsKey(EnumFertilizer.UREA.name)) {
             val urea = fertilizerList[EnumFertilizer.UREA.name]!!
             requestPayloadPlumber.ureaAvailable = urea.selected
             requestPayloadPlumber.ureaBagWeight = urea.fertilizerWeight!!
-            requestPayloadPlumber.ureaCostPerBag = urea.fertilizerCostPerBag!!
+            requestPayloadPlumber.ureaCostPerBag = urea.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.CAN.name)) {
             val can = fertilizerList[EnumFertilizer.CAN.name]!!
             requestPayloadPlumber.canAvailable = can.selected
             requestPayloadPlumber.canBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.canCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.canCostPerBag = can.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.SSP.name)) {
             val can = fertilizerList[EnumFertilizer.SSP.name]!!
             requestPayloadPlumber.sspAvailable = can.selected
             requestPayloadPlumber.sspBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.sspCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.sspCostPerBag = can.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.MOP.name)) {
             val can = fertilizerList[EnumFertilizer.MOP.name]!!
             requestPayloadPlumber.mopAvailable = can.selected
             requestPayloadPlumber.mopBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.mopCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.mopCostPerBag = can.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.DAP.name)) {
             val can = fertilizerList[EnumFertilizer.DAP.name]!!
             requestPayloadPlumber.dapAvailable = can.selected
             requestPayloadPlumber.dapBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.dapCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.dapCostPerBag = can.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.TSP.name)) {
             val can = fertilizerList[EnumFertilizer.TSP.name]!!
             requestPayloadPlumber.tspAvailable = can.selected
             requestPayloadPlumber.tspBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.tspCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.tspCostPerBag = can.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.NAFAKAPLUS.name)) {
             val can = fertilizerList[EnumFertilizer.NAFAKAPLUS.name]!!
             requestPayloadPlumber.nafakaAvailable = can.selected
             requestPayloadPlumber.nafakaBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.nafakaCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.nafakaCostPerBag = can.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.YARAMILA_UNIK.name)) {
             val yaramilaUnik = fertilizerList[EnumFertilizer.YARAMILA_UNIK.name]!!
             requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.selected
             requestPayloadPlumber.yaramilaUnikBagWeight = yaramilaUnik.fertilizerWeight!!
-            requestPayloadPlumber.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag!!
+            requestPayloadPlumber.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag
         }
 
 
@@ -294,7 +319,7 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             val can = fertilizerList[EnumFertilizer.NPK_20_10_10.name]!!
             requestPayloadPlumber.npkTwentyAvailable = can.selected
             requestPayloadPlumber.npkTwentyBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.npkTwentyCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.npkTwentyCostPerBag = can.fertilizerCostPerBag
         }
 
 
@@ -302,14 +327,14 @@ constructor(private val restTemplate: RestTemplate, akilimoConfigProperties: Aki
             val npk17 = fertilizerList[EnumFertilizer.NPK_17_17_17.name]!!
             requestPayloadPlumber.npkSeventeenAvailable = npk17.selected
             requestPayloadPlumber.npkSeventeenBagWeight = npk17.fertilizerWeight!!
-            requestPayloadPlumber.npkSeventeenCostPerBag = npk17.fertilizerCostPerBag!!
+            requestPayloadPlumber.npkSeventeenCostPerBag = npk17.fertilizerCostPerBag
         }
 
         if (fertilizerList.containsKey(EnumFertilizer.NPK_15_15_15.name)) {
             val can = fertilizerList[EnumFertilizer.NPK_15_15_15.name]!!
             requestPayloadPlumber.npkFifteenAvailable = can.selected
             requestPayloadPlumber.npkFifteenBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag!!
+            requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag
         }
 
 

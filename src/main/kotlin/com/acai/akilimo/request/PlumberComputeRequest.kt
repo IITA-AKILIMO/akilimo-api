@@ -127,7 +127,7 @@ open class PlumberComputeRequest {
 
     @JsonProperty("area")
     @ApiModelProperty(example = "1", required = true)
-    var fieldArea: Double? = 1.0
+    var fieldArea: Double = 1.0
 
     @JsonProperty("areaUnits")
     @ApiModelProperty(example = "ha", required = true)
@@ -200,35 +200,35 @@ open class PlumberComputeRequest {
 
     @JsonProperty("cost_tractor_ploughing")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var costTractorPloughing: String? = null
+    var costTractorPloughing: Double = 0.0
 
     @JsonProperty("cost_tractor_harrowing")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var costTractorHarrowing: String? = null
+    var costTractorHarrowing: Double = 0.0
 
     @JsonProperty("cost_tractor_ridging")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var costTractorRidging: String? = null
+    var costTractorRidging: Double = 0.0
 
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     @JsonProperty("cost_manual_ploughing")
-    var costManualPloughing: String? = null
+    var costManualPloughing: Double = 0.0
 
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     @JsonProperty("cost_manual_harrowing")
-    var costManualHarrowing: String? = null
+    var costManualHarrowing: Double = 0.0
 
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     @JsonProperty("cost_manual_ridging")
-    var costManualRidging: String? = null
+    var costManualRidging: Double = 0.0
 
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     @JsonProperty("cost_weeding1")
-    var costWeeding1: String? = null
+    var costWeeding1: Double = 0.0
 
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     @JsonProperty("cost_weeding2")
-    var costWeeding2: String? = null
+    var costWeeding2: Double = 0.0
 
     @ApiModelProperty(required = true)
     @JsonProperty("ploughing")
@@ -276,27 +276,27 @@ open class PlumberComputeRequest {
 
     @JsonProperty("cassUW")
     @ApiModelProperty(example = "1", required = true)
-    var cassavaUnitWeight: Int = 1
+    var cassavaUnitWeight: Int = 0
 
     @JsonProperty("cassUP")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var cassavaUnitPrice: String? = null
+    var cassavaUnitPrice: Double = 0.0
 
     @JsonProperty("cassUP_m1")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var cassUPM1: String? = null
+    var cassUPM1: Double = 0.0
 
     @JsonProperty("cassUP_m2")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var cassUPM2: String? = null
+    var cassUPM2: Double = 0.0
 
     @JsonProperty("cassUP_p1")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var cassUPP1: String? = null
+    var cassUPP1: Double = 0.0
 
     @JsonProperty("cassUP_p2")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var cassUPP2: String? = null
+    var cassUPP2: Double = 0.0
 
     @JsonProperty("maizePD")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
@@ -304,11 +304,11 @@ open class PlumberComputeRequest {
 
     @JsonProperty("maizeUW")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var maizeUnitWeight: String? = null
+    var maizeUnitWeight: Int = 0
 
     @JsonProperty("maizeUP")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var maizeUnitPrice: String? = null
+    var maizeUnitPrice: Double = 0.0
 
     @JsonProperty("sweetPotatoPD")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
@@ -316,16 +316,16 @@ open class PlumberComputeRequest {
 
     @JsonProperty("sweetPotatoUW")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var sweetPotatoUnitWeight: String? = null
+    var sweetPotatoUnitWeight: Int = 0
 
     @JsonProperty("sweetPotatoUP")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var sweetPotatoUnitPrice: String? = null
+    var sweetPotatoUnitPrice: Double = 0.0
 
 
     @JsonProperty("maxInv")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var maxInvestment: String? = null
+    var maxInvestment: Double = 0.0
 
     @JsonProperty("SMS")
     var sendSms: Boolean = false
@@ -358,13 +358,14 @@ open class PlumberComputeRequest {
     var fieldDescription: String? = null
 
     @JsonProperty("riskAtt")
-    var riskAttitude: Int = 0
+    var riskAttitude: Int = 1
 
     @JsonProperty("ureaavailable")
     var ureaAvailable: Boolean = false
     @JsonProperty("ureaCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var ureaCostPerBag: String = DEFAULT_UNAVAILABLE
+    var ureaCostPerBag: Double = 0.0
+
     @JsonProperty("ureaBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var ureaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -373,7 +374,7 @@ open class PlumberComputeRequest {
     var mopAvailable: Boolean = false
     @JsonProperty("MOPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var mopCostPerBag: String = DEFAULT_UNAVAILABLE
+    var mopCostPerBag: Double = 0.0
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     @JsonProperty("MOPBagWt")
     var mopBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -382,7 +383,7 @@ open class PlumberComputeRequest {
     var dapAvailable: Boolean = false
     @JsonProperty("DAPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var dapCostPerBag: String = DEFAULT_UNAVAILABLE
+    var dapCostPerBag: Double = 0.0
     @JsonProperty("DAPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var dapBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -391,7 +392,7 @@ open class PlumberComputeRequest {
     var npkTwentyAvailable: Boolean = false
     @JsonProperty("NPK201010CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var npkTwentyCostPerBag: String = DEFAULT_UNAVAILABLE
+    var npkTwentyCostPerBag: Double = 0.0
     @JsonProperty("NPK201010BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkTwentyBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -400,7 +401,7 @@ open class PlumberComputeRequest {
     var npkFifteenAvailable: Boolean = false
     @JsonProperty("NPK151515CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var npkFifteenCostPerBag: String = DEFAULT_BAG_WEIGHT_STRING
+    var npkFifteenCostPerBag: Double = 0.0
     @JsonProperty("NPK151515BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkFifteenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -409,7 +410,7 @@ open class PlumberComputeRequest {
     var tspAvailable: Boolean = false
     @JsonProperty("TSPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var tspCostPerBag: String = DEFAULT_BAG_WEIGHT_STRING
+    var tspCostPerBag: Double = 0.0
     @JsonProperty("TSPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var tspBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -418,7 +419,7 @@ open class PlumberComputeRequest {
     var npkSeventeenAvailable: Boolean = false
     @JsonProperty("NPK171717CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var npkSeventeenCostPerBag: String = DEFAULT_UNAVAILABLE
+    var npkSeventeenCostPerBag: Double = 0.0
     @JsonProperty("NPK171717BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkSeventeenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -427,7 +428,7 @@ open class PlumberComputeRequest {
     var nafakaAvailable: Boolean = false
     @JsonProperty("NafakaCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var nafakaCostPerBag: String = DEFAULT_UNAVAILABLE
+    var nafakaCostPerBag: Double = 0.0
     @JsonProperty("NafakaBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var nafakaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -436,7 +437,7 @@ open class PlumberComputeRequest {
     var yaramilaUnikAvailable: Boolean = false
     @JsonProperty("YaraMila_UNIKCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var yaramilaUnikCostPerBag: String = DEFAULT_UNAVAILABLE
+    var yaramilaUnikCostPerBag: Double = 0.0
     @JsonProperty("YaraMila_UNIKBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var yaramilaUnikBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -445,7 +446,7 @@ open class PlumberComputeRequest {
     var canAvailable: Boolean = false
     @JsonProperty("CANCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var canCostPerBag: String = DEFAULT_UNAVAILABLE
+    var canCostPerBag: Double = 0.0
     @JsonProperty("CANBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var canBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
@@ -454,7 +455,7 @@ open class PlumberComputeRequest {
     var sspAvailable: Boolean = false
     @JsonProperty("SSPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var sspCostPerBag: String = DEFAULT_UNAVAILABLE
+    var sspCostPerBag: Double = 0.0
     @JsonProperty("SSPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var sspBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
