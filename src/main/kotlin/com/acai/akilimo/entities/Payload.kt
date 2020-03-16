@@ -11,10 +11,12 @@ import javax.persistence.Table
 @Table(name = "request_response")
 @TypeDef(name = "json", typeClass = JsonStringType::class)
 class Payload {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
-    @GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
-    var id: Long = 0
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    var id: Long? = null
 
     var requestId: String? = null
 
