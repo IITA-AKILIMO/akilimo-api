@@ -19,17 +19,23 @@ class PayloadController(private val payloadService: PayloadService) : BaseContro
         val logger = LoggerFactory.getLogger(PayloadController::class.java)
     }
 
-    @GetMapping("/{requestId}")
-    fun lisPayloadById(@PathVariable requestId: String): ResponseEntity<PayloadDto> {
-        val operationCostList = payloadService.findPayloadByRequestId(requestId)
-        return ResponseEntity(operationCostList, HttpStatus.OK)
+    @GetMapping("/{id}")
+    fun listPayloadById(@PathVariable id: Long): ResponseEntity<PayloadDto> {
+        val payload = payloadService.findPayloadById(id)
+        return ResponseEntity(payload, HttpStatus.OK)
+    }
+
+    @GetMapping("/{requestId}/request-id")
+    fun listPayloadByRequestId(@PathVariable requestId: String): ResponseEntity<List<PayloadDto>> {
+        val payloadList = payloadService.findPayloadByRequestId(requestId)
+        return ResponseEntity(payloadList, HttpStatus.OK)
     }
 
     @GetMapping
-    fun listPayloads(): ResponseEntity<List<PayloadDto>> {
+    fun listAllPayloads(): ResponseEntity<List<PayloadDto>> {
 
-        val operationCostList = payloadService.payloadList();
+        val payloadList = payloadService.payloadList();
 
-        return ResponseEntity(operationCostList, HttpStatus.OK)
+        return ResponseEntity(payloadList, HttpStatus.OK)
     }
 }

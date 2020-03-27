@@ -1,5 +1,6 @@
 package com.acai.akilimo.mapper
 
+import com.fasterxml.jackson.databind.JsonNode
 import lombok.Data
 import org.hibernate.annotations.Type
 import java.time.LocalDateTime
@@ -11,14 +12,11 @@ class PayloadDto {
 
     var requestId: String? = null
 
-    @Type(type = "json")
-    var droidRequest: String? = null
+    var droidRequest: JsonNode? = null
 
-    @Type(type = "json")
-    var plumberRequest: String? = null
+    var plumberRequest: JsonNode? = null
 
-    @Type(type = "json")
-    var plumberResponse: String? = null
+    var plumberResponse: JsonNode? = null
 
 
     var createdAt: LocalDateTime? = null
