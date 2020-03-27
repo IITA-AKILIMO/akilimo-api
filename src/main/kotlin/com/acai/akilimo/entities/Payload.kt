@@ -9,7 +9,7 @@ import javax.persistence.Table
 
 @Entity(name = "Payload")
 @Table(name = "request_response")
-@TypeDef(name = "json", typeClass = JsonStringType::class)
+//@TypeDef(name = "json", typeClass = JsonStringType::class)
 class Payload {
 
     @Id
@@ -20,13 +20,13 @@ class Payload {
 
     var requestId: String? = null
 
-    @Type(type = "json")
+    @Type(type = "text")
     var droidRequest: String? = null
 
-    @Type(type = "json")
+    @Type(type = "text")
     var plumberRequest: String? = null
 
-    @Type(type = "json")
+    @Type(type = "text")
     var plumberResponse: String? = null
 
     @CreationTimestamp
