@@ -1,6 +1,7 @@
 package com.acai.akilimo.mapper
 
 import com.acai.akilimo.enums.EnumCountry
+import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 import java.time.LocalDateTime
 
@@ -24,6 +25,7 @@ class CassavaPriceDto {
 
     var updatedAt: LocalDateTime? = null
 
+    @JsonProperty("avg_price")
     fun averagePrice(): Double {
         return (minLocalPrice + maxLocalPrice) / 2
     }

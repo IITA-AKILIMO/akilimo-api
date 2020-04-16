@@ -1,29 +1,28 @@
 package com.acai.akilimo.request
 
 import com.acai.akilimo.enums.EnumCountry
+import com.fasterxml.jackson.annotation.JsonProperty
+import io.swagger.annotations.ApiModelProperty
 import lombok.Data
 import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
 
-@Data
+//@Data
 open class CassavaPriceRequest(
-
-        @NotNull
-        var priceId: Long,
-        @NotNull
+        @JsonProperty("country")
+        @ApiModelProperty(example = "KE", required = true)
         var country: EnumCountry,
-        @NotNull
+
+        @ApiModelProperty(example = "1", required = true)
         var minLocalPrice: Double,
-        @NotNull
+
+        @ApiModelProperty(example = "1", required = true)
         var maxLocalPrice: Double
 ) {
     var minUsd: Double = 0.0
 
     var maxUsd: Double = 0.0
 
-    var active: Boolean = false
-
-    var createdAt: LocalDateTime? = null
-
-    var updatedAt: LocalDateTime? = null
+    @ApiModelProperty(example = "false", required = false)
+    var active: Boolean = true
 }

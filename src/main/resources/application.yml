@@ -1,4 +1,6 @@
 debug: false
+trace: false
+
 logging:
   level:
     org:
@@ -7,11 +9,10 @@ logging:
   config: file:src/main/resources/logback-spring.xml
 server:
   port: 8098
-  #servlet:
-  #  context-path: /api/v2/recommendations
-  #error:
-  #  whitelabel:
-  #    enabled: false
+  error:
+    whitelabel:
+      enabled: true
+    include-stacktrace: on_trace_param
 spring:
   application:
     name: akilimo

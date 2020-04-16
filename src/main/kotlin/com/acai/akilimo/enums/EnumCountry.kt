@@ -3,26 +3,28 @@ package com.acai.akilimo.enums
 import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class EnumCountry {
-    @JsonProperty("ke")
+    @JsonProperty("KE")
     KE {
         override fun currency(): String {
             return "KES"
         }
     },
 
-    @JsonProperty("tz")
+    @JsonProperty("TZ")
     TZ {
         override fun currency(): String {
             return "TZS"
         }
     },
-    @JsonProperty("ng")
+
+    @JsonProperty("NG")
     NG {
         override fun currency(): String {
             return "NGN"
         }
     },
-    @JsonProperty("all")
+
+    @JsonProperty("ALL")
     ALL {
         override fun currency(): String {
             return "USD"

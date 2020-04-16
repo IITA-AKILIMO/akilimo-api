@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author=" styx\masgeek" id="20200416142550">
+        <loadData
+                file="/liquibase/changelog/data/cassava_prices.csv"
+                tableName="cassava_prices">
+
+
+            <column name="country" header="country"/>
+
+            <column name="min_local_price" header="min_local_price"/>
+            <column name="max_local_price" header="max_local_price"/>
+
+            <column name="min_usd" header="min_usd"/>
+            <column name="max_usd" header="max_usd"/>
+            <column name="price_active" type="skip"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>

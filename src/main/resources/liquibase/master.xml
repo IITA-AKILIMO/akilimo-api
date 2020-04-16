@@ -38,4 +38,6 @@
 
     <include file="/liquibase/changelog/20200416123603_add_cassava_prices_table.xml"/>
 
+    <include file="/liquibase/changelog/20200416142550_import_default_cassava_prices.xml"/>
+
 </databaseChangeLog>
