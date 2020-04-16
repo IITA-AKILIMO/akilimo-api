@@ -25,7 +25,7 @@ class CassavaPriceDto {
 
     var updatedAt: LocalDateTime? = null
 
-    @JsonProperty("avg_price")
+    @JsonProperty("averagePrice")
     fun averagePrice(): Double {
         return (minLocalPrice + maxLocalPrice) / 2
     }
