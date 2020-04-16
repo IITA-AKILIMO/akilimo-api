@@ -18,6 +18,9 @@ class CassavaPrices {
     @GenericGenerator(name = "native", strategy = "native")
     var priceId: Long? = null
 
+    @Column(name = "country")
+    var country: String? = null
+
     @Column(name = "min_local_price", columnDefinition = "decimal", precision = 10, scale = 2)
     var minLocalPrice: Double? = null
 
