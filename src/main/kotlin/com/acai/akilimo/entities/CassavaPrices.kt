@@ -9,16 +9,20 @@ import javax.persistence.*
 
 @Entity
 @Data
-@Table(name = "fertilizer_prices")
-class FertilizerPrices {
+@Table(name = "cassava_prices")
+class CassavaPrices {
 
     @Id
     @Column(name = "id")
-    //@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
-    //@GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     var priceId: Long? = null
+
+    @Column(name = "min_local_price", columnDefinition = "decimal", precision = 10, scale = 2)
+    var minLocalPrice: Double? = null
+
+    @Column(name = "max_local_price", columnDefinition = "decimal", precision = 10, scale = 2)
+    var maxLocalPrice: Double? = null
 
     @Column(name = "min_usd", columnDefinition = "decimal", precision = 10, scale = 2)
     var minUsd: Double? = null
@@ -26,18 +30,8 @@ class FertilizerPrices {
     @Column(name = "max_usd", columnDefinition = "decimal", precision = 10, scale = 2)
     var maxUsd: Double? = null
 
-    @Column(name = "price_per_bag", columnDefinition = "decimal", precision = 10, scale = 2)
-    var pricePerBag: Double? = null
-
     @Column(name = "price_active")
     var active: Boolean = false
-
-
-    @Column(name = "sort_order")
-    var sortOrder: Int = 0
-
-    @Column(name = "desc")
-    var description: String? = null
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
