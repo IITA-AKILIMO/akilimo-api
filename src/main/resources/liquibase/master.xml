@@ -36,4 +36,6 @@
 
     <include file="/liquibase/changelog/1583151012_create_payload_request_response_table.xml"/>
 
+    <include file="/liquibase/changelog/20200416123603_add_cassava_prices_table.xml"/>
+
 </databaseChangeLog>

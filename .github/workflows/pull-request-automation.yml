@@ -5,9 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Approve pull request
-        if: github.actor == 'masgeek'
+        if: github.actor != 'here'
         uses: andrewmusgrave/automatic-pull-request-review@0.0.2
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           event: APPROVE
-          body: 'Thank you dependabot 🎊'
+          body: 'Automatic approval since the developer is alone 🎊'
