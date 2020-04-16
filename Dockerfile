@@ -8,7 +8,7 @@ ENV SERVER_PORT 8098
 ENV SPRING_PROFILES_ACTIVE dev
 
 ENV SPRING_BOOT_USER akilimo
-ENV SPRING_BOOT_GROUP akilimo_group
+ENV SPRING_BOOT_GROUP akilimo
 ENV TZ=Africa/Nairobi
 
 COPY docker-entrypoint.sh docker-entrypoint.sh
