@@ -9,7 +9,7 @@ interface ICassavaPriceService {
 
     fun saveFertilizerPrice(cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto?
 
-    fun updateFertilizerPrice(id: Long, cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto?
+    fun updateCassavaPrice(id: Long, cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto?
 
     fun deleteCassavaPrice(id: Long): Boolean
 

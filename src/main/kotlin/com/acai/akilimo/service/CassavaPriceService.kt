@@ -52,7 +52,7 @@ constructor(
         return resp
     }
 
-    override fun updateFertilizerPrice(id: Long, cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto? {
+    override fun updateCassavaPrice(id: Long, cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto? {
         val entity = cassavaPriceRepository.findById(id).get()
 
         modelMapper.configuration.isSkipNullEnabled = true
