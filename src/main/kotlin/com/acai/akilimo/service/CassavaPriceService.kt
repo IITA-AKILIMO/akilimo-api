@@ -41,10 +41,12 @@ constructor(
         val cassavaPriceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderByMinLocalPriceAsc(countryCode.name)
         val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
 
+        var priceIndex: Long = 1
         for (cassavaPrice in cassavaPriceList) {
             val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
-
+            fertilizerPriceDto.priceIndex = priceIndex
             cassavaPriceDtoList.add(fertilizerPriceDto)
+            priceIndex++
         }
         return cassavaPriceDtoList
     }

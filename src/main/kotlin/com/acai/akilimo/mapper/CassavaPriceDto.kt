@@ -7,7 +7,10 @@ import java.time.LocalDateTime
 
 @Data
 class CassavaPriceDto {
+
     var priceId: Long? = null
+
+    var priceIndex: Long = 1
 
     var country: EnumCountry? = null
 
