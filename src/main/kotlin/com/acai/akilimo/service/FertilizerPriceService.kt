@@ -64,7 +64,7 @@ constructor(
             val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
             val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
             fertilizerPriceDto.priceId = sortIndex
-            fertilizerPriceDto.recordId = fertilizerPrice.id!!
+            fertilizerPriceDto.recordId = fertilizerPrice.priceId!!
             fertilizerPriceDto.pricePerBag = pricePerBag
             fertilizerPriceDto.country = country
             fertilizerPriceDto.fertilizerCountry = "$country-$pricePerBagRaw"
