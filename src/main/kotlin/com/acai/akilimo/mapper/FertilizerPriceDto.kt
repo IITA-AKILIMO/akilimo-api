@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 @Data
 class FertilizerPriceDto {
 
-    var id: Long? = null
+    var recordId: Long? = null
 
     var priceId: Long? = null
 
