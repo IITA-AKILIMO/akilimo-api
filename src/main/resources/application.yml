@@ -17,7 +17,7 @@ spring:
   application:
     name: akilimo
   profiles:
-    active: dev
+    active: cmd
   http:
     log-request-details: false
   liquibase:

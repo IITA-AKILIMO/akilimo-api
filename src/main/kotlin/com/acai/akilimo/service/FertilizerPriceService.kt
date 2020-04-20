@@ -51,6 +51,7 @@ constructor(
         }
 
 
+        var sortIndex: Long = 1;
         for (fertilizerPrice in fertilizerList) {
             val fertilizerPriceDto = modelMapper.map(fertilizerPrice, FertilizerPriceDto::class.java)
             fertilizerPriceDto.priceRange = conversion.convertPriceToLocalCurrency(
@@ -62,11 +63,13 @@ constructor(
 
             val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
             val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
+            fertilizerPriceDto.priceId = sortIndex
             fertilizerPriceDto.pricePerBag = pricePerBag
             fertilizerPriceDto.country = country
             fertilizerPriceDto.fertilizerCountry = "$country-$pricePerBagRaw"
 
             fertilizerPriceDtoList.add(fertilizerPriceDto)
+            sortIndex++
         }
 
         return fertilizerPriceDtoList
