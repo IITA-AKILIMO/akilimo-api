@@ -19,6 +19,9 @@ open class CassavaPriceRequest(
         @ApiModelProperty(example = "1", required = true)
         var maxLocalPrice: Double
 ) {
+
+    var sortOrder: Int = 1 //default sort order
+
     var minUsd: Double = 0.0
 
     var maxUsd: Double = 0.0
