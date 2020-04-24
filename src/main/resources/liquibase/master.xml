@@ -41,4 +41,7 @@
     <include file="/liquibase/changelog/20200416142550_import_default_cassava_prices.xml"/>
     <include file="/liquibase/changelog/20200424092320_add_cassava_price_sort_column.xml"/>
 
+    <include file="/liquibase/changelog/20200424105926_add_maize_prices_table.xml"/>
+    <include file="/liquibase/changelog/20200424110100_import_default_maize_prices.xml"/>
+
 </databaseChangeLog>
