@@ -3,7 +3,7 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.mapper.ProducePriceDto
 import com.acai.akilimo.request.ProducePriceRequest
-import com.acai.akilimo.service.CassavaPriceService
+import com.acai.akilimo.service.MaizePriceService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -13,66 +13,66 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v3/cassava-prices")
+@RequestMapping("/api/v3/maize-prices")
 @RestController
-class CassavaPricesController(private val cassavaPriceService: CassavaPriceService) {
+class MaizePricesController(private val maizePriceService: MaizePriceService) {
 
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(CassavaPricesController::class.java)
+        val logger: Logger = LoggerFactory.getLogger(MaizePricesController::class.java)
     }
 
     @GetMapping()
     fun getAllPrices(): ResponseEntity<List<ProducePriceDto>> {
-        val cassavaPriceDto = cassavaPriceService.fetchAllPrices()
+        val priceDto = maizePriceService.fetchAllPrices()
 
-        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+        return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @GetMapping("/inactive")
     fun getInactivePrices(): ResponseEntity<List<ProducePriceDto>> {
-        val cassavaPriceDto = cassavaPriceService.fetchAllInactivePrices()
+        val priceDto = maizePriceService.fetchAllInactivePrices()
 
-        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+        return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @GetMapping("/{id}")
     fun getPriceById(@PathVariable id: Long): ResponseEntity<ProducePriceDto> {
-        val cassavaPriceDto = cassavaPriceService.findCassavaPriceById(id)
+        val priceDto = maizePriceService.findCassavaPriceById(id)
 
-        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+        return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @GetMapping("/country/{country}")
     fun listPrices(@PathVariable country: EnumCountry): ResponseEntity<List<ProducePriceDto>> {
-        val cassavaPriceList = cassavaPriceService.cassavaPrices(country)
+        val priceList = maizePriceService.cassavaPrices(country)
 
-        return ResponseEntity(cassavaPriceList, HttpStatus.OK)
+        return ResponseEntity(priceList, HttpStatus.OK)
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addFertilizerPrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
+    fun addMaizePrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
 
-        val cassavaPriceDto = cassavaPriceService.saveFertilizerPrice(fertilizerPriceRequest)
+        val priceDto = maizePriceService.saveFertilizerPrice(fertilizerPriceRequest)
 
-        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+        return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @PutMapping("/{id}")
-    fun updateFertilizerPrice(
+    fun updateMaizePrice(
             @PathVariable id: Long,
             @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
     ): ResponseEntity<ProducePriceDto> {
 
-        val cassavaPriceDto = cassavaPriceService.updateCassavaPrice(id, fertilizerPriceRequest)
+        val priceDto = maizePriceService.updateCassavaPrice(id, fertilizerPriceRequest)
 
-        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+        return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteFertilizerPrice(@PathVariable id: Long): ResponseEntity<Boolean> {
+    fun deleteMaizePrice(@PathVariable id: Long): ResponseEntity<Boolean> {
 
         logger.info("The id being passed here is by the name $id")
-        val recordDeleted = cassavaPriceService.deleteCassavaPrice(id)
+        val recordDeleted = maizePriceService.deleteCassavaPrice(id)
 
         return when {
             recordDeleted -> ResponseEntity(recordDeleted, HttpStatus.OK)

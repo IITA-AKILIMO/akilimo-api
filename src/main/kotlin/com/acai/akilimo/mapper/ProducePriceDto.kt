@@ -6,7 +6,7 @@ import lombok.Data
 import java.time.LocalDateTime
 
 @Data
-class CassavaPriceDto {
+class ProducePriceDto {
 
     var priceId: Long? = null
 

@@ -9,5 +9,5 @@ import javax.persistence.*
 
 @Entity
 @Data
-@Table(name = "cassava_prices")
-open class CassavaPrices : ProducePrice()
+@Table(name = "maize_prices")
+class MaizePrices : ProducePrice()
