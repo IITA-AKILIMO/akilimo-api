@@ -4,6 +4,7 @@ import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.mapper.ProducePriceDto
 import com.acai.akilimo.request.ProducePriceRequest
 import com.acai.akilimo.service.MaizePriceService
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -17,7 +18,7 @@ import javax.validation.Valid
 class MaizePricesController(private val maizePriceService: MaizePriceService) {
 
     companion object {
-        val logger = LoggerFactory.getLogger(MaizePricesController::class.java)
+        val logger: Logger = LoggerFactory.getLogger(MaizePricesController::class.java)
     }
 
     @GetMapping()
@@ -49,7 +50,7 @@ class MaizePricesController(private val maizePriceService: MaizePriceService) {
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addFertilizerPrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
+    fun addMaizePrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
 
         val priceDto = maizePriceService.saveFertilizerPrice(fertilizerPriceRequest)
 
@@ -57,7 +58,7 @@ class MaizePricesController(private val maizePriceService: MaizePriceService) {
     }
 
     @PutMapping("/{id}")
-    fun updateFertilizerPrice(
+    fun updateMaizePrice(
             @PathVariable id: Long,
             @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
     ): ResponseEntity<ProducePriceDto> {
@@ -68,7 +69,7 @@ class MaizePricesController(private val maizePriceService: MaizePriceService) {
     }
 
     @DeleteMapping("/{id}")
-    fun deleteFertilizerPrice(@PathVariable id: Long): ResponseEntity<Boolean> {
+    fun deleteMaizePrice(@PathVariable id: Long): ResponseEntity<Boolean> {
 
         logger.info("The id being passed here is by the name $id")
         val recordDeleted = maizePriceService.deleteCassavaPrice(id)

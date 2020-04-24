@@ -4,6 +4,7 @@ import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.mapper.ProducePriceDto
 import com.acai.akilimo.request.ProducePriceRequest
 import com.acai.akilimo.service.CassavaPriceService
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -17,7 +18,7 @@ import javax.validation.Valid
 class CassavaPricesController(private val cassavaPriceService: CassavaPriceService) {
 
     companion object {
-        val logger = LoggerFactory.getLogger(CassavaPricesController::class.java)
+        val logger: Logger = LoggerFactory.getLogger(CassavaPricesController::class.java)
     }
 
     @GetMapping()
