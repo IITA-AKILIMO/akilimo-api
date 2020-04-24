@@ -22,6 +22,8 @@ class CassavaPriceDto {
 
     var maxUsd: Double = 0.0
 
+    var sortOrder: Int = 1
+
     var active: Boolean = false
 
     var createdAt: LocalDateTime? = null

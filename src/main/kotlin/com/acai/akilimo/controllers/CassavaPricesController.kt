@@ -21,8 +21,15 @@ class CassavaPricesController(private val cassavaPriceService: CassavaPriceServi
     }
 
     @GetMapping()
-    fun getPriceById(): ResponseEntity<List<CassavaPriceDto>> {
+    fun getAllPrices(): ResponseEntity<List<CassavaPriceDto>> {
         val cassavaPriceDto = cassavaPriceService.fetchAllPrices()
+
+        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+    }
+
+    @GetMapping("/inactive")
+    fun getInactivePrices(): ResponseEntity<List<CassavaPriceDto>> {
+        val cassavaPriceDto = cassavaPriceService.fetchAllInactivePrices()
 
         return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
     }

@@ -11,6 +11,8 @@ interface CassavaPriceRepository : JpaRepository<CassavaPrices, Long> {
 
     override fun findAll(): List<CassavaPrices>
 
+    fun findAllByActiveIsFalse(): List<CassavaPrices>
+
     fun findByCountryAndActiveIsTrueOrderByMinLocalPriceAsc(country: String): List<CassavaPrices>
     fun findByCountryAndActiveIsTrueOrderByMinLocalPriceDesc(country: String): List<CassavaPrices>
 
