@@ -37,6 +37,10 @@
 
             <column name="price_active" type="boolean" defaultValueBoolean="true"/>
 
+            <column name="sort_order" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
 
