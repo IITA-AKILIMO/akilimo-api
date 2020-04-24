@@ -4,9 +4,9 @@ package com.acai.akilimo.service
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.CassavaPrices
 import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.mapper.CassavaPriceDto
+import com.acai.akilimo.mapper.ProducePriceDto
 import com.acai.akilimo.repositories.CassavaPriceRepository
-import com.acai.akilimo.request.CassavaPriceRequest
+import com.acai.akilimo.request.ProducePriceRequest
 import com.acai.akilimo.utils.CurrencyConversion
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
@@ -31,13 +31,13 @@ constructor(
 
     private val modelMapper = ModelMapper()
 
-    fun fetchAllPrices(): List<CassavaPriceDto> {
+    fun fetchAllPrices(): List<ProducePriceDto> {
         val cassavaPriceList = cassavaPriceRepository.findAll()
-        val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
+        val cassavaPriceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
         for (cassavaPrice in cassavaPriceList) {
-            val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
+            val fertilizerPriceDto = modelMapper.map(cassavaPrice, ProducePriceDto::class.java)
             fertilizerPriceDto.priceIndex = priceIndex
             cassavaPriceDtoList.add(fertilizerPriceDto)
             priceIndex++
@@ -45,13 +45,13 @@ constructor(
         return cassavaPriceDtoList
     }
 
-    fun fetchAllInactivePrices(): List<CassavaPriceDto> {
+    fun fetchAllInactivePrices(): List<ProducePriceDto> {
         val cassavaPriceList = cassavaPriceRepository.findAllByActiveIsFalse()
-        val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
+        val cassavaPriceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
         for (cassavaPrice in cassavaPriceList) {
-            val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
+            val fertilizerPriceDto = modelMapper.map(cassavaPrice, ProducePriceDto::class.java)
             fertilizerPriceDto.priceIndex = priceIndex
             cassavaPriceDtoList.add(fertilizerPriceDto)
             priceIndex++
@@ -60,18 +60,18 @@ constructor(
     }
 
 
-    fun findCassavaPriceById(id: Long): CassavaPriceDto {
+    fun findCassavaPriceById(id: Long): ProducePriceDto {
         val apiUser = cassavaPriceRepository.findById(id).get()
-        return modelMapper.map(apiUser, CassavaPriceDto::class.java)
+        return modelMapper.map(apiUser, ProducePriceDto::class.java)
     }
 
-    fun cassavaPrices(countryCode: EnumCountry): List<CassavaPriceDto> {
+    fun cassavaPrices(countryCode: EnumCountry): List<ProducePriceDto> {
         val cassavaPriceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
-        val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
+        val cassavaPriceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
         for (cassavaPrice in cassavaPriceList) {
-            val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
+            val fertilizerPriceDto = modelMapper.map(cassavaPrice, ProducePriceDto::class.java)
             fertilizerPriceDto.priceIndex = priceIndex
             cassavaPriceDtoList.add(fertilizerPriceDto)
             priceIndex++
@@ -79,27 +79,27 @@ constructor(
         return cassavaPriceDtoList
     }
 
-    fun saveFertilizerPrice(cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto? {
-        val entity = modelMapper.map(cassavaPriceRequest, CassavaPrices::class.java)
+    fun saveFertilizerPrice(producePriceRequest: ProducePriceRequest): ProducePriceDto? {
+        val entity = modelMapper.map(producePriceRequest, CassavaPrices::class.java)
 
         val saved = cassavaPriceRepository.save(entity)
 
-        val resp = modelMapper.map(saved, CassavaPriceDto::class.java)
+        val resp = modelMapper.map(saved, ProducePriceDto::class.java)
 
         return resp
     }
 
-    fun updateCassavaPrice(id: Long, cassavaPriceRequest: CassavaPriceRequest): CassavaPriceDto? {
+    fun updateCassavaPrice(id: Long, producePriceRequest: ProducePriceRequest): ProducePriceDto? {
         val entity = cassavaPriceRepository.findById(id).get()
 
         modelMapper.configuration.isSkipNullEnabled = true
         modelMapper.configuration.propertyCondition
         modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
-        modelMapper.map(cassavaPriceRequest, entity)
+        modelMapper.map(producePriceRequest, entity)
 
         val saved = cassavaPriceRepository.save(entity)
 
-        return modelMapper.map(saved, CassavaPriceDto::class.java)
+        return modelMapper.map(saved, ProducePriceDto::class.java)
     }
 
     @Transactional

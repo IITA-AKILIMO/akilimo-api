@@ -1,8 +1,8 @@
 package com.acai.akilimo.controllers
 
 import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.mapper.CassavaPriceDto
-import com.acai.akilimo.request.CassavaPriceRequest
+import com.acai.akilimo.mapper.ProducePriceDto
+import com.acai.akilimo.request.ProducePriceRequest
 import com.acai.akilimo.service.CassavaPriceService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -21,35 +21,35 @@ class CassavaPricesController(private val cassavaPriceService: CassavaPriceServi
     }
 
     @GetMapping()
-    fun getAllPrices(): ResponseEntity<List<CassavaPriceDto>> {
+    fun getAllPrices(): ResponseEntity<List<ProducePriceDto>> {
         val cassavaPriceDto = cassavaPriceService.fetchAllPrices()
 
         return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
     }
 
     @GetMapping("/inactive")
-    fun getInactivePrices(): ResponseEntity<List<CassavaPriceDto>> {
+    fun getInactivePrices(): ResponseEntity<List<ProducePriceDto>> {
         val cassavaPriceDto = cassavaPriceService.fetchAllInactivePrices()
 
         return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
     }
 
     @GetMapping("/{id}")
-    fun getPriceById(@PathVariable id: Long): ResponseEntity<CassavaPriceDto> {
+    fun getPriceById(@PathVariable id: Long): ResponseEntity<ProducePriceDto> {
         val cassavaPriceDto = cassavaPriceService.findCassavaPriceById(id)
 
         return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
     }
 
     @GetMapping("/country/{country}")
-    fun listPrices(@PathVariable country: EnumCountry): ResponseEntity<List<CassavaPriceDto>> {
+    fun listPrices(@PathVariable country: EnumCountry): ResponseEntity<List<ProducePriceDto>> {
         val cassavaPriceList = cassavaPriceService.cassavaPrices(country)
 
         return ResponseEntity(cassavaPriceList, HttpStatus.OK)
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addFertilizerPrice(@Valid @RequestBody fertilizerPriceRequest: CassavaPriceRequest): ResponseEntity<CassavaPriceDto> {
+    fun addFertilizerPrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
 
         val cassavaPriceDto = cassavaPriceService.saveFertilizerPrice(fertilizerPriceRequest)
 
@@ -59,8 +59,8 @@ class CassavaPricesController(private val cassavaPriceService: CassavaPriceServi
     @PutMapping("/{id}")
     fun updateFertilizerPrice(
             @PathVariable id: Long,
-            @Valid @RequestBody fertilizerPriceRequest: CassavaPriceRequest
-    ): ResponseEntity<CassavaPriceDto> {
+            @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
+    ): ResponseEntity<ProducePriceDto> {
 
         val cassavaPriceDto = cassavaPriceService.updateCassavaPrice(id, fertilizerPriceRequest)
 

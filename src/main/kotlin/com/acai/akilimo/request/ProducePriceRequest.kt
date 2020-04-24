@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
 
 //@Data
-open class CassavaPriceRequest(
+open class ProducePriceRequest(
         @JsonProperty("country")
         @ApiModelProperty(example = "KE", required = true)
         var country: EnumCountry,
