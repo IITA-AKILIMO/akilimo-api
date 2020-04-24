@@ -36,6 +36,10 @@ class CassavaPrices {
     @Column(name = "price_active")
     var active: Boolean = false
 
+    @Column(name = "sort_order")
+    var sortOrder: Int = 0
+
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     var createdAt: LocalDateTime? = null

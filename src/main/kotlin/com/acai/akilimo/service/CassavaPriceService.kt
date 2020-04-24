@@ -38,7 +38,7 @@ constructor(
     }
 
     fun cassavaPrices(countryCode: EnumCountry): List<CassavaPriceDto> {
-        val cassavaPriceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderByMinLocalPriceAsc(countryCode.name)
+        val cassavaPriceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
 
         var priceIndex: Long = 1
