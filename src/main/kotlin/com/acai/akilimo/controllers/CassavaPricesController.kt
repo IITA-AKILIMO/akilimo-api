@@ -20,6 +20,13 @@ class CassavaPricesController(private val cassavaPriceService: CassavaPriceServi
         val logger = LoggerFactory.getLogger(CassavaPricesController::class.java)
     }
 
+    @GetMapping()
+    fun getPriceById(): ResponseEntity<List<CassavaPriceDto>> {
+        val cassavaPriceDto = cassavaPriceService.fetchAllPrices()
+
+        return ResponseEntity(cassavaPriceDto, HttpStatus.OK)
+    }
+
     @GetMapping("/{id}")
     fun getPriceById(@PathVariable id: Long): ResponseEntity<CassavaPriceDto> {
         val cassavaPriceDto = cassavaPriceService.findCassavaPriceById(id)

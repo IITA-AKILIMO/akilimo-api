@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.MultiValueMap
 import java.util.*
 
+@Suppress("DuplicatedCode")
 @Service
 class CassavaPriceService
 @Autowired
@@ -31,6 +32,20 @@ constructor(
     val conversion: CurrencyConversion = CurrencyConversion()
 
     private val modelMapper = ModelMapper()
+
+    fun fetchAllPrices(): List<CassavaPriceDto> {
+        val cassavaPriceList = cassavaPriceRepository.findAll()
+        val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
+
+        var priceIndex: Long = 1
+        for (cassavaPrice in cassavaPriceList) {
+            val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
+            fertilizerPriceDto.priceIndex = priceIndex
+            cassavaPriceDtoList.add(fertilizerPriceDto)
+            priceIndex++
+        }
+        return cassavaPriceDtoList
+    }
 
     fun findCassavaPriceById(id: Long): CassavaPriceDto {
         val apiUser = cassavaPriceRepository.findById(id).get()
