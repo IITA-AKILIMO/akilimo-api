@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v4/maize-prices")
+@RequestMapping("/api/v3/maize-prices")
 @RestController
 class MaizePricesController(private val maizePriceService: MaizePriceService) {
 
