@@ -4,7 +4,6 @@ package com.acai.akilimo.service
 import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.CassavaPrices
 import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.interfaces.ICassavaPriceService
 import com.acai.akilimo.mapper.CassavaPriceDto
 import com.acai.akilimo.repositories.CassavaPriceRepository
 import com.acai.akilimo.request.CassavaPriceRequest
@@ -15,9 +14,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.MultiValueMap
 import java.util.*
 
+@Suppress("DuplicatedCode")
 @Service
 class CassavaPriceService
 @Autowired
@@ -32,13 +31,42 @@ constructor(
 
     private val modelMapper = ModelMapper()
 
+    fun fetchAllPrices(): List<CassavaPriceDto> {
+        val cassavaPriceList = cassavaPriceRepository.findAll()
+        val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
+
+        var priceIndex: Long = 1
+        for (cassavaPrice in cassavaPriceList) {
+            val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
+            fertilizerPriceDto.priceIndex = priceIndex
+            cassavaPriceDtoList.add(fertilizerPriceDto)
+            priceIndex++
+        }
+        return cassavaPriceDtoList
+    }
+
+    fun fetchAllInactivePrices(): List<CassavaPriceDto> {
+        val cassavaPriceList = cassavaPriceRepository.findAllByActiveIsFalse()
+        val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
+
+        var priceIndex: Long = 1
+        for (cassavaPrice in cassavaPriceList) {
+            val fertilizerPriceDto = modelMapper.map(cassavaPrice, CassavaPriceDto::class.java)
+            fertilizerPriceDto.priceIndex = priceIndex
+            cassavaPriceDtoList.add(fertilizerPriceDto)
+            priceIndex++
+        }
+        return cassavaPriceDtoList
+    }
+
+
     fun findCassavaPriceById(id: Long): CassavaPriceDto {
         val apiUser = cassavaPriceRepository.findById(id).get()
         return modelMapper.map(apiUser, CassavaPriceDto::class.java)
     }
 
     fun cassavaPrices(countryCode: EnumCountry): List<CassavaPriceDto> {
-        val cassavaPriceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderByMinLocalPriceAsc(countryCode.name)
+        val cassavaPriceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val cassavaPriceDtoList = ArrayList<CassavaPriceDto>()
 
         var priceIndex: Long = 1
@@ -88,6 +116,5 @@ constructor(
         }
 
     }
-
 
 }
