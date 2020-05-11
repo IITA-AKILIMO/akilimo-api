@@ -7,12 +7,11 @@ import com.acai.akilimo.service.MessagingService
 import com.acai.akilimo.service.RecommendationService
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.util.MultiValueMap
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
@@ -25,10 +24,14 @@ class RecommendationsController(private val recommendationService: Recommendatio
     }
 
     @PostMapping
-    fun computeRecommendations(@Valid @RequestBody recommendationRequest: RecommendationRequest): ResponseEntity<RecommendationResponseDto> {
+    fun computeRecommendations(@Valid @RequestBody recommendationRequest: RecommendationRequest,
+                               @RequestHeader headers: Map<String, String>): ResponseEntity<RecommendationResponseDto> {
+
+        val requestContext = headers["context"]
+
         val modelMapper = ModelMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null
-        val response = recommendationService.computeRecommendations(recommendationRequest)
+        val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
 
         when {
             response != null -> {

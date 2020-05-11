@@ -14,6 +14,9 @@ class PlumberProperties {
     var baseUrl: String? = null
 
     @NotBlank
+    var devUrl: String? = null
+
+    @NotBlank
     var recommendationNg: String? = null
 
 
@@ -21,7 +24,7 @@ class PlumberProperties {
     var recommendationTz: String? = null
 
     @NotBlank
-    var demoMode: Boolean  = false
+    var demoMode: Boolean = false
 
     @NotBlank
     var recommendationNgDemo: String? = null
