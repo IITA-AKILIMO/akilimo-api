@@ -64,8 +64,9 @@ constructor(private val restTemplate: RestTemplate,
             var recommendationUrl: String? = null
 
             var baseUrl = plumberPropertiesProperties.baseUrl
-            if (requestContext.equals("dev",ignoreCase = true)) {
+            if (requestContext.equals("dev", ignoreCase = true)) {
                 baseUrl = plumberPropertiesProperties.devUrl
+                logger.info("Switched to context $requestContext")
             }
             when (country) {
                 EnumCountry.NG.name -> recommendationUrl = when {
