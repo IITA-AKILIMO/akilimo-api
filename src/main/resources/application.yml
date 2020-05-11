@@ -30,7 +30,8 @@ akilimo:
     kes-usd-rate: 103
 plumber:
   demo-mode: false
-  base-url: http://localhost:8000/api/
+  #  base-url: http://localhost:8000/api/
+  base-url: http://157.245.26.55:8000/api/
   recommendation-ng: v2/dst/recommendation/ng/compute
   recommendation-tz: v2/dst/recommendation/tz/compute
   recommendation-ng-demo: v2/dst/recommendation/demo/ng/compute
