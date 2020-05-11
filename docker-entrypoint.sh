@@ -29,6 +29,26 @@ if [ -z "$VERIFY_CERT" ]; then
 else
   JAVA_OPTS="$JAVA_OPTS -Dcom.sun.net.ssl.checkRevocation=$VERIFY_CERT"
 fi
+
+if [ -z "$GEN_SQL_STATS" ]; then
+  echo 'Hibernate statistics will not be generated'
+else
+  JAVA_OPTS="$JAVA_OPTS -Dspring.jpa.properties.hibernate.generate_statistics=$GEN_SQL_STATS"
+fi
+
+if [ -z "$ORDER_INSERTS" ]; then
+  echo 'Hibernate insertions will be ordered for improved performance'
+else
+  JAVA_OPTS="$JAVA_OPTS -Dspring.jpa.properties.hibernate.order_inserts=$ORDER_INSERTS"
+fi
+
+if [ -z "$ORDER_INSERTS" ]; then
+  echo 'Using default batch batch_size of 500'
+else
+  echo "Using batch batch_size of $ORDER_INSERTS"
+  JAVA_OPTS="$JAVA_OPTS -Dspring.jpa.properties.hibernate.jdbc.batch_size=$ORDER_INSERTS"
+fi
+
 #currency rates
 if [ -z "$NGN_USD_RATE" ]; then
   echo 'No Nigerian exchange rate given'
@@ -91,73 +111,37 @@ else
   JAVA_OPTS="$JAVA_OPTS -Dplumber.recommendation-ng=$NG_ENDPOINT"
 fi
 
+if [ -z "$RATE_TYPE" ]; then
+  echo 'Defaulting to hourly rate limit type'
+else
+  echo "Maximum requests per hour is $RATE_TYPE"
+  JAVA_OPTS="$JAVA_OPTS -Drate.limit.rate-type=$RATE_TYPE"
+fi
+
+if [ -z "$ENABLE_RATE_LIMIT" ]; then
+  echo 'Rate limiting is enable by default'
+else
+  JAVA_OPTS="$JAVA_OPTS -Drate.limit.enabled=$ENABLE_RATE_LIMIT"
+fi
+
+if [ -z "$RATE_LIMIT" ]; then
+  echo 'Using default rate limit ceiling of 1'
+else
+  echo "Maximum requests per $RATE_TYPE is $RATE_LIMIT"
+  JAVA_OPTS="$JAVA_OPTS -Drate.limit.max-request=$RATE_LIMIT"
+fi
+
 #global messaging parameters
-if [ -z "$MS_WEBHOOK" ]; then
-  echo 'No messaging webhook defined'
+if [ -z "$SMS_USER" ]; then
+  echo 'No sms user defined'
 else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.web-hook-url=$MS_WEBHOOK"
+  JAVA_OPTS="$JAVA_OPTS -Dmessaging.sms.sms-user=$SMS_USER"
 fi
 
-if [ -z "$MS_TEST_NUMBERS" ]; then
-  echo 'No test numbers provided'
+if [ -z "$SMS_TOKEN" ]; then
+  echo 'No sms token defined'
 else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.test-numbers=$MS_TEST_NUMBERS"
-fi
-
-# infobip configuration
-if [ -z "$INFOBIP_ENDPOINT" ]; then
-  echo 'No infobip endpoint given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.end-point=$INFOBIP_ENDPOINT"
-fi
-
-if [ -z "$INFOBIP_USER_NAME" ]; then
-  echo 'No infobip user name'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.user-name=$INFOBIP_USER_NAME"
-fi
-
-if [ -z "$INFOBIP_USER_PASS" ]; then
-  echo 'No infobip user pass given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.user-pass=$INFOBIP_USER_PASS"
-fi
-
-if [ -z "$INFOBIP_SENDER" ]; then
-  echo 'No infobip sender given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.sender=$INFOBIP_SENDER"
-fi
-
-if [ -z "$INFOBIP_AUTH_KEY" ]; then
-  echo 'No infobip auth key given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.infobip.auth-key=$INFOBIP_AUTH_KEY"
-fi
-
-# Plivo setup
-if [ -z "$PLIVO_ENDPOINT" ]; then
-  echo 'No plivo endpoint given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.plivo.end-point=$PLIVO_ENDPOINT"
-fi
-
-if [ -z "$PLIVO_AUTH_KEY" ]; then
-  echo 'No plivo auth key given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.plivo.auth-key=$PLIVO_AUTH_KEY"
-fi
-
-if [ -z "$PLIVO_AUTH_ID" ]; then
-  echo 'No plivo authid given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.plivo.auth-id=$PLIVO_AUTH_ID"
-fi
-
-if [ -z "$PLIVO_SENDER" ]; then
-  echo 'No plivo sender given'
-else
-  JAVA_OPTS="$JAVA_OPTS -Dmessaging.plivo.sender=$PLIVO_SENDER"
+  JAVA_OPTS="$JAVA_OPTS -Dmessaging.sms.sms-token=$SMS_TOKEN"
 fi
 
 exec java $JAVA_OPTS \

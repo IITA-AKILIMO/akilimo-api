@@ -47,17 +47,9 @@ plumber:
 messaging:
   test-numbers:
   web-hook-url: https://enj4dfsqm8xr.x.pipedream.net
-  plivo:
-    end-point: https://api.plivo.com/v1/Account
-    auth-id:
-    auth-key:
-    sender:
-  infobip:
-    end-point:
-    user-name:
-    user-pass:
-    auth-key:
-    sender:
+  sms:
+    sms-token:
+    sms-user:
   email:
     sender:
     pass:
