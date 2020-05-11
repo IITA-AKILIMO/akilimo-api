@@ -14,7 +14,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
-    id("io.spring.dependency-management") version "1.0.8.RELEASE"
+    id("io.spring.dependency-management") version "1.0.9.RELEASE"
 }
 
 val date = Calendar.getInstance()
