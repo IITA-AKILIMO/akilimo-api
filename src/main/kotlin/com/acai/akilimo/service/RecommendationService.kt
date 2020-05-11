@@ -64,7 +64,7 @@ constructor(private val restTemplate: RestTemplate,
             var recommendationUrl: String? = null
 
             var baseUrl = plumberPropertiesProperties.baseUrl
-            if (requestContext.equals("dev")) {
+            if (requestContext.equals("dev",ignoreCase = true)) {
                 baseUrl = plumberPropertiesProperties.devUrl
             }
             when (country) {
