@@ -1,5 +1,6 @@
 package com.acai.akilimo.properties
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
@@ -13,22 +14,15 @@ class MessagingProperties {
     var endPoint: String? = null
 
     @NotBlank
-    var authId: String? = null
+    var baseUrl: String? = null
 
     @NotBlank
-    var authKey: String? = null
+    var smsUser: String? = null
 
     @NotBlank
-    var userName: String? = null
+    var smsToken: String? = null
 
-    @NotBlank
-    var userPass: String? = null
-
-    @NotBlank
-    var sender: String? = null
-
-    var webHookUrl: String? = null
-
-    var testNumbers: List<String>? = null
-
+    fun apiUrl(): String {
+        return this.baseUrl + this.endPoint
+    }
 }

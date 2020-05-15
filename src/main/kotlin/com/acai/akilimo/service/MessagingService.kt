@@ -4,97 +4,84 @@ import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.interfaces.IMessagingService
 import com.acai.akilimo.mapper.RecommendationResponseDto
 import com.acai.akilimo.properties.MessagingProperties
+import com.acai.akilimo.request.SmsMessage
+import com.acai.akilimo.response.MessageSendingResponse
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Strings
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
-import infobip.api.client.SendMultipleTextualSmsAdvanced
-import infobip.api.config.BasicAuthConfiguration
-import infobip.api.model.Destination
-import infobip.api.model.sms.mt.send.Message
-import infobip.api.model.sms.mt.send.textual.SMSAdvancedTextualRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import java.util.*
+import org.springframework.web.client.RestTemplate
 
 
 @Service
 class MessagingService
 @Autowired
-constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingService {
+
+constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
 
     private val logger = LoggerFactory.getLogger(MessagingService::class.java)
-    private val infobipSms: MessagingProperties = akilimoConfigProperties.infoBipSms()
-    private val globalParams: MessagingProperties = akilimoConfigProperties.globalProperties()
-    private val phoneUtil = PhoneNumberUtil.getInstance()
-    /* override fun sendTextMessage() {
-         val client = PlivoClient(plivo.authId, plivo.authKey)
+    private val sms: MessagingProperties = akilimoConfig.sms()
 
-         Message.creator("254727876796", Collections.singletonList("254713196504"), "Hello, world!")
-                 .client(client)
-                 .create()
-     }*/
+    private val phoneUtil = PhoneNumberUtil.getInstance()
+
+    private val mapper = ObjectMapper()
+    private val restTemplate = RestTemplate()
 
     override fun sendTextMessage(response: RecommendationResponseDto, sendSms: Boolean) {
         if (!sendSms) {
             return
         }
-        val basicAuthConfiguration = BasicAuthConfiguration(infobipSms.userName, infobipSms.userPass)
-        val messageList = buildMessagePayload(response)
-        val client = SendMultipleTextualSmsAdvanced(basicAuthConfiguration)
-        val requestBody = SMSAdvancedTextualRequest()
+        val smsMessage = buildMessagePayload(response)
 
-        try {
-            if (messageList.size > 0) {
-                requestBody.messages = messageList
-                client.execute(requestBody)
-            }
-        } catch (ex: Exception) {
-            logger.info("Unable to send SMS message ${ex.message}")
-        }
 
+        val postUrl = sms.apiUrl()
+        val headers = addRequestHeaders()
+        val entity = HttpEntity(smsMessage, headers)
+
+        val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
+
+        val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
+
+        logger.info(responseString)
     }
 
-    private fun buildMessagePayload(response: RecommendationResponseDto): ArrayList<Message> {
-        val messageList = arrayListOf<Message>()
-        val webHookUrl = globalParams.webHookUrl
-        val destination = Destination()
-        destination.to = response.mobileNumber
+    private fun buildMessagePayload(response: RecommendationResponseDto): SmsMessage {
 
-        val message = Message()
-        message.from = infobipSms.sender
-        message.destinations = Collections.singletonList(destination)
-        message.notifyUrl = webHookUrl
+        val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
+        message.mobileNumber = response.mobileNumber
 
         when {
             !Strings.isNullOrEmpty(response.fertilizerRecText) &&
                     response.fertilizerRecText != "We donot have fertilizer recommendation for your location." -> {
-                message.text = response.fertilizerRecText
-                messageList.add(message)
+                message.smsText = response.fertilizerRecText
+
             }
         }
 
         when {
             !Strings.isNullOrEmpty(response.interCroppingRecText) -> {
-                message.text = response.interCroppingRecText
-                messageList.add(message)
+                message.smsText = response.interCroppingRecText
             }
         }
 
         when {
             !Strings.isNullOrEmpty(response.plantingPracticeRecText) -> {
-                message.text = response.plantingPracticeRecText
-                messageList.add(message)
+                message.smsText = response.plantingPracticeRecText
             }
         }
 
         when {
             !Strings.isNullOrEmpty(response.scheduledPlantingRecText) -> {
-                message.text = response.scheduledPlantingRecText
-                messageList.add(message)
+                message.smsText = response.scheduledPlantingRecText
             }
         }
-        return messageList
+        return message
     }
 
     override fun sendEmailMessage(response: RecommendationResponseDto, email: Boolean) {
@@ -116,5 +103,13 @@ constructor(akilimoConfigProperties: AkilimoConfigProperties) : IMessagingServic
         val phoneNumber = processPhoneNumber(recommendationResponseDto)
 
         return phoneUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164)
+    }
+
+    private fun addRequestHeaders(): HttpHeaders {
+        val headers = HttpHeaders()
+
+        headers.contentType = MediaType.APPLICATION_JSON
+
+        return headers
     }
 }
