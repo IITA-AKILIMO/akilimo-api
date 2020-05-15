@@ -132,6 +132,18 @@ else
 fi
 
 #global messaging parameters
+if [ -z "$SMS_BASE_URL" ]; then
+  echo 'Using default base url'
+else
+  JAVA_OPTS="$JAVA_OPTS -Dmessaging.sms.base-url=$SMS_BASE_URL"
+fi
+
+if [ -z "$SMS_ENDPONT" ]; then
+  echo 'Using default end point'
+else
+  JAVA_OPTS="$JAVA_OPTS -Dmessaging.sms.end-point=$SMS_ENDPONT"
+fi
+
 if [ -z "$SMS_USER" ]; then
   echo 'No sms user defined'
 else
