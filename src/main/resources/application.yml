@@ -57,8 +57,8 @@ messaging:
   sms:
     base-url: https://api.tsobu.co.ke
     end-point: /v1/sms/single
-    sms-token:
     sms-user:
+    sms-token:
   email:
     sender:
     pass:

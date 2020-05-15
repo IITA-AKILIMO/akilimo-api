@@ -47,6 +47,8 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
 
         val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
+
+        logger.info(responseString)
     }
 
     private fun buildMessagePayload(response: RecommendationResponseDto): SmsMessage {
