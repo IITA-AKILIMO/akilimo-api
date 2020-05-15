@@ -32,7 +32,7 @@ spring:
 
 rate:
   limit:
-    enabled: true
+    enabled: false
     rate-type: minute
     max-request: 1
 
@@ -43,9 +43,8 @@ akilimo:
     kes-usd-rate: 103
 plumber:
   demo-mode: false
-  #  base-url: http://localhost:8000/api/
-  base-url: http://157.245.26.55:8000/api/
-  dev-url: http://157.245.26.55:8002/api/
+  base-url: http://compute-prod:8000/api/
+  dev-url: http://compute-dev:8001/api/
   recommendation-ng: v2/dst/recommendation/ng/compute
   recommendation-tz: v2/dst/recommendation/tz/compute
   recommendation-ng-demo: v2/dst/recommendation/demo/ng/compute
@@ -55,8 +54,10 @@ messaging:
   test-numbers:
   web-hook-url: https://enj4dfsqm8xr.x.pipedream.net
   sms:
-    sms-token:
+    base-url: https://api.tsobu.co.ke
+    end-point: /v1/sms/single
     sms-user:
+    sms-token:
   email:
     sender:
     pass:
