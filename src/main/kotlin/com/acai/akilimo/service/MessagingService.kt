@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
@@ -33,6 +34,7 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
     private val mapper = ObjectMapper()
     private val restTemplate = RestTemplate()
 
+    @Suppress("NAME_SHADOWING")
     override fun sendTextMessage(response: RecommendationResponseDto, sendSms: Boolean) {
         if (!sendSms) {
             return
@@ -44,11 +46,13 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         val headers = addRequestHeaders()
         val entity = HttpEntity(smsMessage, headers)
 
-        val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
-
-        val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
-
-        logger.info(responseString)
+        try {
+            val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
+            val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
+            logger.info(responseString)
+        } catch (ex: Exception) {
+            logger.error(ex.message, ex)
+        }
     }
 
     private fun buildMessagePayload(response: RecommendationResponseDto): SmsMessage {
