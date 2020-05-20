@@ -11,7 +11,7 @@ enum class EnumFertilizer(vararg customFertilizerKeys: String) {
     NPK_17_17_17,
     NPK_15_15_15,
     NPK_20_10_10,
-    NPK_20_12_16,
+    NPK_20_12_16_MG_2,
     YARAMILA_UNIK,
     CUSTOM_FERT_ONE,
     CUSTOM_FERT_TWO,
