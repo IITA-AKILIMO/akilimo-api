@@ -362,6 +362,7 @@ open class PlumberComputeRequest {
 
     @JsonProperty("ureaavailable")
     var ureaAvailable: Boolean = false
+
     @JsonProperty("ureaCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var ureaCostPerBag: Double = 0.0
@@ -372,90 +373,121 @@ open class PlumberComputeRequest {
 
     @JsonProperty("MOPavailable")
     var mopAvailable: Boolean = false
+
     @JsonProperty("MOPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var mopCostPerBag: Double = 0.0
+
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     @JsonProperty("MOPBagWt")
     var mopBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("DAPavailable")
     var dapAvailable: Boolean = false
+
     @JsonProperty("DAPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var dapCostPerBag: Double = 0.0
+
     @JsonProperty("DAPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var dapBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("NPK201010available")
     var npkTwentyAvailable: Boolean = false
+
     @JsonProperty("NPK201010CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var npkTwentyCostPerBag: Double = 0.0
+
     @JsonProperty("NPK201010BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkTwentyBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("NPK151515available")
     var npkFifteenAvailable: Boolean = false
+
     @JsonProperty("NPK151515CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var npkFifteenCostPerBag: Double = 0.0
+
     @JsonProperty("NPK151515BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkFifteenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
+    @JsonProperty("NPK201216available")
+    var npkTwentyTwelveAvailable: Boolean = false
+
+    @JsonProperty("NPK201216CostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var npkTwentyTwelveCostPerBag: Double = 0.0
+
+    @JsonProperty("NPK201216BagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var npkTwentyTwelveBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
     @JsonProperty("TSPavailable")
     var tspAvailable: Boolean = false
+
     @JsonProperty("TSPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var tspCostPerBag: Double = 0.0
+
     @JsonProperty("TSPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var tspBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("NPK171717available")
     var npkSeventeenAvailable: Boolean = false
+
     @JsonProperty("NPK171717CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var npkSeventeenCostPerBag: Double = 0.0
+
     @JsonProperty("NPK171717BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkSeventeenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("Nafakaavailable")
     var nafakaAvailable: Boolean = false
+
     @JsonProperty("NafakaCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var nafakaCostPerBag: Double = 0.0
+
     @JsonProperty("NafakaBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var nafakaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("YaraMila_UNIKavailable")
     var yaramilaUnikAvailable: Boolean = false
+
     @JsonProperty("YaraMila_UNIKCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var yaramilaUnikCostPerBag: Double = 0.0
+
     @JsonProperty("YaraMila_UNIKBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var yaramilaUnikBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("CANavailable")
     var canAvailable: Boolean = false
+
     @JsonProperty("CANCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var canCostPerBag: Double = 0.0
+
     @JsonProperty("CANBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var canBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("SSPavailable")
     var sspAvailable: Boolean = false
+
     @JsonProperty("SSPCostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
     var sspCostPerBag: Double = 0.0
+
     @JsonProperty("SSPBagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var sspBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
