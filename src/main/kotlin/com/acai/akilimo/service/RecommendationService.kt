@@ -358,11 +358,11 @@ constructor(private val restTemplate: RestTemplate,
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag
         }
 
-        if (fertilizerList.containsKey(EnumFertilizer.NPK_20_12_16.name)) {
-            val can = fertilizerList[EnumFertilizer.NPK_20_12_16.name]!!
-            requestPayloadPlumber.npkTwentyTwelveAvailable = can.selected
-            requestPayloadPlumber.npkTwentyTwelveBagWeight = can.fertilizerWeight!!
-            requestPayloadPlumber.npkTwentyTwelveCostPerBag = can.fertilizerCostPerBag
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_20_12_16_MG_2.name)) {
+            val npkTwentySixteen = fertilizerList[EnumFertilizer.NPK_20_12_16_MG_2.name]!!
+            requestPayloadPlumber.npkTwentyTwelveAvailable = npkTwentySixteen.selected
+            requestPayloadPlumber.npkTwentyTwelveBagWeight = npkTwentySixteen.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyTwelveCostPerBag = npkTwentySixteen.fertilizerCostPerBag
         }
 
         return requestPayloadPlumber
