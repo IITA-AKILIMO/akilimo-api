@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="masgeek" id="20200520171124">
+        <loadData
+                file="/liquibase/changelog/data/npl_20_12_16.csv"
+                tableName="available_fertilizer">
+
+            <column name="name" header="name"/>
+            <column name="type" header="type"/>
+            <column name="price" header="price"/>
+            <column name="n_content" header="n"/>
+            <column name="p_content" header="p"/>
+            <column name="k_content" header="k"/>
+            <column name="country" header="country"/>
+            <column name="weight" header="weight" type="numeric"/>
+            <column name="available" header="available" type="boolean"/>
+            <column name="custom" header="custom" type="boolean"/>
+            <column name="created_at" header="created_at" type="date"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
