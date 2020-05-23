@@ -47,4 +47,7 @@
     <include file="/liquibase/changelog/20200520173126_modify_date_timestamps.xml"/>
     <include file="/liquibase/changelog/20200520173539_add_new_npk_20_12_16_with_mg_fertilizer.xml"/>
 
+    <include file="/liquibase/changelog/20200524002209_create_sweet_potato_prices_table.xml"/>
+    <include file="/liquibase/changelog/20200524002251_import_default_potato_prices.xml"/>
+
 </databaseChangeLog>
