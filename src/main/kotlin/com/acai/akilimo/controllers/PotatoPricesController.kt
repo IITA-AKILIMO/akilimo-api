@@ -3,7 +3,7 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.mapper.ProducePriceDto
 import com.acai.akilimo.request.ProducePriceRequest
-import com.acai.akilimo.service.MaizePriceService
+import com.acai.akilimo.service.PotatoPriceService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -13,66 +13,66 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v3/maize-prices")
+@RequestMapping("/api/v3/potato-prices")
 @RestController
-class MaizePricesController(private val maizePriceService: MaizePriceService) {
+class PotatoPricesController(private val potatoPriceService: PotatoPriceService) {
 
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(MaizePricesController::class.java)
+        val logger: Logger = LoggerFactory.getLogger(PotatoPricesController::class.java)
     }
 
     @GetMapping()
     fun getAllPrices(): ResponseEntity<List<ProducePriceDto>> {
-        val priceDto = maizePriceService.fetchAllPrices()
+        val priceDto = potatoPriceService.fetchAllPrices()
 
         return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @GetMapping("/inactive")
     fun getInactivePrices(): ResponseEntity<List<ProducePriceDto>> {
-        val priceDto = maizePriceService.fetchAllInactivePrices()
+        val priceDto = potatoPriceService.fetchAllInactivePrices()
 
         return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @GetMapping("/{id}")
     fun getPriceById(@PathVariable id: Long): ResponseEntity<ProducePriceDto> {
-        val priceDto = maizePriceService.findMaizePricePriceById(id)
+        val priceDto = potatoPriceService.findPotatoPriceById(id)
 
         return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @GetMapping("/country/{country}")
     fun listPrices(@PathVariable country: EnumCountry): ResponseEntity<List<ProducePriceDto>> {
-        val priceList = maizePriceService.cassavaPrices(country)
+        val priceList = potatoPriceService.potatoPrices(country)
 
         return ResponseEntity(priceList, HttpStatus.OK)
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addMaizePrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
+    fun addPotatoPrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
 
-        val priceDto = maizePriceService.saveMaizePrice(fertilizerPriceRequest)
+        val priceDto = potatoPriceService.savePotatoPrice(fertilizerPriceRequest)
 
         return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @PutMapping("/{id}")
-    fun updateMaizePrice(
+    fun updatePotatoPrice(
             @PathVariable id: Long,
             @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
     ): ResponseEntity<ProducePriceDto> {
 
-        val priceDto = maizePriceService.updateMaizePrice(id, fertilizerPriceRequest)
+        val priceDto = potatoPriceService.updatePotatoPrice(id, fertilizerPriceRequest)
 
         return ResponseEntity(priceDto, HttpStatus.OK)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteMaizePrice(@PathVariable id: Long): ResponseEntity<Boolean> {
+    fun deletePotatoPrice(@PathVariable id: Long): ResponseEntity<Boolean> {
 
         logger.info("The id being passed here is by the name $id")
-        val recordDeleted = maizePriceService.deleteMaizePrice(id)
+        val recordDeleted = potatoPriceService.deletePotatoPrice(id)
 
         return when {
             recordDeleted -> ResponseEntity(recordDeleted, HttpStatus.OK)
