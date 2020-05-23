@@ -2,9 +2,10 @@ package com.acai.akilimo.service
 
 
 import com.acai.akilimo.entities.MaizePrices
+import com.acai.akilimo.entities.PotatoPrices
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.mapper.ProducePriceDto
-import com.acai.akilimo.repositories.MaizePriceRepository
+import com.acai.akilimo.repositories.PotatoPriceRepository
 import com.acai.akilimo.request.ProducePriceRequest
 import com.acai.akilimo.utils.CurrencyConversion
 import org.modelmapper.ModelMapper
@@ -17,19 +18,19 @@ import java.util.*
 
 @Suppress("DuplicatedCode")
 @Service
-class MaizePriceService
+class PotatoPriceService
 @Autowired
 constructor(
-        private val maizePriceRepository: MaizePriceRepository
+        private val potatoPriceRepository: PotatoPriceRepository
 ) {
-    private val logger = LoggerFactory.getLogger(MaizePriceService::class.java)
+    private val logger = LoggerFactory.getLogger(PotatoPriceService::class.java)
 
     private val conversion: CurrencyConversion = CurrencyConversion()
 
     private val modelMapper = ModelMapper()
 
     fun fetchAllPrices(): List<ProducePriceDto> {
-        val maizePriceList = maizePriceRepository.findAll()
+        val maizePriceList = potatoPriceRepository.findAll()
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
@@ -43,12 +44,12 @@ constructor(
     }
 
     fun fetchAllInactivePrices(): List<ProducePriceDto> {
-        val maizePriceList = maizePriceRepository.findAllByActiveIsFalse()
+        val potatoPriceList = potatoPriceRepository.findAllByActiveIsFalse()
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
-        for (maizePrice in maizePriceList) {
-            val priceDto = modelMapper.map(maizePrice, ProducePriceDto::class.java)
+        for (potatoPrices in potatoPriceList) {
+            val priceDto = modelMapper.map(potatoPrices, ProducePriceDto::class.java)
             priceDto.priceIndex = priceIndex
             priceDtoList.add(priceDto)
             priceIndex++
@@ -57,18 +58,18 @@ constructor(
     }
 
 
-    fun findMaizePricePriceById(id: Long): ProducePriceDto {
-        val maizePrice = maizePriceRepository.findById(id).get()
+    fun findPotatoPriceById(id: Long): ProducePriceDto {
+        val maizePrice = potatoPriceRepository.findById(id).get()
         return modelMapper.map(maizePrice, ProducePriceDto::class.java)
     }
 
-    fun cassavaPrices(countryCode: EnumCountry): List<ProducePriceDto> {
-        val maizePriceList = maizePriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
+    fun potatoPrices(countryCode: EnumCountry): List<ProducePriceDto> {
+        val potatoPriceList = potatoPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
-        for (maizePrice in maizePriceList) {
-            val priceDto = modelMapper.map(maizePrice, ProducePriceDto::class.java)
+        for (potatoPrice in potatoPriceList) {
+            val priceDto = modelMapper.map(potatoPrice, ProducePriceDto::class.java)
             priceDto.priceIndex = priceIndex
             priceDtoList.add(priceDto)
             priceIndex++
@@ -76,35 +77,35 @@ constructor(
         return priceDtoList
     }
 
-    fun saveMaizePrice(producePriceRequest: ProducePriceRequest): ProducePriceDto? {
-        val entity = modelMapper.map(producePriceRequest, MaizePrices::class.java)
+    fun savePotatoPrice(producePriceRequest: ProducePriceRequest): ProducePriceDto? {
+        val entity = modelMapper.map(producePriceRequest, PotatoPrices::class.java)
 
-        val saved = maizePriceRepository.save(entity)
+        val saved = potatoPriceRepository.save(entity)
 
         return modelMapper.map(saved, ProducePriceDto::class.java)
     }
 
-    fun updateMaizePrice(id: Long, producePriceRequest: ProducePriceRequest): ProducePriceDto? {
-        val entity = maizePriceRepository.findById(id).get()
+    fun updatePotatoPrice(id: Long, producePriceRequest: ProducePriceRequest): ProducePriceDto? {
+        val entity = potatoPriceRepository.findById(id).get()
 
         modelMapper.configuration.isSkipNullEnabled = true
         modelMapper.configuration.propertyCondition
         modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
         modelMapper.map(producePriceRequest, entity)
 
-        val saved = maizePriceRepository.save(entity)
+        val saved = potatoPriceRepository.save(entity)
 
         return modelMapper.map(saved, ProducePriceDto::class.java)
     }
 
     @Transactional
-    fun deleteMaizePrice(id: Long): Boolean {
+    fun deletePotatoPrice(id: Long): Boolean {
 
-        val entity = maizePriceRepository.findByPriceId(id)
+        val entity = potatoPriceRepository.findByPriceId(id)
 
         return when {
             entity != null -> {
-                maizePriceRepository.deleteById(id)
+                potatoPriceRepository.deleteById(id)
                 true
             }
             else -> false
