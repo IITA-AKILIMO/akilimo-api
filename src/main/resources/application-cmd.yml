@@ -26,3 +26,8 @@ spring:
     change-log: "classpath:liquibase/master.xml"
   profiles:
     active: cmd
+
+plumber:
+  demo-mode: false
+  base-url: http://akilimo.me:8000/api/
+  dev-url: http://akilimo.me:8090/api/
