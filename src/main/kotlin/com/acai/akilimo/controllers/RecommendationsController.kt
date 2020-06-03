@@ -28,6 +28,7 @@ class RecommendationsController(private val recommendationService: Recommendatio
                                @RequestHeader headers: Map<String, String>): ResponseEntity<RecommendationResponseDto> {
 
         val requestContext = headers["context"]
+        val localeLanguage = headers["locale-lang"]
 
         val modelMapper = ModelMapper()
         var recommendationResponseDto: RecommendationResponseDto? = null

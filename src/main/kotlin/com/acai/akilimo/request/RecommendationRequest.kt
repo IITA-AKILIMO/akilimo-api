@@ -11,4 +11,6 @@ open class RecommendationRequest(
         var computeRequest: ComputeRequest,
         @JsonProperty("fertilizerList")
         var fertilizerList: Set<FertilizerList>
-)
+) {
+    var appLanguage: String? = null
+}

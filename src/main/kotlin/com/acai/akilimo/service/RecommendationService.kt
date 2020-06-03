@@ -45,6 +45,10 @@ constructor(private val restTemplate: RestTemplate,
         val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
 
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
+
+        if (recommendationRequest.userInfo.emailAddress.equals("NA", ignoreCase = true)) {
+            recommendationRequest.userInfo.sendEmail = false
+        }
         val headers = this.setHTTPHeaders()
 
         val droidRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
