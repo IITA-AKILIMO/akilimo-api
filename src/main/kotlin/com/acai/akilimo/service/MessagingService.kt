@@ -60,13 +60,14 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
         message.mobileNumber = response.mobileNumber
 
-        when {
-            !Strings.isNullOrEmpty(response.fertilizerRecText) &&
-                    response.fertilizerRecText != "We donot have fertilizer recommendation for your location." -> {
-                message.smsText = response.fertilizerRecText
+        val fertRectText = response.fertilizerRecText!!
 
-            }
+        if (!fertRectText.contains("Hatuna mapendekezo yoyote")
+                || !fertRectText.contains("We do not have fertilizer recommendation for your location")
+                && !Strings.isNullOrEmpty(response.fertilizerRecText)) {
+            message.smsText = response.fertilizerRecText
         }
+
 
         when {
             !Strings.isNullOrEmpty(response.interCroppingRecText) -> {
