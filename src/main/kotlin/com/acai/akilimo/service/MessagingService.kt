@@ -51,7 +51,7 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
         } catch (ex: Exception) {
-            logger.error(ex.message, ex)
+            logger.info(ex.message)
         }
     }
 
