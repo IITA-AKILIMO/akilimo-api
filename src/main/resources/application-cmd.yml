@@ -1,5 +1,5 @@
 ---
-debug: true
+debug: false
 logging:
   level:
     org:
@@ -7,10 +7,10 @@ logging:
         SQL: debug
 spring:
   datasource:
-    driverClassName: org.mariadb.jdbc.Driver
-    url: "jdbc:mariadb://127.0.0.1:3306/akilimo_db"
+#    driverClassName: org.mariadb.jdbc.Driver
+    url: "jdbc:mariadb://127.0.0.1:3306/akilimo"
     username: root
-    password:
+    password: root
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
     open-in-view: false
@@ -26,3 +26,8 @@ spring:
     change-log: "classpath:liquibase/master.xml"
   profiles:
     active: cmd
+
+plumber:
+  demo-mode: false
+  base-url: http://akilimo.me:8000/api/
+  dev-url: http://akilimo.me:8090/api/

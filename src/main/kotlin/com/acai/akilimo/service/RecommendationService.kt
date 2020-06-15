@@ -40,11 +40,15 @@ constructor(private val restTemplate: RestTemplate,
     private val modelMapper = ModelMapper()
     private lateinit var recommendationResponseDto: RecommendationResponseDto
 
-    fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
+    fun computeRecommendations(recommendationRequest: RecommendationRequest, requestContext: String?): RecommendationResponseDto? {
 
         val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
 
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
+
+        if (recommendationRequest.userInfo.emailAddress.equals("NA", ignoreCase = true)) {
+            recommendationRequest.userInfo.sendEmail = false
+        }
         val headers = this.setHTTPHeaders()
 
         val droidRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
@@ -63,14 +67,19 @@ constructor(private val restTemplate: RestTemplate,
             val demoMode = plumberPropertiesProperties.demoMode
             var recommendationUrl: String? = null
 
+            var baseUrl = plumberPropertiesProperties.baseUrl
+            if (requestContext.equals("dev", ignoreCase = true)) {
+                baseUrl = plumberPropertiesProperties.devUrl
+                logger.info("Switched to context $requestContext")
+            }
             when (country) {
                 EnumCountry.NG.name -> recommendationUrl = when {
-                    demoMode -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNgDemo!!}"
-                    else -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
+                    demoMode -> "${baseUrl}${plumberPropertiesProperties.recommendationNgDemo!!}"
+                    else -> "${baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
                 }
                 EnumCountry.TZ.name -> recommendationUrl = when {
-                    demoMode -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTzDemo!!}"
-                    else -> "${plumberPropertiesProperties.baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
+                    demoMode -> "${baseUrl}${plumberPropertiesProperties.recommendationTzDemo!!}"
+                    else -> "${baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
                 }
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
@@ -101,9 +110,9 @@ constructor(private val restTemplate: RestTemplate,
 
 
         //let us save the logged requests
-        val payload: Payload = Payload()
+        val payload = Payload()
         payload.requestId = recommendationRequest.userInfo.deviceID
-        payload.droidRequest = mapper.writeValueAsString(recommendationRequest)
+        payload.droidRequest = droidRequestString
         payload.plumberRequest = plumberRequestString
         payload.plumberResponse = plumberResponseString
 
@@ -351,6 +360,13 @@ constructor(private val restTemplate: RestTemplate,
             requestPayloadPlumber.npkFifteenAvailable = can.selected
             requestPayloadPlumber.npkFifteenBagWeight = can.fertilizerWeight!!
             requestPayloadPlumber.npkFifteenCostPerBag = can.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_20_12_16_MG_2.name)) {
+            val can = fertilizerList[EnumFertilizer.NPK_20_12_16_MG_2.name]!!
+            requestPayloadPlumber.npkTwentyTwelveAvailable = can.selected
+            requestPayloadPlumber.npkTwentyTwelveBagWeight = can.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyTwelveCostPerBag = can.fertilizerCostPerBag
         }
 
         return requestPayloadPlumber

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="20200524002209" author="masgeek">
+
+        <createTable tableName="potato_prices">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="country" type="varchar(4)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="min_local_price" type="decimal(10,2)" defaultValueBoolean="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="max_local_price" type="decimal(10,2)" defaultValueBoolean="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="min_usd" type="decimal(10,2)" defaultValueBoolean="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="max_usd" type="decimal(10,2)" defaultValueBoolean="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="price_active" type="boolean" defaultValueBoolean="true"/>
+
+            <column name="sort_order" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+        </createTable>
+
+        <modifySql dbms="mysql,mariadb">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,4 +1,6 @@
 debug: false
+trace: false
+
 logging:
   level:
     org:
@@ -7,11 +9,10 @@ logging:
   config: file:src/main/resources/logback-spring.xml
 server:
   port: 8098
-  #servlet:
-  #  context-path: /api/v2/recommendations
-  #error:
-  #  whitelabel:
-  #    enabled: false
+  error:
+    whitelabel:
+      enabled: true
+    include-stacktrace: on_trace_param
 spring:
   application:
     name: akilimo
@@ -19,8 +20,21 @@ spring:
     active: dev
   http:
     log-request-details: false
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: false
+        order_inserts: true
+        jdbc:
+          batch_size: 500
   liquibase:
     change-log: "classpath:liquibase/master.xml"
+
+rate:
+  limit:
+    enabled: false
+    rate-type: minute
+    max-request: 1
 
 akilimo:
   currency:
@@ -29,7 +43,8 @@ akilimo:
     kes-usd-rate: 103
 plumber:
   demo-mode: false
-  base-url: http://akilimo.org:8000/api/ #http://localhost:8000/api/
+  base-url: http://compute-prod:8000/api/
+  dev-url: http://compute-dev:8001/api/
   recommendation-ng: v2/dst/recommendation/ng/compute
   recommendation-tz: v2/dst/recommendation/tz/compute
   recommendation-ng-demo: v2/dst/recommendation/demo/ng/compute
@@ -38,17 +53,11 @@ plumber:
 messaging:
   test-numbers:
   web-hook-url: https://enj4dfsqm8xr.x.pipedream.net
-  plivo:
-    end-point: https://api.plivo.com/v1/Account
-    auth-id:
-    auth-key:
-    sender:
-  infobip:
-    end-point:
-    user-name:
-    user-pass:
-    auth-key:
-    sender:
+  sms:
+    base-url: https://api.tsobu.co.ke
+    end-point: /v1/sms/single
+    sms-user:
+    sms-token:
   email:
     sender:
     pass:

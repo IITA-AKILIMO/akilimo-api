@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
 @Configuration
 class AkilimoConfigProperties {
 
@@ -24,23 +23,15 @@ class AkilimoConfigProperties {
         return MessagingProperties()
     }
 
-
     @Bean
     @ConfigurationProperties(prefix = "plumber")
     fun plumber(): PlumberProperties {
         return PlumberProperties()
     }
 
-
     @Bean
-    @ConfigurationProperties(prefix = "messaging.plivo")
-    fun plivoSms(): MessagingProperties {
-        return MessagingProperties()
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "messaging.infobip")
-    fun infoBipSms(): MessagingProperties {
+    @ConfigurationProperties(prefix = "messaging.sms")
+    fun sms(): MessagingProperties {
         return MessagingProperties()
     }
 

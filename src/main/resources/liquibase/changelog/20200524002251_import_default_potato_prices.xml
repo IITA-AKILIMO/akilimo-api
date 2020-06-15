@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="masgeek" id="20200524002251">
+        <loadData
+                file="/liquibase/changelog/data/sweet_potato_prices.csv"
+                tableName="potato_prices">
+
+
+            <column name="country" header="country"/>
+
+            <column name="min_local_price" header="min_local_price"/>
+            <column name="max_local_price" header="max_local_price"/>
+
+            <column name="min_usd" header="min_usd"/>
+            <column name="max_usd" header="max_usd"/>
+            <column name="price_active" header="price_active"/>
+
+            <column name="rate" type="skip"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>

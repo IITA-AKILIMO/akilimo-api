@@ -5,8 +5,8 @@ import java.util.*
 
 
 plugins {
-    val kotlinVersion = "1.3.50"
-    val springVersion = "2.2.1.RELEASE"
+    val kotlinVersion = "1.3.71"
+    val springVersion = "2.2.6.RELEASE"
     val javaVersion = JavaVersion.VERSION_11
 
 
@@ -14,7 +14,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
-    id("io.spring.dependency-management") version "1.0.8.RELEASE"
+    id("io.spring.dependency-management") version "1.0.9.RELEASE"
 }
 
 val date = Calendar.getInstance()
@@ -30,14 +30,15 @@ var revisionNumber: String? = timestamp
 
 
 when {
-    buildNumber.isNullOrBlank() -> buildNumber = timestamp
+    buildNumber.isNullOrBlank() -> buildNumber = date.get(Calendar.WEEK_OF_YEAR).toString()
 }
 
 
 
 group = "com.acai"
-//version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
-version = "$versionNumber.$minorRelease.$buildNumber"
+version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
+
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
