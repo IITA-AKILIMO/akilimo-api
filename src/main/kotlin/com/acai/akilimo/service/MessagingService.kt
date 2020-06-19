@@ -60,6 +60,10 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
         message.mobileNumber = response.mobileNumber
 
+        if (message.mobileNumber!!.startsWith("254")) {
+            message.useDefaultSender = true
+        }
+
         val fertRectText = response.fertilizerRecText!!
 
         if (!fertRectText.contains("Hatuna mapendekezo yoyote")
