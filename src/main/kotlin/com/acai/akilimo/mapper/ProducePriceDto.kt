@@ -34,4 +34,9 @@ class ProducePriceDto {
     fun averagePrice(): Double {
         return (minLocalPrice + maxLocalPrice) / 2
     }
+
+    @JsonProperty("countryPrice")
+    fun countryPrice(): String {
+        return "$country$priceId";
+    }
 }
