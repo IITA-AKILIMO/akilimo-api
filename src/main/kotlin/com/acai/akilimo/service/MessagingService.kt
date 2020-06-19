@@ -51,7 +51,7 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
         } catch (ex: Exception) {
-            logger.info(ex.message)
+            logger.error(ex.message)
         }
     }
 
@@ -61,6 +61,8 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         message.mobileNumber = response.mobileNumber
 
         val brandeCodes = sms.brandedCodes
+
+        logger.info("Only the following country codes will receive SMS branded AKILIMO ${brandeCodes.toString()} current request country code is ${response.mobileCountryCode}")
         if (brandeCodes != null) {
             if (!brandeCodes.contains(response.mobileCountryCode)) {
                 message.useDefaultSender = true
