@@ -156,6 +156,12 @@ else
   JAVA_OPTS="$JAVA_OPTS -Dmessaging.sms.sms-token=$SMS_TOKEN"
 fi
 
+if [ -z "$BRANDED_CODES" ]; then
+  echo 'No branded codes defined using default list'
+else
+  JAVA_OPTS="$JAVA_OPTS -Dmessaging.sms.branded-codes=$BRANDED_CODES"
+fi
+
 exec java $JAVA_OPTS \
 -jar \
 /app.jar

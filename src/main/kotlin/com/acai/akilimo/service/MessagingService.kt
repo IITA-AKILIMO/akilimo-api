@@ -60,8 +60,11 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
         message.mobileNumber = response.mobileNumber
 
-        if (message.mobileNumber!!.startsWith("254")) {
-            message.useDefaultSender = true
+        val brandeCodes = sms.brandedCodes
+        if (brandeCodes != null) {
+            if (!brandeCodes.contains(response.mobileCountryCode)) {
+                message.useDefaultSender = true
+            }
         }
 
         val fertRectText = response.fertilizerRecText!!
@@ -101,7 +104,7 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
     }
 
     fun processPhoneNumber(recommendationResponseDto: RecommendationResponseDto): Phonenumber.PhoneNumber? {
-        val countryCode = recommendationResponseDto.country
+        val countryCode = recommendationResponseDto.mobileCountryCode
         val phoneNumber = recommendationResponseDto.mobileNumber?.toLong()
 
         return phoneUtil.parse(phoneNumber.toString(), countryCode)

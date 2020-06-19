@@ -51,9 +51,8 @@ plumber:
   recommendation-tz-demo: v2/dst/recommendation/demo/tz/compute
 
 messaging:
-  test-numbers:
-  web-hook-url: https://enj4dfsqm8xr.x.pipedream.net
   sms:
+    branded-codes: [255,234]
     base-url: https://api.tsobu.co.ke
     end-point: /v1/sms/single
     sms-user:

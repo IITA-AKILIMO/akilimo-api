@@ -22,6 +22,8 @@ class MessagingProperties {
     @NotBlank
     var smsToken: String? = null
 
+    var brandedCodes: List<String>? = null
+
     fun apiUrl(): String {
         return this.baseUrl + this.endPoint
     }
