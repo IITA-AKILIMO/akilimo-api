@@ -52,7 +52,7 @@ plumber:
 
 messaging:
   sms:
-    branded-codes: [255,234]
+    branded-codes: ["255","+255","234","+234"]
     base-url: https://api.tsobu.co.ke
     end-point: /v1/sms/single
     sms-user:

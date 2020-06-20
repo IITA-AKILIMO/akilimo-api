@@ -62,11 +62,15 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
 
         val brandeCodes = sms.brandedCodes
 
-        logger.info("Only the following country codes will receive SMS branded AKILIMO ${brandeCodes.toString()} current request country code is ${response.mobileCountryCode}")
         if (brandeCodes != null) {
             if (!brandeCodes.contains(response.mobileCountryCode)) {
                 message.useDefaultSender = true
+                logger.info("Sending SMS using default country service current request country code is ${response.mobileCountryCode}")
+            } else {
+                logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
             }
+        } else {
+            logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
         }
 
         val fertRectText = response.fertilizerRecText!!
