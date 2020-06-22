@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import kotlin.math.log
 
 
 @Service
@@ -75,12 +73,14 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
             logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
         }
 
-        val fertRectText = response.fertilizerRecText!!
 
-        if (!fertRectText.contains("Hatuna mapendekezo yoyote")
-                || !fertRectText.contains("We do not have fertilizer recommendation for your location")
-                && !Strings.isNullOrEmpty(response.fertilizerRecText)) {
-            message.smsText = response.fertilizerRecText
+
+        if (!Strings.isNullOrEmpty(response.fertilizerRecText)) {
+            val fertilizerRecText:String = response.fertilizerRecText!!
+            if (!fertilizerRecText.contains("Hatuna mapendekezo yoyote")
+                    || !fertilizerRecText.contains("We do not have fertilizer recommendation for your location")) {
+                message.smsText = response.fertilizerRecText
+            }
         }
 
 
