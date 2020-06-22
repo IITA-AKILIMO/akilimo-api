@@ -39,14 +39,14 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         if (!sendSms) {
             return
         }
-        val smsMessage = buildMessagePayload(response)
-
-
-        val postUrl = sms.apiUrl()
-        val headers = addRequestHeaders()
-        val entity = HttpEntity(smsMessage, headers)
-
         try {
+            val smsMessage = buildMessagePayload(response)
+
+
+            val postUrl = sms.apiUrl()
+            val headers = addRequestHeaders()
+            val entity = HttpEntity(smsMessage, headers)
+
             val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
