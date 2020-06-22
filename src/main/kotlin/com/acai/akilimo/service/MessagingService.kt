@@ -18,6 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import kotlin.math.log
 
 
 @Service
@@ -51,7 +52,8 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
         } catch (ex: Exception) {
-            logger.error(ex.message)
+            logger.info(ex.message)
+            logger.error(ex.message, ex)
         }
     }
 
