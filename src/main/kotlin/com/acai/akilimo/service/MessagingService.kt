@@ -51,7 +51,7 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
         } catch (ex: Exception) {
-            logger.info(ex.message)
+            logger.error(ex.message)
         }
     }
 
@@ -59,6 +59,19 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
 
         val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
         message.mobileNumber = response.mobileNumber
+
+        val brandeCodes = sms.brandedCodes
+
+        if (brandeCodes != null) {
+            if (!brandeCodes.contains(response.mobileCountryCode)) {
+                message.useDefaultSender = true
+                logger.info("Sending SMS using default country service current request country code is ${response.mobileCountryCode}")
+            } else {
+                logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
+            }
+        } else {
+            logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
+        }
 
         val fertRectText = response.fertilizerRecText!!
 
