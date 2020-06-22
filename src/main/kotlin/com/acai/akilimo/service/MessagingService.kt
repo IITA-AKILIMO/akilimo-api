@@ -18,6 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import kotlin.math.log
 
 
 @Service
@@ -39,19 +40,20 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         if (!sendSms) {
             return
         }
-        val smsMessage = buildMessagePayload(response)
-
-
-        val postUrl = sms.apiUrl()
-        val headers = addRequestHeaders()
-        val entity = HttpEntity(smsMessage, headers)
-
         try {
+            val smsMessage = buildMessagePayload(response)
+
+
+            val postUrl = sms.apiUrl()
+            val headers = addRequestHeaders()
+            val entity = HttpEntity(smsMessage, headers)
+
             val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
         } catch (ex: Exception) {
-            logger.error(ex.message)
+            logger.info(ex.message)
+            logger.error(ex.message, ex)
         }
     }
 
