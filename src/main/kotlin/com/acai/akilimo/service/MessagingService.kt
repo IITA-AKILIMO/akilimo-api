@@ -110,7 +110,7 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
     }
 
     fun processPhoneNumber(recommendationResponseDto: RecommendationResponseDto): Phonenumber.PhoneNumber? {
-        val countryCode = recommendationResponseDto.mobileCountryCode
+        val countryCode = recommendationResponseDto.country
         val phoneNumber = recommendationResponseDto.mobileNumber?.toLong()
 
         return phoneUtil.parse(phoneNumber.toString(), countryCode)
