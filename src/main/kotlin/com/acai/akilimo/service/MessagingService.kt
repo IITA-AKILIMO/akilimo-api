@@ -75,13 +75,14 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
             logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
         }
 
-        val fertRectText = response.fertilizerRecText!!
-
-        if (!fertRectText.contains("Hatuna mapendekezo yoyote")
-                || !fertRectText.contains("We do not have fertilizer recommendation for your location")
-                && !Strings.isNullOrEmpty(response.fertilizerRecText)) {
+        if (!Strings.isNullOrEmpty(response.fertilizerRecText)) {
             message.smsText = response.fertilizerRecText
         }
+//        if (!fertRectText.contains("Hatuna mapendekezo yoyote")
+//                || !fertRectText.contains("We do not have fertilizer recommendation for your location")
+//                && !Strings.isNullOrEmpty(response.fertilizerRecText)) {
+//            message.smsText = response.fertilizerRecText
+//        }
 
 
         when {
