@@ -459,16 +459,16 @@ open class PlumberComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var nafakaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
-//    @JsonProperty("YaraMila_UNIKavailable")
-//    var yaramilaUnikAvailable: Boolean = false
-//
-//    @JsonProperty("YaraMila_UNIKCostperBag")
-//    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-//    var yaramilaUnikCostPerBag: Double = 0.0
-//
-//    @JsonProperty("YaraMila_UNIKBagWt")
-//    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-//    var yaramilaUnikBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+    @JsonProperty("YaraMila_UNIKavailable")
+    var yaramilaUnikAvailable: Boolean = false
+
+    @JsonProperty("YaraMila_UNIKCostperBag")
+    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
+    var yaramilaUnikCostPerBag: Double = 0.0
+
+    @JsonProperty("YaraMila_UNIKBagWt")
+    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
+    var yaramilaUnikBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("CANavailable")
     var canAvailable: Boolean = false
