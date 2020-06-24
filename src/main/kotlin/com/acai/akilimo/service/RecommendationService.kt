@@ -336,12 +336,12 @@ constructor(private val restTemplate: RestTemplate,
             requestPayloadPlumber.nafakaCostPerBag = can.fertilizerCostPerBag
         }
 
-        if (fertilizerList.containsKey(EnumFertilizer.YARAMILA_UNIK.name)) {
-            val yaramilaUnik = fertilizerList[EnumFertilizer.YARAMILA_UNIK.name]!!
-            requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.selected
-            requestPayloadPlumber.yaramilaUnikBagWeight = yaramilaUnik.fertilizerWeight!!
-            requestPayloadPlumber.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag
-        }
+//        if (fertilizerList.containsKey(EnumFertilizer.YARAMILA_UNIK.name)) {
+//            val yaramilaUnik = fertilizerList[EnumFertilizer.YARAMILA_UNIK.name]!!
+//            requestPayloadPlumber.yaramilaUnikAvailable = yaramilaUnik.selected
+//            requestPayloadPlumber.yaramilaUnikBagWeight = yaramilaUnik.fertilizerWeight!!
+//            requestPayloadPlumber.yaramilaUnikCostPerBag = yaramilaUnik.fertilizerCostPerBag
+//        }
 
 
         if (fertilizerList.containsKey(EnumFertilizer.NPK_20_10_10.name)) {
