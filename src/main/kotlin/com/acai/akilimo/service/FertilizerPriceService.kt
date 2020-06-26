@@ -31,7 +31,7 @@ constructor(
 
     private val modelMapper = ModelMapper()
 
-    override fun fertilizers(countryCode: String): List<FertilizerPriceDto> {
+    override fun fertilizerPriceByCountry(countryCode: String): List<FertilizerPriceDto> {
         val fertilizerList = fertilizerPriceRepository.findByActiveIsTrueOrderBySortOrderAsc()
         val fertilizerPriceDtoList = ArrayList<FertilizerPriceDto>()
 
@@ -67,7 +67,7 @@ constructor(
             fertilizerPriceDto.recordId = fertilizerPrice.priceId!!
             fertilizerPriceDto.pricePerBag = pricePerBag
             fertilizerPriceDto.country = country
-            fertilizerPriceDto.fertilizerCountry = "$country-$pricePerBagRaw"
+            fertilizerPriceDto.fertilizerCountry = "$country$sortIndex"
 
             fertilizerPriceDtoList.add(fertilizerPriceDto)
             sortIndex++

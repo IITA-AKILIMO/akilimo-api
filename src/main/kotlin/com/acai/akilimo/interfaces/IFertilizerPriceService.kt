@@ -6,7 +6,7 @@ import com.acai.akilimo.mapper.FertilizerPriceDto
 import com.acai.akilimo.request.FertilizerPriceRequest
 
 interface IFertilizerPriceService {
-    fun fertilizers(countryCode: String): List<FertilizerPriceDto>
+    fun fertilizerPriceByCountry(countryCode: String): List<FertilizerPriceDto>
 
     fun saveFertilizerPrice(fertilizerPriceRequest: FertilizerPriceRequest): FertilizerPriceDto?
 
