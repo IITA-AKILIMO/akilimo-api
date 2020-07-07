@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import javax.validation.Valid
 
 
@@ -21,7 +20,7 @@ class FertilizerPricesController(private val fertilizerPriceService: FertilizerP
 
     @GetMapping
     fun listPrices(@RequestHeader("country-code") countryCode: String): ResponseEntity<List<FertilizerPriceDto>> {
-        val fertilizerList = fertilizerPriceService.fertilizers(countryCode)
+        val fertilizerList = fertilizerPriceService.fertilizerPriceByCountry(countryCode)
 
         return ResponseEntity(fertilizerList, HttpStatus.OK)
     }
