@@ -3,6 +3,7 @@ package com.acai.akilimo.request
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import io.swagger.annotations.ApiModelProperty
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class SmsMessage(
@@ -13,6 +14,10 @@ class SmsMessage(
 ) {
     @JsonProperty("GSM")
     var mobileNumber: String? = null
+
+
+    @ApiModelProperty(example = "false", required = false)
+    var useDefaultSender = false
 
     @JsonProperty("SMSText")
     var smsText: String? = null

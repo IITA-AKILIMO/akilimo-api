@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
@@ -39,19 +38,20 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         if (!sendSms) {
             return
         }
-        val smsMessage = buildMessagePayload(response)
-
-
-        val postUrl = sms.apiUrl()
-        val headers = addRequestHeaders()
-        val entity = HttpEntity(smsMessage, headers)
-
         try {
+            val smsMessage = buildMessagePayload(response)
+
+
+            val postUrl = sms.apiUrl()
+            val headers = addRequestHeaders()
+            val entity = HttpEntity(smsMessage, headers)
+
             val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
             logger.info(responseString)
         } catch (ex: Exception) {
             logger.info(ex.message)
+            logger.error(ex.message, ex)
         }
     }
 
@@ -60,12 +60,27 @@ constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingServic
         val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
         message.mobileNumber = response.mobileNumber
 
-        val fertRectText = response.fertilizerRecText!!
+        val brandeCodes = sms.brandedCodes
 
-        if (!fertRectText.contains("Hatuna mapendekezo yoyote")
-                || !fertRectText.contains("We do not have fertilizer recommendation for your location")
-                && !Strings.isNullOrEmpty(response.fertilizerRecText)) {
-            message.smsText = response.fertilizerRecText
+        if (brandeCodes != null) {
+            if (!brandeCodes.contains(response.mobileCountryCode)) {
+                message.useDefaultSender = true
+                logger.info("Sending SMS using default country service current request country code is ${response.mobileCountryCode}")
+            } else {
+                logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
+            }
+        } else {
+            logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
+        }
+
+
+
+        if (!Strings.isNullOrEmpty(response.fertilizerRecText)) {
+            val fertilizerRecText:String = response.fertilizerRecText!!
+            if (!fertilizerRecText.contains("Hatuna mapendekezo yoyote")
+                    || !fertilizerRecText.contains("We do not have fertilizer recommendation for your location")) {
+                message.smsText = response.fertilizerRecText
+            }
         }
 
 
