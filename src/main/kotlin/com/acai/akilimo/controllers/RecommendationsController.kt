@@ -17,7 +17,8 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v2/recommendations")
 @RestController
-class RecommendationsController(private val recommendationService: RecommendationService, private val messagingService: MessagingService) : BaseController() {
+class RecommendationsController(private val recommendationService: RecommendationService,
+                                private val messagingService: MessagingService) : BaseController() {
 
     companion object {
         private val myLogger = LoggerFactory.getLogger(RecommendationsController::class.java)
@@ -30,20 +31,29 @@ class RecommendationsController(private val recommendationService: Recommendatio
         val requestContext = headers["context"]
         val localeLanguage = headers["locale-lang"]
 
+        //check that the request has defined fertilizers
         val modelMapper = ModelMapper()
-        var recommendationResponseDto: RecommendationResponseDto? = null
-        val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
 
-        when {
-            response != null -> {
-                if (response.hasResponse) {
-                    messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
-                    messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
+        val fertilizers = recommendationRequest.fertilizerList
+
+        if (fertilizers.isEmpty() || fertilizers.size < 2) {
+            val resp = RecommendationResponseDto()
+            myLogger.error("Empty fertilizer list here, tell user to retry again")
+            return ResponseEntity(resp, HttpStatus.FAILED_DEPENDENCY)
+        } else {
+            val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
+
+            when {
+                response != null -> {
+                    if (response.hasResponse) {
+                        messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
+                        messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
+                    }
+                    val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
+                    return ResponseEntity(resp, HttpStatus.OK)
                 }
-                recommendationResponseDto = modelMapper.map(response, RecommendationResponseDto::class.java)
-                return ResponseEntity(recommendationResponseDto, HttpStatus.OK)
             }
+            return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
         }
-        return ResponseEntity(recommendationResponseDto, HttpStatus.EXPECTATION_FAILED)
     }
 }
