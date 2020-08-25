@@ -66,7 +66,7 @@ class RateLimitingInterceptor : HandlerInterceptorAdapter() {
 
 
 
-        logger.info("Request coming from origin={}", clientId)
+        logger.info("Request coming from origin: {} maximum request is {}", clientId, maxRequests.toString())
         response.addHeader("X-RateLimit-Limit", maxRequests.toString())
         response.addHeader("X-RateLimit-Remaining", maxRequests.toString())
         response.addHeader("X-RateLimit-Reset", maxRequests.toString())
