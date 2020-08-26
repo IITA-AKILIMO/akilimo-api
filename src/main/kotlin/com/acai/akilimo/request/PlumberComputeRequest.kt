@@ -131,7 +131,7 @@ open class PlumberComputeRequest {
 
     @JsonProperty("areaUnits")
     @ApiModelProperty(example = "ha", required = true)
-    var areaUnits: String? = null
+    var areaUnits: String = "acre"
 
     @JsonProperty("intercrop")
     @ApiModelProperty(required = true)

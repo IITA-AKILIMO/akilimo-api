@@ -283,6 +283,17 @@ constructor(private val restTemplate: RestTemplate,
         val requestPayloadPlumber = modelMapper.map(recommendationRequest.userInfo, PlumberComputeRequest::class.java)
         modelMapper.map(recommendationRequest.computeRequest, requestPayloadPlumber)
 
+        //@TODO Make sure are unit is not being passed as translated from the mobile app side
+        val areaUnit = requestPayloadPlumber.areaUnits
+        if (areaUnit.equals("ekari", false)) {
+            requestPayloadPlumber.areaUnits = "acre"
+        } else if (areaUnit.equals("hekta", false)) {
+            requestPayloadPlumber.areaUnits = "ha"
+        }
+
+
+
+
         if (recommendationRequest.computeRequest.interCroppingMaizeRec || recommendationRequest.computeRequest.interCroppingPotatoRec) {
             requestPayloadPlumber.intercrop = true
             requestPayloadPlumber.interCroppingRec = true

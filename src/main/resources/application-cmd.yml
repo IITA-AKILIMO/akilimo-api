@@ -10,7 +10,7 @@ spring:
 #    driverClassName: org.mariadb.jdbc.Driver
     url: "jdbc:mariadb://127.0.0.1:3306/akilimo"
     username: root
-    password: root
+    password:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
     open-in-view: false
