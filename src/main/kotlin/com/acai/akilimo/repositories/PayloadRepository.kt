@@ -15,5 +15,7 @@ interface PayloadRepository : PagingAndSortingRepository<Payload, Long> {
 
     override fun findAll(pageable: Pageable): Page<Payload>
 
+    fun findAllByOrderByUpdatedAtDesc(pageable: Pageable): Page<Payload>
+
     fun findAllByRequestId(requestId: String): List<Payload>
 }

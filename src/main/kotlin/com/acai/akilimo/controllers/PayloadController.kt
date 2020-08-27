@@ -3,6 +3,7 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.mapper.PayloadDto
 import com.acai.akilimo.service.PayloadService
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,7 +34,7 @@ class PayloadController(private val payloadService: PayloadService) : BaseContro
     }
 
     @GetMapping
-    fun listAllPayloads(pageable: Pageable): ResponseEntity<List<PayloadDto>> {
+    fun listAllPayloads(pageable: Pageable): ResponseEntity<Page<PayloadDto>> {
 
         val payloadList = payloadService.payloadList(pageable = pageable);
 

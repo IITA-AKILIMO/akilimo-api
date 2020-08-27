@@ -56,8 +56,9 @@ constructor(
 
     override fun payloadList(pageable: Pageable): Page<PayloadDto> {
 
-        val payloadList = payloadRepository.findAll(pageable = pageable)
-        val data  =  payloadList.map { payload ->
+        val payloadList = payloadRepository.findAllByOrderByUpdatedAtDesc(pageable = pageable)
+
+        return payloadList.map { payload ->
             val payloadDto = modelMapper.map(payload, PayloadDto::class.java)
 
             val droidRequest: JsonNode = mapper.readTree(payload.droidRequest)
@@ -70,8 +71,6 @@ constructor(
 
             payloadDto
         }
-
-        return data
     }
 
     override fun findPayloadByRequestId(requestId: String): List<PayloadDto> {
