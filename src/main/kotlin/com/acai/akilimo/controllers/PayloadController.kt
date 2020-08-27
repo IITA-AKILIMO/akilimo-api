@@ -3,6 +3,7 @@ package com.acai.akilimo.controllers
 import com.acai.akilimo.mapper.PayloadDto
 import com.acai.akilimo.service.PayloadService
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,14 +28,14 @@ class PayloadController(private val payloadService: PayloadService) : BaseContro
 
     @GetMapping("/{requestId}/request-id")
     fun listPayloadByRequestId(@PathVariable requestId: String): ResponseEntity<List<PayloadDto>> {
-        val payloadList = payloadService.findPayloadByRequestId(requestId)
+        val payloadList = payloadService.findPayloadByRequestId(requestId = requestId)
         return ResponseEntity(payloadList, HttpStatus.OK)
     }
 
     @GetMapping
-    fun listAllPayloads(): ResponseEntity<List<PayloadDto>> {
+    fun listAllPayloads(pageable: Pageable): ResponseEntity<List<PayloadDto>> {
 
-        val payloadList = payloadService.payloadList();
+        val payloadList = payloadService.payloadList(pageable = pageable);
 
         return ResponseEntity(payloadList, HttpStatus.OK)
     }

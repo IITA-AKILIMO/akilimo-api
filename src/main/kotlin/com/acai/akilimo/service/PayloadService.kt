@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -52,9 +54,24 @@ constructor(
     }
 
 
-    override fun payloadList(): List<PayloadDto> {
-        val payloadList = payloadRepository.findAll()
-        return processListResponse(payloadList)
+    override fun payloadList(pageable: Pageable): Page<PayloadDto> {
+
+        val payloadList = payloadRepository.findAll(pageable = pageable)
+        val data  =  payloadList.map { payload ->
+            val payloadDto = modelMapper.map(payload, PayloadDto::class.java)
+
+            val droidRequest: JsonNode = mapper.readTree(payload.droidRequest)
+            val plumberRequest: JsonNode = mapper.readTree(payload.plumberRequest)
+            val plumberResponse: JsonNode = mapper.readTree(payload.plumberResponse)
+
+            payloadDto.droidRequest = droidRequest
+            payloadDto.plumberRequest = plumberRequest
+            payloadDto.plumberResponse = plumberResponse
+
+            payloadDto
+        }
+
+        return data
     }
 
     override fun findPayloadByRequestId(requestId: String): List<PayloadDto> {
