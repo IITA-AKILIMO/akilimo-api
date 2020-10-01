@@ -34,26 +34,18 @@ class RecommendationsController(private val recommendationService: Recommendatio
         //check that the request has defined fertilizers
         val modelMapper = ModelMapper()
 
-        val fertilizers = recommendationRequest.fertilizerList
+        val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
 
-        if (fertilizers.isEmpty() || fertilizers.size < 2) {
-            val resp = RecommendationResponseDto()
-            myLogger.error("Empty fertilizer list here, tell user to retry again")
-            return ResponseEntity(resp, HttpStatus.FAILED_DEPENDENCY)
-        } else {
-            val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
-
-            when {
-                response != null -> {
-                    if (response.hasResponse) {
-                        messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
-                        messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
-                    }
-                    val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
-                    return ResponseEntity(resp, HttpStatus.OK)
+        when {
+            response != null -> {
+                if (response.hasResponse) {
+                    messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
+                    messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
                 }
+                val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
+                return ResponseEntity(resp, HttpStatus.OK)
             }
-            return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
         }
+        return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
     }
 }

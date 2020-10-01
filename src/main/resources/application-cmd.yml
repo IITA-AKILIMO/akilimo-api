@@ -29,5 +29,5 @@ spring:
 
 plumber:
   demo-mode: false
-  base-url: http://akilimo.me:8000/api/
+  base-url: http://akilimo.me:8090/api/
   dev-url: http://akilimo.me:8090/api/
