@@ -29,7 +29,10 @@ spring:
           batch_size: 500
   liquibase:
     change-log: "classpath:liquibase/master.xml"
-
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
 rate:
   limit:
     enabled: false

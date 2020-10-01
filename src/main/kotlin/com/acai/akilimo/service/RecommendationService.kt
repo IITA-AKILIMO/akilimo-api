@@ -41,8 +41,26 @@ constructor(private val restTemplate: RestTemplate,
     private lateinit var recommendationResponseDto: RecommendationResponseDto
 
     fun computeRecommendations(recommendationRequest: RecommendationRequest, requestContext: String?): RecommendationResponseDto? {
+        val countries = ArrayList<String>()
+        countries.add(EnumCountry.ALL.name)
+        countries.add(recommendationRequest.computeRequest.country)
 
-        val fertilizerList = prepareFertilizerList(recommendationRequest.fertilizerList)
+        var fertilizers = recommendationRequest.fertilizerList
+
+        if (fertilizers.isEmpty() || fertilizers.size < 2) {
+            logger.warn("Empty fertilizer list, adding default fertilizers")
+            val allFertilizers = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
+            val q = allFertilizers.map { availableFertilizers ->
+                val fertilizerList = FertilizerList()
+                fertilizerList.fertilizerTypeName = availableFertilizers.name
+                fertilizerList.fertilizerType = availableFertilizers.type
+                fertilizerList.fertilizerWeight = availableFertilizers.weight
+                fertilizerList
+            }
+            fertilizers = q.toSet()
+        }
+
+        val fertilizerList = prepareFertilizerList(fertilizers)
 
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
 
@@ -282,6 +300,17 @@ constructor(private val restTemplate: RestTemplate,
         val fertilizerList = evaluateFertilizers(tempFertilizerList)
         val requestPayloadPlumber = modelMapper.map(recommendationRequest.userInfo, PlumberComputeRequest::class.java)
         modelMapper.map(recommendationRequest.computeRequest, requestPayloadPlumber)
+
+        //@TODO Make sure are unit is not being passed as translated from the mobile app side
+        val areaUnit = requestPayloadPlumber.areaUnits
+        if (areaUnit.equals("ekari", false)) {
+            requestPayloadPlumber.areaUnits = "acre"
+        } else if (areaUnit.equals("hekta", false)) {
+            requestPayloadPlumber.areaUnits = "ha"
+        }
+
+
+
 
         if (recommendationRequest.computeRequest.interCroppingMaizeRec || recommendationRequest.computeRequest.interCroppingPotatoRec) {
             requestPayloadPlumber.intercrop = true
