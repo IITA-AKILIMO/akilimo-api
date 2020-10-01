@@ -1,6 +1,6 @@
 #FROM openjdk:8-jdk-alpine
 #FROM openjdk:8-jdk-slim
-FROM openjdk:11-jre-slim
+FROM openjdk:14-jdk-slim
 VOLUME /tmp
 LABEL maintainer="barsamms@gmail.com"
 
