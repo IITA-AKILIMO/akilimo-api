@@ -60,13 +60,13 @@ constructor(
                     currencyRate = currencyRate,
                     toCurrency = toCurrency,
                     nearestValue = 1000.0)
-            fertilizerPriceDto.minLocal = conversion.convertToSpecifiedCurrency(
+            fertilizerPriceDto.minLocalPrice = conversion.convertToSpecifiedCurrency(
                     amount = fertilizerPrice.minUsd!!,
                     currencyRate = currencyRate,
                     toCurrency = toCurrency,
                     nearestValue = 1000.0)
 
-            fertilizerPriceDto.maxLocal = conversion.convertToSpecifiedCurrency(
+            fertilizerPriceDto.maxLocalPrice = conversion.convertToSpecifiedCurrency(
                     amount = fertilizerPrice.maxUsd!!,
                     currencyRate = currencyRate,
                     toCurrency = toCurrency,

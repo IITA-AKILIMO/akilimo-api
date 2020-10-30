@@ -14,9 +14,9 @@ class FertilizerPriceDto {
 
     var maxUsd: Double? = null
 
-    var minLocal: Double? = null
+    var minLocalPrice: Double? = null
 
-    var maxLocal: Double? = null
+    var maxLocalPrice: Double? = null
 
     var pricePerBag: Double? = null
 
