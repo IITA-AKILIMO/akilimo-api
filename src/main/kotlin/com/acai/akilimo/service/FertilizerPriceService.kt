@@ -60,6 +60,17 @@ constructor(
                     currencyRate = currencyRate,
                     toCurrency = toCurrency,
                     nearestValue = 1000.0)
+            fertilizerPriceDto.minLocalPrice = conversion.convertToSpecifiedCurrency(
+                    amount = fertilizerPrice.minUsd!!,
+                    currencyRate = currencyRate,
+                    toCurrency = toCurrency,
+                    nearestValue = 1000.0)
+
+            fertilizerPriceDto.maxLocalPrice = conversion.convertToSpecifiedCurrency(
+                    amount = fertilizerPrice.maxUsd!!,
+                    currencyRate = currencyRate,
+                    toCurrency = toCurrency,
+                    nearestValue = 1000.0)
 
             val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
             val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
