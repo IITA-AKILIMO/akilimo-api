@@ -15,7 +15,7 @@ class CurrencyConversion {
 
         when (toCurrency) {
             "USD" -> {
-                return "$minUsd TO $maxUsd $toCurrency"
+                return "$minUsd - $maxUsd $toCurrency"
             }
         }
 
@@ -26,9 +26,18 @@ class CurrencyConversion {
         maxAmount = formatNumber(number = max, toCurrency = toCurrency)
 
 
-        rangeString = "$minAmount TO $maxAmount"
+        rangeString = "$minAmount - $maxAmount"
 
         return rangeString
+    }
+
+    fun convertToSpecifiedCurrency(amount: Double, currencyRate: Double, nearestValue: Double, toCurrency: String?): Double {
+        when (toCurrency) {
+            "USD" -> {
+                return amount
+            }
+        }
+        return roundToNearestSpecifiedValue(numberToRound = convertToSpecifiedCurrency(amount, currencyRate), roundToNearest = nearestValue)
     }
 
     fun convertToSpecifiedCurrency(fromAmount: Double, exchangeRate: Double): Double {
