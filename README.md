@@ -17,3 +17,29 @@
 ``usermod -a -G sudo jenkins``
 
 Kill locked ports ``sudo kill -9 $(sudo lsof -t -i:9001)``
+
+
+### Generate Liquibase changelog file
+```bash
+$ ./gradlew generateChangelog  -PchangeName="Name of Changelog"
+```
+
+example:
+```bash
+$ ./gradlew generateChangelog -PchangeName="Create Users table"
+```
+
+The author defaults to the user currently running the command on the system. Optionally, you can use a different author
+by adding the `-Pauthor` argument:
+
+
+```bash
+$ ./gradlew generateChangelog -PchangeName="Create Users table" -Pauthor="The Stig"
+```
+
+> Remember to add the changelog file to the `master.xml` file
+
+>### To override default java version without messing with your machine paths and ENV
+ 
+ Create a file in the root of the project `gradle.properties` then paste your jDK path `org.gradle.java.home=C:\\Program Files\\OpenJDK\\jdk-14.0.2`
+ Change the path according to your JDK installation

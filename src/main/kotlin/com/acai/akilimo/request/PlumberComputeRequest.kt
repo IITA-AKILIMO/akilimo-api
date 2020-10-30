@@ -415,16 +415,16 @@ open class PlumberComputeRequest {
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkFifteenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
-    @JsonProperty("NPK201216available")
-    var npkTwentyTwelveAvailable: Boolean = false
+    @JsonProperty("NPK201226available")
+    var npkTwentyTwelve26Available: Boolean = false
 
-    @JsonProperty("NPK201216CostperBag")
+    @JsonProperty("NPK201226CostperBag")
     @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var npkTwentyTwelveCostPerBag: Double = 0.0
+    var npkTwentyTwelve26CostPerBag: Double = 0.0
 
-    @JsonProperty("NPK201216BagWt")
+    @JsonProperty("NPK201226BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var npkTwentyTwelveBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+    var npkTwentyTwelve26BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("TSPavailable")
     var tspAvailable: Boolean = false
@@ -447,17 +447,6 @@ open class PlumberComputeRequest {
     @JsonProperty("NPK171717BagWt")
     @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
     var npkSeventeenBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
-
-    @JsonProperty("Nafakaavailable")
-    var nafakaAvailable: Boolean = false
-
-    @JsonProperty("NafakaCostperBag")
-    @ApiModelProperty(example = DEFAULT_UNAVAILABLE, required = true)
-    var nafakaCostPerBag: Double = 0.0
-
-    @JsonProperty("NafakaBagWt")
-    @ApiModelProperty(example = DEFAULT_BAG_WEIGHT_STRING, required = true)
-    var nafakaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
     @JsonProperty("YaraMila_UNIKavailable")
     var yaramilaUnikAvailable: Boolean = false

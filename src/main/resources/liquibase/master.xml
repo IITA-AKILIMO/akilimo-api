@@ -50,4 +50,6 @@
     <include file="/liquibase/changelog/20200524002209_create_sweet_potato_prices_table.xml"/>
     <include file="/liquibase/changelog/20200524002251_import_default_potato_prices.xml"/>
 
+    <include file="/liquibase/changelog/20201029194956_add_npk_201226_fertilizer.xml"/>
+
 </databaseChangeLog>
