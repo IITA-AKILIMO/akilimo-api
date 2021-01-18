@@ -57,7 +57,7 @@ class CurrencyConversion {
             if (currency.isNullOrEmpty()) {
                 currency = currencyDto.currencyCode
             }
-            String.format("%,.0f ${currency}", number)
+            String.format("%,.0f $currency", number)
         }
     }
 }
