@@ -1,5 +1,6 @@
 package com.acai.akilimo.utils
 
+import com.acai.akilimo.mapper.CurrencyDto
 import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.math.roundToInt
@@ -9,32 +10,24 @@ class CurrencyConversion {
     private val logger = LoggerFactory.getLogger(CurrencyConversion::class.java)
 
 
-    fun convertPriceToLocalCurrency(minUsd: Double, maxUsd: Double, currencyRate: Double, nearestValue: Double, toCurrency: String?): String {
+    fun convertPriceToLocalCurrency(minUsd: Double, maxUsd: Double, currencyRate: Double, nearestValue: Double, currencyDto: CurrencyDto): String {
         val rangeString: String
         val minAmount: String
         val maxAmount: String
-
-        when (toCurrency) {
-            "USD" -> {
-                return "$minUsd - $maxUsd $toCurrency"
-            }
-        }
 
         val min = roundToNearestSpecifiedValue(numberToRound = convertToSpecifiedCurrency(minUsd, currencyRate), roundToNearest = nearestValue)
         minAmount = formatNumber(number = min)
 
         val max = roundToNearestSpecifiedValue(numberToRound = convertToSpecifiedCurrency(maxUsd, currencyRate), roundToNearest = nearestValue)
-        maxAmount = formatNumber(number = max, toCurrency = toCurrency)
+        maxAmount = formatNumber(number = max, currencyDto = currencyDto)
 
-
-//        rangeString = "$minAmount - $maxAmount"
         rangeString = "About $maxAmount"
 
         return rangeString
     }
 
-    fun convertToSpecifiedCurrency(amount: Double, currencyRate: Double, nearestValue: Double, toCurrency: String?): Double {
-        when (toCurrency) {
+    fun convertToSpecifiedCurrency(amount: Double, currencyRate: Double, nearestValue: Double, currencyDto: CurrencyDto): Double {
+        when (currencyDto.currencyCode) {
             "USD" -> {
                 return amount
             }
@@ -56,12 +49,15 @@ class CurrencyConversion {
     }
 
 
-    private fun formatNumber(number: Double, toCurrency: String? = null): String {
-        return if (toCurrency == null) {
+    private fun formatNumber(number: Double, currencyDto: CurrencyDto? = null): String {
+        return if (currencyDto == null) {
             String.format("%,.0f", number)
         } else {
-            val currency = Currency.getInstance(toCurrency)
-            String.format("%,.0f ${currency.symbol}", number)
+            var currency = currencyDto.currencySymbol
+            if (currency.isNullOrEmpty()) {
+                currency = currencyDto.currencyCode
+            }
+            String.format("%,.0f ${currency}", number)
         }
     }
 }
