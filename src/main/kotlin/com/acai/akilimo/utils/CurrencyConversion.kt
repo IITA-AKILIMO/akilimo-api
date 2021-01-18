@@ -1,6 +1,7 @@
 package com.acai.akilimo.utils
 
 import org.slf4j.LoggerFactory
+import java.util.*
 import kotlin.math.roundToInt
 
 class CurrencyConversion {
@@ -26,7 +27,8 @@ class CurrencyConversion {
         maxAmount = formatNumber(number = max, toCurrency = toCurrency)
 
 
-        rangeString = "$minAmount - $maxAmount"
+//        rangeString = "$minAmount - $maxAmount"
+        rangeString = "About $maxAmount"
 
         return rangeString
     }
@@ -57,6 +59,9 @@ class CurrencyConversion {
     private fun formatNumber(number: Double, toCurrency: String? = null): String {
         return if (toCurrency == null) {
             String.format("%,.0f", number)
-        } else String.format("%,.0f $toCurrency", number)
+        } else {
+            val currency = Currency.getInstance(toCurrency)
+            String.format("%,.0f ${currency.symbol}", number)
+        }
     }
 }
