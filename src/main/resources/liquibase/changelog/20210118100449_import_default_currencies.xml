@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="20210118100449" author="smbar" labels="garihub">
+        <loadData
+                file="/liquibase/changelog/data/currency_symbols.csv"
+                tableName="currencies">
+
+
+            <column name="currency_name" header="name"/>
+            <column name="currency_code" header="currency code"/>
+            <column name="currency_symbol" header="symbol"/>
+            <column name="currency_native_symbol" header="native symbol"/>
+            <column name="name_plural" header="name_plural symbol"/>
+
+            <column name="decimal_digits" type="skip"/>
+            <column name="rounding" type="skip"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
