@@ -61,7 +61,7 @@ val generateChangelog by tasks.registering {
     val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
     val changeSetName = changeName?.replace(" ", "_")?.toLowerCase()
     val user = project.findProperty("author") ?: System.getProperty("user.name")
-    val file = File("$projectDir/src/main/resources/liquidbase/changelog/${date}_$changeSetName.xml")
+    val file = File("$projectDir/src/main/resources/liquibase/changelog/${date}_$changeSetName.xml")
     val text = """<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"

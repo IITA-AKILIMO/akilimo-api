@@ -52,4 +52,9 @@
 
     <include file="/liquibase/changelog/20201029194956_add_npk_201226_fertilizer.xml"/>
 
+    <include file="/liquibase/changelog/20201215125603_add_country_column_to_fertilizer_prices.xml"/>
+
+    <include file="/liquibase/changelog/20210118100437_create_currencies_table.xml"/>
+    <include file="/liquibase/changelog/20210118100449_import_default_currencies.xml"/>
+
 </databaseChangeLog>
