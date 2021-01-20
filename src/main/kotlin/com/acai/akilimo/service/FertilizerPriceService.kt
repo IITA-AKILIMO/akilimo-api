@@ -5,7 +5,9 @@ import com.acai.akilimo.config.AkilimoConfigProperties
 import com.acai.akilimo.entities.FertilizerPrices
 import com.acai.akilimo.enums.EnumCountry
 import com.acai.akilimo.interfaces.IFertilizerPriceService
+import com.acai.akilimo.mapper.CurrencyDto
 import com.acai.akilimo.mapper.FertilizerPriceDto
+import com.acai.akilimo.repositories.CurrencyRepo
 import com.acai.akilimo.repositories.FertilizerPriceRepository
 import com.acai.akilimo.request.FertilizerPriceRequest
 import com.acai.akilimo.utils.CurrencyConversion
@@ -21,8 +23,9 @@ import java.util.*
 class FertilizerPriceService
 @Autowired
 constructor(
-        private val fertilizerPriceRepository: FertilizerPriceRepository,
-        akilimoConfigProperties: AkilimoConfigProperties
+    private val fertilizerPriceRepository: FertilizerPriceRepository,
+    private val currencyRepo: CurrencyRepo,
+    akilimoConfigProperties: AkilimoConfigProperties
 ) : IFertilizerPriceService {
     private val logger = LoggerFactory.getLogger(FertilizerPriceService::class.java)
     private val currencyProperties = akilimoConfigProperties.currency()
@@ -51,15 +54,32 @@ constructor(
         }
 
 
+        val currencyEntity = currencyRepo.findByCurrencyCode(toCurrency)
+        val currencyDto = modelMapper.map(currencyEntity, CurrencyDto::class.java)
         var sortIndex: Long = 1;
         for (fertilizerPrice in fertilizerList) {
             val fertilizerPriceDto = modelMapper.map(fertilizerPrice, FertilizerPriceDto::class.java)
             fertilizerPriceDto.priceRange = conversion.convertPriceToLocalCurrency(
-                    minUsd = fertilizerPrice.minUsd!!,
-                    maxUsd = fertilizerPrice.maxUsd!!,
-                    currencyRate = currencyRate,
-                    toCurrency = toCurrency,
-                    nearestValue = 1000.0)
+                minUsd = fertilizerPrice.minUsd!!,
+                maxUsd = fertilizerPrice.maxUsd!!,
+                currencyRate = currencyRate,
+                currencyDto = currencyDto,
+                nearestValue = 1000.0
+            )
+
+            fertilizerPriceDto.minLocalPrice = conversion.convertToSpecifiedCurrency(
+                amount = fertilizerPrice.minUsd!!,
+                currencyRate = currencyRate,
+                currencyDto = currencyDto,
+                nearestValue = 1000.0
+            )
+
+            fertilizerPriceDto.maxLocalPrice = conversion.convertToSpecifiedCurrency(
+                amount = fertilizerPrice.maxUsd!!,
+                currencyRate = currencyRate,
+                currencyDto = currencyDto,
+                nearestValue = 1000.0
+            )
 
             val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
             val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
@@ -83,12 +103,16 @@ constructor(
 
         val resp = modelMapper.map(saved, FertilizerPriceDto::class.java)
 
+        val currencyEntity = currencyRepo.findByCurrencyCode(fertilizerPriceRequest.currencyCode)
+        val currencyDto = modelMapper.map(currencyEntity, CurrencyDto::class.java)
+
         resp.priceRange = conversion.convertPriceToLocalCurrency(
-                minUsd = saved.minUsd!!,
-                maxUsd = saved.maxUsd!!,
-                currencyRate = 1.00,
-                toCurrency = EnumCountry.ALL.currency(),
-                nearestValue = 1000.0)
+            minUsd = saved.minUsd!!,
+            maxUsd = saved.maxUsd!!,
+            currencyRate = 1.00,
+            currencyDto = currencyDto,
+            nearestValue = 1000.0
+        )
 
         return resp
     }

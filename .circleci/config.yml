@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/akilimo
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:14-jdk-buster
 
     steps:
       - checkout
@@ -32,7 +32,7 @@ jobs:
   build_docker:
     working_directory: ~/akilimo
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:14-jdk-buster
 
     steps:
       - checkout

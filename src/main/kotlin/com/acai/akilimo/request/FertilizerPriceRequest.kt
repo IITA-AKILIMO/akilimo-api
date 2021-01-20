@@ -5,21 +5,23 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import lombok.Data
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
 
 @JsonPropertyOrder("minUsd", "maxUsd", "active")
 @Data
 open class FertilizerPriceRequest {
 
     @NotNull
-    val minUsd: Double? = null
+    var minUsd: Double? = null
 
     @NotNull
-    val maxUsd: Double? = null
+    var maxUsd: Double? = null
+
+    @NotNull
+    var currencyCode: String = "USD"
 
     @NotNull
     @Min(value = 10, message = "Bag price should be greater than zero")
-    val pricePerBag: Double = 0.0
+    var pricePerBag: Double = 0.0
 
     @NotNull
     var active: Boolean = false

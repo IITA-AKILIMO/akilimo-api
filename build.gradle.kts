@@ -26,15 +26,9 @@ var versionNumber: String? = "4"//date.get(Calendar.DAY_OF_YEAR).toString()
 var minorRelease: String? = date.get(Calendar.MONTH).toString()
 var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
 var revisionNumber: String? = timestamp
-
-
-
 when {
     buildNumber.isNullOrBlank() -> buildNumber = date.get(Calendar.WEEK_OF_YEAR).toString()
 }
-
-
-
 group = "com.acai"
 version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
 
@@ -42,7 +36,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
         freeCompilerArgs = listOf("-Xjsr305=strict")
     }
 }
@@ -59,6 +53,28 @@ repositories {
     mavenCentral()
 }
 
+val generateChangelog by tasks.registering {
+    val changeName: String? by project
+    if (changeName.isNullOrEmpty()) {
+        return@registering
+    }
+    val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+    val changeSetName = changeName?.replace(" ", "_")?.toLowerCase()
+    val user = project.findProperty("author") ?: System.getProperty("user.name")
+    val file = File("$projectDir/src/main/resources/liquibase/changelog/${date}_$changeSetName.xml")
+    val text = """<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+     
+    <changeSet id="$date" author="$user" labels="garihub">
+
+    </changeSet>
+</databaseChangeLog>
+"""
+    file.writeText(text)
+}
 dependencies {
     //implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
