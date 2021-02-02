@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="20210202120648" author="smbar" labels="akilimo">
+        <loadData
+                file="/liquibase/changelog/data/maize_cob_prices.csv"
+                tableName="maize_prices">
+
+            <column name="country" header="country"/>
+            <column name="min_local_price" header="min_local_price"/>
+            <column name="max_local_price" header="max_local_price"/>
+            <column name="min_usd" header="min_usd"/>
+            <column name="max_usd" header="max_usd"/>
+            <column name="price_active" header="price_active"/>
+            <column name="produce_type" header="produce_type"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
