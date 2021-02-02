@@ -44,7 +44,14 @@ class MaizePricesController(private val maizePriceService: MaizePriceService) {
 
     @GetMapping("/country/{country}")
     fun listPrices(@PathVariable country: EnumCountry): ResponseEntity<List<ProducePriceDto>> {
-        val priceList = maizePriceService.cassavaPrices(country)
+        val priceList = maizePriceService.maizePrices(country)
+
+        return ResponseEntity(priceList, HttpStatus.OK)
+    }
+
+    @GetMapping("/country/{country}/{produceType}")
+    fun listPrices(@PathVariable country: EnumCountry, @PathVariable produceType: String): ResponseEntity<List<ProducePriceDto>> {
+        val priceList = maizePriceService.maizePrices(country, produceType)
 
         return ResponseEntity(priceList, HttpStatus.OK)
     }
@@ -59,8 +66,8 @@ class MaizePricesController(private val maizePriceService: MaizePriceService) {
 
     @PutMapping("/{id}")
     fun updateMaizePrice(
-            @PathVariable id: Long,
-            @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
+        @PathVariable id: Long,
+        @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
     ): ResponseEntity<ProducePriceDto> {
 
         val priceDto = maizePriceService.updateMaizePrice(id, fertilizerPriceRequest)

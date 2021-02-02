@@ -8,6 +8,8 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Data
 @Table(name = "maize_prices")
-class MaizePrices : ProducePrice()
+class MaizePrices : ProducePrice() {
+    @Column(name = "produce_type")
+    var produceType: String? = null
+}

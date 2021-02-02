@@ -56,9 +56,30 @@ constructor(
 
         val currencyEntity = currencyRepo.findByCurrencyCode(toCurrency)
         val currencyDto = modelMapper.map(currencyEntity, CurrencyDto::class.java)
-        var sortIndex: Long = 1;
+        var sortIndex: Long = 1
+
+        val minPrice = fertilizerPriceRepository.findBySortOrder(1)
+        val maxPrice = fertilizerPriceRepository.findBySortOrder(4)
+
+        val minAllowed = conversion.convertToSpecifiedCurrency(
+            amount = minPrice.minUsd!!,
+            currencyRate = currencyRate,
+            currencyDto = currencyDto,
+            nearestValue = 1000.0
+        )
+
+        val maxAllowed = conversion.convertToSpecifiedCurrency(
+            amount = maxPrice.maxUsd!!,
+            currencyRate = currencyRate,
+            currencyDto = currencyDto,
+            nearestValue = 1000.0
+        )
         for (fertilizerPrice in fertilizerList) {
             val fertilizerPriceDto = modelMapper.map(fertilizerPrice, FertilizerPriceDto::class.java)
+
+            fertilizerPriceDto.minAllowedPrice = minAllowed
+            fertilizerPriceDto.maxAllowedPrice = maxAllowed
+
             fertilizerPriceDto.priceRange = conversion.convertPriceToLocalCurrency(
                 minUsd = fertilizerPrice.minUsd!!,
                 maxUsd = fertilizerPrice.maxUsd!!,

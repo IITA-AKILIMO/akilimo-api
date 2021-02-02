@@ -19,7 +19,7 @@ import java.util.*
 class CassavaPriceService
 @Autowired
 constructor(
-        private val cassavaPriceRepository: CassavaPriceRepository
+    private val cassavaPriceRepository: CassavaPriceRepository
 ) {
     private val logger = LoggerFactory.getLogger(CassavaPriceService::class.java)
     private val modelMapper = ModelMapper()
@@ -62,10 +62,16 @@ constructor(
         val priceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val priceDtoList = ArrayList<ProducePriceDto>()
 
+        val minPrice = cassavaPriceRepository.findFirstByCountryAndMinLocalPriceGreaterThanOrderByMinLocalPriceAsc(countryCode.name, 0.0)
+        val maxPrice = cassavaPriceRepository.findFirstByCountryOrderByMaxLocalPriceDesc(countryCode.name)
+
         var priceIndex: Long = 1
         for (cassavaPrice in priceList) {
             val priceDto = modelMapper.map(cassavaPrice, ProducePriceDto::class.java)
             priceDto.priceIndex = priceIndex
+
+            priceDto.minAllowedPrice = minPrice.minLocalPrice!!
+            priceDto.maxAllowedPrice = maxPrice.maxLocalPrice!!
             priceDtoList.add(priceDto)
             priceIndex++
         }
