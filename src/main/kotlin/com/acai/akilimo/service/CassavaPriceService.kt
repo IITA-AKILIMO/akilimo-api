@@ -70,8 +70,8 @@ constructor(
             val priceDto = modelMapper.map(cassavaPrice, ProducePriceDto::class.java)
             priceDto.priceIndex = priceIndex
 
-            priceDto.minAllowedPrice = minPrice.minLocalPrice
-            priceDto.maxAllowedPrice = maxPrice.maxLocalPrice
+            priceDto.minAllowedPrice = minPrice.minLocalPrice!!
+            priceDto.maxAllowedPrice = maxPrice.maxLocalPrice!!
             priceDtoList.add(priceDto)
             priceIndex++
         }

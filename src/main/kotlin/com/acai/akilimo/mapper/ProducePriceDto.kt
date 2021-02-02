@@ -14,6 +14,8 @@ class ProducePriceDto {
 
     var country: EnumCountry? = null
 
+    var produceType: String? = null
+
     var minLocalPrice: Double = 0.0
 
     var maxLocalPrice: Double = 0.0

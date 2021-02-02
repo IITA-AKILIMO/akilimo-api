@@ -20,7 +20,7 @@ import java.util.*
 class MaizePriceService
 @Autowired
 constructor(
-        private val maizePriceRepository: MaizePriceRepository
+    private val maizePriceRepository: MaizePriceRepository
 ) {
     private val logger = LoggerFactory.getLogger(MaizePriceService::class.java)
 
@@ -62,8 +62,22 @@ constructor(
         return modelMapper.map(maizePrice, ProducePriceDto::class.java)
     }
 
-    fun cassavaPrices(countryCode: EnumCountry): List<ProducePriceDto> {
+    fun maizePrices(countryCode: EnumCountry): List<ProducePriceDto> {
         val maizePriceList = maizePriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
+        val priceDtoList = ArrayList<ProducePriceDto>()
+
+        var priceIndex: Long = 1
+        for (maizePrice in maizePriceList) {
+            val priceDto = modelMapper.map(maizePrice, ProducePriceDto::class.java)
+            priceDto.priceIndex = priceIndex
+            priceDtoList.add(priceDto)
+            priceIndex++
+        }
+        return priceDtoList
+    }
+
+    fun maizePrices(countryCode: EnumCountry, produceType: String): List<ProducePriceDto> {
+        val maizePriceList = maizePriceRepository.findByCountryAndProduceTypeAndActiveIsTrueOrderBySortOrderAsc(countryCode.name, produceType)
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
