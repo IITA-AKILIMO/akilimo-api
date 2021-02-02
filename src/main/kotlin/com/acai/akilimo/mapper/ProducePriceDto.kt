@@ -18,6 +18,10 @@ class ProducePriceDto {
 
     var maxLocalPrice: Double = 0.0
 
+    var minAllowedPrice: Double = 0.0
+
+    var maxAllowedPrice: Double = 0.0
+
     var minUsd: Double = 0.0
 
     var maxUsd: Double = 0.0
