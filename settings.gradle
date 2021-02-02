@@ -3,4 +3,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'akilimo'
+rootProject.name = 'akilimo-api'

@@ -19,4 +19,7 @@ interface MaizePriceRepository : JpaRepository<MaizePrices, Long> {
 
     fun findByCountryAndActiveIsTrueOrderBySortOrderAsc(country: String): List<MaizePrices>
     fun findByCountryAndActiveIsTrueOrderBySortOrderDesc(country: String): List<MaizePrices>
+
+    fun findByCountryAndProduceTypeAndActiveIsTrueOrderBySortOrderDesc(country: String, produceType: String): List<MaizePrices>
+    fun findByCountryAndProduceTypeAndActiveIsTrueOrderBySortOrderAsc(country: String, produceType: String): List<MaizePrices>
 }
