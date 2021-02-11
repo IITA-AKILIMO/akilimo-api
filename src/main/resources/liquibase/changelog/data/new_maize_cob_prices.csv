@@ -1,0 +1,8 @@
+country,min_local_price,max_local_price,min_usd,max_usd,price_active,produce_type,sort_order,min_price,max_price
+NG,-1,-1,0,0,1,cob,0,0,0
+NG,15,15,0,0,1,cob,1,1,0
+NG,25,25,0,0,1,cob,2,0,0
+NG,35,35,0,0,1,cob,2,0,0
+NG,45,45,0,0,1,cob,2,0,0
+NG,55,55,0,0,1,cob,2,0,0
+NG,60,60,0,0,1,cob,3,0,1

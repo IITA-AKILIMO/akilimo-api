@@ -19,11 +19,8 @@ class CurrencyConversion {
         minAmount = formatNumber(number = min)
 
         val max = roundToNearestSpecifiedValue(numberToRound = convertToSpecifiedCurrency(maxUsd, currencyRate), roundToNearest = nearestValue)
-        maxAmount = formatNumber(number = max, currencyDto = currencyDto)
+        return formatNumber(number = max, currencyDto = currencyDto)
 
-        rangeString = "About $maxAmount"
-
-        return rangeString
     }
 
     fun convertToSpecifiedCurrency(amount: Double, currencyRate: Double, nearestValue: Double, currencyDto: CurrencyDto): Double {

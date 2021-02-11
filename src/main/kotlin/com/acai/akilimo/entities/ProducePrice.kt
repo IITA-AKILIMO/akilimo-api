@@ -34,6 +34,12 @@ open class ProducePrice {
     @Column(name = "price_active")
     open var active: Boolean = false
 
+    @Column(name = "min_price")
+    open var minPrice: Boolean = false
+
+    @Column(name = "max_price")
+    open var maxPrice: Boolean = false
+
     @Column(name = "sort_order")
     open var sortOrder: Int = 0
 
