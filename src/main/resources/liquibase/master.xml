@@ -61,4 +61,9 @@
     <include file="/liquibase/changelog/20210202115939_add_maize_type_column.xml"/>
     <include file="/liquibase/changelog/20210202120648_import_default_cob_prices.xml"/>
 
+    <include file="/liquibase/changelog/20210211124030_add_min_and_max_price_columns_to_maize_prices.xml"/>
+    <include file="/liquibase/changelog/20210211124718_clear_maize_prices_table.xml"/>
+    <include file="/liquibase/changelog/20210211124729_import_new_maize_grain_prices.xml"/>
+    <include file="/liquibase/changelog/20210211124736_import_new_maize_cob_prices.xml"/>
+
 </databaseChangeLog>
