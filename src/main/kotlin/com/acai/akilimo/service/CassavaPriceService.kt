@@ -62,8 +62,8 @@ constructor(
         val priceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val priceDtoList = ArrayList<ProducePriceDto>()
 
-        val minPrice = cassavaPriceRepository.findFirstByCountryAndMinLocalPriceGreaterThanOrderByMinLocalPriceAsc(countryCode.name, 0.0)
-        val maxPrice = cassavaPriceRepository.findFirstByCountryOrderByMaxLocalPriceDesc(countryCode.name)
+        val minPrice = cassavaPriceRepository.findFirstByCountryAndMinPriceTrue(countryCode.name)
+        val maxPrice = cassavaPriceRepository.findFirstByCountryAndMaxPriceTrue(countryCode.name)
 
         var priceIndex: Long = 1
         for (cassavaPrice in priceList) {
