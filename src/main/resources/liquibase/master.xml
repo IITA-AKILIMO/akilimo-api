@@ -65,5 +65,7 @@
     <include file="/liquibase/changelog/20210211124718_clear_maize_prices_table.xml"/>
     <include file="/liquibase/changelog/20210211124729_import_new_maize_grain_prices.xml"/>
     <include file="/liquibase/changelog/20210211124736_import_new_maize_cob_prices.xml"/>
+    <include file="/liquibase/changelog/20210211131054_add_min_and_max_price_columns_to_cassava_prices.xml"/>
+    <include file="/liquibase/changelog/20210211132159_add_min_and_max_price_columns_to_potato_prices.xml"/>
 
 </databaseChangeLog>
