@@ -51,7 +51,6 @@
     <include file="/liquibase/changelog/20200524002251_import_default_potato_prices.xml"/>
 
     <include file="/liquibase/changelog/20201029194956_add_npk_201226_fertilizer.xml"/>
-    <include file="/liquibase/changelog/20210202120648_import_default_cob_prices.xml"/>
 
     <include file="/liquibase/changelog/20201215125603_add_country_column_to_fertilizer_prices.xml"/>
 
@@ -60,5 +59,13 @@
 
 
     <include file="/liquibase/changelog/20210202115939_add_maize_type_column.xml"/>
+    <include file="/liquibase/changelog/20210202120648_import_default_cob_prices.xml"/>
+
+    <include file="/liquibase/changelog/20210211124030_add_min_and_max_price_columns_to_maize_prices.xml"/>
+    <include file="/liquibase/changelog/20210211124718_clear_maize_prices_table.xml"/>
+    <include file="/liquibase/changelog/20210211124729_import_new_maize_grain_prices.xml"/>
+    <include file="/liquibase/changelog/20210211124736_import_new_maize_cob_prices.xml"/>
+    <include file="/liquibase/changelog/20210211131054_add_min_and_max_price_columns_to_cassava_prices.xml"/>
+    <include file="/liquibase/changelog/20210211132159_add_min_and_max_price_columns_to_potato_prices.xml"/>
 
 </databaseChangeLog>

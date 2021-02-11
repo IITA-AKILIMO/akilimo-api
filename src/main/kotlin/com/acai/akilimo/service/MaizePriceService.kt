@@ -113,7 +113,6 @@ constructor(
 
     @Transactional
     fun deleteMaizePrice(id: Long): Boolean {
-
         val entity = maizePriceRepository.findByPriceId(id)
 
         return when {

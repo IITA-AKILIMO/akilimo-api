@@ -21,6 +21,9 @@ interface CassavaPriceRepository : JpaRepository<CassavaPrices, Long> {
 
     fun findFirstByCountryAndMinLocalPriceGreaterThanOrderByMinLocalPriceAsc(countryCode: String, greater: Double): CassavaPrices
 
+    fun findFirstByCountryAndMinPriceTrue(countryCode: String): CassavaPrices
+    fun findFirstByCountryAndMaxPriceTrue(countryCode: String): CassavaPrices
+
     fun findFirstByCountryOrderByMinLocalPriceAsc(countryCode: String): CassavaPrices
     fun findFirstByCountryOrderByMaxLocalPriceDesc(countryCode: String): CassavaPrices
 }
