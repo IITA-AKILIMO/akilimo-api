@@ -18,6 +18,8 @@ class UserInfo(
 
     var emailAddress: String? = null
 
+    var gender: String? = null
+
     var sendSms: Boolean = false
     var sendEmail: Boolean = false
 }
