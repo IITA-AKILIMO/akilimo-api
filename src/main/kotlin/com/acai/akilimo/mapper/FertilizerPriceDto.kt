@@ -1,9 +1,9 @@
 package com.acai.akilimo.mapper
 
-import lombok.Data
+
 import java.time.LocalDateTime
 
-@Data
+
 class FertilizerPriceDto {
 
     var recordId: Long? = null

@@ -1,8 +1,5 @@
 package com.acai.akilimo.request
 
-import lombok.Data
-
-@Data
 class UserInfo(
         var mobileCountryCode: String,
         var mobileNumber: String,

@@ -1,10 +1,10 @@
 package com.acai.akilimo.request
 
 import io.swagger.annotations.ApiModelProperty
-import lombok.Data
+
 import javax.validation.constraints.NotNull
 
-@Data
+
 open class StarchFactoryRequest {
     @NotNull
     var factoryName: String? = null

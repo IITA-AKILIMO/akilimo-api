@@ -2,18 +2,12 @@ package com.acai.akilimo.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.annotations.ApiModelProperty
-import lombok.Data
-import lombok.EqualsAndHashCode
-import lombok.ToString
 import org.hibernate.annotations.GenericGenerator
 
 import javax.persistence.*
 import java.io.Serializable
 
-@Data
 @Entity
-@ToString(exclude = ["recommendation"])
-@EqualsAndHashCode(exclude = ["recommendation"])
 @Table(name = "request_fertilizer")
 class Fertilizer : Serializable {
 

@@ -3,11 +3,11 @@ package com.acai.akilimo.request
 import com.acai.akilimo.enums.EnumCountry
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
-import lombok.Data
+
 import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
 
-//@Data
+
 open class ProducePriceRequest(
         @JsonProperty("country")
         @ApiModelProperty(example = "KE", required = true)
