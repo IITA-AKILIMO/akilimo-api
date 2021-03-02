@@ -28,7 +28,7 @@ class FertilizerPrices {
     var pricePerBag: Double? = null
 
     @Column(name = "price_active")
-    var active: Boolean = false
+    var priceActive: Boolean = false
 
 
     @Column(name = "sort_order")

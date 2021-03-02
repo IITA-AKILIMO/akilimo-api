@@ -12,14 +12,14 @@ interface MaizePriceRepository : JpaRepository<MaizePrices, Long> {
 
     override fun findAll(): List<MaizePrices>
 
-    fun findAllByActiveIsFalse(): List<MaizePrices>
+    fun findAllByPriceActiveIsFalse(): List<MaizePrices>
 
-    fun findByCountryAndActiveIsTrueOrderByMinLocalPriceAsc(country: String): List<MaizePrices>
-    fun findByCountryAndActiveIsTrueOrderByMinLocalPriceDesc(country: String): List<MaizePrices>
+    fun findByCountryAndPriceActiveIsTrueOrderByMinLocalPriceAsc(country: String): List<MaizePrices>
+    fun findByCountryAndPriceActiveIsTrueOrderByMinLocalPriceDesc(country: String): List<MaizePrices>
 
-    fun findByCountryAndActiveIsTrueOrderBySortOrderAsc(country: String): List<MaizePrices>
-    fun findByCountryAndActiveIsTrueOrderBySortOrderDesc(country: String): List<MaizePrices>
+    fun findByCountryAndPriceActiveIsTrueOrderBySortOrderAsc(country: String): List<MaizePrices>
+    fun findByCountryAndPriceActiveIsTrueOrderBySortOrderDesc(country: String): List<MaizePrices>
 
-    fun findByCountryAndProduceTypeAndActiveIsTrueOrderBySortOrderDesc(country: String, produceType: String): List<MaizePrices>
-    fun findByCountryAndProduceTypeAndActiveIsTrueOrderBySortOrderAsc(country: String, produceType: String): List<MaizePrices>
+    fun findByCountryAndProduceTypeAndPriceActiveIsTrueOrderBySortOrderDesc(country: String, produceType: String): List<MaizePrices>
+    fun findByCountryAndProduceTypeAndPriceActiveIsTrueOrderBySortOrderAsc(country: String, produceType: String): List<MaizePrices>
 }

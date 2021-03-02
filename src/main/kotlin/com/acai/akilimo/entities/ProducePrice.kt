@@ -31,7 +31,7 @@ open class ProducePrice {
     open var maxUsd: Double? = null
 
     @Column(name = "price_active")
-    open var active: Boolean = false
+    open var priceActive: Boolean = false
 
     @Column(name = "min_price")
     open var minPrice: Boolean = false
