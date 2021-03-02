@@ -2,13 +2,13 @@ package com.acai.akilimo.mapper
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import lombok.Data
+
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import javax.persistence.Column
 
-@Data
+
 class StarchFactoryDto {
 
 

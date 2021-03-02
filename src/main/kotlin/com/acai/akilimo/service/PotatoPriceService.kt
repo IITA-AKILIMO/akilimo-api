@@ -44,7 +44,7 @@ constructor(
     }
 
     fun fetchAllInactivePrices(): List<ProducePriceDto> {
-        val potatoPriceList = potatoPriceRepository.findAllByActiveIsFalse()
+        val potatoPriceList = potatoPriceRepository.findAllByPriceActiveIsFalse()
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
@@ -64,7 +64,7 @@ constructor(
     }
 
     fun potatoPrices(countryCode: EnumCountry): List<ProducePriceDto> {
-        val potatoPriceList = potatoPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
+        val potatoPriceList = potatoPriceRepository.findByCountryAndPriceActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1

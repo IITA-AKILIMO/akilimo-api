@@ -2,7 +2,6 @@ package com.acai.akilimo.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModelProperty
-import lombok.Data
 import org.hibernate.annotations.*
 import org.springframework.lang.NonNull
 
@@ -16,7 +15,6 @@ import java.time.LocalDateTime
 import java.util.HashSet
 
 @Entity
-@Data
 @Table(name = "yield_request")
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
 class Recommendation : Serializable {

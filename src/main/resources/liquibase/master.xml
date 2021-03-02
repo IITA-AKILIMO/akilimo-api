@@ -68,4 +68,6 @@
     <include file="/liquibase/changelog/20210211131054_add_min_and_max_price_columns_to_cassava_prices.xml"/>
     <include file="/liquibase/changelog/20210211132159_add_min_and_max_price_columns_to_potato_prices.xml"/>
 
+    <include file="/liquibase/changelog/20210302113716_create_user_feedback_table.xml"/>
+
 </databaseChangeLog>
