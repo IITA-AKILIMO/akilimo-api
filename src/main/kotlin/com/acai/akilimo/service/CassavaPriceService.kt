@@ -39,7 +39,7 @@ constructor(
     }
 
     fun fetchAllInactivePrices(): List<ProducePriceDto> {
-        val priceList = cassavaPriceRepository.findAllByActiveIsFalse()
+        val priceList = cassavaPriceRepository.findAllByPriceActiveIsFalse()
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         var priceIndex: Long = 1
@@ -59,7 +59,7 @@ constructor(
     }
 
     fun cassavaPrices(countryCode: EnumCountry): List<ProducePriceDto> {
-        val priceList = cassavaPriceRepository.findByCountryAndActiveIsTrueOrderBySortOrderAsc(countryCode.name)
+        val priceList = cassavaPriceRepository.findByCountryAndPriceActiveIsTrueOrderBySortOrderAsc(countryCode.name)
         val priceDtoList = ArrayList<ProducePriceDto>()
 
         val minPrice = cassavaPriceRepository.findFirstByCountryAndMinPriceTrue(countryCode.name)

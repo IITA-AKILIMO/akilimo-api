@@ -103,13 +103,8 @@ dependencies {
 
     implementation("com.vladmihalcea:hibernate-types-52:1.0.0")
 
-    compileOnly("org.projectlombok:lombok")
-    runtimeOnly("org.springframework.boot:spring-boot-devtools")
-
-    //runtimeOnly("com.h2database:h2")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    annotationProcessor("org.projectlombok:lombok")
 
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

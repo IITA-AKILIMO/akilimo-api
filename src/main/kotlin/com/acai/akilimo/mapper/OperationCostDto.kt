@@ -2,10 +2,10 @@ package com.acai.akilimo.mapper
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import lombok.Data
 
 
-@Data
+
+
 class OperationCostDto {
 
     var id: Long? = null

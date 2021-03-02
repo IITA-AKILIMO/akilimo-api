@@ -35,7 +35,7 @@ constructor(
     private val modelMapper = ModelMapper()
 
     override fun fertilizerPriceByCountry(countryCode: String): List<FertilizerPriceDto> {
-        val fertilizerList = fertilizerPriceRepository.findByActiveIsTrueOrderBySortOrderAsc()
+        val fertilizerList = fertilizerPriceRepository.findByPriceActiveIsTrueOrderBySortOrderAsc()
         val fertilizerPriceDtoList = ArrayList<FertilizerPriceDto>()
 
         var toCurrency = EnumCountry.ALL.currency()

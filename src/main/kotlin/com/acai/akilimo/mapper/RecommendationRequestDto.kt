@@ -1,11 +1,11 @@
 package com.acai.akilimo.mapper
 
 import com.acai.akilimo.entities.Fertilizer
-import lombok.Data
+
 import java.time.LocalDateTime
 import javax.persistence.Column
 
-@Data
+
 open class RecommendationRequestDto {
 
     var mapLat: Long? =null

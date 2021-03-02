@@ -1,6 +1,5 @@
 package com.acai.akilimo.entities
 
-import lombok.Data
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.UpdateTimestamp
@@ -32,7 +31,7 @@ open class ProducePrice {
     open var maxUsd: Double? = null
 
     @Column(name = "price_active")
-    open var active: Boolean = false
+    open var priceActive: Boolean = false
 
     @Column(name = "min_price")
     open var minPrice: Boolean = false

@@ -1,9 +1,9 @@
 package com.acai.akilimo.mapper
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import lombok.Data
 
-@Data
+
+
 open class RecommendationResponseDto {
 
     var country: String? = null

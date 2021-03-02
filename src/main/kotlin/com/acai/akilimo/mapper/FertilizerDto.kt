@@ -2,7 +2,7 @@ package com.acai.akilimo.mapper
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import lombok.Data
+
 
 @JsonPropertyOrder(
         "fertilizerId",
@@ -19,7 +19,7 @@ import lombok.Data
         "createdAt",
         "updatedAt"
 )
-@Data
+
 class FertilizerDto {
 
     var fertilizerId: Long? = null
