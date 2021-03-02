@@ -20,13 +20,12 @@ class UserFeedbackController(private val feedbackService: FeedbackService) {
     }
 
 
-    @PostMapping("/survey/{deviceToken}")
-    fun updateMaizePrice(
-        @PathVariable deviceToken: String,
+    @PostMapping("/survey/")
+    fun addUserSurvey(
         @Valid @RequestBody surveyRequest: SurveyRequest
     ): ResponseEntity<UserFeedback> {
 
-        val userFeedback = feedbackService.addUserFeedBack(deviceToken, surveyRequest)
+        val userFeedback = feedbackService.addUserFeedBack(surveyRequest)
 
         return ResponseEntity(userFeedback, HttpStatus.OK)
     }

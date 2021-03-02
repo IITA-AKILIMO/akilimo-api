@@ -23,10 +23,8 @@ constructor(
 
     private val modelMapper = ModelMapper()
 
-    fun addUserFeedBack(deviceToken: String, surveyRequest: SurveyRequest): UserFeedback {
+    fun addUserFeedBack(surveyRequest: SurveyRequest): UserFeedback {
         val entity = modelMapper.map(surveyRequest, UserFeedback::class.java)
-        entity.deviceToken = deviceToken
-
         return userFeedBackRepository.save(entity)
     }
 
