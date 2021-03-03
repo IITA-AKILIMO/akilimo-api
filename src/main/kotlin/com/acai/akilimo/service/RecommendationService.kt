@@ -28,10 +28,12 @@ import java.util.*
 @Service
 class RecommendationService
 @Autowired
-constructor(private val restTemplate: RestTemplate,
-            val fertilizerRepository: FertilizerRepository,
-            val payloadRepository: PayloadRepository,
-            akilimoConfigProperties: AkilimoConfigProperties) {
+constructor(
+    private val restTemplate: RestTemplate,
+    val fertilizerRepository: FertilizerRepository,
+    val payloadRepository: PayloadRepository,
+    akilimoConfigProperties: AkilimoConfigProperties
+) {
 
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
@@ -294,7 +296,10 @@ constructor(private val restTemplate: RestTemplate,
         return fertilizerHashMap
     }
 
-    private fun prepareFertilizerPayload(recommendationRequest: RecommendationRequest, tempFertilizerList: LinkedHashMap<String, FertilizerList>): PlumberComputeRequest {
+    private fun prepareFertilizerPayload(
+        recommendationRequest: RecommendationRequest,
+        tempFertilizerList: LinkedHashMap<String, FertilizerList>
+    ): PlumberComputeRequest {
         val modelMapper = ModelMapper()
 
         val fertilizerList = evaluateFertilizers(tempFertilizerList)
@@ -392,6 +397,13 @@ constructor(private val restTemplate: RestTemplate,
             requestPayloadPlumber.npkTwentyTwelve26Available = npk20.selected
             requestPayloadPlumber.npkTwentyTwelve26BagWeight = npk20.fertilizerWeight!!
             requestPayloadPlumber.npkTwentyTwelve26CostPerBag = npk20.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_20_12_16.name)) {
+            val npk201216 = fertilizerList[EnumFertilizer.NPK_20_12_16.name]!!
+            requestPayloadPlumber.npkTwentyTwelve16Available = npk201216.selected
+            requestPayloadPlumber.npkTwentyTwelve16BagWeight = npk201216.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyTwelve16CostPerBag = npk201216.fertilizerCostPerBag
         }
 
         return requestPayloadPlumber
