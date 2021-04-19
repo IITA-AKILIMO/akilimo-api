@@ -3,8 +3,8 @@ package com.acai.akilimo.request
 import com.fasterxml.jackson.annotation.JsonProperty
 
 class SurveyRequest(
-    @JsonProperty("akilimoUsage")
-    deviceToken: String,
+    @JsonProperty("deviceToken")
+    val deviceToken: String,
     
     @JsonProperty("akilimoUsage")
     val akilimoUsage: String,
