@@ -20,7 +20,7 @@ class UserFeedbackController(private val feedbackService: FeedbackService) {
     }
 
 
-    @PostMapping("/survey/")
+    @PostMapping("/survey")
     fun addUserSurvey(
         @Valid @RequestBody surveyRequest: SurveyRequest
     ): ResponseEntity<UserFeedback> {
