@@ -1,7 +1,7 @@
 package com.acai.akilimo.controllers
 
 import com.acai.akilimo.entities.UserFeedback
-import com.acai.akilimo.request.SurveyRequest
+import com.acai.akilimo.request.UserFeedBackRequest
 import com.acai.akilimo.service.FeedbackService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,10 +22,10 @@ class UserFeedbackController(private val feedbackService: FeedbackService) {
 
     @PostMapping("/survey")
     fun addUserSurvey(
-        @Valid @RequestBody surveyRequest: SurveyRequest
+        @Valid @RequestBody userFeedBackRequest: UserFeedBackRequest
     ): ResponseEntity<UserFeedback> {
 
-        val userFeedback = feedbackService.addUserFeedBack(surveyRequest)
+        val userFeedback = feedbackService.addUserFeedBack(userFeedBackRequest)
 
         return ResponseEntity(userFeedback, HttpStatus.OK)
     }
