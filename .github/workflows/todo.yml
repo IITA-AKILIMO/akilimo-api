@@ -7,7 +7,7 @@ on:
 jobs:
 
   todos:
-    name: Unit tests
+    name: Run TODO generator
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -16,4 +16,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Todo Actions
-        uses: dtinth/todo-actions@master
+        uses: ribtoks/tdg-github-action@master
+        with:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          REF: ${{ github.ref }}
+          LABEL: "todo"
+          INCLUDE_PATTERN: "\\.(java|kt|kts)$"
