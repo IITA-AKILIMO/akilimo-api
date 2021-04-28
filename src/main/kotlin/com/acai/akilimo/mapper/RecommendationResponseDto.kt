@@ -13,7 +13,7 @@ open class RecommendationResponseDto {
 
     @JsonProperty("userPhoneNr")
     var mobileNumber: String? = null
-    
+
     @JsonProperty("userName")
     var userName: String? = null
 

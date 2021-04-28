@@ -37,13 +37,13 @@ public class InterCropping {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public InterCropping() {
     }
 
     /**
-     * 
+     *
      * @param reasonD
      * @param dNR
      * @param nPK151515

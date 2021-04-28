@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 class SurveyRequest(
     @JsonProperty("deviceToken")
     val deviceToken: String,
-    
+
     @JsonProperty("akilimoUsage")
     val akilimoUsage: String,
 

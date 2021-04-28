@@ -1,27 +1,28 @@
-### Description
+## Proposed changes
 
+Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request. If it fixes a bug or resolves a feature request, be sure to link to that issue.
 
-#### Related issues
+## Types of changes
 
-<!--
-Please use the following link syntaxes:
+What types of changes does your code introduce to Appium?
+_Put an `x` in the boxes that apply_
 
-- connect to #49 (to reference issues in the current repository)
-- connect to strongloop/loopback#49 (to reference issues in another repository)
--->
+- [ ] Bugfix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation Update (if none of the other choices apply)
 
-- connect to <link_to_referenced_issue>
+## Checklist
 
-### Checklist
+_Put an `x` in the boxes that apply. You can also fill these out after creating the PR. If you're unsure about any of them, don't hesitate to ask. We're here to help! This is simply a reminder of what we are going to look for before merging your code._
 
-<!--
-- Please mark your choice with an "x" (i.e. [x], see
-https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments)
-- PR's without test coverage will be closed.
--->
+- [ ] I have read the [CONTRIBUTING](https://github.com/appium/appium/blob/master/CONTRIBUTING.md) doc
+- [ ] I have signed the [CLA](https://cla.js.foundation/appium/appium)
+- [ ] Lint and unit tests pass locally with my changes
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] I have added necessary documentation (if appropriate)
+- [ ] Any dependent changes have been merged and published in downstream modules
 
-- [ ] Code quality is not reduced by more than 15%
-- [ ] All tests are passing
-- [ ] New tests added or existing tests modified to cover all changes
-- [ ] Code conforms with the [style
-  guide](http://loopback.io/doc/en/contrib/style-guide.html)
+## Further comments
+
+If this is a relatively large or complex change, kick off the discussion by explaining why you chose the solution you did and what alternatives you considered, etc...
