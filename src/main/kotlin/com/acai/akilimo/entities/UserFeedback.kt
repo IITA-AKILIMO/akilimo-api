@@ -1,8 +1,7 @@
 package com.acai.akilimo.entities
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import com.acai.akilimo.enums.EnumUserType
+import javax.persistence.*
 
 @Entity
 @Table(name = "user_feedback")
@@ -14,6 +13,10 @@ class UserFeedback : BaseEntity() {
 
     @Column(name = "akilimo_usage", columnDefinition = "TEXT")
     var akilimoUsage: String? = null
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", columnDefinition = "TEXT")
+    var userType: EnumUserType? = null
 
     @Column(name = "akilimo_rec_rating")
     var akilimoRecRating: Int? = null

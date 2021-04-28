@@ -70,4 +70,6 @@
 
     <include file="/liquibase/changelog/20210302113716_create_user_feedback_table.xml"/>
 
+    <include file="/liquibase/changelog/20210428130405_add_user_type_column_in_user_feedback_table.xml"/>
+
 </databaseChangeLog>

@@ -1,11 +1,12 @@
 package com.acai.akilimo.request
 
+import com.acai.akilimo.enums.EnumUserType
 import com.fasterxml.jackson.annotation.JsonProperty
 
-class SurveyRequest(
+class UserFeedBackRequest(
     @JsonProperty("deviceToken")
     val deviceToken: String,
-    
+
     @JsonProperty("akilimoUsage")
     val akilimoUsage: String,
 
@@ -17,4 +18,7 @@ class SurveyRequest(
 
     @JsonProperty("language")
     val language: String
-)
+) {
+    @JsonProperty("userType")
+    var userType: EnumUserType = EnumUserType.OTHER
+}

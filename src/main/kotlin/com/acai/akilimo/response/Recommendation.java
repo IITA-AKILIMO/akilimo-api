@@ -26,13 +26,13 @@ public class Recommendation {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public Recommendation() {
     }
 
     /**
-     * 
+     *
      * @param sP
      * @param pP
      * @param iC
