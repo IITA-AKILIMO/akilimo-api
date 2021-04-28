@@ -99,5 +99,3 @@ INSERT INTO `available_fertilizer` (`id`, `name`, `type`, `n_content`, `p_conten
 INSERT INTO `available_fertilizer` (`id`, `name`, `type`, `n_content`, `p_content`, `k_content`, `weight`, `price`, `country`, `available`, `custom`, `created_at`, `updated_at`) VALUES ('298', 'iste', 'Ramon McCullough', 6, 8, 7, 50, '4.99', '4202', '1', '1', '1988-05-08 23:19:40', '2018-07-21 14:13:59');
 INSERT INTO `available_fertilizer` (`id`, `name`, `type`, `n_content`, `p_content`, `k_content`, `weight`, `price`, `country`, `available`, `custom`, `created_at`, `updated_at`) VALUES ('299', 'tempore', 'Ms. Tiara Mayert', 5, 5, 9, 50, '4', '33591', '1', '1', '1981-06-29 06:23:52', '1981-11-13 06:32:02');
 INSERT INTO `available_fertilizer` (`id`, `name`, `type`, `n_content`, `p_content`, `k_content`, `weight`, `price`, `country`, `available`, `custom`, `created_at`, `updated_at`) VALUES ('300', 'nostrum', 'Joey Gleason PhD', 3, 7, 1, 50, '17827', '58486', '1', '1', '2015-10-22 13:04:46', '1991-12-07 15:03:46');
-
-

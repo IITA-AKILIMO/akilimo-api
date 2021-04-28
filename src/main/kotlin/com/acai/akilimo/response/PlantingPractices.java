@@ -53,13 +53,13 @@ public class PlantingPractices {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public PlantingPractices() {
     }
 
     /**
-     * 
+     *
      * @param dNR
      * @param ploughing
      * @param dRP
