@@ -2,7 +2,7 @@ name: Create issues from todos
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
 
