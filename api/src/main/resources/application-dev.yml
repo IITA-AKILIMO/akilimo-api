@@ -1,3 +1,8 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
 spring:
   datasource:
     url: "jdbc:h2:mem:akilimo;DB_CLOSE_DELAY=-1"
@@ -6,13 +11,12 @@ spring:
     password:
     initialization-mode: always
   jpa:
-    open-in-view: false
+    open-in-view: true
     database: h2
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-      #dialect: org.hibernate.dialect.H2Dialect
-      #naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+
   h2:
     console:
       enabled: true

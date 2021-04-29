@@ -1,36 +1,74 @@
-debug: false
-trace: false
+debug: ${DEBUG:false}
+trace: ${TRACE:false}
 
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: error
-  config: file:src/main/resources/logback-spring.xml
 server:
-  port: 8098
+  port: ${PORT_NUMBER:8098}
   error:
     whitelabel:
       enabled: true
-    include-stacktrace: on_trace_param
+
+
 spring:
+  main:
+    banner-mode: console
+    log-startup-info: true
+
   application:
-    name: akilimo
-  profiles:
-    active: dev
-  http:
-    log-request-details: false
+    name: akilimo-api
+
+  jmx:
+    enabled: ${JMX_ENABLED:false}
+
   jpa:
     properties:
       hibernate:
-        generate_statistics: false
+        generate_statistics: ${GEN_STATS:false}
         order_inserts: true
+        order_updates: true
+        ddl-auto: validate
         jdbc:
-          batch_size: 500
+          batch_size: 5
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/akilimo}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:}
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
   data:
     web:
       pageable:
         one-indexed-parameters: true
+        default-page-size: 150
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    mapper:
+      ACCEPT_CASE_INSENSITIVE_ENUMS: true
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd HH:mm:ss
+      time: HH:mm:ss
+
+
+#springdoc:
+#  show-actuator: true
+#  default-produces-media-type: "application/json"
+#  pathsToMatch: /api/v1/**, /api/v2/**
+#  api-docs:
+#    path: /akilimo-api
+#    groups:
+#      enabled: false
+#  swagger-ui:
+#    tags-sorter: alpha
+#    operations-sorter: alpha
+
 rate:
   limit:
     enabled: false
@@ -53,7 +91,7 @@ plumber:
 
 messaging:
   sms:
-    branded-codes: ["255","+255","234","+234"]
+    branded-codes: [ "255","+255","234","+234" ]
     base-url: https://api.tsobu.co.ke
     end-point: /v1/sms/single
     sms-user:

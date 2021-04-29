@@ -16,9 +16,9 @@
             <pattern>
                 %msg%n
             </pattern>
-<!--            <pattern>-->
-<!--                %d %-5level [%thread] %logger{0}: %msg%n-->
-<!--            </pattern>-->
+            <!--            <pattern>-->
+            <!--                %d %-5level [%thread] %logger{0}: %msg%n-->
+            <!--            </pattern>-->
         </encoder>
     </appender>
 
@@ -37,14 +37,14 @@
 
     <springProfile name="prod">
         <root level="WARN">
-            <appender-ref ref="FILE" />
+            <appender-ref ref="FILE"/>
         </root>
     </springProfile>
 
-    <!--
-   <root level="INFO">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </root>
-    -->
+
 
 </configuration>
