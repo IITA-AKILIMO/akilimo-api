@@ -1,6 +1,6 @@
 package com.iita.akilimo.core.mapper
 
-import com.iita.akilimo.database.repos.Fertilizer
+import com.iita.akilimo.database.entities.Fertilizer
 import java.time.LocalDateTime
 
 

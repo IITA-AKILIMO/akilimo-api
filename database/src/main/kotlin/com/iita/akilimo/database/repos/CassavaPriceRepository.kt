@@ -1,10 +1,11 @@
 package com.iita.akilimo.database.repos
 
-import org.springframework.data.jpa.repository.JpaRepository
+import com.iita.akilimo.database.entities.CassavaPrices
+import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CassavaPriceRepository : JpaRepository<CassavaPrices, Long> {
+interface CassavaPriceRepository : PagingAndSortingRepository<CassavaPrices, Long> {
 
     fun findByPriceId(priceId: Long): CassavaPrices?
 

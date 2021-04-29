@@ -14,7 +14,7 @@ import java.util.List;
     "PlantingPractices",
     "ScheduledPlanting"
 })
-public class Recommendation {
+public class RecommendationResponse {
 
     @JsonProperty("FertilizerRecommendation")
     public List<FertilizerRecommendation> fR = null;
@@ -29,7 +29,7 @@ public class Recommendation {
      * No args constructor for use in serialization
      *
      */
-    public Recommendation() {
+    public RecommendationResponse() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class Recommendation {
      * @param iC
      * @param fR
      */
-    public Recommendation(List<FertilizerRecommendation> fR, List<InterCropping> iC, List<PlantingPractices> pP, List<String> sP) {
+    public RecommendationResponse(List<FertilizerRecommendation> fR, List<InterCropping> iC, List<PlantingPractices> pP, List<String> sP) {
         super();
         this.fR = fR;
         this.iC = iC;

@@ -5,7 +5,7 @@ import com.iita.akilimo.core.mapper.ProducePriceDto
 import com.iita.akilimo.core.request.ProducePriceRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
 import com.iita.akilimo.database.repos.PotatoPriceRepository
-import com.iita.akilimo.database.repos.PotatoPrices
+import com.iita.akilimo.database.entities.PotatoPrices
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
@@ -17,9 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @Suppress("DuplicatedCode")
 @Service
 class PotatoPriceService
-@Autowired
 constructor(
-        private val potatoPriceRepository: PotatoPriceRepository
+        val potatoPriceRepository: PotatoPriceRepository
 ) {
     private val logger = LoggerFactory.getLogger(PotatoPriceService::class.java)
 

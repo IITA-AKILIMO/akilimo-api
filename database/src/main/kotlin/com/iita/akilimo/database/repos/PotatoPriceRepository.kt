@@ -1,5 +1,6 @@
 package com.iita.akilimo.database.repos
 
+import com.iita.akilimo.database.entities.PotatoPrices
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

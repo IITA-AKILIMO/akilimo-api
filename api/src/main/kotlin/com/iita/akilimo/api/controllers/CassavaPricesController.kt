@@ -15,7 +15,7 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v3/cassava-prices")
 @RestController
-class CassavaPricesController(private val cassavaPriceService: CassavaPriceService) {
+class CassavaPricesController(val cassavaPriceService: CassavaPriceService) {
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(CassavaPricesController::class.java)

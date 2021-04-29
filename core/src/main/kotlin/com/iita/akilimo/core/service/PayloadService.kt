@@ -7,7 +7,7 @@ import com.iita.akilimo.config.AkilimoConfigProperties
 import com.iita.akilimo.core.interfaces.IPayloadCostService
 import com.iita.akilimo.core.mapper.PayloadDto
 import com.iita.akilimo.core.utils.CurrencyConversion
-import com.iita.akilimo.database.repos.Payload
+import com.iita.akilimo.database.entities.Payload
 import com.iita.akilimo.database.repos.PayloadRepository
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
@@ -19,9 +19,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class PayloadService
-@Autowired
 constructor(
-        private val payloadRepository: PayloadRepository,
+        val payloadRepository: PayloadRepository,
         akilimoConfigProperties: AkilimoConfigProperties
 ) : IPayloadCostService {
     private val logger = LoggerFactory.getLogger(PayloadService::class.java)

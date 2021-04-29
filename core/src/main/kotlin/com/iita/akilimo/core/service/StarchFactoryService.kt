@@ -4,7 +4,7 @@ package com.iita.akilimo.core.service
 import com.iita.akilimo.core.interfaces.IStarchFactoryService
 import com.iita.akilimo.core.mapper.StarchFactoryDto
 import com.iita.akilimo.core.request.StarchFactoryRequest
-import com.iita.akilimo.database.repos.StarchFactory
+import com.iita.akilimo.database.entities.StarchFactory
 import com.iita.akilimo.database.repos.StarchFactoryRepository
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class StarchFactoryService
-@Autowired
-constructor(private val starchFactoryRepository: StarchFactoryRepository) : IStarchFactoryService {
+constructor(val starchFactoryRepository: StarchFactoryRepository) : IStarchFactoryService {
     private val logger = LoggerFactory.getLogger(StarchFactoryService::class.java)
 
     private val modelMapper = ModelMapper()

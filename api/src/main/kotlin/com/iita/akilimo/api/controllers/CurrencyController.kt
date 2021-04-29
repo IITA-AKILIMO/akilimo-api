@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/api/v3/currency")
 @RestController
-class CurrencyController(private val cassavaPriceService: CurrencyService) {
+class CurrencyController(val cassavaPriceService: CurrencyService) {
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(CurrencyController::class.java)

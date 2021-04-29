@@ -1,5 +1,6 @@
-package com.iita.akilimo.database.repos
+package com.iita.akilimo.database.entities
 
+import com.iita.akilimo.database.entities.BaseEntity
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table

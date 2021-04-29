@@ -21,9 +21,7 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class MessagingService
-@Autowired
-
-constructor(final val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
+constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
 
     private val logger = LoggerFactory.getLogger(MessagingService::class.java)
     private val sms: MessagingProperties = akilimoConfig.sms()

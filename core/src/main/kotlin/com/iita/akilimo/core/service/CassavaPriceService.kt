@@ -3,8 +3,9 @@ package com.iita.akilimo.core.service
 
 import com.iita.akilimo.core.mapper.ProducePriceDto
 import com.iita.akilimo.core.request.ProducePriceRequest
+import com.iita.akilimo.database.entities.CassavaPrices
 import com.iita.akilimo.database.repos.CassavaPriceRepository
-import com.iita.akilimo.database.repos.CassavaPrices
+
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
@@ -16,9 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @Suppress("DuplicatedCode")
 @Service
 class CassavaPriceService
-@Autowired
 constructor(
-    private val cassavaPriceRepository: CassavaPriceRepository
+    val cassavaPriceRepository: CassavaPriceRepository
 ) {
     private val logger = LoggerFactory.getLogger(CassavaPriceService::class.java)
     private val modelMapper = ModelMapper()

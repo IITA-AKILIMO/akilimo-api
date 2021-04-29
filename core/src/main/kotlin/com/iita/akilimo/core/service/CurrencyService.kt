@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service
 @Suppress("DuplicatedCode")
 @Service
 class CurrencyService
-@Autowired
 constructor(
-    private val currencyRepo: CurrencyRepo
+    val currencyRepo: CurrencyRepo
 ) {
     private val logger = LoggerFactory.getLogger(CurrencyService::class.java)
     private val modelMapper = ModelMapper()

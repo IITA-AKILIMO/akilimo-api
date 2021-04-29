@@ -1,30 +1,31 @@
 package com.iita.akilimo.core.service
 
-import com.iita.akilimo.core.interfaces.IRecommendationService
-import com.iita.akilimo.database.repos.Recommendation
+import com.iita.akilimo.core.response.RecommendationResponse
+import com.iita.akilimo.database.entities.Recommendation
 import com.iita.akilimo.database.repos.RecommendationRepository
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import com.iita.akilimo.core.interfaces.IRecommendationService as IRecommendationService1
 
 @Service
-class RecommendationServiceImp @Autowired
-constructor(private val recommendationRepository: RecommendationRepository) : IRecommendationService {
-    private val logger = LoggerFactory.getLogger(IRecommendationService::class.java)
+class RecommendationServiceImp
+constructor(val recommendationRepository: RecommendationRepository) : IRecommendationService1 {
+    private val logger = LoggerFactory.getLogger(IRecommendationService1::class.java)
 
 
     override fun listAllRequests(): List<Recommendation> {
         return recommendationRepository.findAll()
     }
 
-    override fun saveRecommendationRequest(recommendation: Recommendation): Recommendation? {
+    override fun saveRecommendationRequest(recommendationResponse: Recommendation): Recommendation? {
         try {
-            val fertilizerList = recommendation.addFertilizers(recommendation)
+            val fertilizerList = recommendationResponse.addFertilizers(recommendationResponse)
 
-            recommendation.fertilizers = fertilizerList
+            recommendationResponse.fertilizers = fertilizerList
 
-            logger.info("Logging requests for recommendations", 6)
-            return recommendationRepository.save(recommendation)
+            logger.info("Logging requests for recommendations", fertilizerList.size)
+
+            return recommendationRepository.save(recommendationResponse)
         } catch (ex: Exception) {
             logger.error(ex.message)
         }

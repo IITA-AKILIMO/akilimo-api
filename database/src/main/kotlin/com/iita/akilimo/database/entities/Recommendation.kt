@@ -1,4 +1,4 @@
-package com.iita.akilimo.database.repos
+package com.iita.akilimo.database.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModelProperty
@@ -18,7 +18,7 @@ class Recommendation : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
-    @GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
+    @GenericGenerator(name = "snowflake", strategy = "com.iita.akilimo.core.generators.RequestSequenceGenerator")
     var id: Long? = null
 
     @Column(columnDefinition = "decimal", precision = 12, scale = 8)

@@ -6,7 +6,7 @@ import com.iita.akilimo.core.interfaces.IOperationCostService
 import com.iita.akilimo.core.mapper.OperationCostDto
 import com.iita.akilimo.core.request.OperationCostRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
-import com.iita.akilimo.database.repos.OperationCost
+import com.iita.akilimo.database.entities.OperationCost
 import com.iita.akilimo.database.repos.OperationCostRepository
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
@@ -15,9 +15,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class OperationCostService
-@Autowired
 constructor(
-        private val operationCostRepository: OperationCostRepository,
+        val operationCostRepository: OperationCostRepository,
         akilimoConfigProperties: AkilimoConfigProperties
 ) : IOperationCostService {
     private val logger = LoggerFactory.getLogger(OperationCostService::class.java)

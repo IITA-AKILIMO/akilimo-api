@@ -9,7 +9,7 @@ import com.iita.akilimo.core.request.FertilizerPriceRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
 import com.iita.akilimo.database.repos.CurrencyRepo
 import com.iita.akilimo.database.repos.FertilizerPriceRepository
-import com.iita.akilimo.database.repos.FertilizerPrices
+import com.iita.akilimo.database.entities.FertilizerPrices
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
@@ -20,10 +20,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FertilizerPriceService
-@Autowired
 constructor(
-    private val fertilizerPriceRepository: FertilizerPriceRepository,
-    private val currencyRepo: CurrencyRepo,
+    val fertilizerPriceRepository: FertilizerPriceRepository,
+    val currencyRepo: CurrencyRepo,
     akilimoConfigProperties: AkilimoConfigProperties
 ) : IFertilizerPriceService {
     private val logger = LoggerFactory.getLogger(FertilizerPriceService::class.java)

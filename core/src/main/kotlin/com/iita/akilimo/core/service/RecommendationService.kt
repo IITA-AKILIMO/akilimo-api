@@ -8,7 +8,7 @@ import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
 import com.iita.akilimo.database.repos.FertilizerRepository
-import com.iita.akilimo.database.repos.Payload
+import com.iita.akilimo.database.entities.Payload
 import com.iita.akilimo.database.repos.PayloadRepository
 import com.iita.akilimo.enums.EnumCountry
 import com.iita.akilimo.enums.EnumFertilizer
@@ -27,9 +27,8 @@ import java.util.*
 @Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS", "DuplicatedCode")
 @Service
 class RecommendationService
-@Autowired
 constructor(
-    private val restTemplate: RestTemplate,
+    val restTemplate: RestTemplate,
     val fertilizerRepository: FertilizerRepository,
     val payloadRepository: PayloadRepository,
     akilimoConfigProperties: AkilimoConfigProperties

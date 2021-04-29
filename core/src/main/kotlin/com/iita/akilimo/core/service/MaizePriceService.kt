@@ -5,7 +5,7 @@ import com.iita.akilimo.core.mapper.ProducePriceDto
 import com.iita.akilimo.core.request.ProducePriceRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
 import com.iita.akilimo.database.repos.MaizePriceRepository
-import com.iita.akilimo.database.repos.MaizePrices
+import com.iita.akilimo.database.entities.MaizePrices
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
@@ -17,9 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @Suppress("DuplicatedCode")
 @Service
 class MaizePriceService
-@Autowired
 constructor(
-    private val maizePriceRepository: MaizePriceRepository
+    val maizePriceRepository: MaizePriceRepository
 ) {
     private val logger = LoggerFactory.getLogger(MaizePriceService::class.java)
 

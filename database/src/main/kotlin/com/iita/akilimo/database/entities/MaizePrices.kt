@@ -1,4 +1,4 @@
-package com.iita.akilimo.database.repos
+package com.iita.akilimo.database.entities
 
 import javax.persistence.Column
 import javax.persistence.Entity

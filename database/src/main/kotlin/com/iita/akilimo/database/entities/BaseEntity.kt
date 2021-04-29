@@ -1,4 +1,4 @@
-package com.iita.akilimo.database.repos
+package com.iita.akilimo.database.entities
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator

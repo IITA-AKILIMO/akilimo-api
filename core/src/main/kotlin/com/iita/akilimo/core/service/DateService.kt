@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class DateService
-@Autowired
 constructor(
-        private val fertilizerPriceRepository: FertilizerPriceRepository
+        val fertilizerPriceRepository: FertilizerPriceRepository
 ) : IDateService {
     private val logger = LoggerFactory.getLogger(DateService::class.java)
 

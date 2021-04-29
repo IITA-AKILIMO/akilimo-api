@@ -2,7 +2,7 @@ package com.acai.akilimo.controllers
 
 import com.iita.akilimo.core.request.UserFeedBackRequest
 import com.iita.akilimo.core.service.FeedbackService
-import com.iita.akilimo.database.repos.UserFeedback
+import com.iita.akilimo.database.entities.UserFeedback
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

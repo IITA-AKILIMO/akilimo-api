@@ -5,7 +5,7 @@ package com.iita.akilimo.core.service
 import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
-import com.iita.akilimo.database.repos.AvailableFertilizers
+import com.iita.akilimo.database.entities.AvailableFertilizers
 import com.iita.akilimo.database.repos.FertilizerRepository
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FertilizerService
-@Autowired
+
 constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
 
