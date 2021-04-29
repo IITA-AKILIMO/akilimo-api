@@ -33,7 +33,7 @@
         </createTable>
 
         <modifySql dbms="mysql,mariadb">
-            <append value=" engine=innodb charset=utf8mb4 collate utf8mb4_unicode_ci"/>
+            <append value=" engine=innodb"/>
         </modifySql>
     </changeSet>
 </databaseChangeLog>
