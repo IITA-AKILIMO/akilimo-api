@@ -27,8 +27,6 @@ spring:
         order_inserts: true
         jdbc:
           batch_size: 500
-  liquibase:
-    change-log: "classpath:liquibase/master.xml"
   data:
     web:
       pageable:
