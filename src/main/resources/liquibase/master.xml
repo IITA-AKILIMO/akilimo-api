@@ -72,4 +72,9 @@
 
     <include file="/liquibase/changelog/20210428130405_add_user_type_column_in_user_feedback_table.xml"/>
 
+    <include file="/liquibase/changelog/20210429111031_create_app_report_table.xml"/>
+    <include file="/liquibase/changelog/20210429112751_create_device_token_index_on_app_report_table.xml"/>
+
+    <include file="/liquibase/changelog/20210429114831_create_app_request_stats_view.xml"/>
+
 </databaseChangeLog>
