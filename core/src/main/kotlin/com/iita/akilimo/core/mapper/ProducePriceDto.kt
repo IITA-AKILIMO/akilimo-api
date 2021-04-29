@@ -1,7 +1,8 @@
 package com.iita.akilimo.core.mapper
 
-import com.acai.akilimo.enums.EnumCountry
+
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.iita.akilimo.enums.EnumCountry
 
 import java.time.LocalDateTime
 

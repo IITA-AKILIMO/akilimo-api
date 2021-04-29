@@ -1,9 +1,8 @@
 package com.iita.akilimo.core.interfaces
 
+import com.iita.akilimo.core.mapper.FertilizerPriceDto
+import com.iita.akilimo.core.request.FertilizerPriceRequest
 
-import com.acai.akilimo.entities.FertilizerPrices
-import com.acai.akilimo.mapper.FertilizerPriceDto
-import com.acai.akilimo.request.FertilizerPriceRequest
 
 interface IFertilizerPriceService {
     fun fertilizerPriceByCountry(countryCode: String): List<FertilizerPriceDto>

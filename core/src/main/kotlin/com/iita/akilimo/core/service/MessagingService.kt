@@ -1,15 +1,15 @@
 package com.iita.akilimo.core.service
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.interfaces.IMessagingService
-import com.acai.akilimo.mapper.RecommendationResponseDto
-import com.acai.akilimo.properties.MessagingProperties
-import com.acai.akilimo.request.SmsMessage
-import com.acai.akilimo.response.MessageSendingResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Strings
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
+import com.iita.akilimo.config.AkilimoConfigProperties
+import com.iita.akilimo.config.MessagingProperties
+import com.iita.akilimo.core.interfaces.IMessagingService
+import com.iita.akilimo.core.mapper.RecommendationResponseDto
+import com.iita.akilimo.core.request.SmsMessage
+import com.iita.akilimo.core.response.MessageSendingResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity

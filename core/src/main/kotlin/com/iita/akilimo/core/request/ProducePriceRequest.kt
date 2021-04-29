@@ -1,11 +1,8 @@
 package com.iita.akilimo.core.request
 
-import com.acai.akilimo.enums.EnumCountry
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.iita.akilimo.enums.EnumCountry
 import io.swagger.annotations.ApiModelProperty
-
-import java.time.LocalDateTime
-import javax.validation.constraints.NotNull
 
 
 open class ProducePriceRequest(

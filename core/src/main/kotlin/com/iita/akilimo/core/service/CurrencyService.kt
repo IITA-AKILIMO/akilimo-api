@@ -1,13 +1,12 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.mapper.CurrencyDto
-import com.acai.akilimo.repositories.CurrencyRepo
+import com.iita.akilimo.core.mapper.CurrencyDto
+import com.iita.akilimo.database.repos.CurrencyRepo
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Suppress("DuplicatedCode")
 @Service

@@ -31,12 +31,18 @@ dependencies {
 
 
 
-    api("org.springdoc:springdoc-openapi-ui:${springDoc}")
-    api("org.springdoc:springdoc-openapi-data-rest:${springDoc}")
-    api("org.springdoc:springdoc-openapi-kotlin:${springDoc}")
+//    api("org.springdoc:springdoc-openapi-ui:${springDoc}")
+//    api("org.springdoc:springdoc-openapi-data-rest:${springDoc}")
+//    api("org.springdoc:springdoc-openapi-kotlin:${springDoc}")
+
+
+    api("io.springfox:springfox-swagger2:2.9.2")
+    api("io.springfox:springfox-swagger-ui:2.9.2")
+
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation("com.h2database:h2")
     implementation("mysql:mysql-connector-java:8.0.20")
+    implementation("com.vladmihalcea:hibernate-types-52:1.0.0")
 }

@@ -1,10 +1,7 @@
 package com.iita.akilimo.core.mapper
 
 import com.fasterxml.jackson.databind.JsonNode
-
-import org.hibernate.annotations.Type
 import java.time.LocalDateTime
-
 
 
 class PayloadDto {

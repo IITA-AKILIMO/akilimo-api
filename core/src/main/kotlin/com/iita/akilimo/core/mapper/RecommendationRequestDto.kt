@@ -1,9 +1,7 @@
 package com.iita.akilimo.core.mapper
 
-import com.acai.akilimo.entities.Fertilizer
-
+import com.iita.akilimo.database.repos.Fertilizer
 import java.time.LocalDateTime
-import javax.persistence.Column
 
 
 open class RecommendationRequestDto {

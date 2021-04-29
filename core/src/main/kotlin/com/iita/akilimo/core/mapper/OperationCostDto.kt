@@ -1,9 +1,6 @@
 package com.iita.akilimo.core.mapper
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
-
-
 
 
 class OperationCostDto {

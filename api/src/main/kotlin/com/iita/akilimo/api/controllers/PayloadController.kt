@@ -1,7 +1,8 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.mapper.PayloadDto
-import com.acai.akilimo.service.PayloadService
+import com.acai.akilimo.controllers.BaseController
+import com.iita.akilimo.core.mapper.PayloadDto
+import com.iita.akilimo.core.service.PayloadService
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

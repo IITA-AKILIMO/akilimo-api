@@ -1,8 +1,7 @@
 package com.iita.akilimo.core.utils
 
-import com.acai.akilimo.mapper.CurrencyDto
+import com.iita.akilimo.core.mapper.CurrencyDto
 import org.slf4j.LoggerFactory
-import java.util.*
 import kotlin.math.roundToInt
 
 class CurrencyConversion {

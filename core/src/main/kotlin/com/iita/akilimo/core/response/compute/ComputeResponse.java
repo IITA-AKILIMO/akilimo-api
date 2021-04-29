@@ -1,12 +1,10 @@
 
 package com.iita.akilimo.core.response.compute;
 
-import java.util.List;
-
-import com.acai.akilimo.response.compute.PlantingPractices;
-import com.acai.akilimo.response.compute.ScheduledPlanting;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComputeResponse {

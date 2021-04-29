@@ -1,6 +1,6 @@
-package com.iita.akilimo.database.entities
+package com.iita.akilimo.database.repos
 
-import com.acai.akilimo.enums.EnumUserType
+import com.iita.akilimo.enums.EnumUserType
 import javax.persistence.*
 
 @Entity

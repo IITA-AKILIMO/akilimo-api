@@ -1,20 +1,18 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.entities.MaizePrices
-import com.acai.akilimo.entities.PotatoPrices
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.mapper.ProducePriceDto
-import com.acai.akilimo.repositories.PotatoPriceRepository
-import com.acai.akilimo.request.ProducePriceRequest
-import com.acai.akilimo.utils.CurrencyConversion
+import com.iita.akilimo.core.mapper.ProducePriceDto
+import com.iita.akilimo.core.request.ProducePriceRequest
+import com.iita.akilimo.core.utils.CurrencyConversion
+import com.iita.akilimo.database.repos.PotatoPriceRepository
+import com.iita.akilimo.database.repos.PotatoPrices
+import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Suppress("DuplicatedCode")
 @Service

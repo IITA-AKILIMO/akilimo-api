@@ -1,7 +1,8 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.mapper.DateDto
-import com.acai.akilimo.service.DateService
+import com.acai.akilimo.controllers.BaseController
+import com.iita.akilimo.core.mapper.DateDto
+import com.iita.akilimo.core.service.DateService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

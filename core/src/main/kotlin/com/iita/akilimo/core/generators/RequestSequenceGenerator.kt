@@ -1,12 +1,9 @@
 package com.iita.akilimo.core.generators
 
 import com.github.rholder.fauxflake.IdGenerators
-import com.github.rholder.fauxflake.api.Id
-import com.github.rholder.fauxflake.api.IdGenerator
 import org.hibernate.HibernateException
 import org.hibernate.engine.spi.SharedSessionContractImplementor
 import org.hibernate.id.IdentifierGenerator
-
 import java.io.Serializable
 
 

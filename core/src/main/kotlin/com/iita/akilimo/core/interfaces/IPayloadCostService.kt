@@ -1,7 +1,7 @@
 package com.iita.akilimo.core.interfaces
 
 
-import com.acai.akilimo.mapper.PayloadDto
+import com.iita.akilimo.core.mapper.PayloadDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 

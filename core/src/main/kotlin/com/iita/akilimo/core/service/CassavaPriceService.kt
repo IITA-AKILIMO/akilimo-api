@@ -1,18 +1,17 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.entities.CassavaPrices
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.mapper.ProducePriceDto
-import com.acai.akilimo.repositories.CassavaPriceRepository
-import com.acai.akilimo.request.ProducePriceRequest
+import com.iita.akilimo.core.mapper.ProducePriceDto
+import com.iita.akilimo.core.request.ProducePriceRequest
+import com.iita.akilimo.database.repos.CassavaPriceRepository
+import com.iita.akilimo.database.repos.CassavaPrices
+import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Suppress("DuplicatedCode")
 @Service

@@ -1,7 +1,7 @@
 package com.iita.akilimo.core.interfaces
 
+import com.iita.akilimo.core.mapper.DateDto
 
-import com.acai.akilimo.mapper.DateDto
 
 interface IDateService {
     fun plantingDates(): List<DateDto>

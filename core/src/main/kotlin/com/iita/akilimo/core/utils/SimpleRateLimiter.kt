@@ -1,6 +1,6 @@
 package com.iita.akilimo.core.utils
 
-import com.acai.akilimo.enums.EnumRateTypes
+import com.iita.akilimo.enums.EnumRateTypes
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.Semaphore

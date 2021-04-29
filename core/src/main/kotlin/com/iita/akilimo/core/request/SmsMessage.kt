@@ -2,7 +2,6 @@ package com.iita.akilimo.core.request
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import io.swagger.annotations.ApiModelProperty
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

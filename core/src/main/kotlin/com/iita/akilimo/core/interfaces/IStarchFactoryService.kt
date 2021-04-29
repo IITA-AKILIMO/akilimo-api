@@ -1,10 +1,8 @@
 package com.iita.akilimo.core.interfaces
 
+import com.iita.akilimo.core.mapper.StarchFactoryDto
+import com.iita.akilimo.core.request.StarchFactoryRequest
 
-import com.acai.akilimo.mapper.FertilizerDto
-import com.acai.akilimo.mapper.StarchFactoryDto
-import com.acai.akilimo.request.FertilizerRequest
-import com.acai.akilimo.request.StarchFactoryRequest
 
 interface IStarchFactoryService {
 

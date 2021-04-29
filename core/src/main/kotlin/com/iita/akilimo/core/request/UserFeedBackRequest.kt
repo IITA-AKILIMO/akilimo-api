@@ -1,7 +1,7 @@
 package com.iita.akilimo.core.request
 
-import com.acai.akilimo.enums.EnumUserType
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.iita.akilimo.enums.EnumUserType
 
 class UserFeedBackRequest(
     @JsonProperty("deviceToken")

@@ -1,10 +1,5 @@
 package com.iita.akilimo.core.mapper
 
-import com.acai.akilimo.entities.BaseEntity
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
-
 
 class CurrencyDto {
 

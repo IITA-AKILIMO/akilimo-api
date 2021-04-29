@@ -1,23 +1,22 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.FertilizerPrices
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.interfaces.IFertilizerPriceService
-import com.acai.akilimo.mapper.CurrencyDto
-import com.acai.akilimo.mapper.FertilizerPriceDto
-import com.acai.akilimo.repositories.CurrencyRepo
-import com.acai.akilimo.repositories.FertilizerPriceRepository
-import com.acai.akilimo.request.FertilizerPriceRequest
-import com.acai.akilimo.utils.CurrencyConversion
+import com.iita.akilimo.config.AkilimoConfigProperties
+import com.iita.akilimo.core.interfaces.IFertilizerPriceService
+import com.iita.akilimo.core.mapper.CurrencyDto
+import com.iita.akilimo.core.mapper.FertilizerPriceDto
+import com.iita.akilimo.core.request.FertilizerPriceRequest
+import com.iita.akilimo.core.utils.CurrencyConversion
+import com.iita.akilimo.database.repos.CurrencyRepo
+import com.iita.akilimo.database.repos.FertilizerPriceRepository
+import com.iita.akilimo.database.repos.FertilizerPrices
+import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class FertilizerPriceService

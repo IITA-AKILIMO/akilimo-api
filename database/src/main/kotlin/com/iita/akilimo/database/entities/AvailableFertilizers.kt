@@ -1,4 +1,4 @@
-package com.iita.akilimo.database.entities
+package com.iita.akilimo.database.repos
 
 import io.swagger.annotations.ApiModelProperty
 import org.hibernate.annotations.CreationTimestamp

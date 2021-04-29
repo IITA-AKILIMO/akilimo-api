@@ -1,11 +1,7 @@
 package com.iita.akilimo.core.request
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
-
-import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
 
 @JsonPropertyOrder("minUsd", "maxUsd", "active")
 

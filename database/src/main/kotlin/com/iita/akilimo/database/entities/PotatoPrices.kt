@@ -1,10 +1,7 @@
-package com.iita.akilimo.database.entities
+package com.iita.akilimo.database.repos
 
-import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.GenericGenerator
-import org.hibernate.annotations.UpdateTimestamp
-import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.Table
 
 @Entity
 @Table(name = "potato_prices")

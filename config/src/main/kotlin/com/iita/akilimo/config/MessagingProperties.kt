@@ -1,10 +1,5 @@
 package com.iita.akilimo.config
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
-
 import javax.validation.constraints.NotBlank
 
 

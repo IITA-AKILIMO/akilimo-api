@@ -1,9 +1,9 @@
-package com.acai.akilimo.interceptors
+package com.iita.akilimo.api.interceptors
 
-import com.acai.akilimo.enums.EnumRateTypes
-import com.acai.akilimo.response.MessageSendingResponse
-import com.acai.akilimo.utils.SimpleRateLimiter
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.iita.akilimo.core.response.MessageSendingResponse
+import com.iita.akilimo.core.utils.SimpleRateLimiter
+import com.iita.akilimo.enums.EnumRateTypes
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus

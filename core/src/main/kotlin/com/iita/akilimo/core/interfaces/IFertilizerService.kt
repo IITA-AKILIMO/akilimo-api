@@ -1,8 +1,8 @@
 package com.iita.akilimo.core.interfaces
 
+import com.iita.akilimo.core.mapper.FertilizerDto
+import com.iita.akilimo.core.request.FertilizerRequest
 
-import com.acai.akilimo.mapper.FertilizerDto
-import com.acai.akilimo.request.FertilizerRequest
 
 interface IFertilizerService {
     fun fertilizers(countryCode: String, useCase: String?): List<FertilizerDto>

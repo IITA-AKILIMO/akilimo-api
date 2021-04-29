@@ -1,8 +1,9 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.mapper.FertilizerPriceDto
-import com.acai.akilimo.request.FertilizerPriceRequest
-import com.acai.akilimo.service.FertilizerPriceService
+import com.acai.akilimo.controllers.BaseController
+import com.iita.akilimo.core.mapper.FertilizerPriceDto
+import com.iita.akilimo.core.request.FertilizerPriceRequest
+import com.iita.akilimo.core.service.FertilizerPriceService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

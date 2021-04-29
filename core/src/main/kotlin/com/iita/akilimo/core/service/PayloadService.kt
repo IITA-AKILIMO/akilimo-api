@@ -1,21 +1,20 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.Payload
-import com.acai.akilimo.interfaces.IPayloadCostService
-import com.acai.akilimo.mapper.PayloadDto
-import com.acai.akilimo.repositories.PayloadRepository
-import com.acai.akilimo.utils.CurrencyConversion
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.iita.akilimo.config.AkilimoConfigProperties
+import com.iita.akilimo.core.interfaces.IPayloadCostService
+import com.iita.akilimo.core.mapper.PayloadDto
+import com.iita.akilimo.core.utils.CurrencyConversion
+import com.iita.akilimo.database.repos.Payload
+import com.iita.akilimo.database.repos.PayloadRepository
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.util.*
 
 
 @Service

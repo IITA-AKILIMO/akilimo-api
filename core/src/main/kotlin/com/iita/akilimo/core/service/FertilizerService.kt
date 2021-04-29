@@ -1,21 +1,19 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.AvailableFertilizers
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.interfaces.IFertilizerService
-import com.acai.akilimo.mapper.FertilizerDto
-import com.acai.akilimo.repositories.FertilizerRepository
-import com.acai.akilimo.request.FertilizerRequest
-import com.acai.akilimo.utils.CurrencyConversion
+
+import com.iita.akilimo.core.interfaces.IFertilizerService
+import com.iita.akilimo.core.mapper.FertilizerDto
+import com.iita.akilimo.core.request.FertilizerRequest
+import com.iita.akilimo.database.repos.AvailableFertilizers
+import com.iita.akilimo.database.repos.FertilizerRepository
+import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class FertilizerService

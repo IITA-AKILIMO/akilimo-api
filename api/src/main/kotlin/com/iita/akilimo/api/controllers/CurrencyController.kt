@@ -1,7 +1,7 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.mapper.CurrencyDto
-import com.acai.akilimo.service.CurrencyService
+import com.iita.akilimo.core.mapper.CurrencyDto
+import com.iita.akilimo.core.service.CurrencyService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

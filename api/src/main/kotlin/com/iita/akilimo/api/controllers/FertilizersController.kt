@@ -1,10 +1,10 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.mapper.FertilizerDto
-import com.acai.akilimo.request.FertilizerRequest
-import com.acai.akilimo.service.FertilizerService
+import com.acai.akilimo.controllers.BaseController
+import com.iita.akilimo.core.mapper.FertilizerDto
+import com.iita.akilimo.core.request.FertilizerRequest
+import com.iita.akilimo.core.service.FertilizerService
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

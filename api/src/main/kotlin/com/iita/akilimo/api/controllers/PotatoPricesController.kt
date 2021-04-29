@@ -1,9 +1,9 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.mapper.ProducePriceDto
-import com.acai.akilimo.request.ProducePriceRequest
-import com.acai.akilimo.service.PotatoPriceService
+import com.iita.akilimo.core.mapper.ProducePriceDto
+import com.iita.akilimo.core.request.ProducePriceRequest
+import com.iita.akilimo.core.service.PotatoPriceService
+import com.iita.akilimo.enums.EnumCountry
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

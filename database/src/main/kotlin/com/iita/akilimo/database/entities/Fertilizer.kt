@@ -1,11 +1,10 @@
-package com.iita.akilimo.database.entities
+package com.iita.akilimo.database.repos
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.annotations.ApiModelProperty
 import org.hibernate.annotations.GenericGenerator
-
-import javax.persistence.*
 import java.io.Serializable
+import javax.persistence.*
 
 @Entity
 @Table(name = "request_fertilizer")

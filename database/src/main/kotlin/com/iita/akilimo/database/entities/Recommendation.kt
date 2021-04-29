@@ -1,18 +1,15 @@
-package com.iita.akilimo.database.entities
+package com.iita.akilimo.database.repos
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModelProperty
 import org.hibernate.annotations.*
 import org.springframework.lang.NonNull
-
+import java.io.Serializable
+import java.time.LocalDateTime
+import javax.persistence.*
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.Table
-import javax.persistence.*
-import javax.validation.constraints.Email
-import java.io.Serializable
-import java.time.LocalDateTime
-import java.util.HashSet
 
 @Entity
 @Table(name = "yield_request")
@@ -70,7 +67,6 @@ class Recommendation : Serializable {
     @ApiModelProperty(example = "Cassava field at the valley", required = true)
     var fieldDescription: String? = null
 
-    @Email
     @ApiModelProperty(example = "user@mail.com", required = false)
     var userEmail: String? = null
 
@@ -91,7 +87,13 @@ class Recommendation : Serializable {
     var updatedAt: LocalDateTime? = null
 
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Fertilizer::class, mappedBy = "recommendation", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(
+        fetch = FetchType.LAZY,
+        targetEntity = Fertilizer::class,
+        mappedBy = "recommendation",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
+    )
     @Fetch(FetchMode.JOIN)
     @NonNull
     var fertilizers: Set<Fertilizer>? = null

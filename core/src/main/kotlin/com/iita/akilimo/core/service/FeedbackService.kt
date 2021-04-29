@@ -1,10 +1,10 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.entities.UserFeedback
-import com.acai.akilimo.repositories.UserFeedBackRepository
-import com.acai.akilimo.request.UserFeedBackRequest
-import com.acai.akilimo.utils.CurrencyConversion
+import com.iita.akilimo.core.request.UserFeedBackRequest
+import com.iita.akilimo.core.utils.CurrencyConversion
+import com.iita.akilimo.database.repos.UserFeedBackRepository
+import com.iita.akilimo.database.repos.UserFeedback
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

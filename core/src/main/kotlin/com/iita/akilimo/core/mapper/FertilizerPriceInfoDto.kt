@@ -1,9 +1,6 @@
 package com.iita.akilimo.core.mapper
 
 
-import java.util.*
-
-
 class FertilizerPriceInfoDto {
 
     var minLocalPrice: Double? = null

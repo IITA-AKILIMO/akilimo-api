@@ -34,13 +34,14 @@ dependencies {
 
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
+
     api("com.fasterxml.jackson.module:jackson-module-kotlin")
     api("commons-codec:commons-codec:1.14")
     api("com.github.rozidan:modelmapper-spring-boot-starter:2.3.1")
+    api("joda-time:joda-time:2.10.1")
 
+    implementation("com.github.rholder.fauxflake:fauxflake-core:1.1.0")
     implementation("com.googlecode.libphonenumber:libphonenumber:8.12.8")
-    implementation("com.africastalking:core:3.4.4")
-    implementation("com.infobip:infobip-api-java-client:2.2.0")
     implementation("org.apache.commons:commons-collections4:4.4")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")

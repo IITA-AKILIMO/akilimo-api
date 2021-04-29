@@ -1,18 +1,17 @@
 package com.iita.akilimo.core.service
 
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.entities.OperationCost
-import com.acai.akilimo.interfaces.IOperationCostService
-import com.acai.akilimo.mapper.OperationCostDto
-import com.acai.akilimo.repositories.OperationCostRepository
-import com.acai.akilimo.request.OperationCostRequest
-import com.acai.akilimo.utils.CurrencyConversion
+import com.iita.akilimo.config.AkilimoConfigProperties
+import com.iita.akilimo.core.interfaces.IOperationCostService
+import com.iita.akilimo.core.mapper.OperationCostDto
+import com.iita.akilimo.core.request.OperationCostRequest
+import com.iita.akilimo.core.utils.CurrencyConversion
+import com.iita.akilimo.database.repos.OperationCost
+import com.iita.akilimo.database.repos.OperationCostRepository
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class OperationCostService

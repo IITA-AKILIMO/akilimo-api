@@ -1,8 +1,7 @@
 package com.iita.akilimo.core.interfaces
 
-import com.acai.akilimo.mapper.RecommendationResponseDto
-import infobip.api.model.sms.mt.send.SMSResponse
-import retrofit.RetrofitError
+import com.iita.akilimo.core.mapper.RecommendationResponseDto
+
 
 interface IMessagingService {
     fun sendEmailMessage(response: RecommendationResponseDto, email: Boolean)

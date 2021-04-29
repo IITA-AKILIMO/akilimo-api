@@ -1,12 +1,9 @@
 package com.iita.akilimo.core.interfaces
 
 
-import com.acai.akilimo.entities.FertilizerPrices
-import com.acai.akilimo.entities.OperationCost
-import com.acai.akilimo.mapper.FertilizerPriceDto
-import com.acai.akilimo.mapper.OperationCostDto
-import com.acai.akilimo.request.FertilizerPriceRequest
-import com.acai.akilimo.request.OperationCostRequest
+import com.iita.akilimo.core.mapper.OperationCostDto
+import com.iita.akilimo.core.request.OperationCostRequest
+import com.iita.akilimo.database.repos.OperationCost
 
 interface IOperationCostService {
     fun operationCost(id: Long): OperationCostDto?

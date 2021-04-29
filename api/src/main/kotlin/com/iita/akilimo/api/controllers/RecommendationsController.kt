@@ -1,16 +1,15 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
 
-import com.acai.akilimo.mapper.RecommendationResponseDto
-import com.acai.akilimo.request.RecommendationRequest
-import com.acai.akilimo.service.MessagingService
-import com.acai.akilimo.service.RecommendationService
+import com.acai.akilimo.controllers.BaseController
+import com.iita.akilimo.core.mapper.RecommendationResponseDto
+import com.iita.akilimo.core.request.RecommendationRequest
+import com.iita.akilimo.core.service.MessagingService
+import com.iita.akilimo.core.service.RecommendationService
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 

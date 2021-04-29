@@ -1,7 +1,8 @@
 package com.iita.akilimo.service
 
-import com.acai.akilimo.config.AkilimoConfigProperties
-import com.acai.akilimo.mapper.RecommendationResponseDto
+import com.iita.akilimo.config.AkilimoConfigProperties
+import com.iita.akilimo.core.mapper.RecommendationResponseDto
+import com.iita.akilimo.core.service.MessagingService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

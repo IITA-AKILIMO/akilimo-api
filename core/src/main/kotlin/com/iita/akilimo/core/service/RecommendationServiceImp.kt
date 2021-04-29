@@ -1,8 +1,8 @@
 package com.iita.akilimo.core.service
 
-import com.acai.akilimo.entities.Recommendation
-import com.acai.akilimo.repositories.RecommendationRepository
-import com.acai.akilimo.interfaces.IRecommendationService
+import com.iita.akilimo.core.interfaces.IRecommendationService
+import com.iita.akilimo.database.repos.Recommendation
+import com.iita.akilimo.database.repos.RecommendationRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

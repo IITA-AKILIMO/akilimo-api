@@ -1,7 +1,7 @@
 package com.iita.akilimo.core.interfaces
 
 
-import com.acai.akilimo.entities.Recommendation
+import com.iita.akilimo.database.repos.Recommendation
 
 interface IRecommendationService {
     fun listAllRequests(): List<Recommendation>

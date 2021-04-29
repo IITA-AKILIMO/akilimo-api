@@ -1,8 +1,9 @@
-package com.acai.akilimo.controllers
+package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.mapper.StarchFactoryDto
-import com.acai.akilimo.request.StarchFactoryRequest
-import com.acai.akilimo.service.StarchFactoryService
+import com.acai.akilimo.controllers.BaseController
+import com.iita.akilimo.core.mapper.StarchFactoryDto
+import com.iita.akilimo.core.request.StarchFactoryRequest
+import com.iita.akilimo.core.service.StarchFactoryService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

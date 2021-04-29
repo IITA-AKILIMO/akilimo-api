@@ -1,9 +1,9 @@
 package com.iita.akilimo.core.interfaces
 
+import com.iita.akilimo.core.mapper.ProducePriceDto
+import com.iita.akilimo.core.request.ProducePriceRequest
+import com.iita.akilimo.enums.EnumCountry
 
-import com.acai.akilimo.enums.EnumCountry
-import com.acai.akilimo.mapper.ProducePriceDto
-import com.acai.akilimo.request.ProducePriceRequest
 
 interface ICassavaPriceService {
 
