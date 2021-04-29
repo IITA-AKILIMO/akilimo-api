@@ -38,7 +38,7 @@ $ ./gradlew generateChangelog -PchangeName="Create Users table" -Pauthor="The St
 
 > Remember to add the changelog file to the `master.xml` file
 
-> ### To override default java version without messing with your machine paths and ENV
+### To override default java version without messing with your machine paths and ENV
 
 Create a file in the root of the project `gradle.properties` then paste your jDK path `org.gradle.java.home=C:\\Program Files\\OpenJDK\\jdk-14.0.2`
 Change the path according to your JDK installation

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="20210429111031" author="smbar" labels="akilimo">
+        <createTable tableName="app_report">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="device_token" type="varchar(255)"/>
+
+            <column name="country_code" type="varchar(4)"/>
+            <column name="lat" type="decimal(10,6)"/>
+            <column name="lon" type="decimal(10,6)"/>
+            <column name="full_names" type="varchar(150)"/>
+            <column name="phone_number" type="varchar(20)"/>
+            <column name="gender" type="varchar(20)"/>
+            <column name="user_type" type="varchar(20)"/>
+
+            <column name="fr" type="boolean" defaultValue="0"/>
+            <column name="ic" type="boolean" defaultValue="0"/>
+            <column name="pp" type="boolean" defaultValue="0"/>
+            <column name="spp" type="boolean" defaultValue="0"/>
+            <column name="sph" type="boolean" defaultValue="0"/>
+
+
+            <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+        </createTable>
+
+        <modifySql dbms="mysql,mariadb">
+            <append value=" engine=innodb"/>
+        </modifySql>
+    </changeSet>
+</databaseChangeLog>
