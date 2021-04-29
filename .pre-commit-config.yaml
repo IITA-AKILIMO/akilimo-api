@@ -28,12 +28,6 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-      - id: fix-encoding-pragma
-
-  - repo: 'https://github.com/psf/black'
-    rev: 21.4b0
-    hooks:
-      - id: black
 
   - repo: 'https://github.com/commitizen-tools/commitizen'
     rev: v2.17.4
