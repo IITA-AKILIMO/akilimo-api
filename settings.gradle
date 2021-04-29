@@ -4,3 +4,4 @@ pluginManagement {
 	}
 }
 rootProject.name = 'akilimo-api'
+include("enums", "config", "core", "database", "api", "migrations")
