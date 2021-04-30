@@ -16,7 +16,6 @@ import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -73,33 +72,21 @@ constructor(
         val droidRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
         val plumberRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest)
         var plumberResponseString = "{}"
-        logger.info("Droid payload is\n")
-        logger.info(droidRequestString)
-        logger.info("Plumber payload is\n")
-        logger.info(plumberRequestString)
+        logger.info("Droid payload is: ${recommendationRequest.userInfo.deviceToken}")
+
+        logger.info("Plumber payload username${plumberComputeRequest.userName}")
 
         val dateTime = LocalDateTime.now()
         try {
 
             val entity = HttpEntity(plumberComputeRequest, headers)
             val country = plumberComputeRequest.country
-            val demoMode = plumberPropertiesProperties.demoMode
             var recommendationUrl: String? = null
 
-            var baseUrl = plumberPropertiesProperties.baseUrl
-            if (requestContext.equals("dev", ignoreCase = true)) {
-                baseUrl = plumberPropertiesProperties.devUrl
-                logger.info("Switched to context $requestContext")
-            }
+            val baseUrl = plumberPropertiesProperties.baseUrl
             when (country) {
-                EnumCountry.NG.name -> recommendationUrl = when {
-                    demoMode -> "${baseUrl}${plumberPropertiesProperties.recommendationNgDemo!!}"
-                    else -> "${baseUrl}${plumberPropertiesProperties.recommendationNg!!}"
-                }
-                EnumCountry.TZ.name -> recommendationUrl = when {
-                    demoMode -> "${baseUrl}${plumberPropertiesProperties.recommendationTzDemo!!}"
-                    else -> "${baseUrl}${plumberPropertiesProperties.recommendationTz!!}"
-                }
+                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
+                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
@@ -130,11 +117,8 @@ constructor(
 
         //let us save the logged requests
         val payload = Payload()
-        if (recommendationRequest.userInfo.deviceID != null) {
-            payload.requestId = recommendationRequest.userInfo.deviceID
-        } else {
-            payload.requestId = recommendationRequest.userInfo.deviceToken
-        }
+
+        payload.requestId = recommendationRequest.userInfo.deviceToken
         payload.droidRequest = droidRequestString
         payload.plumberRequest = plumberRequestString
         payload.plumberResponse = plumberResponseString

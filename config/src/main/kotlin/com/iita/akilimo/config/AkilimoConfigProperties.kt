@@ -15,13 +15,13 @@ class AkilimoConfigProperties {
 
 
     @Bean
-    @ConfigurationProperties(prefix = "messaging")
+    @ConfigurationProperties(prefix = "akilimo.messaging")
     fun globalProperties(): MessagingProperties {
         return MessagingProperties()
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "plumber")
+    @ConfigurationProperties(prefix = "akilimo.plumber")
     fun plumber(): PlumberProperties {
         return PlumberProperties()
     }

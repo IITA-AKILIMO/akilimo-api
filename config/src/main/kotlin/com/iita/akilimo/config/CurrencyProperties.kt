@@ -7,9 +7,9 @@ import javax.validation.constraints.NotBlank
 class CurrencyProperties {
 
     @NotBlank
-    var ngnUsdRate: Double? = null
+    var ngnUsd: Double? = null
 
     @NotBlank
-    var tzsUsdRate: Double? = null
+    var tzsRate: Double? = null
 
 }
