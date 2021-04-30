@@ -28,19 +28,14 @@ plugins {
 
 allprojects {
     val date = Calendar.getInstance()
-    val current = LocalDateTime.now()
-    val formatter = DateTimeFormatter.BASIC_ISO_DATE
-    val timestamp = current.format(formatter)
-
-    val versionNumber: String? = "4"//date.get(Calendar.DAY_OF_YEAR).toString()
-    val minorRelease: String? = date.get(Calendar.MONTH).toString()
+    val versionNumber: String = date.get(Calendar.MONTH).toString()
+    val minorRelease: String = date.get(Calendar.WEEK_OF_MONTH).toString()
     var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
-    val revisionNumber: String? = timestamp
     when {
-        buildNumber.isNullOrBlank() -> buildNumber = date.get(Calendar.WEEK_OF_YEAR).toString()
+        buildNumber.isNullOrBlank() -> buildNumber = date.get(Calendar.DAY_OF_YEAR).toString()
     }
     group = "com.iita"
-    version = "$versionNumber.$minorRelease.$buildNumber.$revisionNumber"
+    version = "$versionNumber.$minorRelease.$buildNumber-build$buildNumber"
 
     tasks.withType<JavaCompile> {
         sourceCompatibility = "11"
