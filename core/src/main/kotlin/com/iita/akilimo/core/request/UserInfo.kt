@@ -1,22 +1,16 @@
 package com.iita.akilimo.core.request
 
 class UserInfo(
-        var mobileCountryCode: String,
-        var mobileNumber: String,
-        var fullPhoneNumber: String,
-        var userName: String,
-        var fieldDescription: String
+    val mobileCountryCode: String,
+    val mobileNumber: String,
+    val fullPhoneNumber: String,
+    val userName: String,
+    val fieldDescription: String,
+    val deviceToken: String,
+    val gender: String? = null
 ) {
 
-    @Deprecated("Will be moved to mandatory section in next release")
-    var deviceToken: String? = null
-    @Deprecated("Will be removed in the next release")
-    var deviceID: String? = "NA"
-
     var emailAddress: String? = null
-
-    var gender: String? = null
-
     var sendSms: Boolean = false
     var sendEmail: Boolean = false
 }

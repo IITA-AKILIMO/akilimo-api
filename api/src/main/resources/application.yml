@@ -32,7 +32,7 @@ spring:
       ddl-auto: validate
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/akilimo}
+    url: ${DB_URL:jdbc:mariadb://127.0.0.1:3306/akilimo}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
     hikari:
@@ -71,31 +71,29 @@ spring:
 
 rate:
   limit:
-    enabled: false
-    rate-type: minute
-    max-request: 1
+    enabled: ${RATE_ENABLED:false}
+    rate-type: ${RATE_TYPE:minute}
+    max-request: ${MAX_REQUESTS:1}
 
 akilimo:
   currency:
-    ngn-usd-rate: 360
-    tzs-usd-rate: 2250
-    kes-usd-rate: 103
-plumber:
-  demo-mode: false
-  base-url: http://compute-prod:8000/api/
-  dev-url: http://compute-dev:8001/api/
-  recommendation-ng: v2/dst/recommendation/ng/compute
-  recommendation-tz: v2/dst/recommendation/tz/compute
-  recommendation-ng-demo: v2/dst/recommendation/demo/ng/compute
-  recommendation-tz-demo: v2/dst/recommendation/demo/tz/compute
+    ngn-usd: ${NGN_USD:360}
+    tzs-usd: ${TZS_USD:2250}
+    kes-usd: ${KES_USD:108}
 
-messaging:
-  sms:
-    branded-codes: [ "255","+255","234","+234" ]
-    base-url: https://api.tsobu.co.ke
-    end-point: /v1/sms/single
-    sms-user:
-    sms-token:
-  email:
-    sender:
-    pass:
+  plumber:
+    base-url: ${PLUMBER_BASE:http://compute-prod:8000/api/}
+    compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
+    compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
+
+  messaging:
+    sms:
+      base-url: ${SMS_BASE_URL:https://api.tsobu.co.ke}
+      end-point: ${SMS_ENDPOINT:/v1/sms/single}
+      sms-user: ${SMS_USER:}
+      sms-pass: ${SMS_PASS:}
+      sms-token: ${SMS_TOKEN:}
+      branded-codes: [ "255","+255","234","+234" ]
+    email:
+      sender: ${EMAIL_SENDER:}
+      pass: ${EMAIL_PASS:}

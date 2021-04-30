@@ -11,7 +11,6 @@ import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.SmsMessage
 import com.iita.akilimo.core.response.MessageSendingResponse
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -55,7 +54,7 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
 
     private fun buildMessagePayload(response: RecommendationResponseDto): SmsMessage {
 
-        val message = SmsMessage(userName = sms.smsUser, password = sms.smsToken)
+        val message = SmsMessage(userName = sms.smsUser, password = sms.smsPass)
         message.mobileNumber = response.mobileNumber
 
         val brandeCodes = sms.brandedCodes

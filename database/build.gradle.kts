@@ -18,7 +18,7 @@ tasks.getByName<Jar>("jar") {
 }
 
 dependencies {
-    val springDoc  = "1.5.2"
+    val springDoc = "1.5.2"
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
@@ -28,7 +28,6 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))
     implementation(kotlin("stdlib-jdk8"))
-
 
 
 //    api("org.springdoc:springdoc-openapi-ui:${springDoc}")
@@ -43,6 +42,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation("com.h2database:h2")
-    implementation("mysql:mysql-connector-java:8.0.20")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.2.0")
+
     implementation("com.vladmihalcea:hibernate-types-52:1.0.0")
 }
