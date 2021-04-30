@@ -84,5 +84,6 @@
     <include file="/liquibase/changelog/20210501010439_create_users_table.xml"/>
     <include file="/liquibase/changelog/20210501010745_create_authorities_table.xml"/>
     <include file="/liquibase/changelog/20210501010827_add_username_authorities_foreign_key.xml"/>
+    <include file="/liquibase/changelog/20210501024138_add_authority_and_username_unique_constraint.xml"/>
 
 </databaseChangeLog>
