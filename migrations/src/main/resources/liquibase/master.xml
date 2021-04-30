@@ -81,4 +81,8 @@
     <include file="/liquibase/changelog/20210430135454_add_procedure_to_process_inserted_recommendation_requests_to_app_report.xml"/>
     <include file="/liquibase/changelog/20210430140028_add_trigger_to_process_inserted_recommendation_requests_to_app_report.xml"/>
 
+    <include file="/liquibase/changelog/20210501010439_create_users_table.xml"/>
+    <include file="/liquibase/changelog/20210501010745_create_authorities_table.xml"/>
+    <include file="/liquibase/changelog/20210501010827_add_username_authorities_foreign_key.xml"/>
+
 </databaseChangeLog>
