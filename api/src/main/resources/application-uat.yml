@@ -1,0 +1,15 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  main:
+    log-startup-info: false
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+  config:
+    activate:
+      on-profile: uat
