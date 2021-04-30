@@ -11,7 +11,7 @@
             </column>
 
             <column name="username" type="varchar(50)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="authority" type="varchar(50)">

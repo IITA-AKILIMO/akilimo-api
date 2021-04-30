@@ -5,12 +5,11 @@ import com.iita.akilimo.core.mapper.ProducePriceDto
 import com.iita.akilimo.core.request.ProducePriceRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
 import com.iita.akilimo.database.repos.MaizePriceRepository
-import com.iita.akilimo.database.entities.MaizePrices
+import com.iita.akilimo.database.entities.MaizePrice
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -89,7 +88,7 @@ constructor(
     }
 
     fun saveMaizePrice(producePriceRequest: ProducePriceRequest): ProducePriceDto? {
-        val entity = modelMapper.map(producePriceRequest, MaizePrices::class.java)
+        val entity = modelMapper.map(producePriceRequest, MaizePrice::class.java)
 
         val saved = maizePriceRepository.save(entity)
 

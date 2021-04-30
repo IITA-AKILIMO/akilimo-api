@@ -5,13 +5,13 @@ server:
   port: ${PORT_NUMBER:8098}
   error:
     whitelabel:
-      enabled: true
-
+      enabled: false
 
 spring:
   main:
     banner-mode: console
     log-startup-info: true
+
 
   application:
     name: akilimo-api

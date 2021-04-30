@@ -6,7 +6,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "maize_prices")
-class MaizePrices : ProducePrice() {
+class MaizePrice : ProducePrice() {
     @Column(name = "produce_type")
     var produceType: String? = null
 }
