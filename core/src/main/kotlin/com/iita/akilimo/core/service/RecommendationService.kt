@@ -7,7 +7,7 @@ import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
-import com.iita.akilimo.database.repos.FertilizerRepository
+import com.iita.akilimo.database.repos.AvailableFertilizerRepo
 import com.iita.akilimo.database.entities.Payload
 import com.iita.akilimo.database.repos.PayloadRepository
 import com.iita.akilimo.enums.EnumCountry
@@ -28,7 +28,7 @@ import java.util.*
 class RecommendationService
 constructor(
     val restTemplate: RestTemplate,
-    val fertilizerRepository: FertilizerRepository,
+    val availableFertilizerRepo: AvailableFertilizerRepo,
     val payloadRepository: PayloadRepository,
     akilimoConfigProperties: AkilimoConfigProperties
 ) {
@@ -49,7 +49,7 @@ constructor(
 
         if (fertilizers.isEmpty() || fertilizers.size < 2) {
             logger.warn("Empty fertilizer list, adding default fertilizers")
-            val allFertilizers = fertilizerRepository.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
+            val allFertilizers = availableFertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
             val q = allFertilizers.map { availableFertilizers ->
                 val fertilizerList = FertilizerList()
                 fertilizerList.fertilizerTypeName = availableFertilizers.name
@@ -96,9 +96,7 @@ constructor(
             val objects = response.body
             plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
             if (objects != null) {
-                logger.info("Plumber payload response is\n")
-                logger.info(plumberRequestString)
-
+                logger.info("Processing plumber response")
                 recommendationResponseDto.responsePayload = objects
                 when {
                     !processFirstArray(objects) -> {
@@ -253,7 +251,7 @@ constructor(
     }
 
     private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
-        val allFertilizers = fertilizerRepository.findAllByAvailableIsTrue()
+        val allFertilizers = availableFertilizerRepo.findAllByAvailableIsTrue()
         allFertilizers.forEach { fertilizer ->
             if (!tempFertilizerList.containsKey(fertilizer.type)) {
                 val fertName = fertilizer.type!!

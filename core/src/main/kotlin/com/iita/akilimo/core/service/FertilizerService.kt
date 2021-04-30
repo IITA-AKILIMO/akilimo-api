@@ -6,19 +6,18 @@ import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
 import com.iita.akilimo.database.entities.AvailableFertilizers
-import com.iita.akilimo.database.repos.FertilizerRepository
+import com.iita.akilimo.database.repos.AvailableFertilizerRepo
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FertilizerService
 
-constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService {
+constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
 
     private val modelMapper = ModelMapper()
@@ -31,9 +30,9 @@ constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService
 
 
         val fertilizerList = if (useCase != null) {
-            fertilizerRepository.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(countries, useCase)
+            availableFertilizerRepo.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(countries, useCase)
         } else {
-            fertilizerRepository.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
+            availableFertilizerRepo.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
         }
 
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
@@ -69,7 +68,7 @@ constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService
     override fun saveFertilizer(fertilizerRequest: FertilizerRequest): FertilizerDto? {
         val entity = modelMapper.map(fertilizerRequest, AvailableFertilizers::class.java)
 
-        val saved = fertilizerRepository.save(entity)
+        val saved = availableFertilizerRepo.save(entity)
 
         modelMapper.configuration.isSkipNullEnabled = true
         modelMapper.configuration.propertyCondition
@@ -79,7 +78,7 @@ constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService
     }
 
     override fun updateFertilizer(id: Long, fertilizerRequest: FertilizerRequest): FertilizerDto? {
-        val entity = fertilizerRepository.findById(id).get()
+        val entity = availableFertilizerRepo.findById(id).get()
 
         modelMapper.configuration.isSkipNullEnabled = true
         modelMapper.configuration.propertyCondition
@@ -88,7 +87,7 @@ constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService
         modelMapper.map(fertilizerRequest, entity)
 
 
-        val saved = fertilizerRepository.save(entity)
+        val saved = availableFertilizerRepo.save(entity)
 
         return modelMapper.map(saved, FertilizerDto::class.java)
     }
@@ -96,11 +95,11 @@ constructor(val fertilizerRepository: FertilizerRepository) : IFertilizerService
     @Transactional
     override fun deleteFertilizer(id: Long): Boolean {
 
-        val entity = fertilizerRepository.findByFertilizerId(id)
+        val entity = availableFertilizerRepo.findByFertilizerId(id)
 
         return when {
             entity != null -> {
-                fertilizerRepository.deleteById(id)
+                availableFertilizerRepo.deleteById(id)
                 true
             }
             else -> false
