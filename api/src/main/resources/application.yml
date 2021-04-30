@@ -18,7 +18,9 @@ spring:
 
   jmx:
     enabled: ${JMX_ENABLED:false}
-
+  jdbc:
+    template:
+      fetch-size: 50
   jpa:
     properties:
       hibernate:
@@ -43,7 +45,7 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
-        default-page-size: 150
+        default-page-size: 50
 
   jackson:
     serialization:
@@ -60,14 +62,14 @@ spring:
 springdoc:
   show-actuator: true
   default-produces-media-type: "application/json"
-  pathsToMatch: /api/v1/**, /api/v2/**
+  pathsToMatch: /api/**/**
   api-docs:
     path: /akilimo-api
     groups:
-      enabled: false
+      enabled: true
   swagger-ui:
     tags-sorter: alpha
-    operations-sorter: alpha
+#    operations-sorter: alpha
 
 rate:
   limit:

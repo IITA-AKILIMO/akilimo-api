@@ -54,7 +54,8 @@ constructor(
 
     override fun payloadList(pageable: Pageable): Page<PayloadDto> {
 
-        val payloadList = payloadRepository.findAllByOrderByUpdatedAtDesc(pageable = pageable)
+//        val payloadList = payloadRepository.findAllByOrderByUpdatedAtDesc(pageable = pageable)
+        val payloadList = payloadRepository.findAllByOrderByIdDesc(pageable = pageable)
 
         return payloadList.map { payload ->
             val payloadDto = modelMapper.map(payload, PayloadDto::class.java)
