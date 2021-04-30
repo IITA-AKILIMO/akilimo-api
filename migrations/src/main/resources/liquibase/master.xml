@@ -77,4 +77,8 @@
 
     <include file="/liquibase/changelog/20210429114831_create_app_request_stats_view.xml"/>
 
+    <include file="/liquibase/changelog/20210430132045_create_script_to_insert_old_requests_to_app_report_table.xml"/>
+    <include file="/liquibase/changelog/20210430135454_add_procedure_to_process_inserted_recommendation_requests_to_app_report.xml"/>
+    <include file="/liquibase/changelog/20210430140028_add_trigger_to_process_inserted_recommendation_requests_to_app_report.xml"/>
+
 </databaseChangeLog>
