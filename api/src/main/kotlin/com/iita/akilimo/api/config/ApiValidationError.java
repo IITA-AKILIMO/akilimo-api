@@ -1,4 +1,4 @@
-package com.iita.akilimo.api.apierror;
+package com.iita.akilimo.api.config;
 
 public class ApiValidationError extends ApiSubError {
     private String object;

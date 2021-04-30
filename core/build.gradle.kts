@@ -15,7 +15,7 @@ tasks.getByName<Jar>("jar") {
 }
 
 dependencies {
-    val coroutinesVersion = "1.4.2"
+    val coroutinesVersion = "1.4.3"
 
     implementation(project(":config"))
     implementation(project(":enums"))
@@ -28,9 +28,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-    api("org.springframework.security:spring-security-crypto")
+//    api("org.springframework.security:spring-security-crypto")
     api("org.springframework.boot:spring-boot-starter-validation")
-
+    api("org.springframework.boot:spring-boot-starter-security")
 
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")

@@ -1,4 +1,4 @@
-package com.iita.akilimo.api.apierror
+package com.iita.akilimo.api.config
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
