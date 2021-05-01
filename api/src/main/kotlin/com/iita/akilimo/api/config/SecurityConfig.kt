@@ -1,7 +1,6 @@
 package com.iita.akilimo.api.config
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -16,34 +15,39 @@ import javax.sql.DataSource
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    val encode: PasswordEncoder,
+    val encoder: PasswordEncoder,
     val dataSource: DataSource
 ) : WebSecurityConfigurerAdapter() {
 
-//    @Autowired
-//    @Throws(Exception::class)
-//    fun configAuthentication(auth: AuthenticationManagerBuilder) {
-//        auth.jdbcAuthentication().dataSource(dataSource)
-//    }
 
     @Autowired
     @Throws(Exception::class)
-    fun configureGlobalSecurity(auth: AuthenticationManagerBuilder) {
-        auth.inMemoryAuthentication().withUser("bill").password(encode.encode("abc123")).roles("ADMIN")
-        auth.inMemoryAuthentication().withUser("tom").password(encode.encode("abc123")).roles("USER")
+    fun configureGlobal(auth: AuthenticationManagerBuilder) {
+        auth.jdbcAuthentication().dataSource(dataSource)
+            .passwordEncoder(encoder)
     }
-
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
+
         http.httpBasic()
             .and()
             .authorizeRequests()
+            .antMatchers(
+                "/api/**/fert**","/api/**/fert**/**",
+                "/api/**/oper**", "/api/**/oper**/**",
+                "/api/**/reco**",
+                "/api/**/curr**",
+                "/api/**/cass**", "/api/**/cass**/**",
+                "/api/**/maize**", "/api/**/maize**/**",
+                "/api/**/potato**", "/api/**/potato**/**",
+                "/api/**/starch**"
+            ).permitAll()
             .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "DOCTOR")
+            .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER")
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
             .and()
@@ -51,10 +55,6 @@ class SecurityConfig(
 
         http.csrf().disable()
     }
-
-    @get:Bean
-    val basicAuthEntryPoint: CustomBasicAuthenticationEntryPoint
-        get() = CustomBasicAuthenticationEntryPoint()
 
     /* To allow Pre-flight [OPTIONS] request from browser */
     @Throws(Exception::class)

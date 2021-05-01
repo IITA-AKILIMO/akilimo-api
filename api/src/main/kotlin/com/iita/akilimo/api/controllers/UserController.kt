@@ -27,7 +27,7 @@ class UserController(val userService: UserService) {
     fun addUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<UserDto> {
         val userResp = userService.addUser(userRequest)
 
-        return ResponseEntity(userResp, HttpStatus.CREATED)
+        return ResponseEntity(userResp, HttpStatus.OK)
     }
 
     @GetMapping("/users")

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class EnumRoles {
     @JsonProperty("ADMIN")
-    ADMIN,
+    ROLE_ADMIN,
 
     @JsonProperty("USER")
-    USER
+    ROLE_USER
 }
