@@ -85,5 +85,7 @@
     <include file="/liquibase/changelog/20210501010745_create_authorities_table.xml"/>
     <include file="/liquibase/changelog/20210501010827_add_username_authorities_foreign_key.xml"/>
     <include file="/liquibase/changelog/20210501024138_add_authority_and_username_unique_constraint.xml"/>
+    <include file="/liquibase/changelog/20210501121446_update_all_empty_and_null_gender_column_in_app_report_table.xml"/>
+    <include file="/liquibase/changelog/20210501121702_update_all_empty_and_null_device_token_column_in_app_report_table.xml"/>
 
 </databaseChangeLog>
