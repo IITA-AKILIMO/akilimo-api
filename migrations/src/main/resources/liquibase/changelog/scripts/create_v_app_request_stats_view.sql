@@ -1,12 +1,13 @@
 CREATE OR REPLACE VIEW v_app_request_stats_view AS
 
-SELECT app_report.created_at                    as request_date,
+SELECT app_report.id,
+       app_report.created_at                    as request_date,
        app_report.device_token,
        app_report.country_code,
        app_report.lat,
        app_report.lon,
        app_report.full_names,
-       app_report.gender                        AS genderName,
+       app_report.gender                        AS gender_name,
        CASE
            WHEN gender = 'Male' THEN 'M'
            WHEN gender = 'Mwanaume' THEN 'M'
@@ -23,7 +24,9 @@ SELECT app_report.created_at                    as request_date,
            WHEN spp = 1 or sph = 1 THEN 'SPHS'
            ELSE 'NA'
            END
-                                                AS use_case
+                                                AS use_case,
+       app_report.created_at,
+       app_report.updated_at
 
 FROM app_report
          LEFT JOIN
