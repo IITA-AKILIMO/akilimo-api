@@ -11,7 +11,7 @@
                                  constraintName="user-name-fk"
                                  referencedTableName="users"
                                  onUpdate="CASCADE"
-                                 onDelete="RESTRICT"
+                                 onDelete="CASCADE"
                                  referencedColumnNames="username"/>
     </changeSet>
 </databaseChangeLog>

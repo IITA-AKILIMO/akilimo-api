@@ -10,8 +10,10 @@ import com.iita.akilimo.database.repos.AuthorityRepo
 import com.iita.akilimo.database.repos.UserRepo
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class UserService(
@@ -22,6 +24,13 @@ class UserService(
 
     private val logger = LoggerFactory.getLogger(UserService::class.java)
     private val modelMapper = ModelMapper()
+
+    fun listUsers(): List<UserDto> {
+        val userList = userRepo.findAll()
+        return userList.map { user ->
+            modelMapper.map(user, UserDto::class.java)
+        }
+    }
 
     fun addUser(userRequest: UserRequest): UserDto {
         val userEntity = modelMapper.map(userRequest, UserEntity::class.java)
@@ -41,12 +50,23 @@ class UserService(
 
     fun findUser(id: Long): UserDto {
         val user = userRepo.findById(id)
+        if(user.isEmpty){
+            throw  ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        }
         return modelMapper.map(user.get(), UserDto::class.java)
     }
 
     fun findUserByUserName(username: String): UserDto {
         val user = userRepo.findByUsername(username)
-        return modelMapper.map(user, UserDto::class.java)
+        if(user.isEmpty){
+            throw  ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        }
+        return modelMapper.map(user.get(), UserDto::class.java)
     }
+
+    fun deleteUser(id: Long) {
+        userRepo.deleteById(id)
+    }
+
 
 }
