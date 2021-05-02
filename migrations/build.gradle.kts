@@ -37,6 +37,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
-    implementation("org.liquibase:liquibase-core")
-    implementation("org.mariadb.jdbc:mariadb-java-client:2.2.0")
+    implementation("org.liquibase:liquibase-core:4.3.5")
+    implementation("mysql:mysql-connector-java:8.0.24")
 }

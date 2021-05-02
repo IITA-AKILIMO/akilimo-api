@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    val kotlinVersion = "1.4.32"
+    val kotlinVersion = "1.5.0"
     val springVersion = "2.4.5"
 
     id("org.springframework.boot") version springVersion apply false
