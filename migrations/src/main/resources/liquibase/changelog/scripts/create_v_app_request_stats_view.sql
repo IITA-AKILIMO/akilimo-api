@@ -6,7 +6,7 @@ SELECT app_report.id,
        app_report.country_code,
        app_report.lat,
        app_report.lon,
-       app_report.full_names,
+       upper(app_report.full_names)             as full_names,
        app_report.gender                        AS gender_name,
        CASE
            WHEN gender = 'Male' THEN 'M'

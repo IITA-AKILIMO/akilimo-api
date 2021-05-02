@@ -11,4 +11,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 interface RequestStatsViewRepo : PagingAndSortingRepository<RequestStatsViewEntity, Long> {
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<RequestStatsViewEntity>
+
+    fun findAllByPhoneNumber(phoneNumber: String): List<RequestStatsViewEntity>
 }

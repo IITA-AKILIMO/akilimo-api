@@ -50,7 +50,7 @@ spring:
 
   jackson:
     serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
+      WRITE_DATES_AS_TIMESTAMPS: true
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
   mvc:
