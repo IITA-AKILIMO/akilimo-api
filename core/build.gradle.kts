@@ -35,13 +35,13 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
 
-    api("com.fasterxml.jackson.module:jackson-module-kotlin")
-    api("commons-codec:commons-codec:1.14")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
+    api("commons-codec:commons-codec:1.15")
     api("com.github.rozidan:modelmapper-spring-boot-starter:2.3.1")
-    api("joda-time:joda-time:2.10.1")
+    api("joda-time:joda-time:2.10.10")
 
     implementation("com.github.rholder.fauxflake:fauxflake-core:1.1.0")
-    implementation("com.googlecode.libphonenumber:libphonenumber:8.12.8")
+    implementation("com.googlecode.libphonenumber:libphonenumber:8.12.22")
     implementation("org.apache.commons:commons-collections4:4.4")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
