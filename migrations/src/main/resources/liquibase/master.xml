@@ -93,4 +93,6 @@
     <include file="/liquibase/changelog/20210502223450_create_exclusion_flag_evaluation_insert_trigger.xml"/>
     <include file="/liquibase/changelog/20210502224112_updated_excluded_flag_records.xml"/>
 
+    <include file="/liquibase/changelog/20210503001207_update_app_report_view_stats_with_new_column.xml"/>
+
 </databaseChangeLog>
