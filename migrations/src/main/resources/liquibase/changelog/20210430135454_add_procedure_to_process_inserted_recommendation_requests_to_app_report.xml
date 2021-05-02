@@ -4,11 +4,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="20210430135454" author="smbar" labels="akilimo-migration">
+    <changeSet id="20210430135454" author="smbar" labels="akilimo-migration" runAlways="true" runOnChange="true">
+
+        <sql>DROP PROCEDURE IF EXISTS process_rec_request;</sql>
 
         <sqlFile
                 endDelimiter="\nGO"
-                path="scripts/create_process_rec_request_procedure.sql"
+                path="scripts/20210430135454_add_procedure_to_process_inserted_recommendation_requests_to_app_report.sql"
                 relativeToChangelogFile="true"
                 splitStatements="true"
                 stripComments="true"/>

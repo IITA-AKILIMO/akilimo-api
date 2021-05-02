@@ -4,10 +4,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="20210503001207" author="smbar" labels="akilimo-migration">
+    <changeSet id="20210503001207" author="smbar" labels="akilimo-migration" runOnChange="true" runAlways="true">
         <sqlFile
                 endDelimiter="\nGO"
-                path="scripts/update_v_app_request_stats_view.sql"
+                path="scripts/20210503001207_update_app_report_view_stats_with_new_column.sql"
                 relativeToChangelogFile="true"
                 splitStatements="true"
                 stripComments="true"/>
