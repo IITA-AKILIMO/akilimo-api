@@ -5,4 +5,4 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "cassava_prices")
-open class CassavaPrices : ProducePrice()
+open class CassavaPrice : ProducePrice()

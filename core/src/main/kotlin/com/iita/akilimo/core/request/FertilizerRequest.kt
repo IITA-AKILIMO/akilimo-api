@@ -1,12 +1,7 @@
 package com.iita.akilimo.core.request
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import io.swagger.annotations.ApiModelProperty
-
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
-
-@JsonPropertyOrder("minUsd", "maxUsd", "active")
 
 open class FertilizerRequest {
 
@@ -18,7 +13,6 @@ open class FertilizerRequest {
     var type: String? = null
 
     @NotNull
-    @ApiModelProperty(example = "NG", required = true)
     var country: String? = null
 
     var nContent: Int? = null
@@ -32,7 +26,6 @@ open class FertilizerRequest {
     var weight: Int? = null
 
     @NotNull
-    @ApiModelProperty(example = "NA", required = true)
     var price: String? = null
 
     @NotNull

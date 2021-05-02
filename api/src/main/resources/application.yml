@@ -5,20 +5,22 @@ server:
   port: ${PORT_NUMBER:8098}
   error:
     whitelabel:
-      enabled: true
-
+      enabled: false
 
 spring:
   main:
     banner-mode: console
     log-startup-info: true
 
+
   application:
     name: akilimo-api
 
   jmx:
     enabled: ${JMX_ENABLED:false}
-
+  jdbc:
+    template:
+      fetch-size: 50
   jpa:
     properties:
       hibernate:
@@ -28,6 +30,7 @@ spring:
         ddl-auto: validate
         jdbc:
           batch_size: 5
+
     hibernate:
       ddl-auto: validate
 
@@ -43,11 +46,11 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
-        default-page-size: 150
+        default-page-size: 50
 
   jackson:
     serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
+      WRITE_DATES_AS_TIMESTAMPS: true
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
   mvc:
@@ -57,16 +60,16 @@ spring:
       time: HH:mm:ss
 
 
-#springdoc:
-#  show-actuator: true
-#  default-produces-media-type: "application/json"
-#  pathsToMatch: /api/v1/**, /api/v2/**
-#  api-docs:
-#    path: /akilimo-api
-#    groups:
-#      enabled: false
-#  swagger-ui:
-#    tags-sorter: alpha
+springdoc:
+  show-actuator: true
+  default-produces-media-type: "application/json"
+  pathsToMatch: /api/**/**
+  api-docs:
+    path: /akilimo-api
+    groups:
+      enabled: true
+  swagger-ui:
+    tags-sorter: alpha
 #    operations-sorter: alpha
 
 rate:
@@ -76,13 +79,20 @@ rate:
     max-request: ${MAX_REQUESTS:1}
 
 akilimo:
+  name: 'AKILIMO API'
+  version: '4.0.0'
+  desc: 'Description here'
+  externaldoc: '4.0.0'
+  license: 'GPL'
+  license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+
   currency:
     ngn-usd: ${NGN_USD:360}
     tzs-usd: ${TZS_USD:2250}
     kes-usd: ${KES_USD:108}
 
   plumber:
-    base-url: ${PLUMBER_BASE:http://compute-prod:8000/api/}
+    base-url: ${PLUMBER_BASE:http://compute-prod:8090/api/}
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
 

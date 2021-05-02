@@ -3,14 +3,13 @@ package com.iita.akilimo.core.service
 
 import com.iita.akilimo.core.mapper.ProducePriceDto
 import com.iita.akilimo.core.request.ProducePriceRequest
-import com.iita.akilimo.database.entities.CassavaPrices
+import com.iita.akilimo.database.entities.CassavaPrice
 import com.iita.akilimo.database.repos.CassavaPriceRepository
 
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -81,7 +80,7 @@ constructor(
     }
 
     fun saveFertilizerPrice(producePriceRequest: ProducePriceRequest): ProducePriceDto? {
-        val entity = modelMapper.map(producePriceRequest, CassavaPrices::class.java)
+        val entity = modelMapper.map(producePriceRequest, CassavaPrice::class.java)
 
         val saved = cassavaPriceRepository.save(entity)
 

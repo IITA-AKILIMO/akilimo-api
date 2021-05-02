@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FertilizerRepository : JpaRepository<AvailableFertilizers, Long> {
+interface AvailableFertilizerRepo : JpaRepository<AvailableFertilizers, Long> {
 
     fun findByFertilizerId(priceId: Long): AvailableFertilizers?
 

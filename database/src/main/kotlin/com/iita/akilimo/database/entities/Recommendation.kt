@@ -1,90 +1,76 @@
 package com.iita.akilimo.database.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import io.swagger.annotations.ApiModelProperty
-import org.hibernate.annotations.*
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.springframework.lang.NonNull
-import java.io.Serializable
-import java.time.LocalDateTime
+import java.math.BigDecimal
+import java.util.*
 import javax.persistence.*
-import javax.persistence.CascadeType
-import javax.persistence.Entity
-import javax.persistence.Table
+import kotlin.collections.HashSet
 
 @Entity
 @Table(name = "yield_request")
 @JsonIgnoreProperties(value = ["createdAt", "updatedAt"], allowGetters = true)
-class Recommendation : Serializable {
+class Recommendation : BaseEntity() {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
-    @GenericGenerator(name = "snowflake", strategy = "com.iita.akilimo.core.generators.RequestSequenceGenerator")
-    var id: Long? = null
+    @Column(name = "map_lat", nullable = false)
+    var mapLat: BigDecimal? = null
 
-    @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLat: Float? = null
+    @Column(name = "map_long", nullable = false)
+    var mapLong: BigDecimal? = null
 
-    @Column(columnDefinition = "decimal", precision = 12, scale = 8)
-    var mapLong: Float? = null
+    @Column(name = "cassava_unit_weight")
+    var cassavaUnitWeight: BigDecimal? = null
 
-    @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitWeight: Float? = null
+    @Column(name = "cassava_unit_price")
+    var cassavaUnitPrice: BigDecimal? = null
 
-    @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var cassavaUnitPrice: Float? = null
+    @Column(name = "max_investment")
+    var maxInvestment: BigDecimal? = null
 
-    @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var maxInvestment: Float? = null
+    @Column(name = "field_area")
+    var fieldArea: BigDecimal? = null
 
-    @Column(columnDefinition = "decimal", precision = 10, scale = 2)
-    var fieldArea: Float? = null
+    @Column(name = "planting_date", nullable = false)
+    var plantingDate: Date? = null
 
-    var plantingDate: LocalDateTime? = null
+    @Column(name = "harvest_date", nullable = false)
+    var harvestDate: Date? = null
 
-    var harvestDate: LocalDateTime? = null
-
-    @ApiModelProperty(example = "KE", required = true)
+    @Column(name = "country", nullable = false)
     var country: String? = null
 
-    @ApiModelProperty(example = "droid", required = true)
+    @Column(name = "client")
     var client: String? = null
 
-    @ApiModelProperty(example = "acres", required = true)
+    @Column(name = "area_units")
     var areaUnits: String? = null
 
-    @ApiModelProperty(example = "sammy", required = true)
+    @Column(name = "user_name")
     var userName: String? = null
 
-    @ApiModelProperty(example = "254", required = false)
+    @Column(name = "user_phone_code")
     var userPhoneCode: String? = null
 
-    @ApiModelProperty(example = "713456789", required = false)
+    @Column(name = "user_phone_number")
     var userPhoneNumber: String? = null
 
-    @ApiModelProperty(example = "\"roots\", \"chips\", \"flour\", \"gari\"", required = true)
+    @Column(name = "cassava_pd")
     var cassavaPd: String? = null
 
-    @ApiModelProperty(example = "Cassava field at the valley", required = true)
+    @Column(name = "field_description")
     var fieldDescription: String? = null
 
-    @ApiModelProperty(example = "user@mail.com", required = false)
+    @Column(name = "user_email")
     var userEmail: String? = null
+
+    @Column(name = "processed")
+    var processed: Boolean? = null
+
 
     @Column(name = "recommendation_text")
     var recommendationText: String? = null
-
-    @Column(name = "processed")
-    @ApiModelProperty(example = "false", required = true)
-    var isProcessed: Boolean = false
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false, nullable = false)
-    var createdAt: LocalDateTime? = null
-
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", insertable = false)
-    var updatedAt: LocalDateTime? = null
 
 
     @OneToMany(

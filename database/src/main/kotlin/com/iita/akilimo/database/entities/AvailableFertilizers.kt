@@ -1,11 +1,9 @@
 package com.iita.akilimo.database.entities
 
-import io.swagger.annotations.ApiModelProperty
-import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.GenericGenerator
-import org.hibernate.annotations.UpdateTimestamp
+//import io.swagger.annotations.ApiModelProperty
 import java.io.Serializable
-import java.time.LocalDateTime
+import java.math.BigDecimal
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -13,61 +11,51 @@ import javax.persistence.*
 class AvailableFertilizers : Serializable {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     var fertilizerId: Long? = null
 
-    @Column(name = "name")
-    @ApiModelProperty(example = "NPK 15:10:10", required = true)
+
+    @Column(name = "name", nullable = false)
     var name: String? = null
 
-    @Column(name = "type")
-    @ApiModelProperty(example = "NPK151010", required = true)
+    @Column(name = "type", nullable = false)
     var type: String? = null
 
-
-    @ApiModelProperty(example = "10", required = true)
+    @Column(name = "n_content", nullable = false)
     var nContent: Int? = null
 
-    @ApiModelProperty(example = "10", required = true)
+    @Column(name = "p_content", nullable = false)
     var pContent: Int? = null
 
-    @ApiModelProperty(example = "5", required = true)
+    @Column(name = "k_content", nullable = false)
     var kContent: Int? = null
 
-    @Column(name = "weight")
-    @ApiModelProperty(example = "50", required = true)
-    var weight: Int = 0
+    @Column(name = "weight", nullable = false)
+    var weight: Int? = null
 
-    @Column(name = "price", columnDefinition = "decimal", precision = 10, scale = 2)
-    var price: Double = 0.0
+    @Column(name = "price", nullable = false)
+    var price: BigDecimal? = null
 
-
-    @Column(name = "available")
-    @ApiModelProperty(example = "false", required = true)
-    var available: Boolean = false
-
-    @Column(name = "custom")
-    @ApiModelProperty(example = "false", required = true)
-    var custom: Boolean = false
-
-    @Column(name = "country")
+    @Column(name = "country", nullable = false)
     var country: String? = null
 
     @Column(name = "use_case")
     var useCase: String? = null
 
+    @Column(name = "available")
+    var available: Boolean? = null
+
+    @Column(name = "custom")
+    var custom: Boolean? = null
+
     @Column(name = "sort_order")
-    var sortOrder: Int = 0
+    var sortOrder: Int? = null
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false, nullable = false)
-    var createdAt: LocalDateTime? = null
+    @Column(name = "created_at")
+    var createdAt: Date? = null
 
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", insertable = false)
-    var updatedAt: LocalDateTime? = null
+    @Column(name = "updated_at")
+    var updatedAt: Date? = null
 
 }

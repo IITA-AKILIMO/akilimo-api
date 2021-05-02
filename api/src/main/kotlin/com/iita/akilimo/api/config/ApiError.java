@@ -1,4 +1,4 @@
-package com.iita.akilimo.api.apierror;
+package com.iita.akilimo.api.config;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.joda.time.LocalDateTime;

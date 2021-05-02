@@ -45,14 +45,14 @@ jobs:
       - run:
           name: Build application and migration images
           command: |
-            docker build -f Dockerfile -t iita/akilimo-api:$CIRCLE_SHA1 .
+            docker build -f Dockerfile -t iita/akilimo-service:$CIRCLE_SHA1 .
             docker build -f Dockerfile.migration -t iita/akilimo-migration:$CIRCLE_SHA1 .
 
       - run:
           name: Save application Docker images
           command: |
             mkdir /tmp/workspace
-            docker save -o /tmp/workspace/image-api.tar iita/akilimo-api:$CIRCLE_SHA1
+            docker save -o /tmp/workspace/image-api.tar iita/akilimo-service:$CIRCLE_SHA1
             docker save -o /tmp/workspace/image-migration.tar iita/akilimo-migration:$CIRCLE_SHA1
 
       - persist_to_workspace:
@@ -78,13 +78,13 @@ jobs:
       - run:
           name: Tag docker images
           command: |
-            docker tag iita/akilimo-api:$CIRCLE_SHA1 iita/akilimo-api:latest
+            docker tag iita/akilimo-service:$CIRCLE_SHA1 iita/akilimo-service:latest
             docker tag iita/akilimo-migration:$CIRCLE_SHA1 iita/akilimo-migration:latest
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push iita/akilimo-api:latest
+            docker push iita/akilimo-service:latest
             docker push iita/akilimo-migration:latest
 
   push_production:
@@ -103,13 +103,13 @@ jobs:
       - run:
           name: Tag docker image
           command: |
-            docker tag iita/akilimo-api:$CIRCLE_SHA1 iita/akilimo-api:production
+            docker tag iita/akilimo-service:$CIRCLE_SHA1 iita/akilimo-service:production
             docker tag iita/akilimo-migration:$CIRCLE_SHA1 iita/akilimo-migration:production
       - run:
           name: Push application Docker images
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push iita/akilimo-api:production
+            docker push iita/akilimo-service:production
             docker push iita/akilimo-migration:production
 
 workflows:

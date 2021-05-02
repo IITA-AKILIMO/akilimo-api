@@ -12,12 +12,11 @@ buildscript {
 }
 
 plugins {
-    val kotlinVersion = "1.4.30"
-    val springVersion = "2.4.2"
-
+    val kotlinVersion = "1.4.32"
+    val springVersion = "2.4.5"
 
     id("org.springframework.boot") version springVersion apply false
-    id("io.spring.dependency-management") version "1.0.10.RELEASE" apply false
+    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
     id("name.remal.check-updates") version "1.0.211" apply false
 
     kotlin("jvm") version kotlinVersion apply false

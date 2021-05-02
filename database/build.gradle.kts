@@ -30,13 +30,13 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
 
-//    api("org.springdoc:springdoc-openapi-ui:${springDoc}")
-//    api("org.springdoc:springdoc-openapi-data-rest:${springDoc}")
-//    api("org.springdoc:springdoc-openapi-kotlin:${springDoc}")
+    api("org.springdoc:springdoc-openapi-ui:${springDoc}")
+    api("org.springdoc:springdoc-openapi-data-rest:${springDoc}")
+    api("org.springdoc:springdoc-openapi-kotlin:${springDoc}")
 
 
-    api("io.springfox:springfox-swagger2:2.9.2")
-    api("io.springfox:springfox-swagger-ui:2.9.2")
+//    api("io.springfox:springfox-swagger2:2.9.2")
+//    api("io.springfox:springfox-swagger-ui:2.9.2")
 
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")

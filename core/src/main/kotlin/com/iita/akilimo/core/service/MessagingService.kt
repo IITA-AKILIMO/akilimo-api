@@ -1,7 +1,6 @@
 package com.iita.akilimo.core.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.common.base.Strings
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
 import com.iita.akilimo.config.AkilimoConfigProperties
@@ -30,7 +29,6 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
     private val mapper = ObjectMapper()
     private val restTemplate = RestTemplate()
 
-    @Suppress("NAME_SHADOWING")
     override fun sendTextMessage(response: RecommendationResponseDto, sendSms: Boolean) {
         if (!sendSms) {
             return
@@ -54,8 +52,11 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
 
     private fun buildMessagePayload(response: RecommendationResponseDto): SmsMessage {
 
-        val message = SmsMessage(userName = sms.smsUser, password = sms.smsPass)
-        message.mobileNumber = response.mobileNumber
+        val message = SmsMessage(
+            user = sms.smsUser!!,
+            password = sms.smsPass!!,
+            gsm = response.mobileNumber!!
+        )
 
         val brandeCodes = sms.brandedCodes
 
@@ -72,29 +73,30 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
 
 
 
-        if (!Strings.isNullOrEmpty(response.fertilizerRecText)) {
-            val fertilizerRecText:String = response.fertilizerRecText!!
+        if (response.fertilizerRecText.isNullOrEmpty()) {
+            val fertilizerRecText: String = response.fertilizerRecText!!
             if (!fertilizerRecText.contains("Hatuna mapendekezo yoyote")
-                    || !fertilizerRecText.contains("We do not have fertilizer recommendation for your location")) {
+                || !fertilizerRecText.contains("We do not have fertilizer recommendation for your location")
+            ) {
                 message.smsText = response.fertilizerRecText
             }
         }
 
 
         when {
-            !Strings.isNullOrEmpty(response.interCroppingRecText) -> {
+            !response.interCroppingRecText.isNullOrEmpty() -> {
                 message.smsText = response.interCroppingRecText
             }
         }
 
         when {
-            !Strings.isNullOrEmpty(response.plantingPracticeRecText) -> {
+            !response.plantingPracticeRecText.isNullOrEmpty() -> {
                 message.smsText = response.plantingPracticeRecText
             }
         }
 
         when {
-            !Strings.isNullOrEmpty(response.scheduledPlantingRecText) -> {
+            !response.scheduledPlantingRecText.isNullOrEmpty() -> {
                 message.smsText = response.scheduledPlantingRecText
             }
         }
