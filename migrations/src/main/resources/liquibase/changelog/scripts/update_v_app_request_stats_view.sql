@@ -8,6 +8,7 @@ SELECT app_report.id,
        app_report.lon,
        upper(app_report.full_names)             as full_names,
        app_report.gender                        AS gender_name,
+       app_report.excluded,
        CASE
            WHEN gender = 'Male' THEN 'M'
            WHEN gender = 'Mwanaume' THEN 'M'
