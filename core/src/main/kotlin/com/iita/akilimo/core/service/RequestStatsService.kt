@@ -28,7 +28,8 @@ constructor(
     }
 
     fun getRequestStats(): ContentEnvelope {
-        val statsList = statsViewRepo.findAllByPhoneNumber("254")
+        val statsList = statsViewRepo.findAllByExcluded(false)
+
         val mapped = statsList.map { statsViewEntity ->
             modelMapper.map(statsViewEntity, RequestStatsDto::class.java)
         }

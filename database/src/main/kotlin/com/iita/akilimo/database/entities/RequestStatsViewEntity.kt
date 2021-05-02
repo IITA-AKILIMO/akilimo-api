@@ -1,9 +1,8 @@
 package com.iita.akilimo.database.entities
 
-import com.iita.akilimo.database.entities.BaseEntity
-import java.math.BigDecimal
 import com.iita.akilimo.enums.EnumUserType
 import org.hibernate.annotations.Immutable
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -34,6 +33,9 @@ class RequestStatsViewEntity : BaseEntity() {
 
     @Column(name = "gender", nullable = false)
     var gender: String? = null
+
+    @Column(name = "excluded")
+    var excluded: Boolean? = null
 
     @Column(name = "phone_number")
     var phoneNumber: String? = null

@@ -13,4 +13,6 @@ interface RequestStatsViewRepo : PagingAndSortingRepository<RequestStatsViewEnti
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<RequestStatsViewEntity>
 
     fun findAllByPhoneNumber(phoneNumber: String): List<RequestStatsViewEntity>
+
+    fun findAllByExcluded(excluded: Boolean): List<RequestStatsViewEntity>
 }
