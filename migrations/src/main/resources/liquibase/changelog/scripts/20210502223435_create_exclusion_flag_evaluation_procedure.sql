@@ -9,4 +9,4 @@ BEGIN
         SET excluded = 0;
     END IF;
 
-END
+END;

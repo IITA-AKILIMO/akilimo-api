@@ -1,5 +1,5 @@
-CREATE TRIGGER update_exclusion_list_insert
-    BEFORE INSERT
+CREATE TRIGGER exclusion_flag_update_trigger
+    BEFORE UPDATE
     ON app_report
     FOR EACH ROW
 BEGIN
