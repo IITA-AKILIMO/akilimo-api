@@ -88,4 +88,9 @@
     <include file="/liquibase/changelog/20210501121446_update_all_empty_and_null_gender_column_in_app_report_table.xml"/>
     <include file="/liquibase/changelog/20210501121702_update_all_empty_and_null_device_token_column_in_app_report_table.xml"/>
 
+    <include file="/liquibase/changelog/20210502212045_add_exclusion_flag_column_to_app_report_stats.xml"/>
+    <include file="/liquibase/changelog/20210502223435_create_exclusion_flag_evaluation_procedure.xml"/>
+    <include file="/liquibase/changelog/20210502223450_create_exclusion_flag_evaluation_insert_trigger.xml"/>
+    <include file="/liquibase/changelog/20210502224112_updated_excluded_flag_records.xml"/>
+
 </databaseChangeLog>
