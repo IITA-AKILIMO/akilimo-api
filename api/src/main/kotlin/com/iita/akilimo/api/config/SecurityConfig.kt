@@ -41,7 +41,8 @@ class SecurityConfig(
                 "/api/**/cass**", "/api/**/cass**/**",
                 "/api/**/maize**", "/api/**/maize**/**",
                 "/api/**/potato**", "/api/**/potato**/**",
-                "/api/**/starch**"
+                "/api/**/starch**",
+                "/api/**/user-feedback**","/api/**/user-feedback**/**",
             ).permitAll()
             .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
