@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="20210430140028" author="smbar" labels="akilimo-migration" runOnChange="true" runAlways="true">
+
+        <sql>DROP TRIGGER IF EXISTS after_request_insert</sql>
+        <sqlFile
+                endDelimiter="\nGO"
+                path="scripts/20210430140028_add_trigger_to_process_inserted_recommendation_requests_to_app_report.sql"
+                relativeToChangelogFile="true"
+                splitStatements="true"
+                stripComments="true"/>
+    </changeSet>
+</databaseChangeLog>

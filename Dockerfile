@@ -1,29 +1,27 @@
-#FROM openjdk:8-jdk-alpine
-#FROM openjdk:8-jdk-slim
-FROM openjdk:14-jdk-slim
-VOLUME /tmp
+
+FROM openjdk:16-slim-buster
+
 LABEL maintainer="barsamms@gmail.com"
 
 ENV SERVER_PORT 8098
-ENV SPRING_PROFILES_ACTIVE dev
-
 ENV SPRING_BOOT_USER akilimo
 ENV SPRING_BOOT_GROUP akilimo
+
 ENV TZ=Africa/Nairobi
 
-COPY docker-entrypoint.sh docker-entrypoint.sh
+#ENV JAVA_OPTS="$JAVA_OPTS -Dcom.sun.net.ssl.checkRevocation=$VERIFY_CERT"
 
 RUN apt-get update && apt-get install -y curl && apt-get install -y iputils-ping
 
-RUN useradd $SPRING_BOOT_USER && usermod -aG $SPRING_BOOT_GROUP $SPRING_BOOT_USER && \
-chmod 555 docker-entrypoint.sh && sh -c 'touch /app.jar'
 
-COPY build/libs/akilimo*.jar /app.jar
-COPY src/main/resources/logback-spring.xml /src/main/resources/logback-spring.xml
+RUN useradd $SPRING_BOOT_USER && usermod -aG $SPRING_BOOT_GROUP $SPRING_BOOT_USER && sh -c 'touch /app.jar'
 
-COPY src/main/resources/keystore.jks keystore.jks
+COPY api/build/libs/api*.jar /app.jar
+COPY api/src/main/resources/logback-spring.xml /src/main/resources/logback-spring.xml
+
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 EXPOSE $SERVER_PORT
-ENTRYPOINT ["./docker-entrypoint.sh"]
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

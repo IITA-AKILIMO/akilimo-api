@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build:
     working_directory: ~/akilimo
@@ -43,15 +43,17 @@ jobs:
       - run: ./gradlew build -x test
 
       - run:
-          name: Build application web Docker image
+          name: Build application and migration images
           command: |
-            docker build -f Dockerfile -t iita/iita-akilimo-api:$CIRCLE_SHA1 .
+            docker build -f Dockerfile -t iita/akilimo-service:$CIRCLE_SHA1 .
+            docker build -f Dockerfile.migration -t iita/akilimo-migration:$CIRCLE_SHA1 .
 
       - run:
-          name: Save application Docker image
+          name: Save application Docker images
           command: |
             mkdir /tmp/workspace
-            docker save -o /tmp/workspace/image-akilimo.tar iita/iita-akilimo-api:$CIRCLE_SHA1
+            docker save -o /tmp/workspace/image-api.tar iita/akilimo-service:$CIRCLE_SHA1
+            docker save -o /tmp/workspace/image-migration.tar iita/akilimo-migration:$CIRCLE_SHA1
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -63,46 +65,52 @@ jobs:
   push_latest:
     working_directory: ~/akilimo
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:18.06.3-ce-git
     steps:
       - setup_remote_docker
       - attach_workspace:
           at: /tmp
       - run:
-          name: Load application Docker image
+          name: Load application Docker images
           command: |
-            docker load --input /tmp/workspace/image-akilimo.tar
+            docker load --input /tmp/workspace/image-api.tar
+            docker load --input /tmp/workspace/image-migration.tar
       - run:
-          name: Tag docker image
+          name: Tag docker images
           command: |
-            docker tag iita/iita-akilimo-api:$CIRCLE_SHA1 iita/iita-akilimo-api:latest
+            docker tag iita/akilimo-service:$CIRCLE_SHA1 iita/akilimo-service:latest
+            docker tag iita/akilimo-migration:$CIRCLE_SHA1 iita/akilimo-migration:latest
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push iita/iita-akilimo-api:latest
+            docker push iita/akilimo-service:latest
+            docker push iita/akilimo-migration:latest
 
   push_production:
     working_directory: ~/akilimo
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:18.06.3-ce-git
     steps:
       - setup_remote_docker
       - attach_workspace:
           at: /tmp
       - run:
-          name: Load application Docker image`
+          name: Load application Docker images
           command: |
-            docker load --input /tmp/workspace/image-akilimo.tar
+            docker load --input /tmp/workspace/image-api.tar
+            docker load --input /tmp/workspace/image-migration.tar
       - run:
           name: Tag docker image
           command: |
-            docker tag iita/iita-akilimo-api:$CIRCLE_SHA1 iita/iita-akilimo-api:production
+            docker tag iita/akilimo-service:$CIRCLE_SHA1 iita/akilimo-service:production
+            docker tag iita/akilimo-migration:$CIRCLE_SHA1 iita/akilimo-migration:production
       - run:
-          name: Push application Docker image
+          name: Push application Docker images
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push iita/iita-akilimo-api:production
+            docker push iita/akilimo-service:production
+            docker push iita/akilimo-migration:production
 
 workflows:
   version: 2
@@ -116,7 +124,7 @@ workflows:
             branches:
               only:
                 - develop
-                - master
+                - main
       - push_latest:
           requires:
             - build_docker
@@ -130,4 +138,4 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main

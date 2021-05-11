@@ -1,0 +1,8 @@
+
+FROM openjdk:16-slim-buster
+
+LABEL maintainer="barsamms@gmail.com"
+
+COPY migrations/build/libs/migrations-*.jar migration-app.jar
+
+ENTRYPOINT ["java", "-jar", "migration-app.jar"]

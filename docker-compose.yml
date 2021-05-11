@@ -1,9 +1,31 @@
-version: "3"
+version: "3.3"
 services:
-  cropmanager:
-    image: iita/acai-akilimo-api:latest
-    hostname: akilimo
-    container_name: akilimo
-    restart: always
+  akilimo-api:
+    image: iita/akilimo-api:latest
+    container_name: akilimo-api
+    restart: on-failure
+    depends_on:
+      - akilimo-migration
     ports:
       - 8098:8098
+    environment:
+      SPRING_PROFILES_ACTIVE: uat
+      DB_URL: "jdbc:mysql://db:3306/akilimo"
+
+  akilimo-migration:
+    image: iita/akilimo-migration:latest
+    container_name: akilimo-migration
+    restart: on-failure
+    depends_on:
+      - db
+    environment:
+      DB_URL: "jdbc:mysql://db:3306/akilimo"
+
+  db:
+    container_name: db
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: akilimo

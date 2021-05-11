@@ -1,4 +1,29 @@
 
+<a name="3.9.0"></a>
+## [3.9.0](https://github.com/masgeek/akilimo-api/compare/3.8.3...3.9.0)
+
+> 2021-04-28
+
+### Ci
+
+* added new todo generator
+* changed target build branch
+* added todo github actions
+
+### Docs
+
+* Updated pull request template style
+
+### Feat
+
+* added migration for user type column
+
+### Pull Requests
+
+* Merge pull request [#144](https://github.com/masgeek/akilimo-api/issues/144) from masgeek/feature/user-feedback-rev
+* Merge pull request [#142](https://github.com/masgeek/akilimo-api/issues/142) from masgeek/feat/changelog
+
+
 <a name="3.8.3"></a>
 ## [3.8.3](https://github.com/masgeek/akilimo-api/compare/3.8.2...3.8.3)
 
