@@ -10,6 +10,6 @@ class CurrencyProperties {
     var ngnUsd: Double? = null
 
     @NotBlank
-    var tzsRate: Double? = null
+    var tzsUsd: Double? = null
 
 }

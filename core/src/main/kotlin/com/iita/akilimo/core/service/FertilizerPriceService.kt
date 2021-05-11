@@ -42,7 +42,7 @@ constructor(
         when (country) {
             EnumCountry.TZ.name -> {
                 toCurrency = EnumCountry.TZ.currency()
-                currencyRate = currencyProperties.tzsRate!!
+                currencyRate = currencyProperties.tzsUsd!!
             }
             EnumCountry.NG.name -> {
                 toCurrency = EnumCountry.NG.currency()
