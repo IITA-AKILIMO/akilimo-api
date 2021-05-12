@@ -1,4 +1,113 @@
 
+<a name="4.0.0"></a>
+## [4.0.0](https://github.com/masgeek/akilimo-api/compare/3.9.0...4.0.0)
+
+> 2021-05-11
+
+### Ci
+
+* change docker image name
+* updated circleci build workflow to generate api and migration images
+* changed auto aproval actor to check for repo owner
+* removed uneeded python code formaytter [@black](https://github.com/black)
+* added dicumentation in precomit config file
+* added new hook and rearranged the order
+
+### Docs
+
+* disabled PR templated momentarily
+* update PR template
+* Updated github PR template and CODEOWNERS file
+* Updated changelog file
+
+### Feat
+
+* added migrations for sp and triggers
+* added app request stats endpoint
+* added endpoint for fetching request statistics
+* added excluded paths to web security
+* added migration to add unique constrains to authority table
+* Added endpoints for adding user
+* added migration for auth database
+* added endpoint security
+* add migrations
+* migrations for app request stats
+
+### Fix
+
+* fixed null value due to incorrect key property reference
+* added user feedback to security exception
+* corrected migration script names to match migration file xml names
+* made functions migrations rerunnable
+* corrected trigger calls naming
+* added missing migration for stats view updates
+* fixed view migration
+* fixed jdbs database driver
+* added app request stats filter for easy filtering
+* added excluded flag to stats view script
+* added scripts to updated null and empty columns in app report table
+* added better query sorting
+* removed swagger annotations
+* corrected docker build sequence and steps
+* fixed invalid package names that prevented bean generation
+* updated application config files
+* modularized migrations to independently running module
+* fixed invalid reference
+
+### Perf
+
+* updated library dependencies
+
+### Refactor
+
+* added runalways tag to view migration
+* added exception throwing when record is not found
+* removed timestamper.sh file
+* add new git hook
+* modularization or project
+* fixed table encoding formart in migration
+* revised sql view script path name
+* added new Enum values
+
+### Pull Requests
+
+* Merge pull request [#158](https://github.com/masgeek/akilimo-api/issues/158) from masgeek/fix/null-tzs-rate
+* Merge pull request [#157](https://github.com/masgeek/akilimo-api/issues/157) from masgeek/fix/security-exception
+* Merge pull request [#156](https://github.com/masgeek/akilimo-api/issues/156) from masgeek/fix/triggers
+* Merge pull request [#155](https://github.com/masgeek/akilimo-api/issues/155) from masgeek/fix/missing-migration
+* Merge pull request [#154](https://github.com/masgeek/akilimo-api/issues/154) from masgeek/fix/view-migration
+* Merge pull request [#153](https://github.com/masgeek/akilimo-api/issues/153) from masgeek/fix/dependencies
+* Merge pull request [#152](https://github.com/masgeek/akilimo-api/issues/152) from masgeek/feature/feedback-endpoint
+* Merge pull request [#151](https://github.com/masgeek/akilimo-api/issues/151) from masgeek/doc/pr-template
+* Merge pull request [#150](https://github.com/masgeek/akilimo-api/issues/150) from masgeek/feature/new-migrations
+* Merge pull request [#148](https://github.com/masgeek/akilimo-api/issues/148) from masgeek/fix/docker-build
+* Merge pull request [#147](https://github.com/masgeek/akilimo-api/issues/147) from masgeek/chore/refactor
+* Merge pull request [#145](https://github.com/masgeek/akilimo-api/issues/145) from masgeek/feature/app-use-case-report
+
+### BREAKING CHANGE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modularization
+
+database migrations
+
+
 <a name="3.9.0"></a>
 ## [3.9.0](https://github.com/masgeek/akilimo-api/compare/3.8.3...3.9.0)
 
