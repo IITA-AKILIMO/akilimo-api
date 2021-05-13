@@ -72,16 +72,11 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
         }
 
 
-
-        if (response.fertilizerRecText.isNullOrEmpty()) {
-            val fertilizerRecText: String = response.fertilizerRecText!!
-            if (!fertilizerRecText.contains("Hatuna mapendekezo yoyote")
-                || !fertilizerRecText.contains("We do not have fertilizer recommendation for your location")
-            ) {
+        when {
+            !response.fertilizerRecText.isNullOrEmpty() -> {
                 message.smsText = response.fertilizerRecText
             }
         }
-
 
         when {
             !response.interCroppingRecText.isNullOrEmpty() -> {
