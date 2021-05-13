@@ -27,13 +27,13 @@ class AkilimoConfigProperties {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "messaging.sms")
+    @ConfigurationProperties(prefix = "akilimo.messaging.sms")
     fun sms(): MessagingProperties {
         return MessagingProperties()
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "messaging.email")
+    @ConfigurationProperties(prefix = "akilimo.messaging.email")
     fun email(): MessagingProperties {
         return MessagingProperties()
     }
