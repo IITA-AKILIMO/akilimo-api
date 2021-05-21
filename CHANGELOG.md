@@ -1,4 +1,24 @@
 
+<a name="4.0.1"></a>
+## [4.0.1](https://github.com/masgeek/akilimo-api/compare/4.0.0...4.0.1)
+
+> 2021-05-13
+
+### Docs
+
+* updated changelog file
+
+### Fix
+
+* corrected invalid sms message generation
+* fixed properties mapping name path
+
+### Pull Requests
+
+* Merge pull request [#161](https://github.com/masgeek/akilimo-api/issues/161) from masgeek/fix/sms
+* Merge pull request [#159](https://github.com/masgeek/akilimo-api/issues/159) from masgeek/fix/messaging
+
+
 <a name="4.0.0"></a>
 ## [4.0.0](https://github.com/masgeek/akilimo-api/compare/3.9.0...4.0.0)
 
