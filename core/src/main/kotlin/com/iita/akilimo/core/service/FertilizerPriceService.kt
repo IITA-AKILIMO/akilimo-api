@@ -37,7 +37,7 @@ constructor(
 
         var toCurrency = EnumCountry.ALL.currency()
         var currencyRate = 1.00
-        val country = countryCode.toUpperCase()
+        val country = countryCode.uppercase()
 
         when (country) {
             EnumCountry.TZ.name -> {
@@ -47,6 +47,10 @@ constructor(
             EnumCountry.NG.name -> {
                 toCurrency = EnumCountry.NG.currency()
                 currencyRate = currencyProperties.ngnUsd!!
+            }
+            EnumCountry.RW.name -> {
+                toCurrency = EnumCountry.RW.currency()
+                currencyRate = currencyProperties.rwfUsd!!
             }
         }
 
@@ -99,7 +103,10 @@ constructor(
                 nearestValue = 1000.0
             )
 
-            val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
+            val pricePerBagRaw = conversion.convertToSpecifiedCurrency(
+                fromAmount = fertilizerPrice.pricePerBag!!,
+                exchangeRate = currencyRate
+            )
             val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
             fertilizerPriceDto.priceId = sortIndex
             fertilizerPriceDto.recordId = fertilizerPrice.priceId!!

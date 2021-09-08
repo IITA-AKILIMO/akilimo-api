@@ -1,7 +1,6 @@
 package com.iita.akilimo.core.service
 
 
-
 import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FertilizerService
-
 constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
 
@@ -30,7 +28,10 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
 
 
         val fertilizerList = if (useCase != null) {
-            availableFertilizerRepo.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(countries, useCase)
+            availableFertilizerRepo.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(
+                countries,
+                useCase
+            )
         } else {
             availableFertilizerRepo.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
         }
@@ -38,7 +39,7 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
         var currencyCode = EnumCountry.ALL.currency()
-        val country = countryCode.toUpperCase()
+        val country = countryCode.uppercase()
 
         when (country) {
             EnumCountry.TZ.name -> {
@@ -46,6 +47,9 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
             }
             EnumCountry.NG.name -> {
                 currencyCode = EnumCountry.NG.currency()
+            }
+            EnumCountry.RW.name -> {
+                currencyCode = EnumCountry.RW.currency()
             }
         }
 
