@@ -51,6 +51,9 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
             EnumCountry.RW.name -> {
                 currencyCode = EnumCountry.RW.currency()
             }
+            EnumCountry.GH.name -> {
+                currencyCode = EnumCountry.GH.currency()
+            }
         }
 
         modelMapper.configuration.isSkipNullEnabled = true

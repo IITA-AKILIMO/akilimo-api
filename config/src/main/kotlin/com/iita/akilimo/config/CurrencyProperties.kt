@@ -14,4 +14,7 @@ class CurrencyProperties {
 
     @NotBlank
     var rwfUsd: Double? = null
+
+    @NotBlank
+    var ghsUsd: Double? = null
 }
