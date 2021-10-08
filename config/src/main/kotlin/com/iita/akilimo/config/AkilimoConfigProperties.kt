@@ -37,4 +37,10 @@ class AkilimoConfigProperties {
     fun email(): MessagingProperties {
         return MessagingProperties()
     }
+
+    @Bean
+    @ConfigurationProperties(prefix = "akilimo.ona")
+    fun onaData(): OnaDataProperties {
+        return OnaDataProperties()
+    }
 }
