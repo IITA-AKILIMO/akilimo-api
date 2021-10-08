@@ -24,6 +24,7 @@ spring:
   jpa:
     properties:
       hibernate:
+        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
         generate_statistics: ${GEN_STATS:false}
         order_inserts: true
         order_updates: true
@@ -85,6 +86,9 @@ akilimo:
   externaldoc: '4.0.0'
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+
+  ona:
+    csv-path: ${OUTPUT_PATH:D:\\dev\\python\\ona-download\\downloads\\converted\\}
 
   currency:
     ngn-usd: ${NGN_USD:360}
