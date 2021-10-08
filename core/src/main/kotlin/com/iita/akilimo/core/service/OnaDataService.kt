@@ -33,7 +33,8 @@ constructor(
         var fullPath = "${onaData.csvPath}${downloadRequest.fileName}"
         if (folderPath != null) {
             if (folderPath.isNotEmpty()) {
-                fullPath = "${onaData.csvPath}\\${folderPath}\\${downloadRequest.fileName}"
+                val fileSeparator = File.separator;
+                fullPath = "${onaData.csvPath}${fileSeparator}${folderPath}${fileSeparator}${downloadRequest.fileName}"
             }
         }
 
