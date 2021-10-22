@@ -34,6 +34,8 @@ class OnaDataController(private val onaDataService: OnaDataService) {
         respHeaders.contentType = MediaType.APPLICATION_OCTET_STREAM//MediaType("text", "csv")
         respHeaders.cacheControl = "must-revalidate, post-check=0, pre-check=0"
         respHeaders.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${cSvDownloadRequest.fileName}")
+        respHeaders.set("File-Name", cSvDownloadRequest.fileName)
+        respHeaders.set("Record-Count", "${csvDownload.recordNumber}")
 
         return ResponseEntity(csvDownload.resource, respHeaders, HttpStatus.OK)
     }
