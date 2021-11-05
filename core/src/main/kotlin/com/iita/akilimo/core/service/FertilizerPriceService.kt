@@ -48,6 +48,10 @@ constructor(
                 toCurrency = EnumCountry.NG.currency()
                 currencyRate = currencyProperties.ngnUsd!!
             }
+            EnumCountry.GH.name -> {
+                toCurrency = EnumCountry.GH.currency()
+                currencyRate = currencyProperties.ghsUsd!!
+            }
         }
 
 

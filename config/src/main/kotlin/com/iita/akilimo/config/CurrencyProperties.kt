@@ -12,4 +12,7 @@ class CurrencyProperties {
     @NotBlank
     var tzsUsd: Double? = null
 
+    @NotBlank
+    var ghsUsd: Double? = null
+
 }

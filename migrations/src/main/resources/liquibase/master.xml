@@ -96,4 +96,6 @@
 
     <include file="/liquibase/changelog/20210503001207_update_app_report_view_stats_with_new_column.xml"/>
 
+    <include file="/liquibase/changelog/20211105123428_import_default_ghana_cassava_prices.xml"/>
+
 </databaseChangeLog>
