@@ -1,7 +1,6 @@
 package com.iita.akilimo.core.service
 
 
-
 import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
@@ -13,10 +12,11 @@ import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class FertilizerService
-
 constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
 
@@ -38,7 +38,7 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
         var currencyCode = EnumCountry.ALL.currency()
-        val country = countryCode.toUpperCase()
+        val country = countryCode.uppercase(Locale.getDefault())
 
         when (country) {
             EnumCountry.TZ.name -> {
@@ -46,6 +46,9 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
             }
             EnumCountry.NG.name -> {
                 currencyCode = EnumCountry.NG.currency()
+            }
+            EnumCountry.GH.name -> {
+                currencyCode = EnumCountry.GH.currency()
             }
         }
 
