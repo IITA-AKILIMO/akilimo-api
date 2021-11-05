@@ -97,9 +97,10 @@ akilimo:
     kes-usd: ${KES_USD:108}
 
   plumber:
-    base-url: ${PLUMBER_BASE:http://compute-prod:8090/api/}
+    base-url: ${PLUMBER_BASE:http://akilimo.prod:8090/api/}
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
+    compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}
 
   messaging:
     sms:
