@@ -13,4 +13,7 @@ class PlumberProperties {
 
     @NotBlank
     var computeTz: String? = null
+
+    @NotBlank
+    var computeGh: String? = null
 }

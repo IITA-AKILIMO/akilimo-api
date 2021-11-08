@@ -272,6 +272,58 @@ open class PlumberComputeRequest {
     @JsonProperty("NPK201216BagWt")
     var npkTwentyTwelve16BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
+    @JsonProperty("NPK112221available")
+    var npkElevenTwentyTwo21Available: Boolean = false
+
+    @JsonProperty("NPK112221CostperBag")
+    var npkElevenTwentyTwo21CostPerBag: Double = 0.0
+
+    @JsonProperty("NPK112221BagWt")
+    var npkElevenTwentyTwo21BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+
+    @JsonProperty("NPK251010available")
+    var npkTwentyFiveTen10Available: Boolean = false
+
+    @JsonProperty("NPK251010CostperBag")
+    var npkTwentyFiveTen10CostPerBag: Double = 0.0
+
+    @JsonProperty("NPK251010BagWt")
+    var npkTwentyFiveTen10BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    /** NEXT fertilizer **/
+    @JsonProperty("NPK152020available")
+    var npkFifteenTwenty20Available: Boolean = false
+
+    @JsonProperty("NPK152020CostperBag")
+    var npkFifteenTwenty20CostPerBag: Double = 0.0
+
+    @JsonProperty("NPK152020BagWt")
+    var npkFifteenTwenty20BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    /** NEXT fertilizer **/
+    @JsonProperty("NPK23105available")
+    var npkTwentyThreeTen5Available: Boolean = false
+
+    @JsonProperty("NPK23105CostperBag")
+    var npkTwentyThreeTen5CostPerBag: Double = 0.0
+
+    @JsonProperty("NPK23105BagWt")
+    var npkTwentyThreeTen5BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    /** NEXT fertilizer **/
+    @JsonProperty("NPK123017available")
+    var npkTwelveThirty17Available: Boolean = false
+
+    @JsonProperty("NPK123017CostperBag")
+    var npkTwelveThirtyCostPerBag: Double = 0.0
+
+    @JsonProperty("NPK123017BagWt")
+    var npkTwelveThirtyBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+
+
+
     @JsonProperty("TSPavailable")
     var tspAvailable: Boolean = false
 
