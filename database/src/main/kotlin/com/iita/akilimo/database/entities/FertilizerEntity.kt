@@ -17,13 +17,16 @@ class FertilizerEntity : BaseEntity() {
 
 
     @Column(name = "fertilizer_key")
-    var fertilizerKey: Long? = null
+    var fertilizerKey: String? = null
 
     @Column(name = "weight", nullable = false)
     var weight: Int? = null
 
     @Column(name = "country", nullable = false)
     var country: String? = null
+
+    @Column(name = "sort_order", nullable = false)
+    var sortOrder: Int? = null
 
 
     @Column(name = "use_case", nullable = false)

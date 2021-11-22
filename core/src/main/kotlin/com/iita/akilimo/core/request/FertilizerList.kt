@@ -7,6 +7,8 @@ class FertilizerList {
     @JsonProperty("name")
     var fertilizerTypeName: String? = null
 
+    @JsonProperty("key")
+    var fertilizerKey: String? = null
 
     @JsonProperty("type")
     var fertilizerType: String? = null

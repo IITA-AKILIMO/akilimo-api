@@ -102,5 +102,6 @@
     <include file="/liquibase/changelog/20211122173236_create_fertilizer_price_table.xml"/>
     <include file="/liquibase/changelog/20211122193151_add_fertilizer_key_to_fertilizers_table.xml"/>
     <include file="/liquibase/changelog/20211122194110_add_fertilizer_key_to_fertilizer_price_table.xml"/>
+    <include file="/liquibase/changelog/20211122194948_add_sort_order_to_fertilizers_table.xml"/>
 
 </databaseChangeLog>

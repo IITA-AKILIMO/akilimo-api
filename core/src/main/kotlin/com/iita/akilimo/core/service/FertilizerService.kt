@@ -5,6 +5,7 @@ import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
 import com.iita.akilimo.database.entities.AvailableFertilizers
+import com.iita.akilimo.database.entities.FertilizerEntity
 import com.iita.akilimo.database.repos.AvailableFertilizerRepo
 import com.iita.akilimo.database.repos.FertilizerPriceRepository
 import com.iita.akilimo.enums.EnumCountry
@@ -64,7 +65,7 @@ constructor(
             val fertilizerDto = modelMapper.map(fertilizer, FertilizerDto::class.java)
             fertilizerDto.currency = currencyCode
             fertilizerDto.countryCode = country
-            fertilizerDto.fertilizerCountry = "${fertilizer.type}-$country"
+            fertilizerDto.fertilizerCountry = "${fertilizer.fertilizerType}-$country"
 
             fertilizerPriceDtoList.add(fertilizerDto)
         }
@@ -73,7 +74,7 @@ constructor(
     }
 
     override fun saveFertilizer(fertilizerRequest: FertilizerRequest): FertilizerDto? {
-        val entity = modelMapper.map(fertilizerRequest, AvailableFertilizers::class.java)
+        val entity = modelMapper.map(fertilizerRequest, FertilizerEntity::class.java)
 
         val saved = fertilizerRepo.save(entity)
 
@@ -102,14 +103,11 @@ constructor(
     @Transactional
     override fun deleteFertilizer(id: Long): Boolean {
 
-        val entity = fertilizerRepo.findByFertilizerId(id)
+        val entity = fertilizerRepo.findById(id)
 
-        return when {
-            entity != null -> {
-                fertilizerRepo.deleteById(id)
-                true
-            }
-            else -> false
+        return run {
+            fertilizerRepo.deleteById(id)
+            true
         }
 
     }

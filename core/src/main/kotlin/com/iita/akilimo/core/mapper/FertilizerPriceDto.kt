@@ -12,6 +12,7 @@ class FertilizerPriceDto {
 
     var priceId: Long? = null
 
+    var fertilizerKey: String? = null
 
     var minLocalPrice: BigDecimal? = null
 

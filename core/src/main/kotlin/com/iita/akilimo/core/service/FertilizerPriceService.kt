@@ -7,11 +7,9 @@ import com.iita.akilimo.core.mapper.CurrencyDto
 import com.iita.akilimo.core.mapper.FertilizerPriceDto
 import com.iita.akilimo.core.request.FertilizerPriceRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
-import com.iita.akilimo.database.entities.FertilizerPriceEntity
 import com.iita.akilimo.database.repos.CurrencyRepo
 import com.iita.akilimo.database.repos.FertilizerPriceRepository
 import com.iita.akilimo.database.entities.FertilizerPrices
-import com.iita.akilimo.database.repos.AvailableFertilizerRepo
 import com.iita.akilimo.database.repos.FertilizerPriceRepo
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
@@ -19,7 +17,6 @@ import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.MultiValueMap
 
 @Service
 class FertilizerPriceService
@@ -171,8 +168,8 @@ constructor(
 
     }
 
-    fun fertilizerPrices(fertilizerId: Long): List<FertilizerPriceDto> {
-        val fertilizerPrices = fertilizerPriceRepo.findAllByFertilizerIdAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerId)
+    fun fertilizerPrices(fertilizerKey: String): List<FertilizerPriceDto> {
+        val fertilizerPrices = fertilizerPriceRepo.findAllByFertilizerKeyAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerKey)
 
         val minPrice = fertilizerPriceRepo.findBySortOrder(1)
         val maxPrice = fertilizerPriceRepo.findBySortOrder(4)
