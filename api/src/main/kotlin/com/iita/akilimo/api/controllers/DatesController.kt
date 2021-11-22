@@ -1,6 +1,5 @@
 package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.controllers.BaseController
 import com.iita.akilimo.core.mapper.DateDto
 import com.iita.akilimo.core.service.DateService
 import org.slf4j.Logger

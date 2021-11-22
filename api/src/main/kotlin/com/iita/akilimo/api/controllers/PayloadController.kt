@@ -1,6 +1,5 @@
 package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.controllers.BaseController
 import com.iita.akilimo.core.mapper.PayloadDto
 import com.iita.akilimo.core.service.PayloadService
 import io.swagger.v3.oas.annotations.Operation
