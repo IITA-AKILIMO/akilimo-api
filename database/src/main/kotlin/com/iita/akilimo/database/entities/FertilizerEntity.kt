@@ -15,6 +15,10 @@ class FertilizerEntity : BaseEntity() {
     @Column(name = "type", nullable = false)
     var fertilizerType: String? = null
 
+
+    @Column(name = "fertilizer_key")
+    var fertilizerKey: Long? = null
+
     @Column(name = "weight", nullable = false)
     var weight: Int? = null
 
