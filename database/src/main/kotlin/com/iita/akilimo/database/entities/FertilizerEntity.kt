@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "fertilizers")
-class Fertilizer : BaseEntity() {
+class FertilizerEntity : BaseEntity() {
 
     @Column(name = "name", nullable = false)
     var name: String? = null
@@ -16,10 +16,10 @@ class Fertilizer : BaseEntity() {
     var fertilizerType: String? = null
 
     @Column(name = "weight", nullable = false)
-    var weight: BigDecimal? = null
+    var weight: Int? = null
 
     @Column(name = "country", nullable = false)
-    var country: BigDecimal? = null
+    var country: String? = null
 
 
     @Column(name = "use_case", nullable = false)

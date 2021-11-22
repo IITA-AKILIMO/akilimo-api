@@ -2,6 +2,7 @@ package com.iita.akilimo.core.interfaces
 
 import com.iita.akilimo.core.mapper.FertilizerPriceDto
 import com.iita.akilimo.core.request.FertilizerPriceRequest
+import org.springframework.util.MultiValueMap
 
 
 interface IFertilizerPriceService {
@@ -12,5 +13,4 @@ interface IFertilizerPriceService {
     fun updateFertilizerPrice(id: Long, fertilizerPriceRequest: FertilizerPriceRequest): FertilizerPriceDto?
 
     fun deleteFertilizerPrice(id: Long): Boolean
-
 }

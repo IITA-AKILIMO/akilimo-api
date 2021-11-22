@@ -7,25 +7,30 @@ import com.iita.akilimo.core.mapper.CurrencyDto
 import com.iita.akilimo.core.mapper.FertilizerPriceDto
 import com.iita.akilimo.core.request.FertilizerPriceRequest
 import com.iita.akilimo.core.utils.CurrencyConversion
+import com.iita.akilimo.database.entities.FertilizerPriceEntity
 import com.iita.akilimo.database.repos.CurrencyRepo
 import com.iita.akilimo.database.repos.FertilizerPriceRepository
 import com.iita.akilimo.database.entities.FertilizerPrices
+import com.iita.akilimo.database.repos.AvailableFertilizerRepo
+import com.iita.akilimo.database.repos.FertilizerPriceRepo
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.MultiValueMap
 
 @Service
 class FertilizerPriceService
 constructor(
     val fertilizerPriceRepository: FertilizerPriceRepository,
+    val fertilizerPriceRepo: FertilizerPriceRepo,
     val currencyRepo: CurrencyRepo,
-    akilimoConfigProperties: AkilimoConfigProperties
+    configProperties: AkilimoConfigProperties
 ) : IFertilizerPriceService {
     private val logger = LoggerFactory.getLogger(FertilizerPriceService::class.java)
-    private val currencyProperties = akilimoConfigProperties.currency()
+    private val currencyProperties = configProperties.currency()
 
     val conversion: CurrencyConversion = CurrencyConversion()
 
@@ -78,8 +83,8 @@ constructor(
         for (fertilizerPrice in fertilizerList) {
             val fertilizerPriceDto = modelMapper.map(fertilizerPrice, FertilizerPriceDto::class.java)
 
-            fertilizerPriceDto.minAllowedPrice = minAllowed
-            fertilizerPriceDto.maxAllowedPrice = maxAllowed
+//            fertilizerPriceDto.minAllowedPrice = minAllowed
+//            fertilizerPriceDto.maxAllowedPrice = maxAllowed
 
             fertilizerPriceDto.priceRange = conversion.convertPriceToLocalCurrency(
                 minUsd = fertilizerPrice.minUsd!!,
@@ -89,25 +94,25 @@ constructor(
                 nearestValue = 1000.0
             )
 
-            fertilizerPriceDto.minLocalPrice = conversion.convertToSpecifiedCurrency(
-                amount = fertilizerPrice.minUsd!!,
-                currencyRate = currencyRate,
-                currencyDto = currencyDto,
-                nearestValue = 1000.0
-            )
-
-            fertilizerPriceDto.maxLocalPrice = conversion.convertToSpecifiedCurrency(
-                amount = fertilizerPrice.maxUsd!!,
-                currencyRate = currencyRate,
-                currencyDto = currencyDto,
-                nearestValue = 1000.0
-            )
+//            fertilizerPriceDto.minLocalPrice = conversion.convertToSpecifiedCurrency(
+//                amount = fertilizerPrice.minUsd!!,
+//                currencyRate = currencyRate,
+//                currencyDto = currencyDto,
+//                nearestValue = 1000.0
+//            )
+//
+//            fertilizerPriceDto.maxLocalPrice = conversion.convertToSpecifiedCurrency(
+//                amount = fertilizerPrice.maxUsd!!,
+//                currencyRate = currencyRate,
+//                currencyDto = currencyDto,
+//                nearestValue = 1000.0
+//            )
 
             val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
             val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
             fertilizerPriceDto.priceId = sortIndex
-            fertilizerPriceDto.recordId = fertilizerPrice.priceId!!
-            fertilizerPriceDto.pricePerBag = pricePerBag
+            fertilizerPriceDto.id = fertilizerPrice.id!!
+//            fertilizerPriceDto.pricePerBag = pricePerBag
             fertilizerPriceDto.country = country
             fertilizerPriceDto.fertilizerCountry = "$country$sortIndex"
 
@@ -157,16 +162,32 @@ constructor(
     @Transactional
     override fun deleteFertilizerPrice(id: Long): Boolean {
 
-        val entity = fertilizerPriceRepository.findByPriceId(id)
+        val entity = fertilizerPriceRepository.findById(id)
 
-        return when {
-            entity != null -> {
-                fertilizerPriceRepository.deleteById(id)
-                true
-            }
-            else -> false
+        return run {
+            fertilizerPriceRepository.deleteById(id)
+            true
         }
 
+    }
+
+    fun fertilizerPrices(fertilizerId: Long): List<FertilizerPriceDto> {
+        val fertilizerPrices = fertilizerPriceRepo.findAllByFertilizerIdAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerId)
+
+        val minPrice = fertilizerPriceRepo.findBySortOrder(1)
+        val maxPrice = fertilizerPriceRepo.findBySortOrder(4)
+
+        return fertilizerPrices.map { priceEntity ->
+            val dto = modelMapper.map(priceEntity, FertilizerPriceDto::class.java)
+            dto.minLocalPrice = minPrice.minPrice
+            dto.maxLocalPrice = maxPrice.maxPrice
+
+            dto.minAllowedPrice = maxPrice.minPrice
+            dto.maxAllowedPrice = maxPrice.maxPrice
+
+            dto.fertilizerCountry = "${priceEntity.country}${priceEntity.id}"
+            dto
+        }
     }
 
 

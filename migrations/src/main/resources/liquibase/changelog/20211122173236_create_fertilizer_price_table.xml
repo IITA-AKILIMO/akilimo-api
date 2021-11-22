@@ -11,6 +11,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
+            <column name="country" type="varchar(4)"/>
 
             <column name="fertilizer_id" type="bigint"/>
 
@@ -18,7 +19,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="pax_price" type="decimal(10,2)">
+            <column name="max_price" type="decimal(10,2)">
                 <constraints nullable="false"/>
             </column>
 

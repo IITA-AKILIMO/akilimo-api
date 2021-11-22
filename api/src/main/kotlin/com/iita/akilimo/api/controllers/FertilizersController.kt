@@ -1,6 +1,5 @@
 package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.controllers.BaseController
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
 import com.iita.akilimo.core.service.FertilizerService

@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface FertilizerPriceRepository : JpaRepository<FertilizerPrices, Long> {
 
-    fun findByPriceId(priceId: Long): FertilizerPrices?
-
     fun findByPriceActiveIsTrue(): List<FertilizerPrices>
 
     fun findByPriceActiveIsTrueOrderBySortOrderDesc(): List<FertilizerPrices>
