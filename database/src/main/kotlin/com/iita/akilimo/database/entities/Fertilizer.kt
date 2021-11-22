@@ -6,29 +6,25 @@ import java.math.BigDecimal
 import javax.persistence.*
 
 @Entity
-@Table(name = "request_fertilizer")
-class Fertilizer : Serializable {
+@Table(name = "fertilizers")
+class Fertilizer : BaseEntity() {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "fertilizer_id", nullable = false)
-    var fertilizerId: Long? = null
+    @Column(name = "name", nullable = false)
+    var name: String? = null
 
-    @Column(name = "fertilizer_type", nullable = false)
+    @Column(name = "type", nullable = false)
     var fertilizerType: String? = null
-
-    @Column(name = "available")
-    var available: Boolean? = null
-
-    @Column(name = "price", nullable = false)
-    var price: BigDecimal? = null
 
     @Column(name = "weight", nullable = false)
     var weight: BigDecimal? = null
 
+    @Column(name = "country", nullable = false)
+    var country: BigDecimal? = null
 
-    @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "request_id", referencedColumnName = "id")
-    @JsonIgnore
-    var recommendation: Recommendation? = null
+
+    @Column(name = "use_case", nullable = false)
+    var useCase: String? = null
+
+    @Column(name = "available")
+    var available: Boolean? = null
 }

@@ -50,7 +50,7 @@ class UserService(
 
     fun findUser(id: Long): UserDto {
         val user = userRepo.findById(id)
-        if(user.isEmpty){
+        if(!user.isPresent){
             throw  ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         }
         return modelMapper.map(user.get(), UserDto::class.java)
@@ -58,7 +58,7 @@ class UserService(
 
     fun findUserByUserName(username: String): UserDto {
         val user = userRepo.findByUsername(username)
-        if(user.isEmpty){
+        if(!user.isPresent){
             throw  ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         }
         return modelMapper.map(user.get(), UserDto::class.java)
