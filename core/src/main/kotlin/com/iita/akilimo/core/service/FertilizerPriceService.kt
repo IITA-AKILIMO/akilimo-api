@@ -171,8 +171,8 @@ constructor(
     fun fertilizerPrices(fertilizerKey: String): List<FertilizerPriceDto> {
         val fertilizerPrices = fertilizerPriceRepo.findAllByFertilizerKeyAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerKey)
 
-        val minPrice = fertilizerPriceRepo.findBySortOrder(1)
-        val maxPrice = fertilizerPriceRepo.findBySortOrder(4)
+        val minPrice = fertilizerPriceRepo.findBySortOrderAndFertilizerKey(1, fertilizerKey)
+        val maxPrice = fertilizerPriceRepo.findBySortOrderAndFertilizerKey(4, fertilizerKey)
 
         return fertilizerPrices.map { priceEntity ->
             val dto = modelMapper.map(priceEntity, FertilizerPriceDto::class.java)
