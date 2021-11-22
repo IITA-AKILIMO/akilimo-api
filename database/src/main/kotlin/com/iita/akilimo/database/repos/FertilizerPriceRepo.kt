@@ -17,5 +17,5 @@ interface FertilizerPriceRepo : JpaRepository<FertilizerPriceEntity, Long> {
 
     fun findAllByFertilizerKeyAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerId: String): List<FertilizerPriceEntity>
 
-    fun findBySortOrder(sortOrder: Int): FertilizerPriceEntity
+    fun findBySortOrderAndFertilizerKey(sortOrder: Int,fertilizerKey:String): FertilizerPriceEntity
 }
