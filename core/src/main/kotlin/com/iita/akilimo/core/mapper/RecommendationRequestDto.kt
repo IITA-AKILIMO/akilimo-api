@@ -1,6 +1,6 @@
 package com.iita.akilimo.core.mapper
 
-import com.iita.akilimo.database.entities.Fertilizer
+import com.iita.akilimo.database.entities.FertilizerEntity
 import java.time.LocalDateTime
 
 
@@ -40,6 +40,6 @@ open class RecommendationRequestDto {
 
     var userEmail: String? = null
 
-    var fertilizers: Set<Fertilizer>? = null
+    var fertilizerEntities: Set<FertilizerEntity>? = null
 
 }

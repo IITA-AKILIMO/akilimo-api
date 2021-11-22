@@ -1,20 +1,25 @@
 package com.iita.akilimo.database.repos
 
 import com.iita.akilimo.database.entities.AvailableFertilizers
+import com.iita.akilimo.database.entities.FertilizerEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
-interface AvailableFertilizerRepo : JpaRepository<AvailableFertilizers, Long> {
+interface AvailableFertilizerRepo : JpaRepository<FertilizerEntity, Long> {
 
-    fun findByFertilizerId(priceId: Long): AvailableFertilizers?
+    override fun findById(priceId: Long): Optional<FertilizerEntity>
 
-    fun findAllByAvailableIsTrue(): List<AvailableFertilizers>
+    fun findAllByAvailableIsTrue(): List<FertilizerEntity>
 
-    fun findByAvailableIsTrueAndCountryInOrderByNameDesc(countryCode: Collection<String>): List<AvailableFertilizers>
+    fun findByAvailableIsTrueAndCountryInOrderByNameDesc(countryCode: Collection<String>): List<FertilizerEntity>
 
-    fun findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countryCode: Collection<String>): List<AvailableFertilizers>
+    fun findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countryCode: Collection<String>): List<FertilizerEntity>
 
-    fun findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(countryCode: Collection<String>, useCase: String): List<AvailableFertilizers>
+    fun findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(
+        countryCode: Collection<String>,
+        useCase: String
+    ): List<FertilizerEntity>
 
 }

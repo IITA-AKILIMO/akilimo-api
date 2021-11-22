@@ -2,50 +2,23 @@ package com.iita.akilimo.core.mapper
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import java.math.BigDecimal
 
-
-@JsonPropertyOrder(
-        "fertilizerId",
-        "name",
-        "type",
-        "weight",
-        "price",
-        "currency",
-        "available",
-        "custom",
-        "N",
-        "P",
-        "K",
-        "createdAt",
-        "updatedAt"
-)
 
 class FertilizerDto {
 
-    var fertilizerId: Long? = null
+    @JsonProperty("fertilizerId")
+    var id: Long? = null
+
+    var fertilizerKey: String? = null
 
     var name: String? = null
 
     var type: String? = null
 
-    //@JsonProperty("N")
-    var nContent: Int? = null
-
-    //@JsonProperty("P")
-    var pContent: Int? = null
-
-    //@JsonProperty("K")
-    var kContent: Int? = null
-
     var weight: Int? = null
 
-    var price: Double = 0.0
-
-    @JsonProperty("available")
-    var isAvailable: Boolean = false
-
-    @JsonProperty("custom")
-    var isCustom: Boolean = false
+    var price: BigDecimal? = null
 
     var currency: String? = null
 
@@ -54,8 +27,4 @@ class FertilizerDto {
     var fertilizerCountry: String? = null
 
     var useCase: String? = null
-
-//    var createdAt: LocalDateTime? = null
-//
-//    var updatedAt: LocalDateTime? = null
 }

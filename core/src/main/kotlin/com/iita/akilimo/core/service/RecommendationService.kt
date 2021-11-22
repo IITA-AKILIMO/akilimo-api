@@ -53,7 +53,7 @@ constructor(
             val q = allFertilizers.map { availableFertilizers ->
                 val fertilizerList = FertilizerList()
                 fertilizerList.fertilizerTypeName = availableFertilizers.name
-                fertilizerList.fertilizerType = availableFertilizers.type
+                fertilizerList.fertilizerType = availableFertilizers.fertilizerType
                 fertilizerList.fertilizerWeight = availableFertilizers.weight
                 fertilizerList
             }
@@ -254,8 +254,8 @@ constructor(
     private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
         val allFertilizers = availableFertilizerRepo.findAllByAvailableIsTrue()
         allFertilizers.forEach { fertilizer ->
-            if (!tempFertilizerList.containsKey(fertilizer.type)) {
-                val fertName = fertilizer.type!!
+            if (!tempFertilizerList.containsKey(fertilizer.fertilizerType)) {
+                val fertName = fertilizer.fertilizerType!!
                 val fert = modelMapper.map(fertilizer, FertilizerList::class.java)
                 fert.fertilizerType = fertName
                 fert.fertilizerTypeName = fertilizer.name

@@ -1,40 +1,37 @@
 package com.iita.akilimo.core.mapper
 
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 
 class FertilizerPriceDto {
 
-    var recordId: Long? = null
+    var id: Long? = null
 
     var priceId: Long? = null
 
-    var minUsd: Double? = null
+    var fertilizerKey: String? = null
 
-    var maxUsd: Double? = null
+    var minLocalPrice: BigDecimal? = null
 
-    var minLocalPrice: Double? = null
+    var maxLocalPrice: BigDecimal? = null
 
-    var maxLocalPrice: Double? = null
+    var minAllowedPrice: BigDecimal? = null
 
-    var minAllowedPrice: Double? = null
+    var maxAllowedPrice: BigDecimal? = null
 
-    var maxAllowedPrice: Double? = null
-
-    var pricePerBag: Double? = null
+    var pricePerBag: BigDecimal? = null
 
     var active: Boolean? = null
 
-    var description: String? = null
+    @JsonProperty("description")
+    var desc: String? = null
 
     var priceRange: String? = null
 
     var country: String? = null
 
     var fertilizerCountry: String? = null
-
-    var createdAt: LocalDateTime? = null
-
-    var updatedAt: LocalDateTime? = null
 }

@@ -1,6 +1,5 @@
 package com.iita.akilimo.api.controllers
 
-import com.acai.akilimo.controllers.BaseController
 import com.iita.akilimo.core.mapper.OperationCostDto
 import com.iita.akilimo.core.service.OperationCostService
 import org.slf4j.LoggerFactory
