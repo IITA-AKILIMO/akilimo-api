@@ -7,7 +7,10 @@ import java.math.BigDecimal
 
 class FertilizerDto {
 
-    var fertilizerId: Long? = null
+    @JsonProperty("fertilizerId")
+    var id: Long? = null
+
+    var fertilizerKey: String? = null
 
     var name: String? = null
 

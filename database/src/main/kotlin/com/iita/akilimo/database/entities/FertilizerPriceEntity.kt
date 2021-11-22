@@ -12,8 +12,8 @@ class FertilizerPriceEntity : BaseEntity() {
     @Column(name = "country")
     var country: String? = null
 
-    @Column(name = "fertilizer_id")
-    var fertilizerId: Long? = null
+    @Column(name = "fertilizer_key")
+    var fertilizerKey: String? = null
 
     @Column(name = "min_price", nullable = false, columnDefinition = "decimal", precision = 10, scale = 2)
     var minPrice: BigDecimal? = null

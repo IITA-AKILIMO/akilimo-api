@@ -26,10 +26,10 @@ class FertilizerPricesController(private val fertilizerPriceService: FertilizerP
         return ResponseEntity(fertilizerList, HttpStatus.OK)
     }
 
-    @GetMapping("/{fertilizerId}")
-    fun fertilizerPriceById(@PathVariable fertilizerId: Long): ResponseEntity<List<FertilizerPriceDto>> {
+    @GetMapping("/{fertilizerKey}")
+    fun fertilizerPriceByKey(@PathVariable fertilizerKey: String): ResponseEntity<List<FertilizerPriceDto>> {
 
-        val fertilizerPriceDto = fertilizerPriceService.fertilizerPrices(fertilizerId = fertilizerId)
+        val fertilizerPriceDto = fertilizerPriceService.fertilizerPrices(fertilizerKey = fertilizerKey.uppercase())
 
         return ResponseEntity(fertilizerPriceDto, HttpStatus.OK)
     }
