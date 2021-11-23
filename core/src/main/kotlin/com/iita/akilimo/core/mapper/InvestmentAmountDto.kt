@@ -12,6 +12,7 @@ class InvestmentAmountDto : BaseDto() {
     @JsonProperty("investmentId")
     var id: Long? = null
 
+
     @JsonProperty("country")
     var country: String? = null
 

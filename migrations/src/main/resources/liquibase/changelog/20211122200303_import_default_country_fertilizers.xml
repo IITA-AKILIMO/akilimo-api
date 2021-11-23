@@ -19,8 +19,8 @@
             <column name="use_case" header="use_case"/>
             <column name="available" header="available" type="boolean"/>
 
-            <column name="updated_at" type="date" defaultValueComputed="now"/>
-            <column name="created_at" type="date" defaultValueComputed="now"/>
+            <column name="updated_at" header="updated_at" type="date"/>
+            <column name="created_at" header="created_at" type="date"/>
 
         </loadData>
     </changeSet>

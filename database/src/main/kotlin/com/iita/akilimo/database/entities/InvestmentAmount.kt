@@ -15,7 +15,7 @@ class InvestmentAmount : BaseEntity() {
     @Column(name = "investment_amount", nullable = false, columnDefinition = "decimal", precision = 10, scale = 2)
     var investmentAmount: BigDecimal? = null
 
-    @Column(name = "are_unit")
+    @Column(name = "area_unit")
     var areaUnit: String? = null
 
     @Column(name = "price_active")

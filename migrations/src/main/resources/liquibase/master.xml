@@ -103,8 +103,12 @@
     <include file="/liquibase/changelog/20211122193151_add_fertilizer_key_to_fertilizers_table.xml"/>
     <include file="/liquibase/changelog/20211122194110_add_fertilizer_key_to_fertilizer_price_table.xml"/>
     <include file="/liquibase/changelog/20211122194948_add_sort_order_to_fertilizers_table.xml"/>
+
     <include file="/liquibase/changelog/20211122200303_import_default_country_fertilizers.xml"/>
 
     <include file="/liquibase/changelog/20211123105830_create_investment_amount_table.xml"/>
+    <include file="/liquibase/changelog/20211123142710_import_default_fertilizer_prices.xml"/>
+    <include file="/liquibase/changelog/20211123142722_import_default_investment_amounts.xml"/>
+    <include file="/liquibase/changelog/20211123155648_import_default_ghana_cassava_prices.xml"/>
 
 </databaseChangeLog>

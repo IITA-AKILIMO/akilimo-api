@@ -21,7 +21,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="are_unit" type="varchar(10)" defaultValue="acre"/>
+            <column name="area_unit" type="varchar(10)" defaultValue="acre"/>
 
             <column name="price_active" type="boolean" defaultValueBoolean="false"/>
 
