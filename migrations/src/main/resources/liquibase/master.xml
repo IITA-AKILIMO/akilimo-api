@@ -105,4 +105,6 @@
     <include file="/liquibase/changelog/20211122194948_add_sort_order_to_fertilizers_table.xml"/>
     <include file="/liquibase/changelog/20211122200303_import_default_country_fertilizers.xml"/>
 
+    <include file="/liquibase/changelog/20211123105830_create_investment_amount_table.xml"/>
+
 </databaseChangeLog>

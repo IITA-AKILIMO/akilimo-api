@@ -14,11 +14,10 @@ class FertilizerDto {
 
     var name: String? = null
 
-    var type: String? = null
+    @JsonProperty("type")
+    var fertilizerType: String? = null
 
     var weight: Int? = null
-
-    var price: BigDecimal? = null
 
     var currency: String? = null
 
