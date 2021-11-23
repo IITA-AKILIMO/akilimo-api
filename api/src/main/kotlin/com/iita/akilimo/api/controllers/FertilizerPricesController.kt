@@ -19,52 +19,18 @@ class FertilizerPricesController(private val fertilizerPriceService: FertilizerP
         val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @GetMapping
-    fun listPrices(@RequestHeader("country-code") countryCode: String): ResponseEntity<List<FertilizerPriceDto>> {
-        val fertilizerList = fertilizerPriceService.fertilizerPriceByCountry(countryCode)
-
-        return ResponseEntity(fertilizerList, HttpStatus.OK)
-    }
 
     @GetMapping("/{fertilizerKey}")
-    fun fertilizerPriceByKey(@PathVariable fertilizerKey: String): ResponseEntity<List<FertilizerPriceDto>> {
+    fun fertilizerPriceByKey(
+        @RequestHeader("country-code") countryCode: String,
+        @PathVariable fertilizerKey: String
+    ): ResponseEntity<List<FertilizerPriceDto>> {
 
-        val fertilizerPriceDto = fertilizerPriceService.fertilizerPrices(fertilizerKey = fertilizerKey.uppercase())
-
-        return ResponseEntity(fertilizerPriceDto, HttpStatus.OK)
-    }
-
-
-    @PutMapping("/{id}")
-    fun updateFertilizerPrice(
-        @PathVariable id: Long,
-        @Valid @RequestBody fertilizerPriceRequest: FertilizerPriceRequest
-    ): ResponseEntity<FertilizerPriceDto> {
-
-        val fertilizerPriceDto = fertilizerPriceService.updateFertilizerPrice(id, fertilizerPriceRequest)
+        val fertilizerPriceDto = fertilizerPriceService.fertilizerPrices(
+            fertilizerKey = fertilizerKey.uppercase(),
+            countryCode = countryCode
+        )
 
         return ResponseEntity(fertilizerPriceDto, HttpStatus.OK)
-    }
-
-
-    @PostMapping
-    fun addFertilizerPrice(@Valid @RequestBody fertilizerPriceRequest: FertilizerPriceRequest): ResponseEntity<FertilizerPriceDto> {
-
-        val fertilizerPriceDto = fertilizerPriceService.saveFertilizerPrice(fertilizerPriceRequest)
-
-        return ResponseEntity(fertilizerPriceDto, HttpStatus.OK)
-    }
-
-
-    @DeleteMapping("/{id}/delete")
-    fun deleteFertilizerPrice(@PathVariable id: Long): ResponseEntity<Boolean> {
-
-        logger.info("The id being passed here is by the name $id")
-        val recordDeleted = fertilizerPriceService.deleteFertilizerPrice(id)
-
-        return when {
-            recordDeleted -> ResponseEntity(recordDeleted, HttpStatus.OK)
-            else -> ResponseEntity(recordDeleted, HttpStatus.NOT_FOUND)
-        }
     }
 }
