@@ -34,7 +34,7 @@ class SecurityConfig(
             .and()
             .authorizeRequests()
             .antMatchers(
-                "/api/**/fert**","/api/**/fert**/**",
+                "/api/**/fert**", "/api/**/fert**/**",
                 "/api/**/oper**", "/api/**/oper**/**",
                 "/api/**/reco**",
                 "/api/**/curr**",
@@ -42,10 +42,10 @@ class SecurityConfig(
                 "/api/**/maize**", "/api/**/maize**/**",
                 "/api/**/potato**", "/api/**/potato**/**",
                 "/api/**/starch**",
-                "/api/**/user-feedback**","/api/**/user-feedback**/**",
+                "/api/**/user-feedback**", "/api/**/user-feedback**/**",
             ).permitAll()
             .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
-            .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER")

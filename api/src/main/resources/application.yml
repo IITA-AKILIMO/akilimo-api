@@ -24,6 +24,7 @@ spring:
   jpa:
     properties:
       hibernate:
+        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
         generate_statistics: ${GEN_STATS:false}
         order_inserts: true
         order_updates: true
@@ -86,15 +87,20 @@ akilimo:
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 
+  ona:
+    csv-path: ${OUTPUT_PATH:D:\\dev\\python\\ona-download\\downloads\\converted\\}
+
   currency:
     ngn-usd: ${NGN_USD:360}
+    ghs-usd: ${GHS_USD:6.11}
     tzs-usd: ${TZS_USD:2250}
     kes-usd: ${KES_USD:108}
 
   plumber:
-    base-url: ${PLUMBER_BASE:http://compute-prod:8090/api/}
+    base-url: ${PLUMBER_BASE:http://akilimo.prod:8090/api/}
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
+    compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}
 
   messaging:
     sms:

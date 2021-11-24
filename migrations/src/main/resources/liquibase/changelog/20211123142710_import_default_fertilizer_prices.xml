@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="20211123142710" author="smbar" labels="akilimo-migration">
+        <loadData
+                file="/liquibase/changelog/data/fertilizer_price_23_11_2021.csv"
+                tableName="fertilizer_price">
+
+
+            <column name="country" header="country"/>
+            <column name="fertilizer_key" header="fertilizer_key"/>
+            <column name="min_price" header="min_price"/>
+            <column name="max_price" header="max_price"/>
+            <column name="price_per_bag" header="price_per_bag"/>
+            <column name="price_active" header="price_active" type="boolean"/>
+            <column name="sort_order" header="sort_order" type="numeric"/>
+            <column name="desc" header="desc"/>
+
+            <column name="updated_at" header="updated_at" type="date"/>
+            <column name="created_at" header="created_at" type="date"/>
+
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

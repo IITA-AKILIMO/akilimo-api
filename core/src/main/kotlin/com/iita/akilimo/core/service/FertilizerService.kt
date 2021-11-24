@@ -4,18 +4,24 @@ package com.iita.akilimo.core.service
 import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
-import com.iita.akilimo.database.entities.AvailableFertilizers
-import com.iita.akilimo.database.repos.AvailableFertilizerRepo
+import com.iita.akilimo.database.entities.FertilizerEntity
+import com.iita.akilimo.database.repos.FertilizerRepo
+import com.iita.akilimo.database.repos.FertilizerPriceRepository
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class FertilizerService
-constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerService {
+constructor(
+    val fertilizerRepo: FertilizerRepo,
+    val priceRepo: FertilizerPriceRepository
+) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
 
     private val modelMapper = ModelMapper()
@@ -28,19 +34,15 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
 
 
         val fertilizerList = if (useCase != null) {
-            availableFertilizerRepo.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(
-                countries,
-                useCase
-            )
+            fertilizerRepo.findByAvailableIsTrueAndCountryInAndUseCaseOrderBySortOrderAscNameAsc(countries, useCase)
         } else {
-            availableFertilizerRepo.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
+            fertilizerRepo.findByAvailableIsTrueAndCountryInOrderBySortOrderAscNameAsc(countries)
         }
 
         val fertilizerPriceDtoList = ArrayList<FertilizerDto>()
 
         var currencyCode = EnumCountry.ALL.currency()
-        val country = countryCode.uppercase()
-
+        val country = countryCode.uppercase(Locale.getDefault())
         when (country) {
             EnumCountry.TZ.name -> {
                 currencyCode = EnumCountry.TZ.currency()
@@ -64,7 +66,7 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
             val fertilizerDto = modelMapper.map(fertilizer, FertilizerDto::class.java)
             fertilizerDto.currency = currencyCode
             fertilizerDto.countryCode = country
-            fertilizerDto.fertilizerCountry = "${fertilizer.type}-$country"
+            fertilizerDto.fertilizerCountry = "${fertilizer.fertilizerType}-$country"
 
             fertilizerPriceDtoList.add(fertilizerDto)
         }
@@ -73,9 +75,9 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
     }
 
     override fun saveFertilizer(fertilizerRequest: FertilizerRequest): FertilizerDto? {
-        val entity = modelMapper.map(fertilizerRequest, AvailableFertilizers::class.java)
+        val entity = modelMapper.map(fertilizerRequest, FertilizerEntity::class.java)
 
-        val saved = availableFertilizerRepo.save(entity)
+        val saved = fertilizerRepo.save(entity)
 
         modelMapper.configuration.isSkipNullEnabled = true
         modelMapper.configuration.propertyCondition
@@ -85,7 +87,7 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
     }
 
     override fun updateFertilizer(id: Long, fertilizerRequest: FertilizerRequest): FertilizerDto? {
-        val entity = availableFertilizerRepo.findById(id).get()
+        val entity = fertilizerRepo.findById(id).get()
 
         modelMapper.configuration.isSkipNullEnabled = true
         modelMapper.configuration.propertyCondition
@@ -94,7 +96,7 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
         modelMapper.map(fertilizerRequest, entity)
 
 
-        val saved = availableFertilizerRepo.save(entity)
+        val saved = fertilizerRepo.save(entity)
 
         return modelMapper.map(saved, FertilizerDto::class.java)
     }
@@ -102,14 +104,11 @@ constructor(val availableFertilizerRepo: AvailableFertilizerRepo) : IFertilizerS
     @Transactional
     override fun deleteFertilizer(id: Long): Boolean {
 
-        val entity = availableFertilizerRepo.findByFertilizerId(id)
+        val entity = fertilizerRepo.findById(id)
 
-        return when {
-            entity != null -> {
-                availableFertilizerRepo.deleteById(id)
-                true
-            }
-            else -> false
+        return run {
+            fertilizerRepo.deleteById(id)
+            true
         }
 
     }

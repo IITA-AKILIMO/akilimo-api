@@ -72,25 +72,4 @@ class Recommendation : BaseEntity() {
     @Column(name = "recommendation_text")
     var recommendationText: String? = null
 
-
-    @OneToMany(
-        fetch = FetchType.LAZY,
-        targetEntity = Fertilizer::class,
-        mappedBy = "recommendation",
-        cascade = [CascadeType.ALL],
-        orphanRemoval = true
-    )
-    @Fetch(FetchMode.JOIN)
-    @NonNull
-    var fertilizers: Set<Fertilizer>? = null
-
-    fun addFertilizers(recommendation: Recommendation): Set<Fertilizer> {
-        val fertilizerSet = HashSet<Fertilizer>()
-
-        recommendation.fertilizers!!.forEach { requestFertilizer ->
-            requestFertilizer.recommendation = recommendation
-            fertilizerSet.add(requestFertilizer)
-        }
-        return fertilizerSet
-    }
 }

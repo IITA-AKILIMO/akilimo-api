@@ -1,7 +1,6 @@
 package com.iita.akilimo.api.controllers
 
 
-import com.acai.akilimo.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.RecommendationRequest
 import com.iita.akilimo.core.service.MessagingService

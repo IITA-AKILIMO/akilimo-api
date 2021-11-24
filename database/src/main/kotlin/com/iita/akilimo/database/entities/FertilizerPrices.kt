@@ -8,15 +8,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "fertilizer_prices")
-class FertilizerPrices {
-
-    @Id
-    @Column(name = "id")
-    //@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "snowflake")
-    //@GenericGenerator(name = "snowflake", strategy = "com.acai.akilimo.generators.RequestSequenceGenerator")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    var priceId: Long? = null
+class FertilizerPrices : BaseEntity() {
 
     @Column(name = "min_usd", columnDefinition = "decimal", precision = 10, scale = 2)
     var minUsd: Double? = null
@@ -36,13 +28,4 @@ class FertilizerPrices {
 
     @Column(name = "desc")
     var description: String? = null
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false, nullable = false)
-    var createdAt: LocalDateTime? = null
-
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", insertable = false)
-    var updatedAt: LocalDateTime? = null
 }
