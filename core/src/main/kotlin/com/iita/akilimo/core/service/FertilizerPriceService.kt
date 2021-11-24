@@ -34,8 +34,7 @@ constructor(
     private val modelMapper = ModelMapper()
 
     override fun fertilizerPrices(fertilizerKey: String, countryCode: String): List<FertilizerPriceDto> {
-
-        var toCurrency = EnumCountry.ALL.currency()hen (country) {
+        var toCurrency = EnumCountry.ALL.currency()
         val currencyRate = 1.00
         when (countryCode) {
             EnumCountry.TZ.name -> {
@@ -52,11 +51,7 @@ constructor(
             }
             EnumCountry.RW.name -> {
                 toCurrency = EnumCountry.RW.currency()
-                currencyRate = currencyProperties.rwfUsd!!
-            }
-            EnumCountry.GH.name -> {
-                toCurrency = EnumCountry.GH.currency()
-                currencyRate = currencyProperties.ghsUsd!!
+//                currencyRate = currencyProperties.rwfUsd!!
             }
         }
 
