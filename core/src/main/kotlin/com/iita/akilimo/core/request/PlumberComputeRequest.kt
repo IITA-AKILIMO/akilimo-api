@@ -316,12 +316,10 @@ open class PlumberComputeRequest {
     var npkTwelveThirty17Available: Boolean = false
 
     @JsonProperty("NPK123017CostperBag")
-    var npkTwelveThirtyCostPerBag: Double = 0.0
+    var npkTwelveThirty17CostPerBag: Double = 0.0
 
     @JsonProperty("NPK123017BagWt")
-    var npkTwelveThirtyBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
-
-
+    var npkTwelveThirty17BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
 
     @JsonProperty("TSPavailable")
@@ -464,4 +462,17 @@ open class PlumberComputeRequest {
     var newFert5BagWeight: Int = 0
 
      */
+
+    //Debugging flags
+    @JsonProperty("debugGH")
+    var debugGH: Boolean = false
+
+    @JsonProperty("debugNG")
+    var debugNG: Boolean = false
+
+    @JsonProperty("debugTZ")
+    var debugTZ: Boolean = false
+
+    @JsonProperty("debugRW")
+    var debugRW: Boolean = false
 }
