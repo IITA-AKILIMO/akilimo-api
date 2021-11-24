@@ -36,15 +36,6 @@ enum class EnumCountry {
         }
     },
 
-
-    @JsonProperty("GH")
-    GH {
-        override fun currency(): String {
-            return "GHS"
-        }
-    },
-
-
     @JsonProperty("ALL")
     ALL {
         override fun currency(): String {
