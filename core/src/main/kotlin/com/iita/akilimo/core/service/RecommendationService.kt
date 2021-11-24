@@ -388,6 +388,41 @@ constructor(
             requestPayloadPlumber.npkTwentyTwelve16CostPerBag = npk201216.fertilizerCostPerBag
         }
 
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_11_22_21.name)) {
+            val npk112221 = fertilizerList[EnumFertilizer.NPK_11_22_21.name]!!
+            requestPayloadPlumber.npkElevenTwentyTwo21Available = npk112221.selected
+            requestPayloadPlumber.npkElevenTwentyTwo21BagWeight = npk112221.fertilizerWeight!!
+            requestPayloadPlumber.npkElevenTwentyTwo21CostPerBag = npk112221.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_25_10_10.name)) {
+            val npk251010 = fertilizerList[EnumFertilizer.NPK_25_10_10.name]!!
+            requestPayloadPlumber.npkTwentyFiveTen10Available = npk251010.selected
+            requestPayloadPlumber.npkTwentyFiveTen10BagWeight = npk251010.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyFiveTen10CostPerBag = npk251010.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_15_20_20.name)) {
+            val npk152020 = fertilizerList[EnumFertilizer.NPK_15_20_20.name]!!
+            requestPayloadPlumber.npkFifteenTwenty20Available = npk152020.selected
+            requestPayloadPlumber.npkFifteenTwenty20BagWeight = npk152020.fertilizerWeight!!
+            requestPayloadPlumber.npkFifteenTwenty20CostPerBag = npk152020.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_23_10_5.name)) {
+            val npk23105 = fertilizerList[EnumFertilizer.NPK_23_10_5.name]!!
+            requestPayloadPlumber.npkTwentyThreeTen5Available = npk23105.selected
+            requestPayloadPlumber.npkTwentyThreeTen5BagWeight = npk23105.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyThreeTen5CostPerBag = npk23105.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_12_30_17.name)) {
+            val npk123017 = fertilizerList[EnumFertilizer.NPK_12_30_17.name]!!
+            requestPayloadPlumber.npkTwelveThirty17Available = npk123017.selected
+            requestPayloadPlumber.npkTwelveThirty17BagWeight = npk123017.fertilizerWeight!!
+            requestPayloadPlumber.npkTwelveThirty17CostPerBag = npk123017.fertilizerCostPerBag
+        }
+
         return requestPayloadPlumber
     }
 }
