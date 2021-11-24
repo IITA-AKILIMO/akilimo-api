@@ -45,7 +45,7 @@ class SecurityConfig(
                 "/api/**/user-feedback**", "/api/**/user-feedback**/**",
             ).permitAll()
             .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
-            .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN","USER")
+            .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER")

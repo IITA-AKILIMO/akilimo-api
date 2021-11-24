@@ -33,91 +33,55 @@ constructor(
 
     private val modelMapper = ModelMapper()
 
-    override fun fertilizerPriceByCountry(countryCode: String): List<FertilizerPriceDto> {
-        val fertilizerList = fertilizerPriceRepository.findByPriceActiveIsTrueOrderBySortOrderAsc()
-        val fertilizerPriceDtoList = ArrayList<FertilizerPriceDto>()
-
+    override fun fertilizerPrices(fertilizerKey: String, countryCode: String): List<FertilizerPriceDto> {
         var toCurrency = EnumCountry.ALL.currency()
-        var currencyRate = 1.00
-        val country = countryCode.toUpperCase()
-
-        when (country) {
+        val currencyRate = 1.00
+        when (countryCode) {
             EnumCountry.TZ.name -> {
                 toCurrency = EnumCountry.TZ.currency()
-                currencyRate = currencyProperties.tzsUsd!!
+//                currencyRate = currencyProperties.tzsUsd!!
             }
             EnumCountry.NG.name -> {
                 toCurrency = EnumCountry.NG.currency()
-                currencyRate = currencyProperties.ngnUsd!!
+//                currencyRate = currencyProperties.ngnUsd!!
             }
             EnumCountry.GH.name -> {
                 toCurrency = EnumCountry.GH.currency()
-                currencyRate = currencyProperties.ghsUsd!!
+//                currencyRate = currencyProperties.ghsUsd!!
+            }
+            EnumCountry.RW.name -> {
+                toCurrency = EnumCountry.RW.currency()
+//                currencyRate = currencyProperties.rwfUsd!!
             }
         }
 
 
         val currencyEntity = currencyRepo.findByCurrencyCode(toCurrency)
         val currencyDto = modelMapper.map(currencyEntity, CurrencyDto::class.java)
-        var sortIndex: Long = 1
 
-        val minPrice = fertilizerPriceRepository.findBySortOrder(1)
-        val maxPrice = fertilizerPriceRepository.findBySortOrder(4)
+        val fertilizerPrices = fertilizerPriceRepo.findAllByFertilizerKeyAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerKey)
 
-        val minAllowed = conversion.convertToSpecifiedCurrency(
-            amount = minPrice.minUsd!!,
-            currencyRate = currencyRate,
-            currencyDto = currencyDto,
-            nearestValue = 1000.0
-        )
+        val minPrice = fertilizerPriceRepo.findBySortOrderAndFertilizerKey(1, fertilizerKey)
+        val maxPrice = fertilizerPriceRepo.findBySortOrderAndFertilizerKey(4, fertilizerKey)
 
-        val maxAllowed = conversion.convertToSpecifiedCurrency(
-            amount = maxPrice.maxUsd!!,
-            currencyRate = currencyRate,
-            currencyDto = currencyDto,
-            nearestValue = 1000.0
-        )
-        for (fertilizerPrice in fertilizerList) {
-            val fertilizerPriceDto = modelMapper.map(fertilizerPrice, FertilizerPriceDto::class.java)
+        return fertilizerPrices.map { priceEntity ->
+            val dto = modelMapper.map(priceEntity, FertilizerPriceDto::class.java)
+            dto.minLocalPrice = minPrice.minPrice
+            dto.maxLocalPrice = maxPrice.maxPrice
 
-//            fertilizerPriceDto.minAllowedPrice = minAllowed
-//            fertilizerPriceDto.maxAllowedPrice = maxAllowed
+            dto.minAllowedPrice = maxPrice.minPrice
+            dto.maxAllowedPrice = maxPrice.maxPrice
 
-            fertilizerPriceDto.priceRange = conversion.convertPriceToLocalCurrency(
-                minUsd = fertilizerPrice.minUsd!!,
-                maxUsd = fertilizerPrice.maxUsd!!,
+            dto.priceRange = conversion.convertPriceToLocalCurrency(
+                minUsd = priceEntity.pricePerBag!!.toDouble(),
+                maxUsd = priceEntity.pricePerBag!!.toDouble(),
                 currencyRate = currencyRate,
                 currencyDto = currencyDto,
                 nearestValue = 1000.0
             )
-
-//            fertilizerPriceDto.minLocalPrice = conversion.convertToSpecifiedCurrency(
-//                amount = fertilizerPrice.minUsd!!,
-//                currencyRate = currencyRate,
-//                currencyDto = currencyDto,
-//                nearestValue = 1000.0
-//            )
-//
-//            fertilizerPriceDto.maxLocalPrice = conversion.convertToSpecifiedCurrency(
-//                amount = fertilizerPrice.maxUsd!!,
-//                currencyRate = currencyRate,
-//                currencyDto = currencyDto,
-//                nearestValue = 1000.0
-//            )
-
-            val pricePerBagRaw = conversion.convertToSpecifiedCurrency(fromAmount = fertilizerPrice.pricePerBag!!, exchangeRate = currencyRate)
-            val pricePerBag = conversion.roundToNearestSpecifiedValue(pricePerBagRaw, 1000.00)
-            fertilizerPriceDto.priceId = sortIndex
-            fertilizerPriceDto.id = fertilizerPrice.id!!
-//            fertilizerPriceDto.pricePerBag = pricePerBag
-            fertilizerPriceDto.country = country
-            fertilizerPriceDto.fertilizerCountry = "$country$sortIndex"
-
-            fertilizerPriceDtoList.add(fertilizerPriceDto)
-            sortIndex++
+            dto.fertilizerCountry = "${priceEntity.country}${priceEntity.id}"
+            dto
         }
-
-        return fertilizerPriceDtoList
     }
 
     override fun saveFertilizerPrice(fertilizerPriceRequest: FertilizerPriceRequest): FertilizerPriceDto? {
@@ -166,25 +130,6 @@ constructor(
             true
         }
 
-    }
-
-    fun fertilizerPrices(fertilizerKey: String): List<FertilizerPriceDto> {
-        val fertilizerPrices = fertilizerPriceRepo.findAllByFertilizerKeyAndPriceActiveIsTrueOrderBySortOrderAsc(fertilizerKey)
-
-        val minPrice = fertilizerPriceRepo.findBySortOrderAndFertilizerKey(1, fertilizerKey)
-        val maxPrice = fertilizerPriceRepo.findBySortOrderAndFertilizerKey(4, fertilizerKey)
-
-        return fertilizerPrices.map { priceEntity ->
-            val dto = modelMapper.map(priceEntity, FertilizerPriceDto::class.java)
-            dto.minLocalPrice = minPrice.minPrice
-            dto.maxLocalPrice = maxPrice.maxPrice
-
-            dto.minAllowedPrice = maxPrice.minPrice
-            dto.maxAllowedPrice = maxPrice.maxPrice
-
-            dto.fertilizerCountry = "${priceEntity.country}${priceEntity.id}"
-            dto
-        }
     }
 
 

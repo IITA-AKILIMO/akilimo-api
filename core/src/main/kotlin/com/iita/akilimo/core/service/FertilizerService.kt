@@ -4,9 +4,8 @@ package com.iita.akilimo.core.service
 import com.iita.akilimo.core.interfaces.IFertilizerService
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
-import com.iita.akilimo.database.entities.AvailableFertilizers
 import com.iita.akilimo.database.entities.FertilizerEntity
-import com.iita.akilimo.database.repos.AvailableFertilizerRepo
+import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.repos.FertilizerPriceRepository
 import com.iita.akilimo.enums.EnumCountry
 import org.modelmapper.ModelMapper
@@ -20,7 +19,7 @@ import kotlin.collections.ArrayList
 @Service
 class FertilizerService
 constructor(
-    val fertilizerRepo: AvailableFertilizerRepo,
+    val fertilizerRepo: FertilizerRepo,
     val priceRepo: FertilizerPriceRepository
 ) : IFertilizerService {
     private val logger = LoggerFactory.getLogger(FertilizerService::class.java)
@@ -44,13 +43,15 @@ constructor(
 
         var currencyCode = EnumCountry.ALL.currency()
         val country = countryCode.uppercase(Locale.getDefault())
-
         when (country) {
             EnumCountry.TZ.name -> {
                 currencyCode = EnumCountry.TZ.currency()
             }
             EnumCountry.NG.name -> {
                 currencyCode = EnumCountry.NG.currency()
+            }
+            EnumCountry.RW.name -> {
+                currencyCode = EnumCountry.RW.currency()
             }
             EnumCountry.GH.name -> {
                 currencyCode = EnumCountry.GH.currency()

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface AvailableFertilizerRepo : JpaRepository<FertilizerEntity, Long> {
+interface FertilizerRepo : JpaRepository<FertilizerEntity, Long> {
 
     override fun findById(priceId: Long): Optional<FertilizerEntity>
 

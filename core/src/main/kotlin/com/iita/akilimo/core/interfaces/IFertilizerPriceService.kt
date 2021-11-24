@@ -6,7 +6,7 @@ import org.springframework.util.MultiValueMap
 
 
 interface IFertilizerPriceService {
-    fun fertilizerPriceByCountry(countryCode: String): List<FertilizerPriceDto>
+    fun fertilizerPrices(fertilizerKey: String, countryCode: String): List<FertilizerPriceDto>
 
     fun saveFertilizerPrice(fertilizerPriceRequest: FertilizerPriceRequest): FertilizerPriceDto?
 

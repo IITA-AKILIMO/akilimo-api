@@ -7,7 +7,7 @@ import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
-import com.iita.akilimo.database.repos.AvailableFertilizerRepo
+import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.entities.Payload
 import com.iita.akilimo.database.repos.PayloadRepository
 import com.iita.akilimo.enums.EnumCountry
@@ -28,7 +28,7 @@ import java.util.*
 class RecommendationService
 constructor(
     val restTemplate: RestTemplate,
-    val availableFertilizerRepo: AvailableFertilizerRepo,
+    val fertilizerRepo: FertilizerRepo,
     val payloadRepository: PayloadRepository,
     akilimoConfigProperties: AkilimoConfigProperties
 ) {
@@ -49,7 +49,7 @@ constructor(
 
         if (fertilizers.isEmpty() || fertilizers.size < 2) {
             logger.warn("Empty fertilizer list, adding default fertilizers")
-            val allFertilizers = availableFertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
+            val allFertilizers = fertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
             val q = allFertilizers.map { availableFertilizers ->
                 val fertilizerList = FertilizerList()
                 fertilizerList.fertilizerTypeName = availableFertilizers.name
@@ -81,9 +81,10 @@ constructor(
 
             val entity = HttpEntity(plumberComputeRequest, headers)
             val country = plumberComputeRequest.country
-            var recommendationUrl: String? = null
 
             val baseUrl = plumberPropertiesProperties.baseUrl
+            var recommendationUrl: String = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
+
             when (country) {
                 EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
                 EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
@@ -91,9 +92,9 @@ constructor(
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
-            logger.info("Going to endpoint $recommendationUrl at: $dateTime")
+            logger.info("Going to endpoint $recommendationUrl at: $dateTime for country $country")
 
-            val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
+            val response = restTemplate.postForEntity(recommendationUrl, entity, Array<Any>::class.java)
             val objects = response.body
             plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
             if (objects != null) {
@@ -252,7 +253,7 @@ constructor(
     }
 
     private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
-        val allFertilizers = availableFertilizerRepo.findAllByAvailableIsTrue()
+        val allFertilizers = fertilizerRepo.findAllByAvailableIsTrue()
         allFertilizers.forEach { fertilizer ->
             if (!tempFertilizerList.containsKey(fertilizer.fertilizerType)) {
                 val fertName = fertilizer.fertilizerType!!
@@ -288,7 +289,7 @@ constructor(
         val requestPayloadPlumber = modelMapper.map(recommendationRequest.userInfo, PlumberComputeRequest::class.java)
         modelMapper.map(recommendationRequest.computeRequest, requestPayloadPlumber)
 
-        //@TODO Make sure are unit is not being passed as translated from the mobile app side
+        //@TODO Make sure area unit is not being passed as translated from the mobile app side
         val areaUnit = requestPayloadPlumber.areaUnits
         if (areaUnit.equals("ekari", false)) {
             requestPayloadPlumber.areaUnits = "acre"
@@ -386,6 +387,41 @@ constructor(
             requestPayloadPlumber.npkTwentyTwelve16Available = npk201216.selected
             requestPayloadPlumber.npkTwentyTwelve16BagWeight = npk201216.fertilizerWeight!!
             requestPayloadPlumber.npkTwentyTwelve16CostPerBag = npk201216.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_11_22_21.name)) {
+            val npk112221 = fertilizerList[EnumFertilizer.NPK_11_22_21.name]!!
+            requestPayloadPlumber.npkElevenTwentyTwo21Available = npk112221.selected
+            requestPayloadPlumber.npkElevenTwentyTwo21BagWeight = npk112221.fertilizerWeight!!
+            requestPayloadPlumber.npkElevenTwentyTwo21CostPerBag = npk112221.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_25_10_10.name)) {
+            val npk251010 = fertilizerList[EnumFertilizer.NPK_25_10_10.name]!!
+            requestPayloadPlumber.npkTwentyFiveTen10Available = npk251010.selected
+            requestPayloadPlumber.npkTwentyFiveTen10BagWeight = npk251010.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyFiveTen10CostPerBag = npk251010.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_15_20_20.name)) {
+            val npk152020 = fertilizerList[EnumFertilizer.NPK_15_20_20.name]!!
+            requestPayloadPlumber.npkFifteenTwenty20Available = npk152020.selected
+            requestPayloadPlumber.npkFifteenTwenty20BagWeight = npk152020.fertilizerWeight!!
+            requestPayloadPlumber.npkFifteenTwenty20CostPerBag = npk152020.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_23_10_5.name)) {
+            val npk23105 = fertilizerList[EnumFertilizer.NPK_23_10_5.name]!!
+            requestPayloadPlumber.npkTwentyThreeTen5Available = npk23105.selected
+            requestPayloadPlumber.npkTwentyThreeTen5BagWeight = npk23105.fertilizerWeight!!
+            requestPayloadPlumber.npkTwentyThreeTen5CostPerBag = npk23105.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.NPK_12_30_17.name)) {
+            val npk123017 = fertilizerList[EnumFertilizer.NPK_12_30_17.name]!!
+            requestPayloadPlumber.npkTwelveThirty17Available = npk123017.selected
+            requestPayloadPlumber.npkTwelveThirty17BagWeight = npk123017.fertilizerWeight!!
+            requestPayloadPlumber.npkTwelveThirty17CostPerBag = npk123017.fertilizerCostPerBag
         }
 
         return requestPayloadPlumber

@@ -22,6 +22,9 @@ val generateChangelog by tasks.registering {
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
     <changeSet id="$date" author="$user" labels="akilimo-migration">
 
     </changeSet>
