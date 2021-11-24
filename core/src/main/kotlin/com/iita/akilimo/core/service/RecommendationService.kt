@@ -81,9 +81,10 @@ constructor(
 
             val entity = HttpEntity(plumberComputeRequest, headers)
             val country = plumberComputeRequest.country
-            var recommendationUrl: String? = null
 
             val baseUrl = plumberPropertiesProperties.baseUrl
+            var recommendationUrl: String = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
+
             when (country) {
                 EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
                 EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
@@ -91,9 +92,9 @@ constructor(
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
-            logger.info("Going to endpoint $recommendationUrl at: $dateTime")
+            logger.info("Going to endpoint $recommendationUrl at: $dateTime for country $country")
 
-            val response = restTemplate.postForEntity(recommendationUrl!!, entity, Array<Any>::class.java)
+            val response = restTemplate.postForEntity(recommendationUrl, entity, Array<Any>::class.java)
             val objects = response.body
             plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
             if (objects != null) {
@@ -288,7 +289,7 @@ constructor(
         val requestPayloadPlumber = modelMapper.map(recommendationRequest.userInfo, PlumberComputeRequest::class.java)
         modelMapper.map(recommendationRequest.computeRequest, requestPayloadPlumber)
 
-        //@TODO Make sure are unit is not being passed as translated from the mobile app side
+        //@TODO Make sure area unit is not being passed as translated from the mobile app side
         val areaUnit = requestPayloadPlumber.areaUnits
         if (areaUnit.equals("ekari", false)) {
             requestPayloadPlumber.areaUnits = "acre"

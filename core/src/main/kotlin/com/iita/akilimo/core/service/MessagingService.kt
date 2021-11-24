@@ -35,8 +35,6 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
         }
         try {
             val smsMessage = buildMessagePayload(response)
-
-
             val postUrl = sms.apiUrl()
             val headers = addRequestHeaders()
             val entity = HttpEntity(smsMessage, headers)

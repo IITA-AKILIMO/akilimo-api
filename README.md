@@ -2,20 +2,19 @@
 
 ## Akilimo Build status
 
-[![CircleCI](https://circleci.com/gh/masgeek/akilimo-api.svg?style=svg)](https://circleci.com/gh/masgeek/akilimo-api)
+[![CircleCI](https://circleci.com/gh/IITA-AKILIMO/akilimo-api.svg?style=svg)](https://circleci.com/gh/IITA-AKILIMO/akilimo-api)
 
 **Production branch**
 
-[![CircleCI](https://circleci.com/gh/masgeek/akilimo-api/tree/master.svg?style=svg)](https://circleci.com/gh/masgeek/akilimo-api/tree/master)
+[![CircleCI](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/master.svg?style=svg)](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/master)
 
 **develop branch**
 
-[![CircleCI](https://circleci.com/gh/masgeek/akilimo-api/tree/develop.svg?style=svg)](https://circleci.com/gh/masgeek/akilimo-api/tree/develop)
+[![CircleCI](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/develop.svg?style=svg)](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/develop)
 
 **quality assesment**
 
-[![codebeat badge](https://codebeat.co/badges/6db0e476-ae3a-40ae-ae80-f42331e9fab9)](https://codebeat.co/projects/github-com-masgeek-akilimo-api-master)
-
+[![codebeat badge](https://codebeat.co/badges/c0cb5198-13b9-46dc-b83e-79f8989c1698)](https://codebeat.co/projects/github-com-iita-akilimo-akilimo-api-develop)
 
 ## Setup IntelliJ
 

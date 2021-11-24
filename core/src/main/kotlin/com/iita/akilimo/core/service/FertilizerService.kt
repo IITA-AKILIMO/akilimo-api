@@ -43,13 +43,15 @@ constructor(
 
         var currencyCode = EnumCountry.ALL.currency()
         val country = countryCode.uppercase(Locale.getDefault())
-
         when (country) {
             EnumCountry.TZ.name -> {
                 currencyCode = EnumCountry.TZ.currency()
             }
             EnumCountry.NG.name -> {
                 currencyCode = EnumCountry.NG.currency()
+            }
+            EnumCountry.RW.name -> {
+                currencyCode = EnumCountry.RW.currency()
             }
             EnumCountry.GH.name -> {
                 currencyCode = EnumCountry.GH.currency()
