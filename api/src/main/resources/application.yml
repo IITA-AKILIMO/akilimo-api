@@ -86,6 +86,10 @@ akilimo:
   externaldoc: '4.0.0'
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+  developer:
+    name: ${DEV_NAME:Akilimo Team}
+    email: ${DEV_NAME:akilimo@cgiar.org}
+    url: ${DEV_NAME:akilimo.org}
 
   ona:
     csv-path: ${OUTPUT_PATH:D:\\dev\\python\\ona-download\\downloads\\converted\\}
