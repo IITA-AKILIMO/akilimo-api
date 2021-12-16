@@ -20,14 +20,18 @@ class OpenApiConfig {
         @Value("\${akilimo.version}") appVersion: String,
         @Value("\${akilimo.name}") appName: String,
         @Value("\${akilimo.license}") license: String,
+        @Value("\${akilimo.license_url}") licenseUrl: String,
+        @Value("\${akilimo.developer.name}") developer: String,
+        @Value("\${akilimo.developer.email}") developerEmail: String,
+        @Value("\${akilimo.developer.url}") developerUrl: String,
     ): OpenAPI {
         return OpenAPI()
             .info(
                 Info().title(appName)
                     .description(appName)
-                    .contact(Contact().email("dev@munywele.co.ke").name("Munywele Consulting LTD").url("https://munywele.co.ke"))
+                    .contact(Contact().email(developerEmail).name(developer).url(developerUrl))
                     .version(appVersion)
-                    .license(License().name(license).url("https://www.gnu.org/licenses/gpl-3.0.en.html"))
+                    .license(License().name(license).url(licenseUrl))
             )
             .externalDocs(
                 ExternalDocumentation()
