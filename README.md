@@ -6,7 +6,7 @@
 
 **Production branch**
 
-[![CircleCI](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/maain.svg?style=svg)](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/main)
+[![CircleCI](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/main.svg?style=svg)](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/main)
 
 **develop branch**
 
