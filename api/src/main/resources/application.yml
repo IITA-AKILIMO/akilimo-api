@@ -1,5 +1,5 @@
-debug: ${DEBUG:false}
-trace: ${TRACE:false}
+debug: ${akilimo.dev-mode}
+trace: ${akilimo.dev-mode}
 
 server:
   port: ${PORT_NUMBER:8098}
@@ -80,10 +80,11 @@ rate:
     max-request: ${MAX_REQUESTS:1}
 
 akilimo:
+  dev-mode: ${DEV_MODE:false}
   name: 'AKILIMO API'
   version: '4.0.0'
   desc: 'Description here'
-  externaldoc: '4.0.0'
+  externaldoc: ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
   developer:
