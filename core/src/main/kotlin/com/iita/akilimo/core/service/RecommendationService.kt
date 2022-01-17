@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.iita.akilimo.config.AkilimoConfigProperties
 import com.iita.akilimo.config.PlumberProperties
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
+import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
+import com.iita.akilimo.core.request.usecases.sp.SpRequest
 import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.entities.Payload
 import com.iita.akilimo.database.repos.PayloadRepository
@@ -15,6 +17,7 @@ import com.iita.akilimo.enums.EnumFertilizer
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
 import org.modelmapper.ModelMapper
+import org.modelmapper.convention.MatchingStrategies
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -41,7 +44,32 @@ constructor(
     private val modelMapper = ModelMapper()
     private lateinit var recommendationResponseDto: RecommendationResponseDto
 
-    fun computeRecommendations(recommendationRequest: RecommendationRequest, requestContext: String?): RecommendationResponseDto? {
+
+    fun computeSpRecommendation(request: SpRequest): RecommendationResponseDto? {
+        //let us map the default values first
+        val countries = ArrayList<String>()
+        countries.add(EnumCountry.ALL.name)
+        countries.add(request.computeRequest.country.name)
+
+
+
+        modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
+        val computeRequest = modelMapper.map(recProperties, ComputeRequest::class.java)
+        modelMapper.map(request.computeRequest, computeRequest)
+        computeRequest.scheduledPlantingRec = true
+        computeRequest.scheduledHarvestRec = true
+
+        //build the recommendation request object now
+        val recommendationRequest = RecommendationRequest(
+            userInfo = request.userInfo,
+            computeRequest = computeRequest,
+            fertilizerList = request.fertilizerList
+        )
+        return computeRecommendations(recommendationRequest)
+    }
+
+
+    private fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val countries = ArrayList<String>()
         countries.add(EnumCountry.ALL.name)
         countries.add(recommendationRequest.computeRequest.country)
@@ -50,20 +78,11 @@ constructor(
 
         if (fertilizers.isEmpty() || fertilizers.size < 2) {
             logger.warn("Empty fertilizer list, adding default fertilizers")
-            val allFertilizers = fertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
-            val availableFertilizers = allFertilizers.map { availableFertilizer ->
-                val fertilizerList = FertilizerList()
-                fertilizerList.fertilizerTypeName = availableFertilizer.name
-                fertilizerList.fertilizerType = availableFertilizer.fertilizerType
-                fertilizerList.fertilizerWeight = availableFertilizer.weight
-                fertilizerList
-            }
-            fertilizers = availableFertilizers.toSet()
+            fertilizers = getAvailableFertilizers(countries)
         }
 
         val fertilizerList = prepareFertilizerList(fertilizers)
 
-        val k = recProperties
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
 
         if (recommendationRequest.userInfo.emailAddress.equals("NA", ignoreCase = true)) {
@@ -254,6 +273,19 @@ constructor(
         headers.add("Content-Type", MediaType.APPLICATION_JSON.toString())
         return headers
     }
+
+    private fun getAvailableFertilizers(countries: ArrayList<String>): Set<FertilizerList> {
+        val allFertilizers = fertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
+        val availableFertilizers = allFertilizers.map { availableFertilizer ->
+            val fertilizerList = FertilizerList()
+            fertilizerList.fertilizerTypeName = availableFertilizer.name
+            fertilizerList.fertilizerType = availableFertilizer.fertilizerType
+            fertilizerList.fertilizerWeight = availableFertilizer.weight
+            fertilizerList
+        }
+        return availableFertilizers.toSet()
+    }
+
 
     private fun evaluateFertilizers(tempFertilizerList: LinkedHashMap<String, FertilizerList>): LinkedHashMap<String, FertilizerList> {
         val allFertilizers = fertilizerRepo.findAllByAvailableIsTrue()

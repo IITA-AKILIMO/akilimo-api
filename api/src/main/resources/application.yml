@@ -127,40 +127,44 @@ akilimo:
     user-phone-code: NA
     user-phone-number: NA
     user-email: NA
-    cmp: 0
-    fcy: 0
+    current-maize-performance: 0
+    current-field-yield: 0
     risk-att: 0
-    pd-window: 0
-    hd-window: 0
+    area-units: acre
+    planting-date-window: 0
+    harvest-date-window: 0
     fallow-type: bush
     fallow-height: 100
-    fallow-green: true
+    fallow-green: false
     problem-weeds: false
     tractor-plough: false
     sms: false
     email: false
     tractor-harrow: false
     tractor-ridger: false
-    name-sf: NA
-    sale-sf: false
+    starch-factory-name: NA
+    sell-to-starch-factory: false
     ploughing: false
     ridging: false
     method-ploughing: NA
     method-ridging: NA
     method-harrowing: NA
     cost-lmo-area-basis: areaUnit
-    cass-pd: roots
-    maize-pd: fresh_cob
+    cassava-produce-type: roots
+    maize-produce-type: fresh_cob
     cass-up-m1: 0
     cass-up-m2: 0
     cass-up-p1: 0
     cass-up-p2: 0
     sweet-potato-uw: 0
     sweet-potato-up: 0
-    cass-up: 0
-    cass-uw: 0
-    maize-up: 0
-    maize-uw: 0
+    cassava-unit-price: 0
+    cassava-unit-weight: 0
+    maize-unit-price: 0
+    maize-unit-weight: 50
+    sweet-potato-produce-type: tubers
+    sweet-potato-unit-weight: 50
+    sweet-potato-unit-price: 0
     cost-manual-ploughing: 0
     cost-manual-harrowing: 0
     cost-manual-ridging: 0
@@ -169,4 +173,4 @@ akilimo:
     cost-tractor-ridging: 0
     cost-weeding1: 0
     cost-weeding2: 0
-    max-inv: 0
+    max-investment: 0

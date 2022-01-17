@@ -1,6 +1,8 @@
 package com.iita.akilimo.config
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.commons.logging.impl.NoOpLog
+import org.springframework.beans.factory.annotation.Value
 import javax.validation.constraints.NotBlank
 
 class RecommendationProperties {
@@ -9,6 +11,9 @@ class RecommendationProperties {
 
     @NotBlank
     var userField: String? = null
+
+    @NotBlank
+    var areaUnits: String? = null
 
     @NotBlank
     var userPhoneCode: String? = null
@@ -20,19 +25,19 @@ class RecommendationProperties {
     var userEmail: String? = null
 
     @NotBlank
-    var cmp: Int? = null
+    var currentMaizePerformance: Int? = null
 
     @NotBlank
-    var fcy: Int? = null
+    var currentFieldYield: Int? = null
 
     @NotBlank
-    var riskAtt: Int? = null
+    var riskAttitude: Int? = null
 
     @NotBlank
-    var pdWindow: Int? = null
+    var plantingDateWindow: Int? = null
 
     @NotBlank
-    var hdWindow: Int? = null
+    var harvestDateWindow: Int? = null
 
     @NotBlank
     var fallowType: String? = null
@@ -62,10 +67,10 @@ class RecommendationProperties {
     var tractorRidger: Boolean? = null
 
     @NotBlank
-    var nameSf: String? = null
+    var starchFactoryName: String? = null
 
     @NotBlank
-    var saleSf: Boolean? = null
+    var sellToStarchFactory: Boolean? = null
 
     @NotBlank
     var ploughing: Boolean? = null
@@ -86,7 +91,7 @@ class RecommendationProperties {
     var costLmoAreaBasis: String? = null
 
     @NotBlank
-    var cassPd: String? = null
+    var cassavaProduceType: String? = null
 
     @NotBlank
     var cassUpM1: Double? = null
@@ -101,22 +106,29 @@ class RecommendationProperties {
     var cassUpP2: Double? = null
 
     @NotBlank
-    var sweetPotatoUw: Double? = null
+    var sweetPotatoProduceType: String? = null
 
     @NotBlank
-    var sweetPotatoUp: Double? = null
+    var sweetPotatoUnitWeight: Double? = null
 
     @NotBlank
-    var cassUp: Double? = null
+    var sweetPotatoUnitPrice: Double? = null
 
     @NotBlank
-    var cassUw: Double? = null
+    var cassavaUnitPrice: Double? = null
 
     @NotBlank
-    var maizeUp: Double? = null
+    var cassavaUnitWeight: Double? = null
 
     @NotBlank
-    var maizeUw: Double? = null
+    var maizeProduceType: String? = null
+
+
+    @NotBlank
+    var maizeUnitPrice: Double? = null
+
+    @NotBlank
+    var maizeUnitWeight: Double? = null
 
     @NotBlank
     var costManualPloughing: Double? = null
@@ -134,7 +146,7 @@ class RecommendationProperties {
     var costTractorHarrowing: Double? = null
 
     @NotBlank
-    var costTractorPRidging: Double? = null
+    var costTractorRidging: Double? = null
 
     @NotBlank
     var costWeeding1: Double? = null
@@ -143,5 +155,5 @@ class RecommendationProperties {
     var costWeeding2: Double? = null
 
     @NotBlank
-    var maxInv: Double? = null
+    var maxInvestment: Double? = null
 }
