@@ -5,6 +5,7 @@ import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.RecommendationRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v1/recommendations")
+@RequestMapping("/api/v1")
 @RestController
-class RecommendationsController(
+@Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for varous use cases")
+class UseCasesControllers(
     private val recommendationService: RecommendationService,
     private val messagingService: MessagingService
 ) : BaseController() {
@@ -24,7 +26,8 @@ class RecommendationsController(
         private val myLogger = LoggerFactory.getLogger(RecommendationsController::class.java)
     }
 
-    @PostMapping
+    @PostMapping("/recommendations")
+    @Deprecated("To be removed soon")
     fun computeRecommendations(
         @Valid @RequestBody recommendationRequest: RecommendationRequest,
         @RequestHeader headers: Map<String, String>
@@ -32,12 +35,9 @@ class RecommendationsController(
 
         val requestContext = headers["context"]
         val localeLanguage = headers["locale-lang"]
-
         //check that the request has defined fertilizers
         val modelMapper = ModelMapper()
-
         val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
-
         when {
             response != null -> {
                 if (response.hasResponse) {
@@ -49,5 +49,10 @@ class RecommendationsController(
             }
         }
         return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
+    }
+
+    @PostMapping("/fr")
+    fun computeSp() {
+
     }
 }

@@ -87,6 +87,7 @@ akilimo:
   externaldoc: ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+
   developer:
     name: ${DEV_NAME:Akilimo Team}
     email: ${DEV_NAME:akilimo@cgiar.org}
@@ -106,6 +107,7 @@ akilimo:
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
     compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}
+    compute-rw: ${COMPUTE_RW:v2/dst/recommendation/rw/compute}
 
   messaging:
     sms:
@@ -118,3 +120,53 @@ akilimo:
     email:
       sender: ${EMAIL_SENDER:}
       pass: ${EMAIL_PASS:}
+
+  recommendation: # Hold default values for recommendations for each country
+    username: ${spring.application.name}
+    user-field: ${akilimo.recommendation.username}
+    user-phone-code: NA
+    user-phone-number: NA
+    user-email: NA
+    cmp: 0
+    fcy: 0
+    risk-att: 0
+    pd-window: 0
+    hd-window: 0
+    fallow-type: bush
+    fallow-height: 100
+    fallow-green: true
+    problem-weeds: false
+    tractor-plough: false
+    sms: false
+    email: false
+    tractor-harrow: false
+    tractor-ridger: false
+    name-sf: NA
+    sale-sf: false
+    ploughing: false
+    ridging: false
+    method-ploughing: NA
+    method-ridging: NA
+    method-harrowing: NA
+    cost-lmo-area-basis: areaUnit
+    cass-pd: roots
+    maize-pd: fresh_cob
+    cass-up-m1: 0
+    cass-up-m2: 0
+    cass-up-p1: 0
+    cass-up-p2: 0
+    sweet-potato-uw: 0
+    sweet-potato-up: 0
+    cass-up: 0
+    cass-uw: 0
+    maize-up: 0
+    maize-uw: 0
+    cost-manual-ploughing: 0
+    cost-manual-harrowing: 0
+    cost-manual-ridging: 0
+    cost-tractor-ploughing: 0
+    cost-tractor-harrowing: 0
+    cost-tractor-ridging: 0
+    cost-weeding1: 0
+    cost-weeding2: 0
+    max-inv: 0

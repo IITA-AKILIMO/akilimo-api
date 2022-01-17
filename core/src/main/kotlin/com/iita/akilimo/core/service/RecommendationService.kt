@@ -30,12 +30,13 @@ constructor(
     val restTemplate: RestTemplate,
     val fertilizerRepo: FertilizerRepo,
     val payloadRepository: PayloadRepository,
-    akilimoConfigProperties: AkilimoConfigProperties
+    akilimoConfig: AkilimoConfigProperties
 ) {
 
     private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
 
-    private val plumberPropertiesProperties: PlumberProperties = akilimoConfigProperties.plumber()
+    private val plumberPropertiesProperties: PlumberProperties = akilimoConfig.plumber()
+    private val recProperties = akilimoConfig.recommendations()
     private val mapper = ObjectMapper()
     private val modelMapper = ModelMapper()
     private lateinit var recommendationResponseDto: RecommendationResponseDto
@@ -50,18 +51,19 @@ constructor(
         if (fertilizers.isEmpty() || fertilizers.size < 2) {
             logger.warn("Empty fertilizer list, adding default fertilizers")
             val allFertilizers = fertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
-            val q = allFertilizers.map { availableFertilizers ->
+            val availableFertilizers = allFertilizers.map { availableFertilizer ->
                 val fertilizerList = FertilizerList()
-                fertilizerList.fertilizerTypeName = availableFertilizers.name
-                fertilizerList.fertilizerType = availableFertilizers.fertilizerType
-                fertilizerList.fertilizerWeight = availableFertilizers.weight
+                fertilizerList.fertilizerTypeName = availableFertilizer.name
+                fertilizerList.fertilizerType = availableFertilizer.fertilizerType
+                fertilizerList.fertilizerWeight = availableFertilizer.weight
                 fertilizerList
             }
-            fertilizers = q.toSet()
+            fertilizers = availableFertilizers.toSet()
         }
 
         val fertilizerList = prepareFertilizerList(fertilizers)
 
+        val k = recProperties
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
 
         if (recommendationRequest.userInfo.emailAddress.equals("NA", ignoreCase = true)) {
@@ -79,7 +81,7 @@ constructor(
         val dateTime = LocalDateTime.now()
         try {
 
-            val entity = HttpEntity(plumberComputeRequest, headers)
+            val plumberRequestEntity = HttpEntity(plumberComputeRequest, headers)
             val country = plumberComputeRequest.country
 
             val baseUrl = plumberPropertiesProperties.baseUrl
@@ -89,12 +91,13 @@ constructor(
                 EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
                 EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
                 EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
+                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
             logger.info("Going to endpoint $recommendationUrl at: $dateTime for country $country")
 
-            val response = restTemplate.postForEntity(recommendationUrl, entity, Array<Any>::class.java)
+            val response = restTemplate.postForEntity(recommendationUrl, plumberRequestEntity, Array<Any>::class.java)
             val objects = response.body
             plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
             if (objects != null) {
