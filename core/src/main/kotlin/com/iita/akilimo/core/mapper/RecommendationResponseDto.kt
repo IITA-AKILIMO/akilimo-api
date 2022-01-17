@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 
 
-open class RecommendationResponseDto {
+open class RecommendationResponseDto: BaseDto() {
 
     var country: String? = null
 

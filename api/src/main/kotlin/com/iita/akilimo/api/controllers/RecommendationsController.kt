@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v2/recommendations")
+@RequestMapping("/api/v1/recommendations")
 @RestController
 class RecommendationsController(private val recommendationService: RecommendationService,
                                 private val messagingService: MessagingService) : BaseController() {

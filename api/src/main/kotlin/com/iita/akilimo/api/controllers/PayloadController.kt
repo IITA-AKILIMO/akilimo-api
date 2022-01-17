@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-@RequestMapping("/api/v3/payload")
+@RequestMapping("/api/v1/payload")
 @RestController
 class PayloadController(private val payloadService: PayloadService) : BaseController() {
 

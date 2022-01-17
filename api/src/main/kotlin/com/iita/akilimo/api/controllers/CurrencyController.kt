@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-@RequestMapping("/api/v3/currency")
+@RequestMapping("/api/v1/currency")
 @RestController
 class CurrencyController(val cassavaPriceService: CurrencyService) {
 
