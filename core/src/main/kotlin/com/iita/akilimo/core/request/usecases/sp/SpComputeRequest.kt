@@ -29,6 +29,9 @@ class SpComputeRequest(
     @JsonProperty("nameSF")
     var starchFactoryName: String? = null
 
+    @JsonProperty("cassPD")
+    var cassavaProduceType: String? = null
+
     @JsonProperty("cassUW")
     var cassavaUnitWeight: Int? = null
 
@@ -46,6 +49,9 @@ class SpComputeRequest(
 
     @JsonProperty("cassUP_p2")
     var cassUpP2: Double? = null
+
+    @JsonProperty("maxInv")
+    var maxInvestment: Double? = null
 
     @JsonProperty("riskAtt")
     var riskAttitude: Int? = null

@@ -1,16 +1,10 @@
-package com.iita.akilimo.core.request.usecases.fr
+package com.iita.akilimo.core.request.usecases.ic
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.enums.EnumCountry
-import javax.validation.constraints.Min
-
-import javax.validation.constraints.NotEmpty
 
 
-class FrComputeRequest(
+class IcComputeRequest(
     @JsonProperty("country") val country: EnumCountry,
     @JsonProperty("FCY") val currentFieldYield: Int,
     @JsonProperty("lat") val mapLat: Double,
@@ -22,6 +16,12 @@ class FrComputeRequest(
     @JsonProperty("PD_window") val plantingDateWindow: Int,
     @JsonProperty("HD_window") val harvestDateWindow: Int
 ) {
+
+    @JsonProperty("IC_MAIZE")
+    var interCroppingMaizeRec: Boolean = false
+
+    @JsonProperty("IC_SP")
+    var interCroppingPotatoRec: Boolean = false
 
     @JsonProperty("saleSF")
     var sellToStarchFactory: Boolean? = null
@@ -37,6 +37,24 @@ class FrComputeRequest(
 
     @JsonProperty("cassUP")
     var cassavaUnitPrice: Double? = null
+
+    @JsonProperty("maizePD")
+    var maizeProduceType: String? = null
+
+    @JsonProperty("maizeUW")
+    var maizeUnitWeight: Double? = null
+
+    @JsonProperty("maizeUP")
+    var maizeUnitPrice: Double? = null
+
+    @JsonProperty("sweetPotatoPD")
+    var sweetPotatoProduceType: String? = null
+
+    @JsonProperty("sweetPotatoUW")
+    var sweetPotatoUnitWeight: Double? = null
+
+    @JsonProperty("sweetPotatoUP")
+    var sweetPotatoUnitPrice: Double? = null
 
     @JsonProperty("cassUP_m1")
     var cassUpM1: Double? = null

@@ -8,6 +8,8 @@ import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
+import com.iita.akilimo.core.request.usecases.fr.FrRequest
+import com.iita.akilimo.core.request.usecases.ic.IcRequest
 import com.iita.akilimo.core.request.usecases.sp.SpRequest
 import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.entities.Payload
@@ -45,14 +47,40 @@ constructor(
     private lateinit var recommendationResponseDto: RecommendationResponseDto
 
 
+    fun computeFrRecommendation(request: FrRequest): RecommendationResponseDto? {
+        modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
+        val computeRequest = modelMapper.map(recProperties, ComputeRequest::class.java)
+        modelMapper.map(request.computeRequest, computeRequest)
+        computeRequest.fertilizerRec = true
+
+        //build the recommendation request object now
+        val recommendationRequest = RecommendationRequest(
+            userInfo = request.userInfo,
+            computeRequest = computeRequest,
+            fertilizerList = request.fertilizerList
+        )
+        return computeRecommendations(recommendationRequest)
+    }
+
+    fun computeIcRecommendation(request: IcRequest): RecommendationResponseDto? {
+        modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
+        val computeRequest = modelMapper.map(recProperties, ComputeRequest::class.java)
+        modelMapper.map(request.computeRequest, computeRequest)
+
+        computeRequest.interCroppingRec = true
+        computeRequest.intercrop = true
+
+        //build the recommendation request object now
+        val recommendationRequest = RecommendationRequest(
+            userInfo = request.userInfo,
+            computeRequest = computeRequest,
+            fertilizerList = request.fertilizerList
+        )
+        return computeRecommendations(recommendationRequest)
+    }
+
     fun computeSpRecommendation(request: SpRequest): RecommendationResponseDto? {
         //let us map the default values first
-        val countries = ArrayList<String>()
-        countries.add(EnumCountry.ALL.name)
-        countries.add(request.computeRequest.country.name)
-
-
-
         modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
         val computeRequest = modelMapper.map(recProperties, ComputeRequest::class.java)
         modelMapper.map(request.computeRequest, computeRequest)
@@ -461,4 +489,6 @@ constructor(
 
         return requestPayloadPlumber
     }
+
+
 }
