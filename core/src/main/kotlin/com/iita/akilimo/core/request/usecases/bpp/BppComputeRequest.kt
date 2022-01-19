@@ -1,4 +1,4 @@
-package com.iita.akilimo.core.request.usecases.sp
+package com.iita.akilimo.core.request.usecases.bpp
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.iita.akilimo.enums.EnumCountry
