@@ -18,7 +18,7 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v1/recommendations/pro")
 @RestController
-@Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various use cases")
+@Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various interventions")
 class UseCasesControllers(
     private val recService: RecommendationService, private val messagingService: MessagingService
 ) : BaseController() {
