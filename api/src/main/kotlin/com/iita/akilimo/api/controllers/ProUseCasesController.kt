@@ -4,10 +4,9 @@ package com.iita.akilimo.api.controllers
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.usecases.fr.FrRequest
 import com.iita.akilimo.core.request.usecases.ic.IcRequest
-import com.iita.akilimo.core.request.usecases.sp.SpRequest
+import com.iita.akilimo.core.request.usecases.bpp.BppRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
-import com.iita.akilimo.enums.EnumCrops
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
@@ -76,7 +75,7 @@ class UseCasesControllers(
 
     @PostMapping("/sp")
     fun computeSpRec(
-        @Valid @RequestBody spRequest: SpRequest, @RequestHeader headers: Map<String, String>
+        @Valid @RequestBody bppRequest: BppRequest, @RequestHeader headers: Map<String, String>
     ): ResponseEntity<RecommendationResponseDto> {
 
         val requestContext = headers["context"]
@@ -84,12 +83,36 @@ class UseCasesControllers(
         myLogger.info("Processing SP request for Pro API for context $requestContext")
         //check that the request has defined fertilizers
         val modelMapper = ModelMapper()
-        val response = recService.computeSpRecommendation(spRequest)
+        val response = recService.computeSpRecommendation(bppRequest)
         when {
             response != null -> {
                 if (response.hasResponse) {
-                    messagingService.sendEmailMessage(response, spRequest.userInfo.sendEmail)
-                    messagingService.sendTextMessage(response, spRequest.userInfo.sendSms)
+                    messagingService.sendEmailMessage(response, bppRequest.userInfo.sendEmail)
+                    messagingService.sendTextMessage(response, bppRequest.userInfo.sendSms)
+                }
+                val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
+                return ResponseEntity(resp, HttpStatus.OK)
+            }
+        }
+        return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
+    }
+
+    @PostMapping("/bpp")
+    fun computeBppRec(
+        @Valid @RequestBody bppRequest: BppRequest, @RequestHeader headers: Map<String, String>
+    ): ResponseEntity<RecommendationResponseDto> {
+
+        val requestContext = headers["context"]
+        val localeLanguage = headers["locale-lang"]
+        myLogger.info("Processing BPP request for Pro API for context $requestContext")
+        //check that the request has defined fertilizers
+        val modelMapper = ModelMapper()
+        val response = recService.computeBppRecommendation(request = bppRequest)
+        when {
+            response != null -> {
+                if (response.hasResponse) {
+                    messagingService.sendEmailMessage(response, bppRequest.userInfo.sendEmail)
+                    messagingService.sendTextMessage(response, bppRequest.userInfo.sendSms)
                 }
                 val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
                 return ResponseEntity(resp, HttpStatus.OK)

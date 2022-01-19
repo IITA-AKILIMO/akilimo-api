@@ -10,7 +10,7 @@ import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
 import com.iita.akilimo.core.request.usecases.fr.FrRequest
 import com.iita.akilimo.core.request.usecases.ic.IcRequest
-import com.iita.akilimo.core.request.usecases.sp.SpRequest
+import com.iita.akilimo.core.request.usecases.bpp.BppRequest
 import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.entities.Payload
 import com.iita.akilimo.database.repos.PayloadRepository
@@ -79,13 +79,29 @@ constructor(
         return computeRecommendations(recommendationRequest)
     }
 
-    fun computeSpRecommendation(request: SpRequest): RecommendationResponseDto? {
+    fun computeSpRecommendation(request: BppRequest): RecommendationResponseDto? {
         //let us map the default values first
         modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
         val computeRequest = modelMapper.map(recProperties, ComputeRequest::class.java)
         modelMapper.map(request.computeRequest, computeRequest)
         computeRequest.scheduledPlantingRec = true
         computeRequest.scheduledHarvestRec = true
+
+        //build the recommendation request object now
+        val recommendationRequest = RecommendationRequest(
+            userInfo = request.userInfo,
+            computeRequest = computeRequest,
+            fertilizerList = request.fertilizerList
+        )
+        return computeRecommendations(recommendationRequest)
+    }
+
+
+    fun computeBppRecommendation(request: BppRequest): RecommendationResponseDto? {
+        modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
+        val computeRequest = modelMapper.map(recProperties, ComputeRequest::class.java)
+        modelMapper.map(request.computeRequest, computeRequest)
+        computeRequest.plantingPracticesRec = true
 
         //build the recommendation request object now
         val recommendationRequest = RecommendationRequest(
@@ -489,6 +505,5 @@ constructor(
 
         return requestPayloadPlumber
     }
-
 
 }
