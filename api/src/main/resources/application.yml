@@ -30,7 +30,7 @@ spring:
       hibernate:
         dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
         generate_statistics: ${DEBUG_SQL:false}
-        format_sql:  ${DEBUG_SQL:false}
+        format_sql: ${DEBUG_SQL:false}
         order_inserts: true
         order_updates: true
         ddl-auto: validate
@@ -103,9 +103,9 @@ bucket4j:
             expression: "getRemoteAddr()"
       rate-limits:
         - bandwidths: # maximum of n requests within x duration
-            - capacity: 30
-              time: 1
-              unit: minutes
+            - capacity: ${MAX_REQUESTS:30}
+              time: ${REQUEST_DURATION:1}
+              unit: ${REQUEST_TIME:minutes}
 
 akilimo:
   dev-mode: ${DEV_MODE:false}
@@ -118,8 +118,8 @@ akilimo:
 
   developer:
     name: ${DEV_NAME:Akilimo Team}
-    email: ${DEV_NAME:akilimo@cgiar.org}
-    url: ${DEV_NAME:akilimo.org}
+    email: ${DEV_EMAIL:akilimo@cgiar.org}
+    url: ${DEV_URL:akilimo.org}
 
   ona:
     csv-path: ${OUTPUT_PATH:D:\\dev\\python\\ona-download\\downloads\\converted\\}
