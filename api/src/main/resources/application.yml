@@ -1,5 +1,5 @@
 debug: ${akilimo.dev-mode}
-trace: ${akilimo.dev-mode}
+trace: ${TRACE:false}
 
 server:
   port: ${PORT_NUMBER:8098}
@@ -12,6 +12,9 @@ spring:
     banner-mode: console
     log-startup-info: true
 
+  cache:
+    jcache:
+      config: "classpath:ehcache.xml"
 
   application:
     name: akilimo-api
@@ -22,10 +25,12 @@ spring:
     template:
       fetch-size: 50
   jpa:
+    show-sql: ${DEBUG_SQL:false}
     properties:
       hibernate:
         dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
-        generate_statistics: ${GEN_STATS:false}
+        generate_statistics: ${DEBUG_SQL:false}
+        format_sql:  ${DEBUG_SQL:false}
         order_inserts: true
         order_updates: true
         ddl-auto: validate
@@ -78,6 +83,29 @@ rate:
     enabled: ${RATE_ENABLED:false}
     rate-type: ${RATE_TYPE:minute}
     max-request: ${MAX_REQUESTS:1}
+
+
+
+# rate limiting
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      url: .*
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER # for data privacy reasons the IP should only be collected on bucket rejections
+          - key: USERNAME
+            expression: "'anonym'"
+          - key: URL
+            expression: "getRemoteAddr()"
+      rate-limits:
+        - bandwidths: # maximum of n requests within x duration
+            - capacity: 30
+              time: 1
+              unit: minutes
 
 akilimo:
   dev-mode: ${DEV_MODE:false}
