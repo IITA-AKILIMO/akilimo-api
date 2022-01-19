@@ -26,7 +26,7 @@ open class ComputeRequest {
     var mapLong: Double? = null
 
     @JsonProperty("area")
-    var fieldArea: Double? =null
+    var fieldArea: Double? = null
 
     @JsonProperty("areaUnits")
     var areaUnits: String? = null
@@ -62,10 +62,10 @@ open class ComputeRequest {
     var harvestDate: String? = null
 
     @JsonProperty("PD_window")
-    var plantingDateWindow: Int?=null
+    var plantingDateWindow: Int? = null
 
     @JsonProperty("HD_window")
-    var harvestDateWindow: Int?=null
+    var harvestDateWindow: Int? = null
 
     @JsonProperty("fallowType")
     var fallowType: String? = null
@@ -189,5 +189,5 @@ open class ComputeRequest {
     var maxInvestment: Double? = null
 
     @JsonProperty("riskAtt")
-    var riskAttitude: Int = 0
+    var riskAttitude: Int? = null
 }

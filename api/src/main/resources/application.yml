@@ -127,8 +127,8 @@ akilimo:
     user-phone-code: NA
     user-phone-number: NA
     user-email: NA
-    current-maize-performance: 0
-    current-field-yield: 0
+    current-maize-performance: 5
+    current-field-yield: 11
     risk-att: 0
     area-units: acre
     planting-date-window: 0

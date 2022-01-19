@@ -6,6 +6,7 @@ import com.iita.akilimo.enums.EnumCountry
 
 class IcComputeRequest(
     @JsonProperty("country") val country: EnumCountry,
+    @JsonProperty("CMP") var currentMaizePerformance: Int,
     @JsonProperty("FCY") val currentFieldYield: Int,
     @JsonProperty("lat") val mapLat: Double,
     @JsonProperty("lon") val mapLong: Double,
@@ -17,11 +18,11 @@ class IcComputeRequest(
     @JsonProperty("HD_window") val harvestDateWindow: Int
 ) {
 
-    @JsonProperty("IC_MAIZE")
-    var interCroppingMaizeRec: Boolean = false
-
-    @JsonProperty("IC_SP")
-    var interCroppingPotatoRec: Boolean = false
+//    @JsonProperty("IC_MAIZE")
+//    var interCroppingMaizeRec: Boolean = false
+//
+//    @JsonProperty("IC_SP")
+//    var interCroppingPotatoRec: Boolean = false
 
     @JsonProperty("saleSF")
     var sellToStarchFactory: Boolean? = null

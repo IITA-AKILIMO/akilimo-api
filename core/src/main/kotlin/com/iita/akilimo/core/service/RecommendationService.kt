@@ -68,7 +68,7 @@ constructor(
         modelMapper.map(request.computeRequest, computeRequest)
 
         computeRequest.interCroppingRec = true
-        computeRequest.intercrop = true
+//        computeRequest.intercrop = true
 
         //build the recommendation request object now
         val recommendationRequest = RecommendationRequest(

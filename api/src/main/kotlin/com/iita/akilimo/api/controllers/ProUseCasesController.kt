@@ -7,6 +7,7 @@ import com.iita.akilimo.core.request.usecases.ic.IcRequest
 import com.iita.akilimo.core.request.usecases.sp.SpRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
+import com.iita.akilimo.enums.EnumCrops
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
@@ -20,8 +21,7 @@ import javax.validation.Valid
 @RestController
 @Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various use cases")
 class UseCasesControllers(
-    private val recService: RecommendationService,
-    private val messagingService: MessagingService
+    private val recService: RecommendationService, private val messagingService: MessagingService
 ) : BaseController() {
 
     companion object {
@@ -30,8 +30,7 @@ class UseCasesControllers(
 
     @PostMapping("/fr")
     fun computeFrRec(
-        @Valid @RequestBody frRequest: FrRequest,
-        @RequestHeader headers: Map<String, String>
+        @Valid @RequestBody frRequest: FrRequest, @RequestHeader headers: Map<String, String>
     ): ResponseEntity<RecommendationResponseDto> {
 
         val requestContext = headers["context"]
@@ -52,10 +51,9 @@ class UseCasesControllers(
         return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
     }
 
-    @PostMapping("/ic")
+    @PostMapping("/ic/crop/{crop}")
     fun computeIcRec(
-        @Valid @RequestBody icRequest: IcRequest,
-        @RequestHeader headers: Map<String, String>
+        @PathVariable(required = true) crop: String, @Valid @RequestBody icRequest: IcRequest, @RequestHeader headers: Map<String, String>
     ): ResponseEntity<RecommendationResponseDto> {
 
         val requestContext = headers["context"]
@@ -78,8 +76,7 @@ class UseCasesControllers(
 
     @PostMapping("/sp")
     fun computeSpRec(
-        @Valid @RequestBody spRequest: SpRequest,
-        @RequestHeader headers: Map<String, String>
+        @Valid @RequestBody spRequest: SpRequest, @RequestHeader headers: Map<String, String>
     ): ResponseEntity<RecommendationResponseDto> {
 
         val requestContext = headers["context"]

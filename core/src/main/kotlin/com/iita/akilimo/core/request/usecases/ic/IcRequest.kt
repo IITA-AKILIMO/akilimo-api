@@ -1,6 +1,7 @@
 package com.iita.akilimo.core.request.usecases.ic
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.UserInfo
 
