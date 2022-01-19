@@ -11,7 +11,8 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v1/fertilizers")
 @RestController
-class FertilizersController(private val fertilizerService: FertilizerService
+class FertilizersController(
+    private val fertilizerService: FertilizerService
 ) : BaseController() {
     companion object {
         val logger = LoggerFactory.getLogger(FertilizersController::class.java)

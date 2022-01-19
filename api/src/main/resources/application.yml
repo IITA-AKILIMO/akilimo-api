@@ -88,22 +88,13 @@ rate:
 
 # rate limiting
 bucket4j:
-  enabled: true
+  enabled: ${ENABLE_RATE_LIMIT:true}
   filters:
     - cache-name: buckets
       url: .*
-      metrics:
-        tags:
-          - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER # for data privacy reasons the IP should only be collected on bucket rejections
-          - key: USERNAME
-            expression: "'anonym'"
-          - key: URL
-            expression: "getRemoteAddr()"
       rate-limits:
         - bandwidths: # maximum of n requests within x duration
-            - capacity: ${MAX_REQUESTS:30}
+            - capacity: ${MAX_REQUESTS:200}
               time: ${REQUEST_DURATION:1}
               unit: ${REQUEST_TIME:minutes}
 
