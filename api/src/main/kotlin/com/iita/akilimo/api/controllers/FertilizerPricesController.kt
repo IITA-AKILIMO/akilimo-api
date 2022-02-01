@@ -19,6 +19,20 @@ class FertilizerPricesController(private val fertilizerPriceService: FertilizerP
         val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
+    @Deprecated("To be removed eventually")
+    @GetMapping
+    fun fertilizerPriceByKey(
+        @RequestHeader("country-code") countryCode: String,
+        @PathVariable fertilizerKey: String
+    ): ResponseEntity<List<FertilizerPriceDto>> {
+
+        val fertilizerPriceDto = fertilizerPriceService.fertilizerPrices(
+            fertilizerKey = fertilizerKey.uppercase(),
+            countryCode = countryCode
+        )
+
+        return ResponseEntity(fertilizerPriceDto, HttpStatus.OK)
+    }
 
     @GetMapping("/{fertilizerKey}")
     fun fertilizerPriceByKey(
