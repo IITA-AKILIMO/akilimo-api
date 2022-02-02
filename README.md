@@ -4,15 +4,15 @@ The AKILIMO API is a Standardized RESTful Web Service API Specification that all
 
 ### The AKILIMO API is divided into three sections
 
-#### Advanced
+#### 1. Advanced
 
 This takes the greatest number of inputs and is suitable for applications where user input is not limited such as mobile applications and web interfaces.
 
-#### Intermediate
+#### 2. Intermediate
 
 This version takes moderately less inputs and is suitable in usages that requires moderate amount of data to be provided by the user, such scenarios include chatbot applications and survey style applications.
 
-#### Basic
+#### 3. Basic
 
 The basic version only takes the minimal amount of information required to provide suitable recommendation, it is suitable for usages that do not require extensive data from the end user such as USSD applications, Integrated voice services
 
@@ -22,7 +22,7 @@ To get you quickly get you started on enjoying the integration process of our RE
 1.	You will need to register and get access to the API you can do so via the [user portal], you will then be provided with an API key
 2.	Refer to the API documentation on both [GitHub] and [Swagger]
 3.	Decide which kind of API you want to consume based on your project needs
-4.	Integrate your choice of API version int you’re your systems and enjoy AKILIMO recommendations
+4.	Integrate your choice of API version into your system(s) and enjoy AKILIMO recommendations
 
 ---
 
