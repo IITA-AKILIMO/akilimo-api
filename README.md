@@ -4,11 +4,11 @@ The AKILIMO API is a Standardized RESTful Web Service API Specification that all
 
 ### The AKILIMO API is divided into three sections
 
-####Advanced
+#### Advanced
 
 This takes the greatest number of inputs and is suitable for applications where user input is not limited such as mobile applications and web interfaces.
 
-####Intermediate
+#### Intermediate
 
 This version takes moderately less inputs and is suitable in usages that requires moderate amount of data to be provided by the user, such scenarios include chatbot applications and survey style applications.
 
@@ -27,8 +27,8 @@ To get you quickly get you started on enjoying the integration process of our RE
 ---
 
 ## Versions
+``` to be updated ```
 
-## to be updated
 ---
 ## Akilimo Build status
 
