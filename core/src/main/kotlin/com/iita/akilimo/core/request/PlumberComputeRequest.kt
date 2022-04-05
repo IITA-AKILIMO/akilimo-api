@@ -351,6 +351,16 @@ open class PlumberComputeRequest {
     @JsonProperty("FOMITOTAHAZABagWt")
     var fomOneTotaHazBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
+    /** NEXT fertilizer **/
+    @JsonProperty("DOLOMITEAavailable")
+    var dolomiteAvailable: Boolean = false
+
+    @JsonProperty("DOLOMITECostperBag")
+    var dolomiteCostPerBag: Double = 0.0
+
+    @JsonProperty("DOLOMITEBagWt")
+    var dolomiteBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
 
     @JsonProperty("TSPavailable")
     var tspAvailable: Boolean = false

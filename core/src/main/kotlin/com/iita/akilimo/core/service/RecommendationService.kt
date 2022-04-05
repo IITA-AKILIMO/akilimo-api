@@ -446,6 +446,14 @@ constructor(
             requestPayloadPlumber.fomOneTotaHazCostPerBag = fromTwo.fertilizerCostPerBag
         }
 
+
+        if (fertilizerList.containsKey(EnumFertilizer.DOLOMITE.name)) {
+            val fromTwo = fertilizerList[EnumFertilizer.DOLOMITE.name]!!
+            requestPayloadPlumber.dolomiteAvailable = fromTwo.selected
+            requestPayloadPlumber.dolomiteBagWeight = fromTwo.fertilizerWeight!!
+            requestPayloadPlumber.dolomiteCostPerBag = fromTwo.fertilizerCostPerBag
+        }
+
         return requestPayloadPlumber
     }
 }

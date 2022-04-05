@@ -111,4 +111,7 @@
     <include file="/liquibase/changelog/20211123142722_import_default_investment_amounts.xml"/>
     <include file="/liquibase/changelog/20211123155648_import_default_ghana_cassava_prices.xml"/>
 
+    <include file="/liquibase/changelog/20220405112602_import_burundi_fertilizers.xml"/>
+    <include file="/liquibase/changelog/20220405113759_import_burundi_fertilizer_prices.xml"/>
+
 </databaseChangeLog>

@@ -22,6 +22,7 @@ enum class EnumFertilizer(vararg customFertilizerKeys: String) {
     FOM_II_MBUR,
     FOM_I_BAGARA,
     FOM_I_TOTA_HAZA,
+    DOLOMITE,
     CUSTOM_FERT_TWO,
     CUSTOM_FERT_THREE,
     CUSTOM_FERT_FOUR,
