@@ -113,5 +113,6 @@
 
     <include file="/liquibase/changelog/20220405112602_import_burundi_fertilizers.xml"/>
     <include file="/liquibase/changelog/20220405113759_import_burundi_fertilizer_prices.xml"/>
+    <include file="/liquibase/changelog/20220405120401_import_burundi_cassava_prices.xml"/>
 
 </databaseChangeLog>
