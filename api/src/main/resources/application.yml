@@ -98,6 +98,7 @@ akilimo:
     ngn-usd: ${NGN_USD:360}
     ghs-usd: ${GHS_USD:6.11}
     tzs-usd: ${TZS_USD:2250}
+    bif-usd: ${BIF_USD:2056}
     kes-usd: ${KES_USD:108}
 
   plumber:
@@ -105,6 +106,7 @@ akilimo:
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
     compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}
+    compute-bi: ${COMPUTE_BI:v2/dst/recommendation/bi/compute}
 
   messaging:
     sms:
