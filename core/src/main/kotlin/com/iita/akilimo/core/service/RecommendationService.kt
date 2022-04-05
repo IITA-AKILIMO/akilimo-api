@@ -89,6 +89,7 @@ constructor(
                 EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
                 EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
                 EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
+                EnumCountry.BI.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeBi!!}"
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
@@ -422,6 +423,35 @@ constructor(
             requestPayloadPlumber.npkTwelveThirty17Available = npk123017.selected
             requestPayloadPlumber.npkTwelveThirty17BagWeight = npk123017.fertilizerWeight!!
             requestPayloadPlumber.npkTwelveThirty17CostPerBag = npk123017.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.FOM_I_BAGARA.name)) {
+            val fomOne = fertilizerList[EnumFertilizer.FOM_I_BAGARA.name]!!
+            requestPayloadPlumber.fomOneBagaraAvailable = fomOne.selected
+            requestPayloadPlumber.fomOneBagaraBagWeight = fomOne.fertilizerWeight!!
+            requestPayloadPlumber.fomOneBagaraCostPerBag = fomOne.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.FOM_II_MBUR.name)) {
+            val fromTwo = fertilizerList[EnumFertilizer.FOM_II_MBUR.name]!!
+            requestPayloadPlumber.fomTwoMburaAvailable = fromTwo.selected
+            requestPayloadPlumber.fomTwoMburaBagWeight = fromTwo.fertilizerWeight!!
+            requestPayloadPlumber.fomTwoMburaCostPerBag = fromTwo.fertilizerCostPerBag
+        }
+
+        if (fertilizerList.containsKey(EnumFertilizer.FOM_I_TOTA_HAZA.name)) {
+            val fromTwo = fertilizerList[EnumFertilizer.FOM_I_TOTA_HAZA.name]!!
+            requestPayloadPlumber.fomOneTotaHazaAvailable = fromTwo.selected
+            requestPayloadPlumber.fomOneTotaHazBagWeight = fromTwo.fertilizerWeight!!
+            requestPayloadPlumber.fomOneTotaHazCostPerBag = fromTwo.fertilizerCostPerBag
+        }
+
+
+        if (fertilizerList.containsKey(EnumFertilizer.DOLOMITE.name)) {
+            val fromTwo = fertilizerList[EnumFertilizer.DOLOMITE.name]!!
+            requestPayloadPlumber.dolomiteAvailable = fromTwo.selected
+            requestPayloadPlumber.dolomiteBagWeight = fromTwo.fertilizerWeight!!
+            requestPayloadPlumber.dolomiteCostPerBag = fromTwo.fertilizerCostPerBag
         }
 
         return requestPayloadPlumber

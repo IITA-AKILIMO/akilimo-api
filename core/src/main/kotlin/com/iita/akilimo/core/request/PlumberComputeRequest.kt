@@ -1,8 +1,6 @@
 package com.iita.akilimo.core.request
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
 
 import javax.validation.constraints.NotEmpty
 
@@ -320,6 +318,48 @@ open class PlumberComputeRequest {
 
     @JsonProperty("NPK123017BagWt")
     var npkTwelveThirty17BagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    /** NEXT fertilizer **/
+    @JsonProperty("FOMIBAGARAavailable")
+    var fomOneBagaraAvailable: Boolean = false
+
+    @JsonProperty("FOMIBAGARACostperBag")
+    var fomOneBagaraCostPerBag: Double = 0.0
+
+    @JsonProperty("FOMIBAGARABagWt")
+    var fomOneBagaraBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+
+    /** NEXT fertilizer **/
+    @JsonProperty("FOMIIMBURAavailable")
+    var fomTwoMburaAvailable: Boolean = false
+
+    @JsonProperty("FOMIIMBURACostperBag")
+    var fomTwoMburaCostPerBag: Double = 0.0
+
+    @JsonProperty("FOMIIMBURABagWt")
+    var fomTwoMburaBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+
+    /** NEXT fertilizer **/
+    @JsonProperty("FOMITOTAHAZAavailable")
+    var fomOneTotaHazaAvailable: Boolean = false
+
+    @JsonProperty("FOMITOTAHAZACostperBag")
+    var fomOneTotaHazCostPerBag: Double = 0.0
+
+    @JsonProperty("FOMITOTAHAZABagWt")
+    var fomOneTotaHazBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
+
+    /** NEXT fertilizer **/
+    @JsonProperty("DOLOMITEAavailable")
+    var dolomiteAvailable: Boolean = false
+
+    @JsonProperty("DOLOMITECostperBag")
+    var dolomiteCostPerBag: Double = 0.0
+
+    @JsonProperty("DOLOMITEBagWt")
+    var dolomiteBagWeight: Int = DEFAULT_BAG_WEIGHT_INT
 
 
     @JsonProperty("TSPavailable")

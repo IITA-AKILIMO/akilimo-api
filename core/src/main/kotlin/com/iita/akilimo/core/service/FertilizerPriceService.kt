@@ -53,6 +53,10 @@ constructor(
                 toCurrency = EnumCountry.RW.currency()
 //                currencyRate = currencyProperties.rwfUsd!!
             }
+            EnumCountry.BI.name -> {
+                toCurrency = EnumCountry.BI.currency()
+//                currencyRate = currencyProperties.rwfUsd!!
+            }
         }
 
 
