@@ -1,16 +1,10 @@
 package com.iita.akilimo.core.request.usecases.fr
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.enums.EnumCountry
-import javax.validation.constraints.Min
-
-import javax.validation.constraints.NotEmpty
 
 
-class FrComputeRequest(
+data class FrComputeRequest(
     @JsonProperty("country") val country: EnumCountry,
     @JsonProperty("FCY") val currentFieldYield: Int,
     @JsonProperty("lat") val mapLat: Double,
@@ -19,40 +13,43 @@ class FrComputeRequest(
     @JsonProperty("areaUnits") val areaUnits: String,
     @JsonProperty("PD") val plantingDate: String,
     @JsonProperty("HD") val harvestDate: String,
-    @JsonProperty("PD_window") val plantingDateWindow: Int,
-    @JsonProperty("HD_window") val harvestDateWindow: Int
+    @JsonProperty("cassUP") val cassavaUnitPrice: Double
 ) {
 
+    @JsonProperty("PD_window")
+    var plantingDateWindow: Int = 0
+
+    @JsonProperty("HD_window")
+    var harvestDateWindow: Int = 0
+
     @JsonProperty("saleSF")
-    var sellToStarchFactory: Boolean? = null
+    var sellToStarchFactory: Boolean = false
 
     @JsonProperty("nameSF")
-    var starchFactoryName: String? = null
+    var starchFactoryName: String = "NA"
 
     @JsonProperty("cassPD")
-    var cassavaProduceType: String? = null
+    var cassavaProduceType: String = "roots"
 
     @JsonProperty("cassUW")
-    var cassavaUnitWeight: Int? = null
+    var cassavaUnitWeight: Int = 1000
 
-    @JsonProperty("cassUP")
-    var cassavaUnitPrice: Double? = null
 
     @JsonProperty("cassUP_m1")
-    var cassUpM1: Double? = null
+    var cassUpM1: Double = 0.0
 
     @JsonProperty("cassUP_m2")
-    var cassUpM2: Double? = null
+    var cassUpM2: Double = 0.0
 
     @JsonProperty("cassUP_p1")
-    var cassUpP1: Double? = null
+    var cassUpP1: Double = 0.0
 
     @JsonProperty("cassUP_p2")
-    var cassUpP2: Double? = null
+    var cassUpP2: Double = 0.0
 
     @JsonProperty("maxInv")
-    var maxInvestment: Double? = null
+    var maxInvestment: Double = 0.0
 
     @JsonProperty("riskAtt")
-    var riskAttitude: Int? = null
+    var riskAttitude: Int = 0
 }

@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v1/recommendations/basic")
+@RequestMapping("/api/v2/recommendations/basic")
 @RestController
-@Tag(name = "AKILIMO recommendations for basic applications", description = "Operations pertaining recommendations for various interventions")
+@Tag(
+    name = "AKILIMO recommendations for basic applications",
+    description = "Operations pertaining recommendations for various interventions"
+)
 class BasicCasesControllers(
     private val recService: RecommendationService, private val messagingService: MessagingService
 ) : BaseController() {
@@ -28,18 +31,18 @@ class BasicCasesControllers(
     }
 
 
-    @RequestMapping("/fr", method = [RequestMethod.GET, RequestMethod.POST])
+    @RequestMapping("/fr", method = [RequestMethod.POST])
     fun computeFrRec(
         @RequestParam(defaultValue = "ha", required = true) areaUnit: String,
-        @RequestParam(required = false) fieldSize: Double,
-        @RequestParam(required = true) fcy: Int,
+        @RequestParam(required = true) fieldSize: Double,
+        @RequestParam(required = true, defaultValue = "11") fcy: Int,
         @RequestParam(required = true) plantingMonth: Int,
         @RequestParam(required = true) state: String,
-        @RequestParam(required = false) language: String,
-        @RequestParam(required = false) output: String,
+        @RequestParam(required = false, defaultValue = "en") language: String,
+        @RequestParam(required = false, defaultValue = "json") output: String,
     ): ResponseEntity<RecommendationResponseDto> {
 
         myLogger.info("Processing FR request for Basic API")
-        return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
+        return ResponseEntity(RecommendationResponseDto(), HttpStatus.OK)
     }
 }
