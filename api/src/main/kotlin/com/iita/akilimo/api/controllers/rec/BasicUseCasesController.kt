@@ -1,14 +1,11 @@
-package com.iita.akilimo.api.controllers
+package com.iita.akilimo.api.controllers.rec
 
 
-import com.iita.akilimo.core.mapper.RecommendationResponseDto
-import com.iita.akilimo.core.request.usecases.fr.FrRequest
-import com.iita.akilimo.core.request.usecases.ic.IcRequest
-import com.iita.akilimo.core.request.usecases.bpp.BppRequest
-import com.iita.akilimo.core.service.MessagingService
-import com.iita.akilimo.core.service.RecommendationService
+import com.iita.akilimo.api.controllers.BaseController
+import com.iita.akilimo.core.request.PlumberComputeRequest
+import com.iita.akilimo.core.request.usecases.fr.BasicFrRequest
+import com.iita.akilimo.core.service.basicrec.BasicRecService
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,10 +17,10 @@ import javax.validation.Valid
 @RestController
 @Tag(
     name = "AKILIMO recommendations for basic applications",
-    description = "Operations pertaining recommendations for various interventions"
+    description = "Can be used with basic applications such as chatbots, ussd and other minimal parameter use cases"
 )
 class BasicCasesControllers(
-    private val recService: RecommendationService, private val messagingService: MessagingService
+    private val basicRecService: BasicRecService
 ) : BaseController() {
 
     companion object {
@@ -31,18 +28,49 @@ class BasicCasesControllers(
     }
 
 
-    @RequestMapping("/fr", method = [RequestMethod.POST])
-    fun computeFrRec(
-        @RequestParam(defaultValue = "ha", required = true) areaUnit: String,
-        @RequestParam(required = true) fieldSize: Double,
-        @RequestParam(required = true, defaultValue = "11") fcy: Int,
-        @RequestParam(required = true) plantingMonth: Int,
-        @RequestParam(required = true) state: String,
-        @RequestParam(required = false, defaultValue = "en") language: String,
-        @RequestParam(required = false, defaultValue = "json") output: String,
-    ): ResponseEntity<RecommendationResponseDto> {
+    @PostMapping("/fr")
+    fun computeFrRecPost(
+       @Valid @RequestBody basicFrRequest: BasicFrRequest
+    ): ResponseEntity<PlumberComputeRequest> {
 
         myLogger.info("Processing FR request for Basic API")
-        return ResponseEntity(RecommendationResponseDto(), HttpStatus.OK)
+        val resp = basicRecService.computeFrRecommendation(basicFrRequest)
+        return ResponseEntity(resp, HttpStatus.OK)
+    }
+
+    @GetMapping("/fr")
+    fun computeFrRecGet(
+        @RequestParam(required = true) @Valid country: String,
+        @RequestParam(required = true) area: Double,
+        @RequestParam(required = true) fcy: Int,
+        @RequestParam(required = true) plantingMonth: Int,
+        @RequestParam(required = true) lat: Double,
+        @RequestParam(required = true) lon: Double,
+        @RequestParam(required = true) ureaAvailable: Boolean,
+        @RequestParam(required = true) ureaPrice: Double,
+        @RequestParam(required = true) npk15Available: Boolean,
+        @RequestParam(required = true) npk15Price: Double,
+        @RequestParam(required = true) npk17Available: Boolean,
+        @RequestParam(required = true) npk17Price: Double,
+    ): ResponseEntity<PlumberComputeRequest> {
+
+        val basicFrRequest = BasicFrRequest(
+            country = country,
+            currentFieldYield = fcy,
+            lat = lat,
+            lon = lon,
+            area = area,
+            areaUnit = "ha",
+            plantingMonth = plantingMonth,
+            ureaAvailable = ureaAvailable,
+            ureaPrice = ureaPrice,
+            npk15Available = npk15Available,
+            npk15Price = npk15Price,
+            npk17Available = npk17Available,
+            npk17Price = npk17Price
+        )
+        myLogger.info("Processing FR request for Basic API")
+        val resp = basicRecService.computeFrRecommendation(basicFrRequest)
+        return ResponseEntity(resp, HttpStatus.OK)
     }
 }

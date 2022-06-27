@@ -141,6 +141,7 @@ akilimo:
       pass: ${EMAIL_PASS:}
 
   recommendation: # Hold default values for recommendations for each country
+    default-url: ${DEFAULT_URL:https://masgeek.github.io/default-akilimo} #URL to hold the default plumber json values
     username: ${spring.application.name}
     user-field: ${akilimo.recommendation.username}
     user-phone-code: NA

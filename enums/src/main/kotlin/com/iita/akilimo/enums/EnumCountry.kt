@@ -1,5 +1,6 @@
 package com.iita.akilimo.enums
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class EnumCountry {
