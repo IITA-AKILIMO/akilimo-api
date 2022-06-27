@@ -100,7 +100,7 @@ $ ./gradlew migrations:generateChangelog -PchangeName="Create Users table" -Paut
 ### Generate Swagerjson file
 
 ```bash
-  ./gradlew :api:generateOpenApiDocs
+$  ./gradlew :api:generateOpenApiDocs
 ```
 
 
@@ -108,17 +108,19 @@ $ ./gradlew migrations:generateChangelog -PchangeName="Create Users table" -Paut
 
 ### Generate api HTML
 ```bash
-  npm install -g redoc-cli
-
-  redoc-cli bundle -o .\docs\index.html .\docs\akilimo.json
+$ npm install -g redoc-cli
+````
+```bash
+$ redoc-cli bundle -o .\docs\index.html .\docs\akilimo.json
 ```
 
 ### Generate markdown files
 
 ```bash
-  npm install -g openapi-to-md
-
-  openapi-to-md .\docs\akilimo.json > .\docs\API.MD
+$  npm install -g openapi-to-md
+````
+```bash
+$  openapi-to-md .\docs\akilimo.json > .\docs\API.MD
 ```
 
 
@@ -128,17 +130,24 @@ Create a file in the root of the project `gradle.properties` then paste your jDK
 Change the path according to your JDK installation
 
 ### Changelog generation
-
-> git-chglog -o CHANGELOG.md
+```bash
+$ git-chglog -o CHANGELOG.md
+```
 
 ### Git Hooks
 
-> pre-commit install
-
-> pre-commit uninstall
-
-> pre-commit install --hook-type commit-msg
-
-> pre-commit uninstall --hook-type commit-msg
-
-> pre-commit run --all-files
+```bash
+$ pre-commit install
+```
+```bash
+$ pre-commit uninstall
+```
+```bash
+$ pre-commit install --hook-type commit-msg
+```
+```bash
+$ pre-commit uninstall --hook-type commit-msg
+```
+```bash
+$ pre-commit run --all-files
+```
