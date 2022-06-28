@@ -15,7 +15,7 @@ tasks.getByName<Jar>("jar") {
 }
 
 dependencies {
-    val coroutinesVersion = "1.6.0-native-mt"
+    val coroutinesVersion = "1.6.1-native-mt"
 
     implementation(project(":config"))
     implementation(project(":enums"))
@@ -39,6 +39,8 @@ dependencies {
     api("commons-codec:commons-codec:1.15")
     api("com.github.rozidan:modelmapper-spring-boot-starter:2.3.1")
     api("joda-time:joda-time:2.10.13")
+
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.0")
 
     implementation("com.github.rholder.fauxflake:fauxflake-core:1.1.0")
     implementation("com.googlecode.libphonenumber:libphonenumber:8.12.41")
