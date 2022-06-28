@@ -1,4 +1,4 @@
-debug: ${DEBUG:false}
+debug: ${akilimo.dev-mode}
 trace: ${TRACE:false}
 
 server:
@@ -12,6 +12,9 @@ spring:
     banner-mode: console
     log-startup-info: true
 
+  cache:
+    jcache:
+      config: "classpath:ehcache.xml"
 
   application:
     name: akilimo-api
@@ -22,10 +25,12 @@ spring:
     template:
       fetch-size: 50
   jpa:
+    show-sql: ${DEBUG_SQL:false}
     properties:
       hibernate:
         dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
-        generate_statistics: ${GEN_STATS:false}
+        generate_statistics: ${DEBUG_SQL:false}
+        format_sql: ${DEBUG_SQL:false}
         order_inserts: true
         order_updates: true
         ddl-auto: validate
@@ -79,17 +84,33 @@ rate:
     rate-type: ${RATE_TYPE:minute}
     max-request: ${MAX_REQUESTS:1}
 
+
+
+# rate limiting
+bucket4j:
+  enabled: ${ENABLE_RATE_LIMIT:true}
+  filters:
+    - cache-name: buckets
+      url: .*
+      rate-limits:
+        - bandwidths: # maximum of n requests within x duration
+            - capacity: ${MAX_REQUESTS:200}
+              time: ${REQUEST_DURATION:1}
+              unit: ${REQUEST_TIME:minutes}
+
 akilimo:
+  dev-mode: ${DEV_MODE:false}
   name: 'AKILIMO API'
-  version: '4.0.0'
+  version: '5.0.0'
   desc: 'Description here'
-  externaldoc: '4.0.0'
+  externaldoc: ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+
   developer:
     name: ${DEV_NAME:Akilimo Team}
-    email: ${DEV_NAME:akilimo@cgiar.org}
-    url: ${DEV_NAME:akilimo.org}
+    email: ${DEV_EMAIL:akilimo@cgiar.org}
+    url: ${DEV_URL:https://akilimo.org}
 
   ona:
     csv-path: ${OUTPUT_PATH:D:\\dev\\python\\ona-download\\downloads\\converted\\}
@@ -102,7 +123,7 @@ akilimo:
     kes-usd: ${KES_USD:108}
 
   plumber:
-    base-url: ${PLUMBER_BASE:http://akilimo.prod:8090/api/}
+    base-url: ${PLUMBER_BASE:http://akilimo.org:8090/api/}
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
     compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}
@@ -119,3 +140,58 @@ akilimo:
     email:
       sender: ${EMAIL_SENDER:}
       pass: ${EMAIL_PASS:}
+
+  recommendation: # Hold default values for recommendations for each country
+    default-url: ${DEFAULT_URL:https://masgeek.github.io/default-akilimo} #URL to hold the default plumber json values
+    username: ${spring.application.name}
+    user-field: ${akilimo.recommendation.username}
+    user-phone-code: NA
+    user-phone-number: NA
+    user-email: NA
+    current-maize-performance: 5
+    current-field-yield: 11
+    risk-att: 0
+    area-units: acre
+    planting-date-window: 0
+    harvest-date-window: 0
+    fallow-type: bush
+    fallow-height: 100
+    fallow-green: false
+    problem-weeds: false
+    tractor-plough: false
+    sms: false
+    email: false
+    tractor-harrow: false
+    tractor-ridger: false
+    starch-factory-name: NA
+    sell-to-starch-factory: false
+    ploughing: false
+    ridging: false
+    method-ploughing: NA
+    method-ridging: NA
+    method-harrowing: NA
+    cost-lmo-area-basis: areaUnit
+    cassava-produce-type: roots
+    maize-produce-type: fresh_cob
+    cass-up-m1: 0
+    cass-up-m2: 0
+    cass-up-p1: 0
+    cass-up-p2: 0
+    sweet-potato-uw: 0
+    sweet-potato-up: 0
+    cassava-unit-price: 0
+    cassava-unit-weight: 0
+    maize-unit-price: 0
+    maize-unit-weight: 50
+    sweet-potato-produce-type: tubers
+    sweet-potato-unit-weight: 50
+    sweet-potato-unit-price: 0
+    cost-manual-ploughing: 0
+    cost-manual-harrowing: 0
+    cost-manual-ridging: 0
+    cost-tractor-ploughing: 0
+    cost-tractor-harrowing: 0
+    cost-tractor-ridging: 0
+    cost-weeding1: 0
+    cost-weeding2: 0
+    max-investment: 0

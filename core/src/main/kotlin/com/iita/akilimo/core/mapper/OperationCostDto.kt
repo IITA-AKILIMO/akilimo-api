@@ -3,7 +3,7 @@ package com.iita.akilimo.core.mapper
 import com.fasterxml.jackson.annotation.JsonIgnore
 
 
-class OperationCostDto {
+class OperationCostDto: BaseDto() {
 
     var id: Long? = null
 

@@ -15,6 +15,12 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    //Rate limiting library
+    implementation("com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.5.2")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.ehcache:ehcache")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 

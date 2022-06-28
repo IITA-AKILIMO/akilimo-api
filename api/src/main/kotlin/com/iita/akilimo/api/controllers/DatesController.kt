@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RequestMapping("/api/v2/dates")
+@RequestMapping("/api/v1/dates")
 @RestController
 class DatesController(private val dateService: DateService) : BaseController() {
     companion object {

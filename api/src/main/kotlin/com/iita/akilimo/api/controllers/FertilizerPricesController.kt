@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v2/fertilizer-prices")
+@RequestMapping("/api/v1/fertilizer-prices")
 @RestController
 class FertilizerPricesController(private val fertilizerPriceService: FertilizerPriceService) : BaseController() {
 

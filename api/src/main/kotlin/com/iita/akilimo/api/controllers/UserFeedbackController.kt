@@ -1,5 +1,6 @@
 package com.iita.akilimo.api.controllers
 
+import com.iita.akilimo.core.mapper.UserFeedbackDto
 import com.iita.akilimo.core.request.UserFeedBackRequest
 import com.iita.akilimo.core.service.FeedbackService
 import com.iita.akilimo.database.entities.UserFeedback
@@ -28,7 +29,7 @@ class UserFeedbackController(private val feedbackService: FeedbackService) {
     @Operation(summary = "Add user feedback", description = "", tags = ["User Feedback"])
     fun addUserFeedback(
         @Valid @RequestBody userFeedBackRequest: UserFeedBackRequest
-    ): ResponseEntity<UserFeedback> {
+    ): ResponseEntity<UserFeedbackDto> {
 
         val userFeedback = feedbackService.addUserFeedBack(userFeedBackRequest)
 
@@ -37,9 +38,9 @@ class UserFeedbackController(private val feedbackService: FeedbackService) {
 
     @GetMapping
     @Operation(summary = "Add user feedback", description = "", tags = ["User Feedback"])
-    fun listFeedback(@Parameter(hidden = true) pageable: Pageable): ResponseEntity<Page<UserFeedback>> {
+    fun listFeedback(@Parameter(hidden = true) pageable: Pageable): ResponseEntity<Page<UserFeedbackDto>> {
 
-        val userFeedback: Page<UserFeedback> = feedbackService.listFeedBack(pageable)
+        val userFeedback: Page<UserFeedbackDto> = feedbackService.listFeedBack(pageable)
 
         return ResponseEntity(userFeedback, HttpStatus.OK)
     }
