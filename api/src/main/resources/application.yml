@@ -101,7 +101,7 @@ bucket4j:
 akilimo:
   dev-mode: ${DEV_MODE:false}
   name: 'AKILIMO API'
-  version: '4.0.0'
+  version: '5.0.0'
   desc: 'Description here'
   externaldoc: ${akilimo.version}
   license: 'GPL'
@@ -110,7 +110,7 @@ akilimo:
   developer:
     name: ${DEV_NAME:Akilimo Team}
     email: ${DEV_EMAIL:akilimo@cgiar.org}
-    url: ${DEV_URL:akilimo.org}
+    url: ${DEV_URL:https://akilimo.org}
 
   ona:
     csv-path: ${OUTPUT_PATH:D:\\dev\\python\\ona-download\\downloads\\converted\\}
