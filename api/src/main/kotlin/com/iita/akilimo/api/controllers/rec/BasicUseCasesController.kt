@@ -2,6 +2,7 @@ package com.iita.akilimo.api.controllers.rec
 
 
 import com.iita.akilimo.api.controllers.BaseController
+import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.usecases.fr.BasicFrRequest
 import com.iita.akilimo.core.service.basicrec.BasicRecService
@@ -31,7 +32,7 @@ class BasicCasesControllers(
     @PostMapping("/fr")
     fun computeFrRecPost(
        @Valid @RequestBody basicFrRequest: BasicFrRequest
-    ): ResponseEntity<PlumberComputeRequest> {
+    ): ResponseEntity<RecommendationResponseDto> {
 
         myLogger.info("Processing FR request for Basic API")
         val resp = basicRecService.computeFrRecommendation(basicFrRequest)
@@ -52,7 +53,7 @@ class BasicCasesControllers(
         @RequestParam(required = true) npk15Price: Double,
         @RequestParam(required = true) npk17Available: Boolean,
         @RequestParam(required = true) npk17Price: Double,
-    ): ResponseEntity<PlumberComputeRequest> {
+    ): ResponseEntity<RecommendationResponseDto> {
 
         val basicFrRequest = BasicFrRequest(
             country = country,

@@ -32,9 +32,9 @@ import java.util.*
 @Service
 class RecommendationService
 constructor(
-    val restTemplate: RestTemplate,
-    val fertilizerRepo: FertilizerRepo,
-    val payloadRepository: PayloadRepository,
+    private val restTemplate: RestTemplate,
+    private val fertilizerRepo: FertilizerRepo,
+    private val payloadRepository: PayloadRepository,
     akilimoConfig: AkilimoConfigProperties
 ) {
 
@@ -55,9 +55,7 @@ constructor(
 
         //build the recommendation request object now
         val recommendationRequest = RecommendationRequest(
-            userInfo = request.userInfo,
-            computeRequest = computeRequest,
-            fertilizerList = request.fertilizerList
+            userInfo = request.userInfo, computeRequest = computeRequest, fertilizerList = request.fertilizerList
         )
         return computeRecommendations(recommendationRequest)
     }
@@ -72,9 +70,7 @@ constructor(
 
         //build the recommendation request object now
         val recommendationRequest = RecommendationRequest(
-            userInfo = request.userInfo,
-            computeRequest = computeRequest,
-            fertilizerList = request.fertilizerList
+            userInfo = request.userInfo, computeRequest = computeRequest, fertilizerList = request.fertilizerList
         )
         return computeRecommendations(recommendationRequest)
     }
@@ -89,9 +85,7 @@ constructor(
 
         //build the recommendation request object now
         val recommendationRequest = RecommendationRequest(
-            userInfo = request.userInfo,
-            computeRequest = computeRequest,
-            fertilizerList = request.fertilizerList
+            userInfo = request.userInfo, computeRequest = computeRequest, fertilizerList = request.fertilizerList
         )
         return computeRecommendations(recommendationRequest)
     }
@@ -105,9 +99,7 @@ constructor(
 
         //build the recommendation request object now
         val recommendationRequest = RecommendationRequest(
-            userInfo = request.userInfo,
-            computeRequest = computeRequest,
-            fertilizerList = request.fertilizerList
+            userInfo = request.userInfo, computeRequest = computeRequest, fertilizerList = request.fertilizerList
         )
         return computeRecommendations(recommendationRequest)
     }
@@ -117,6 +109,10 @@ constructor(
         val countries = ArrayList<String>()
         countries.add(EnumCountry.ALL.name)
         countries.add(recommendationRequest.computeRequest.country)
+
+        if (recommendationRequest.userInfo.emailAddress.equals("NA", ignoreCase = true)) {
+            recommendationRequest.userInfo.sendEmail = false
+        }
 
         var fertilizers = recommendationRequest.fertilizerList
 
@@ -129,27 +125,47 @@ constructor(
 
         val plumberComputeRequest = this.prepareFertilizerPayload(recommendationRequest, fertilizerList)
 
-        if (recommendationRequest.userInfo.emailAddress.equals("NA", ignoreCase = true)) {
-            recommendationRequest.userInfo.sendEmail = false
-        }
+
         val headers = this.setHTTPHeaders()
+
+        logger.info("Droid payload is: ${recommendationRequest.userInfo.deviceToken}")
+
+        logger.info("Plumber payload username: ${plumberComputeRequest.userName}")
+
+        val dateTime = LocalDateTime.now()
+
+
+        val plumberResp = processPlumberRequest(plumberComputeRequest, headers)
 
         val droidRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(recommendationRequest)
         val plumberRequestString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plumberComputeRequest)
-        var plumberResponseString = "{}"
-        logger.info("Droid payload is: ${recommendationRequest.userInfo.deviceToken}")
+        val plumberResponseString = plumberResp.plumberRespString
 
-        logger.info("Plumber payload username${plumberComputeRequest.userName}")
+        val now = LocalDateTime.now()
+        val secondsLapsed = Seconds.secondsBetween(now, dateTime)
+        logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
 
-        val dateTime = LocalDateTime.now()
+        val payload = Payload()
+        payload.requestId = recommendationRequest.userInfo.deviceToken
+        payload.droidRequest = droidRequestString
+        payload.plumberRequest = plumberRequestString
+        payload.plumberResponse = plumberResponseString
+
+        payloadRepository.save(payload)
+
+        return recommendationResponseDto
+    }
+
+    fun processPlumberRequest(
+        plumberComputeRequest: PlumberComputeRequest, headers: HttpHeaders
+    ): RecommendationResponseDto {
         try {
 
             val plumberRequestEntity = HttpEntity(plumberComputeRequest, headers)
             val country = plumberComputeRequest.country
 
             val baseUrl = plumberPropertiesProperties.baseUrl
-            var recommendationUrl: String = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-
+            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
             when (country) {
                 EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
                 EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
@@ -158,13 +174,14 @@ constructor(
             }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
-            logger.info("Going to endpoint $recommendationUrl at: $dateTime for country $country")
+
+            logger.info("Sending plumber request to endpoint $recommendationUrl")
 
             val response = restTemplate.postForEntity(recommendationUrl, plumberRequestEntity, Array<Any>::class.java)
             val objects = response.body
-            plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
+            val plumberResponseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objects)
+            recommendationResponseDto.plumberRespString = plumberResponseString
             if (objects != null) {
-                logger.info("Processing plumber response")
                 recommendationResponseDto.responsePayload = objects
                 when {
                     !processFirstArray(objects) -> {
@@ -175,21 +192,6 @@ constructor(
         } catch (ex: Exception) {
             logger.error("An error occurred while processing plumber request ${ex.message}")
         }
-
-        val now = LocalDateTime.now()
-        val secondsLapsed = Seconds.secondsBetween(now, dateTime)
-        logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
-
-
-        //let us save the logged requests
-        val payload = Payload()
-
-        payload.requestId = recommendationRequest.userInfo.deviceToken
-        payload.droidRequest = droidRequestString
-        payload.plumberRequest = plumberRequestString
-        payload.plumberResponse = plumberResponseString
-
-        payloadRepository.save(payload)
 
         return recommendationResponseDto
     }
@@ -312,7 +314,7 @@ constructor(
     }
 
 
-    private fun setHTTPHeaders(): HttpHeaders {
+    fun setHTTPHeaders(): HttpHeaders {
         val headers = HttpHeaders()
         headers.add("Content-Type", MediaType.APPLICATION_JSON.toString())
         return headers
@@ -322,8 +324,7 @@ constructor(
         val allFertilizers = fertilizerRepo.findByAvailableIsTrueAndCountryInOrderByNameDesc(countries)
         val availableFertilizers = allFertilizers.map { availableFertilizer ->
             val fertilizerList = FertilizerList(
-                fertilizerType = availableFertilizer.fertilizerType!!,
-                weight = availableFertilizer.weight!!
+                fertilizerType = availableFertilizer.fertilizerType!!, weight = availableFertilizer.weight!!
             )
 
             fertilizerList.fertilizerType = availableFertilizer.fertilizerType!!
@@ -339,9 +340,7 @@ constructor(
             if (!tempFertilizerList.containsKey(fertilizer.fertilizerType)) {
                 val fertType = fertilizer.fertilizerType!!
                 val fertilizerList = FertilizerList(
-                    fertilizerType = fertilizer.name!!,
-                    weight = 50,
-                    price = 0.0
+                    fertilizerType = fertilizer.name!!, weight = 50, price = 0.0
                 )
 
                 modelMapper.map(fertilizer, fertilizerList)
@@ -364,8 +363,7 @@ constructor(
     }
 
     private fun prepareFertilizerPayload(
-        recommendationRequest: RecommendationRequest,
-        tempFertilizerList: LinkedHashMap<String, FertilizerList>
+        recommendationRequest: RecommendationRequest, tempFertilizerList: LinkedHashMap<String, FertilizerList>
     ): PlumberComputeRequest {
         val modelMapper = ModelMapper()
 

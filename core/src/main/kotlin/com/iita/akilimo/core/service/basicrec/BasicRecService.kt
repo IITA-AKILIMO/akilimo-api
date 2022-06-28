@@ -1,5 +1,6 @@
 package com.iita.akilimo.core.service.basicrec
 
+import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.usecases.fr.BasicFrRequest
 import com.iita.akilimo.core.service.RecommendationService
@@ -19,30 +20,32 @@ class BasicRecService(
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val modelMapper = ModelMapper()
 
-    fun computeFrRecommendation(frRequest: BasicFrRequest): PlumberComputeRequest {
+    fun computeFrRecommendation(frRequest: BasicFrRequest): RecommendationResponseDto {
         //assign default values now
-        val resp = fetchDefaultValues(frRequest.country)
-        resp.fertilizerRec = true
-        resp.country = frRequest.country
-        resp.currentFieldYield = frRequest.currentFieldYield
-        resp.fieldArea = frRequest.area
-        resp.areaUnits = frRequest.areaUnit
-        resp.mapLat = frRequest.lat
-        resp.mapLong = frRequest.lon
+        val plumberComputeRequest = fetchDefaultValues(frRequest.country)
+        plumberComputeRequest.fertilizerRec = true
+        plumberComputeRequest.country = frRequest.country
+        plumberComputeRequest.currentFieldYield = frRequest.currentFieldYield
+        plumberComputeRequest.fieldArea = frRequest.area
+        plumberComputeRequest.areaUnits = frRequest.areaUnit
+        plumberComputeRequest.mapLat = frRequest.lat
+        plumberComputeRequest.mapLong = frRequest.lon
 
         //compute the planting dates
-        val currentDate = LocalDate.of(LocalDate.now().year, frRequest.plantingMonth, 1)
+        val plantingDate = LocalDate.of(LocalDate.now().year, frRequest.plantingMonth, 1)
+        val harvestDate = plantingDate.plusMonths(12);//Increment by 12 months
+        plumberComputeRequest.plantingDate = plantingDate.toString()
+        plumberComputeRequest.harvestDate = harvestDate.toString()
         //fertilizers
-        resp.ureaAvailable = frRequest.ureaAvailable
-        resp.ureaCostPerBag = frRequest.ureaPrice
-        resp.npkFifteenAvailable = frRequest.npk15Available
-        resp.npkFifteenCostPerBag = frRequest.npk15Price
-        resp.npkSeventeenAvailable = frRequest.npk17Available
-        resp.npkSeventeenCostPerBag = frRequest.npk17Price
+        plumberComputeRequest.ureaAvailable = frRequest.ureaAvailable
+        plumberComputeRequest.ureaCostPerBag = frRequest.ureaPrice
+        plumberComputeRequest.npkFifteenAvailable = frRequest.npk15Available
+        plumberComputeRequest.npkFifteenCostPerBag = frRequest.npk15Price
+        plumberComputeRequest.npkSeventeenAvailable = frRequest.npk17Available
+        plumberComputeRequest.npkSeventeenCostPerBag = frRequest.npk17Price
 
 
-        //val resp = recService.computeFrRecommendation(basicFrRequest)
-        return resp
+        return recService.processPlumberRequest(plumberComputeRequest, recService.setHTTPHeaders())
     }
 
     fun fetchDefaultValues(country: String): PlumberComputeRequest {

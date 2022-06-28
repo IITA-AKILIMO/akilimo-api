@@ -1,5 +1,6 @@
 package com.iita.akilimo.core.mapper
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -32,6 +33,9 @@ open class RecommendationResponseDto : BaseDto() {
 
     @JsonProperty("SP")
     var scheduledPlantingRecText: String? = null
+
+    @JsonIgnore
+    var plumberRespString: String? = null
 
     var hasResponse: Boolean = false
 
