@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="20220405112602" author="masgeek" labels="akilimo-migration">
+        <loadData
+                file="/liquibase/changelog/data/fertilizers_burundi_apr_05_2022.csv"
+                tableName="fertilizers">
+
+
+            <column name="name" header="name"/>
+            <column name="type" header="type"/>
+            <column name="fertilizer_key" header="fertilizer_key"/>
+            <column name="weight" header="weight" type="numeric"/>
+            <column name="country" header="country"/>
+            <column name="sort_order" header="sort_order" type="numeric"/>
+            <column name="use_case" header="use_case"/>
+            <column name="available" header="available" type="boolean"/>
+
+            <column name="updated_at" header="updated_at" type="date"/>
+            <column name="created_at" header="created_at" type="date"/>
+
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

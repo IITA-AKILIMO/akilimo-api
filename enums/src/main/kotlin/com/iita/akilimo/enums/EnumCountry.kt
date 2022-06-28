@@ -1,6 +1,5 @@
 package com.iita.akilimo.enums
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class EnumCountry {
@@ -34,6 +33,13 @@ enum class EnumCountry {
     GH {
         override fun currency(): String {
             return "GHS"
+        }
+    },
+
+    @JsonProperty("BI")
+    BI {
+        override fun currency(): String {
+            return "BIF"
         }
     },
 

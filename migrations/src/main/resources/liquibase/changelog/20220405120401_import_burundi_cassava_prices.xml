@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="20220405120401" author="masgeek" labels="akilimo-migration">
+        <loadData
+                file="/liquibase/changelog/data/cassava_prices_burundi_05_05_2022.csv"
+                tableName="cassava_prices">
+
+            <column name="country" header="country"/>
+
+            <column name="min_local_price" header="min_local_price"/>
+            <column name="max_local_price" header="max_local_price"/>
+
+            <column name="min_price" header="min_price"/>
+            <column name="max_price" header="max_price"/>
+
+            <column name="min_usd" header="min_usd"/>
+            <column name="max_usd" header="max_usd"/>
+            <column name="price_active" header="price_active"/>
+
+            <column name="updated_at" header="updated_at" type="datetime"/>
+            <column name="created_at" header="created_at" type="datetime"/>
+
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
