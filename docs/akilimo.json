@@ -12,7 +12,7 @@
       "name": "GPL",
       "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
     },
-    "version": "6.0.1"
+    "version": "4.0.0"
   },
   "externalDocs": {
     "description": "AKILIMO API Documentation",
@@ -26,177 +26,15 @@
   ],
   "tags": [
     {
-      "name": "AKILIMO recommendations",
-      "description": "Operations pertaining recommendations for various interventions"
+      "name": "AKILIMO recommendations for basic applications",
+      "description": "Can be used with basic applications such as chatbots, ussd and other minimal parameter use cases"
     },
     {
-      "name": "AKILIMO recommendations for basic applications",
+      "name": "AKILIMO recommendations",
       "description": "Operations pertaining recommendations for various interventions"
     }
   ],
   "paths": {
-    "/api/v1/recommendations/basic/fr": {
-      "get": {
-        "tags": [
-          "AKILIMO recommendations for basic applications"
-        ],
-        "operationId": "computeFrRec_1",
-        "parameters": [
-          {
-            "name": "areaUnit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "default": "ha"
-            }
-          },
-          {
-            "name": "fieldSize",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
-          },
-          {
-            "name": "fcy",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "plantingMonth",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "state",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "language",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "output",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "AKILIMO recommendations for basic applications"
-        ],
-        "operationId": "computeFrRec",
-        "parameters": [
-          {
-            "name": "areaUnit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "default": "ha"
-            }
-          },
-          {
-            "name": "fieldSize",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
-          },
-          {
-            "name": "fcy",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "plantingMonth",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "state",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "language",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "output",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/potato-prices/{id}": {
       "get": {
         "tags": [
@@ -494,6 +332,290 @@
         }
       }
     },
+    "/api/v2/recommendations/pro/sp": {
+      "post": {
+        "tags": [
+          "AKILIMO recommendations"
+        ],
+        "operationId": "computeSpRec",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BppRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/recommendations/pro/ic/crop/{crop}": {
+      "post": {
+        "tags": [
+          "AKILIMO recommendations"
+        ],
+        "operationId": "computeIcRec",
+        "parameters": [
+          {
+            "name": "crop",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/recommendations/pro/fr": {
+      "post": {
+        "tags": [
+          "AKILIMO recommendations"
+        ],
+        "operationId": "computeFrRec",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/recommendations/pro/bpp": {
+      "post": {
+        "tags": [
+          "AKILIMO recommendations"
+        ],
+        "operationId": "computeBppRec",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BppRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/recommendations/basic/fr": {
+      "get": {
+        "tags": [
+          "AKILIMO recommendations for basic applications"
+        ],
+        "operationId": "computeFrRecGet",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "area",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "fcy",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "plantingMonth",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "ureaAvailable",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ureaPrice",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "npk15Available",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "npk15Price",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "npk17Available",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "npk17Price",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AKILIMO recommendations for basic applications"
+        ],
+        "operationId": "computeFrRecPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BasicFrRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/user": {
       "post": {
         "tags": [
@@ -652,136 +774,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/StarchFactoryDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/recommendations/pro/sp": {
-      "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeSpRec",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BppRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/recommendations/pro/ic/crop/{crop}": {
-      "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeIcRec",
-        "parameters": [
-          {
-            "name": "crop",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IcRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/recommendations/pro/fr": {
-      "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeFrRec_2",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FrRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/recommendations/pro/bpp": {
-      "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeBppRec",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BppRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
                 }
               }
             }
@@ -1755,56 +1747,6 @@
   },
   "components": {
     "schemas": {
-      "RecommendationResponseDto": {
-        "required": [
-          "hasResponse"
-        ],
-        "type": "object",
-        "properties": {
-          "createdAt": {
-            "type": "string"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "country": {
-            "type": "string"
-          },
-          "hasResponse": {
-            "type": "boolean"
-          },
-          "responsePayload": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "userPhoneCC": {
-            "type": "string"
-          },
-          "userPhoneNr": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          },
-          "userEmail": {
-            "type": "string"
-          },
-          "FR": {
-            "type": "string"
-          },
-          "IC": {
-            "type": "string"
-          },
-          "PP": {
-            "type": "string"
-          },
-          "SP": {
-            "type": "string"
-          }
-        }
-      },
       "ProducePriceRequest": {
         "required": [
           "active",
@@ -1918,10 +1860,705 @@
           "active": {
             "type": "boolean"
           },
+          "averagePrice": {
+            "type": "number",
+            "format": "double"
+          },
           "countryPrice": {
             "type": "string"
+          }
+        }
+      },
+      "BppComputeRequest": {
+        "required": [
+          "FCY",
+          "HD",
+          "HD_window",
+          "PD",
+          "PD_window",
+          "area",
+          "areaUnits",
+          "country",
+          "harrowing",
+          "lat",
+          "lon",
+          "ploughing",
+          "ridging",
+          "tractor_harrow",
+          "tractor_plough",
+          "tractor_ridger"
+        ],
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "enum": [
+              "KE",
+              "TZ",
+              "NG",
+              "RW",
+              "GH",
+              "ALL"
+            ]
           },
-          "averagePrice": {
+          "FCY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "type": "number",
+            "format": "double"
+          },
+          "area": {
+            "type": "number",
+            "format": "double"
+          },
+          "areaUnits": {
+            "type": "string"
+          },
+          "PD": {
+            "type": "string"
+          },
+          "HD": {
+            "type": "string"
+          },
+          "PD_window": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "HD_window": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tractor_plough": {
+            "type": "boolean"
+          },
+          "tractor_harrow": {
+            "type": "boolean"
+          },
+          "tractor_ridger": {
+            "type": "boolean"
+          },
+          "cost_LMO_areaBasis": {
+            "type": "string"
+          },
+          "cost_tractor_ploughing": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_tractor_harrowing": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_tractor_ridging": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_manual_ploughing": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_manual_harrowing": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_manual_ridging": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_weeding1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost_weeding2": {
+            "type": "number",
+            "format": "double"
+          },
+          "ploughing": {
+            "type": "boolean"
+          },
+          "harrowing": {
+            "type": "boolean"
+          },
+          "ridging": {
+            "type": "boolean"
+          },
+          "method_ploughing": {
+            "type": "string"
+          },
+          "method_harrowing": {
+            "type": "string"
+          },
+          "method_ridging": {
+            "type": "string"
+          },
+          "cassPD": {
+            "type": "string"
+          },
+          "cassUW": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cassUP": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_m1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_m2": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_p1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_p2": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxInv": {
+            "type": "number",
+            "format": "double"
+          },
+          "riskAtt": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "BppRequest": {
+        "required": [
+          "computeRequest",
+          "fertilizerList",
+          "userInfo"
+        ],
+        "type": "object",
+        "properties": {
+          "userInfo": {
+            "$ref": "#/components/schemas/UserInfo"
+          },
+          "computeRequest": {
+            "$ref": "#/components/schemas/BppComputeRequest"
+          },
+          "fertilizerList": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FertilizerList"
+            }
+          },
+          "appLanguage": {
+            "type": "string"
+          }
+        }
+      },
+      "FertilizerList": {
+        "required": [
+          "available",
+          "cimAvailable",
+          "cisAvailable",
+          "name",
+          "price",
+          "selected",
+          "weight"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "nContent": {
+            "type": "string"
+          },
+          "kContent": {
+            "type": "string"
+          },
+          "pContent": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "cimAvailable": {
+            "type": "boolean"
+          },
+          "cisAvailable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserInfo": {
+        "required": [
+          "deviceToken",
+          "fieldDescription",
+          "fullPhoneNumber",
+          "mobileCountryCode",
+          "mobileNumber",
+          "sendEmail",
+          "sendSms",
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "mobileCountryCode": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          },
+          "fullPhoneNumber": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "fieldDescription": {
+            "type": "string"
+          },
+          "deviceToken": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "sendSms": {
+            "type": "boolean"
+          },
+          "sendEmail": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RecommendationResponseDto": {
+        "required": [
+          "hasResponse"
+        ],
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "hasResponse": {
+            "type": "boolean"
+          },
+          "responsePayload": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "userPhoneCC": {
+            "type": "string"
+          },
+          "userPhoneNr": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "FR": {
+            "type": "string"
+          },
+          "IC": {
+            "type": "string"
+          },
+          "PP": {
+            "type": "string"
+          },
+          "SP": {
+            "type": "string"
+          }
+        }
+      },
+      "IcComputeRequest": {
+        "required": [
+          "CMP",
+          "FCY",
+          "HD",
+          "HD_window",
+          "PD",
+          "PD_window",
+          "area",
+          "areaUnits",
+          "country",
+          "lat",
+          "lon"
+        ],
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "enum": [
+              "KE",
+              "TZ",
+              "NG",
+              "RW",
+              "GH",
+              "ALL"
+            ]
+          },
+          "CMP": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "FCY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "type": "number",
+            "format": "double"
+          },
+          "area": {
+            "type": "number",
+            "format": "double"
+          },
+          "areaUnits": {
+            "type": "string"
+          },
+          "PD": {
+            "type": "string"
+          },
+          "HD": {
+            "type": "string"
+          },
+          "PD_window": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "HD_window": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "saleSF": {
+            "type": "boolean"
+          },
+          "nameSF": {
+            "type": "string"
+          },
+          "cassPD": {
+            "type": "string"
+          },
+          "cassUW": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cassUP": {
+            "type": "number",
+            "format": "double"
+          },
+          "maizePD": {
+            "type": "string"
+          },
+          "maizeUW": {
+            "type": "number",
+            "format": "double"
+          },
+          "maizeUP": {
+            "type": "number",
+            "format": "double"
+          },
+          "sweetPotatoPD": {
+            "type": "string"
+          },
+          "sweetPotatoUW": {
+            "type": "number",
+            "format": "double"
+          },
+          "sweetPotatoUP": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_m1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_m2": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_p1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_p2": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxInv": {
+            "type": "number",
+            "format": "double"
+          },
+          "riskAtt": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "IcRequest": {
+        "required": [
+          "computeRequest",
+          "fertilizerList",
+          "userInfo"
+        ],
+        "type": "object",
+        "properties": {
+          "userInfo": {
+            "$ref": "#/components/schemas/UserInfo"
+          },
+          "computeRequest": {
+            "$ref": "#/components/schemas/IcComputeRequest"
+          },
+          "fertilizerList": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FertilizerList"
+            }
+          },
+          "appLanguage": {
+            "type": "string"
+          }
+        }
+      },
+      "FrComputeRequest": {
+        "required": [
+          "FCY",
+          "HD",
+          "HD_window",
+          "PD",
+          "PD_window",
+          "area",
+          "areaUnits",
+          "cassPD",
+          "cassUP",
+          "cassUP_m1",
+          "cassUP_m2",
+          "cassUP_p1",
+          "cassUP_p2",
+          "cassUW",
+          "country",
+          "lat",
+          "lon",
+          "maxInv",
+          "nameSF",
+          "riskAtt",
+          "saleSF"
+        ],
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "enum": [
+              "KE",
+              "TZ",
+              "NG",
+              "RW",
+              "GH",
+              "ALL"
+            ]
+          },
+          "FCY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "type": "number",
+            "format": "double"
+          },
+          "area": {
+            "type": "number",
+            "format": "double"
+          },
+          "areaUnits": {
+            "type": "string"
+          },
+          "PD": {
+            "type": "string"
+          },
+          "HD": {
+            "type": "string"
+          },
+          "cassUP": {
+            "type": "number",
+            "format": "double"
+          },
+          "PD_window": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "HD_window": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "saleSF": {
+            "type": "boolean"
+          },
+          "nameSF": {
+            "type": "string"
+          },
+          "cassPD": {
+            "type": "string"
+          },
+          "cassUW": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cassUP_m1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_m2": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_p1": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP_p2": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxInv": {
+            "type": "number",
+            "format": "double"
+          },
+          "riskAtt": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FrRequest": {
+        "required": [
+          "computeRequest",
+          "fertilizerList",
+          "userInfo"
+        ],
+        "type": "object",
+        "properties": {
+          "userInfo": {
+            "$ref": "#/components/schemas/UserInfo"
+          },
+          "computeRequest": {
+            "$ref": "#/components/schemas/FrComputeRequest"
+          },
+          "fertilizerList": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FertilizerList"
+            }
+          },
+          "appLanguage": {
+            "type": "string"
+          }
+        }
+      },
+      "BasicFrRequest": {
+        "required": [
+          "FCY",
+          "area",
+          "areaUnit",
+          "country",
+          "lat",
+          "lon",
+          "npk15Available",
+          "npk15Price",
+          "npk17Available",
+          "npk17Price",
+          "plantingMonth",
+          "ureaAvailable",
+          "ureaPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "FCY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "type": "number",
+            "format": "double"
+          },
+          "area": {
+            "type": "number",
+            "format": "double"
+          },
+          "areaUnit": {
+            "type": "string"
+          },
+          "plantingMonth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ureaAvailable": {
+            "type": "boolean"
+          },
+          "ureaPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "npk15Available": {
+            "type": "boolean"
+          },
+          "npk15Price": {
+            "type": "number",
+            "format": "double"
+          },
+          "npk17Available": {
+            "type": "boolean"
+          },
+          "npk17Price": {
             "type": "number",
             "format": "double"
           }
@@ -2143,573 +2780,6 @@
           }
         }
       },
-      "BppComputeRequest": {
-        "required": [
-          "FCY",
-          "HD",
-          "HD_window",
-          "PD",
-          "PD_window",
-          "area",
-          "areaUnits",
-          "country",
-          "harrowing",
-          "lat",
-          "lon",
-          "ploughing",
-          "ridging",
-          "tractor_harrow",
-          "tractor_plough",
-          "tractor_ridger"
-        ],
-        "type": "object",
-        "properties": {
-          "country": {
-            "type": "string",
-            "enum": [
-              "KE",
-              "TZ",
-              "NG",
-              "RW",
-              "GH",
-              "ALL"
-            ]
-          },
-          "FCY": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "lat": {
-            "type": "number",
-            "format": "double"
-          },
-          "lon": {
-            "type": "number",
-            "format": "double"
-          },
-          "area": {
-            "type": "number",
-            "format": "double"
-          },
-          "areaUnits": {
-            "type": "string"
-          },
-          "PD": {
-            "type": "string"
-          },
-          "HD": {
-            "type": "string"
-          },
-          "PD_window": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "HD_window": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tractor_plough": {
-            "type": "boolean"
-          },
-          "tractor_harrow": {
-            "type": "boolean"
-          },
-          "tractor_ridger": {
-            "type": "boolean"
-          },
-          "cost_LMO_areaBasis": {
-            "type": "string"
-          },
-          "cost_tractor_ploughing": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_tractor_harrowing": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_tractor_ridging": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_manual_ploughing": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_manual_harrowing": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_manual_ridging": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_weeding1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost_weeding2": {
-            "type": "number",
-            "format": "double"
-          },
-          "ploughing": {
-            "type": "boolean"
-          },
-          "harrowing": {
-            "type": "boolean"
-          },
-          "ridging": {
-            "type": "boolean"
-          },
-          "method_ploughing": {
-            "type": "string"
-          },
-          "method_harrowing": {
-            "type": "string"
-          },
-          "method_ridging": {
-            "type": "string"
-          },
-          "cassPD": {
-            "type": "string"
-          },
-          "cassUW": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "cassUP": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_m1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_m2": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_p1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_p2": {
-            "type": "number",
-            "format": "double"
-          },
-          "maxInv": {
-            "type": "number",
-            "format": "double"
-          },
-          "riskAtt": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "BppRequest": {
-        "required": [
-          "computeRequest",
-          "fertilizerList",
-          "userInfo"
-        ],
-        "type": "object",
-        "properties": {
-          "userInfo": {
-            "$ref": "#/components/schemas/UserInfo"
-          },
-          "computeRequest": {
-            "$ref": "#/components/schemas/BppComputeRequest"
-          },
-          "fertilizerList": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FertilizerList"
-            }
-          },
-          "appLanguage": {
-            "type": "string"
-          }
-        }
-      },
-      "FertilizerList": {
-        "required": [
-          "cimAvailable",
-          "cisAvailable",
-          "price",
-          "selected"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "key": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "weight": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "price": {
-            "type": "number",
-            "format": "double"
-          },
-          "available": {
-            "type": "boolean"
-          },
-          "selected": {
-            "type": "boolean"
-          },
-          "cimAvailable": {
-            "type": "boolean"
-          },
-          "cisAvailable": {
-            "type": "boolean"
-          },
-          "nContent": {
-            "type": "string"
-          },
-          "kContent": {
-            "type": "string"
-          },
-          "pContent": {
-            "type": "string"
-          }
-        }
-      },
-      "UserInfo": {
-        "required": [
-          "deviceToken",
-          "fieldDescription",
-          "fullPhoneNumber",
-          "mobileCountryCode",
-          "mobileNumber",
-          "sendEmail",
-          "sendSms",
-          "userName"
-        ],
-        "type": "object",
-        "properties": {
-          "mobileCountryCode": {
-            "type": "string"
-          },
-          "mobileNumber": {
-            "type": "string"
-          },
-          "fullPhoneNumber": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          },
-          "fieldDescription": {
-            "type": "string"
-          },
-          "deviceToken": {
-            "type": "string"
-          },
-          "gender": {
-            "type": "string"
-          },
-          "emailAddress": {
-            "type": "string"
-          },
-          "sendSms": {
-            "type": "boolean"
-          },
-          "sendEmail": {
-            "type": "boolean"
-          }
-        }
-      },
-      "IcComputeRequest": {
-        "required": [
-          "CMP",
-          "FCY",
-          "HD",
-          "HD_window",
-          "PD",
-          "PD_window",
-          "area",
-          "areaUnits",
-          "country",
-          "lat",
-          "lon"
-        ],
-        "type": "object",
-        "properties": {
-          "country": {
-            "type": "string",
-            "enum": [
-              "KE",
-              "TZ",
-              "NG",
-              "RW",
-              "GH",
-              "ALL"
-            ]
-          },
-          "CMP": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "FCY": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "lat": {
-            "type": "number",
-            "format": "double"
-          },
-          "lon": {
-            "type": "number",
-            "format": "double"
-          },
-          "area": {
-            "type": "number",
-            "format": "double"
-          },
-          "areaUnits": {
-            "type": "string"
-          },
-          "PD": {
-            "type": "string"
-          },
-          "HD": {
-            "type": "string"
-          },
-          "PD_window": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "HD_window": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "saleSF": {
-            "type": "boolean"
-          },
-          "nameSF": {
-            "type": "string"
-          },
-          "cassPD": {
-            "type": "string"
-          },
-          "cassUW": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "cassUP": {
-            "type": "number",
-            "format": "double"
-          },
-          "maizePD": {
-            "type": "string"
-          },
-          "maizeUW": {
-            "type": "number",
-            "format": "double"
-          },
-          "maizeUP": {
-            "type": "number",
-            "format": "double"
-          },
-          "sweetPotatoPD": {
-            "type": "string"
-          },
-          "sweetPotatoUW": {
-            "type": "number",
-            "format": "double"
-          },
-          "sweetPotatoUP": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_m1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_m2": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_p1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_p2": {
-            "type": "number",
-            "format": "double"
-          },
-          "maxInv": {
-            "type": "number",
-            "format": "double"
-          },
-          "riskAtt": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "IcRequest": {
-        "required": [
-          "computeRequest",
-          "fertilizerList",
-          "userInfo"
-        ],
-        "type": "object",
-        "properties": {
-          "userInfo": {
-            "$ref": "#/components/schemas/UserInfo"
-          },
-          "computeRequest": {
-            "$ref": "#/components/schemas/IcComputeRequest"
-          },
-          "fertilizerList": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FertilizerList"
-            }
-          },
-          "appLanguage": {
-            "type": "string"
-          }
-        }
-      },
-      "FrComputeRequest": {
-        "required": [
-          "FCY",
-          "HD",
-          "HD_window",
-          "PD",
-          "PD_window",
-          "area",
-          "areaUnits",
-          "country",
-          "lat",
-          "lon"
-        ],
-        "type": "object",
-        "properties": {
-          "country": {
-            "type": "string",
-            "enum": [
-              "KE",
-              "TZ",
-              "NG",
-              "RW",
-              "GH",
-              "ALL"
-            ]
-          },
-          "FCY": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "lat": {
-            "type": "number",
-            "format": "double"
-          },
-          "lon": {
-            "type": "number",
-            "format": "double"
-          },
-          "area": {
-            "type": "number",
-            "format": "double"
-          },
-          "areaUnits": {
-            "type": "string"
-          },
-          "PD": {
-            "type": "string"
-          },
-          "HD": {
-            "type": "string"
-          },
-          "PD_window": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "HD_window": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "saleSF": {
-            "type": "boolean"
-          },
-          "nameSF": {
-            "type": "string"
-          },
-          "cassPD": {
-            "type": "string"
-          },
-          "cassUW": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "cassUP": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_m1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_m2": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_p1": {
-            "type": "number",
-            "format": "double"
-          },
-          "cassUP_p2": {
-            "type": "number",
-            "format": "double"
-          },
-          "maxInv": {
-            "type": "number",
-            "format": "double"
-          },
-          "riskAtt": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "FrRequest": {
-        "required": [
-          "computeRequest",
-          "fertilizerList",
-          "userInfo"
-        ],
-        "type": "object",
-        "properties": {
-          "userInfo": {
-            "$ref": "#/components/schemas/UserInfo"
-          },
-          "computeRequest": {
-            "$ref": "#/components/schemas/FrComputeRequest"
-          },
-          "fertilizerList": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FertilizerList"
-            }
-          },
-          "appLanguage": {
-            "type": "string"
-          }
-        }
-      },
       "CSVDownloadRequest": {
         "required": [
           "fileName"
@@ -2759,11 +2829,11 @@
           "custom": {
             "type": "boolean"
           },
-          "pcontent": {
+          "kcontent": {
             "type": "integer",
             "format": "int32"
           },
-          "kcontent": {
+          "pcontent": {
             "type": "integer",
             "format": "int32"
           },
@@ -2818,6 +2888,10 @@
             "type": "integer",
             "format": "int64"
           },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "size": {
             "type": "integer",
             "format": "int32"
@@ -2827,10 +2901,6 @@
             "items": {
               "$ref": "#/components/schemas/UserFeedbackDto"
             }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
           },
           "sort": {
             "$ref": "#/components/schemas/Sort"
@@ -2899,6 +2969,10 @@
             "type": "integer",
             "format": "int64"
           },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "size": {
             "type": "integer",
             "format": "int32"
@@ -2908,10 +2982,6 @@
             "items": {
               "$ref": "#/components/schemas/RequestStatsDto"
             }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
           },
           "sort": {
             "$ref": "#/components/schemas/Sort"
@@ -3002,6 +3072,10 @@
             "type": "integer",
             "format": "int64"
           },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "size": {
             "type": "integer",
             "format": "int32"
@@ -3011,10 +3085,6 @@
             "items": {
               "$ref": "#/components/schemas/PayloadDto"
             }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
           },
           "sort": {
             "$ref": "#/components/schemas/Sort"
