@@ -10,6 +10,8 @@ data class BasicFrRequest(
     @JsonProperty("lat") val lat: Double,
     @JsonProperty("lon") val lon: Double,
     @JsonProperty("area") val area: Double,
+    @JsonProperty("maxInv") val maxInv: Double,
+    @JsonProperty("cassUP") val cassUp: Double,
     @JsonProperty("areaUnit") val areaUnit: String,
     @JsonProperty("plantingMonth") @Pattern(regexp = "[1-9]+") val plantingMonth: Int,
     val ureaAvailable: Boolean,

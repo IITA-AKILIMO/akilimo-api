@@ -44,6 +44,7 @@ class SecurityConfig(
         http.csrf().disable()
     }
 
+    @Throws(Exception::class)
     fun configureOld(http: HttpSecurity) {
 
         http.httpBasic().and().authorizeRequests().antMatchers(

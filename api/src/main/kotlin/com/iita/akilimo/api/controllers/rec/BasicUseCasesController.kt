@@ -1,6 +1,7 @@
 package com.iita.akilimo.api.controllers.rec
 
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.iita.akilimo.api.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.PlumberComputeRequest
@@ -43,10 +44,12 @@ class BasicCasesControllers(
     fun computeFrRecGet(
         @RequestParam(required = true) @Valid country: String,
         @RequestParam(required = true) area: Double,
-        @RequestParam(required = true) fcy: Int,
+        @RequestParam(required = true, defaultValue = "11") fcy: Int,
         @RequestParam(required = true) plantingMonth: Int,
         @RequestParam(required = true) lat: Double,
         @RequestParam(required = true) lon: Double,
+        @RequestParam(required = true) maxInv: Double,
+        @RequestParam(required = true) cassUp: Double,
         @RequestParam(required = true) ureaAvailable: Boolean,
         @RequestParam(required = true) ureaPrice: Double,
         @RequestParam(required = true) npk15Available: Boolean,
@@ -61,6 +64,8 @@ class BasicCasesControllers(
             lat = lat,
             lon = lon,
             area = area,
+             maxInv =maxInv,
+            cassUp =cassUp,
             areaUnit = "ha",
             plantingMonth = plantingMonth,
             ureaAvailable = ureaAvailable,
