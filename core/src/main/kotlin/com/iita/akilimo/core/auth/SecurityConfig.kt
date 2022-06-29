@@ -1,5 +1,6 @@
 package com.iita.akilimo.core.auth
 
+import com.iita.akilimo.database.repos.UserRepo
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
@@ -19,7 +20,7 @@ import javax.sql.DataSource
 @EnableWebSecurity
 @Order(1)
 class SecurityConfig(
-    val encoder: PasswordEncoder, val dataSource: DataSource
+    val encoder: PasswordEncoder, val dataSource: DataSource,val userRepo: UserRepo
 ) : WebSecurityConfigurerAdapter() {
 
     private val API_KEY_AUTH_HEADER_NAME = "key"
@@ -28,7 +29,7 @@ class SecurityConfig(
     override fun configure(http: HttpSecurity) {
 
         val filter = ApiKeyAuthFilter(API_KEY_AUTH_HEADER_NAME)
-        val apiKeyAuthManager = ApiKeyAuthManager(dataSource)
+        val apiKeyAuthManager = ApiKeyAuthManager(dataSource,userRepo)
         filter.setAuthenticationManager(apiKeyAuthManager)
 
         http.addFilter(filter).authorizeRequests().anyRequest().authenticated()

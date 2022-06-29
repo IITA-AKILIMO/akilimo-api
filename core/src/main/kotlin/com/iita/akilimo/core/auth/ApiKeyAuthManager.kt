@@ -18,7 +18,9 @@ package com.iita.akilimo.core.auth
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import com.iita.akilimo.core.exceptions.NotFoundException
 import com.iita.akilimo.core.utils.UUIDUtil.fromHex
+import com.iita.akilimo.database.repos.UserRepo
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -30,13 +32,18 @@ import javax.sql.DataSource
 /**
  * Handles authenticating api keys against the database.
  */
-class ApiKeyAuthManager(dataSource: DataSource) : AuthenticationManager {
+
+class ApiKeyAuthManager(dataSource: DataSource, val userRepo: UserRepo) : AuthenticationManager {
     private val keys: LoadingCache<String, Boolean>
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java)
+    }
 
     init {
         keys = Caffeine.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(DatabaseCacheLoader(dataSource))
+            .build(DatabaseCacheLoader(dataSource, userRepo))
     }
 
     @Throws(AuthenticationException::class)
@@ -53,28 +60,14 @@ class ApiKeyAuthManager(dataSource: DataSource) : AuthenticationManager {
     /**
      * Caffeine CacheLoader that checks the database for the api key if it not found in the cache.
      */
-    private class DatabaseCacheLoader internal constructor(private val dataSource: DataSource) :
+    private class DatabaseCacheLoader(private val dataSource: DataSource, private val userRepo: UserRepo) :
         CacheLoader<String?, Boolean> {
         @Throws(Exception::class)
         override fun load(key: String?): Boolean {
-            LOG.info("Loading api key from database: [key: {}]", key)
-            try {
-                dataSource.connection.use { conn ->
-                    conn.prepareStatement("SELECT * FROM auth WHERE api_key = ?").use { ps ->
-                        ps.setObject(1, fromHex(key!!))
-                        ps.executeQuery().use { rs ->
-                            return rs.next()
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                LOG.error("An error occurred while retrieving api key from database", e)
-                return false
-            }
+            logger.info("Loading api key from database: [key: {}]", key)
+            val user = userRepo.findById(1).orElseThrow { throw NotFoundException("Api key not found") }
+            val hex = fromHex(key!!)
+            return false
         }
-    }
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(ApiKeyAuthManager::class.java)
     }
 }
