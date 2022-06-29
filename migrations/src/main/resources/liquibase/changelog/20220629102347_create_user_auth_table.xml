@@ -16,7 +16,7 @@
             <column name="user_id" type="bigint"/>
 
             <column name="api_key" type="varchar(150)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="api-key-uk"/>
             </column>
 
             <column name="enabled" type="boolean" defaultValue="false">

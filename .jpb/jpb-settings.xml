@@ -12,4 +12,7 @@
       </database-info>
     </database-infos>
   </component>
+  <component name="JpaPluginProjectSettings">
+    <option name="lastSelectedLanguage" value="Kotlin" />
+  </component>
 </project>

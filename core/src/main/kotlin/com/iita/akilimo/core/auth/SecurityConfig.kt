@@ -1,6 +1,6 @@
 package com.iita.akilimo.core.auth
 
-import com.iita.akilimo.database.repos.UserRepo
+import com.iita.akilimo.database.repos.UserAuthRepo
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
@@ -20,7 +20,7 @@ import javax.sql.DataSource
 @EnableWebSecurity
 @Order(1)
 class SecurityConfig(
-    val encoder: PasswordEncoder, val dataSource: DataSource,val userRepo: UserRepo
+    val encoder: PasswordEncoder, val dataSource: DataSource, val authRepo: UserAuthRepo
 ) : WebSecurityConfigurerAdapter() {
 
     private val API_KEY_AUTH_HEADER_NAME = "key"
@@ -28,17 +28,27 @@ class SecurityConfig(
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
 
+        val authPaths = arrayOf(
+            "/swagger-ui/**", "/fuelrod-api/**"
+        )
+
         val filter = ApiKeyAuthFilter(API_KEY_AUTH_HEADER_NAME)
-        val apiKeyAuthManager = ApiKeyAuthManager(dataSource,userRepo)
+        val apiKeyAuthManager = ApiKeyAuthManager(dataSource, authRepo)
         filter.setAuthenticationManager(apiKeyAuthManager)
 
-        http.addFilter(filter).authorizeRequests().anyRequest().authenticated()
+        http.antMatcher("/api/v2/recommendations/**/**")
+
+        http.addFilter(filter)
+            .authorizeRequests()
+            .anyRequest()
+            .authenticated()
 //            .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "USER")
 //            .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER")
-            .and().sessionManagement()
+
+        http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
             .and().formLogin().disable()
 

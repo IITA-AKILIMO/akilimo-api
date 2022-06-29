@@ -34,4 +34,8 @@ object UUIDUtil {
         bytes.putLong(uuid.leastSignificantBits)
         return String(Hex.encodeHex(bytes.array()))
     }
+
+    fun generateUUID(): UUID {
+        return UUID.randomUUID()
+    }
 }

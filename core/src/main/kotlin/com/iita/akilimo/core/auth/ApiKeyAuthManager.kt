@@ -18,9 +18,9 @@ package com.iita.akilimo.core.auth
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import com.iita.akilimo.core.exceptions.NotFoundException
+import com.iita.akilimo.core.exceptions.AuthorizationException
 import com.iita.akilimo.core.utils.UUIDUtil.fromHex
-import com.iita.akilimo.database.repos.UserRepo
+import com.iita.akilimo.database.repos.UserAuthRepo
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -33,7 +33,7 @@ import javax.sql.DataSource
  * Handles authenticating api keys against the database.
  */
 
-class ApiKeyAuthManager(dataSource: DataSource, val userRepo: UserRepo) : AuthenticationManager {
+class ApiKeyAuthManager(dataSource: DataSource, authRepo: UserAuthRepo) : AuthenticationManager {
     private val keys: LoadingCache<String, Boolean>
 
     companion object {
@@ -41,9 +41,7 @@ class ApiKeyAuthManager(dataSource: DataSource, val userRepo: UserRepo) : Authen
     }
 
     init {
-        keys = Caffeine.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(DatabaseCacheLoader(dataSource, userRepo))
+        keys = Caffeine.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(DatabaseCacheLoader(authRepo))
     }
 
     @Throws(AuthenticationException::class)
@@ -60,13 +58,17 @@ class ApiKeyAuthManager(dataSource: DataSource, val userRepo: UserRepo) : Authen
     /**
      * Caffeine CacheLoader that checks the database for the api key if it not found in the cache.
      */
-    private class DatabaseCacheLoader(private val dataSource: DataSource, private val userRepo: UserRepo) :
-        CacheLoader<String?, Boolean> {
+    private class DatabaseCacheLoader(private val authRepo: UserAuthRepo) : CacheLoader<String?, Boolean> {
         @Throws(Exception::class)
         override fun load(key: String?): Boolean {
             logger.info("Loading api key from database: [key: {}]", key)
-            val user = userRepo.findById(1).orElseThrow { throw NotFoundException("Api key not found") }
-            val hex = fromHex(key!!)
+            authRepo.findByApiKeyAndEnabledIsTrue(key!!).orElseThrow { throw AuthorizationException("Invalid or expired API key") }
+            try {
+                val hex = fromHex(key)
+                return true
+            } catch (ex: Exception) {
+                logger.error("Unable to decode api key", ex)
+            }
             return false
         }
     }

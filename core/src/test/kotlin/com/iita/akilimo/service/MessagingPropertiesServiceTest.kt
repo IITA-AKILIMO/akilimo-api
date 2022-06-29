@@ -16,7 +16,7 @@ internal class MessagingPropertiesServiceTest {
     @Test()
     fun sms_response_should_not_be_null() {
         recommendationResponseDto.country = "KE"
-        recommendationResponseDto.mobileNumber = "0713196504"
+        recommendationResponseDto.mobileNumber = "0713196000"
         recommendationResponseDto.fertilizerRecText = "Fertilizer recommendation text"
         val smsResponse = service.sendTextMessage(recommendationResponseDto)
 
@@ -32,18 +32,18 @@ internal class MessagingPropertiesServiceTest {
     fun testNumberFormatting() {
         recommendationResponseDto.country = "KE"
         recommendationResponseDto.mobileCountryCode = "254"
-        recommendationResponseDto.mobileNumber = "0713196504"
+        recommendationResponseDto.mobileNumber = "0713196000"
         val phone = service.processPhoneNumber(recommendationResponseDto)
 
-        assertEquals("Country Code: 254 National Number: 713196504", phone.toString())
+        assertEquals("Country Code: 254 National Number: 713196000", phone.toString())
     }
 
     @Test
     fun should_return_international_number() {
         recommendationResponseDto.country = "KE"
-        recommendationResponseDto.mobileNumber = "0713196504"
+        recommendationResponseDto.mobileNumber = "0713196000"
         val phone = service.convertToInternationalNumber(recommendationResponseDto)
 
-        assertEquals("+254713196504", phone)
+        assertEquals("+254713196000", phone)
     }
 }

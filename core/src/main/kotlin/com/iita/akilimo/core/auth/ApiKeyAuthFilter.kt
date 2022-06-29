@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest
  */
 class ApiKeyAuthFilter(private val headerName: String) : AbstractPreAuthenticatedProcessingFilter() {
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
+    private val myLogger = LoggerFactory.getLogger(this::class.java)
 
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
@@ -53,7 +53,7 @@ class ApiKeyAuthFilter(private val headerName: String) : AbstractPreAuthenticate
     }
 
     override fun getPreAuthenticatedCredentials(request: HttpServletRequest?): Any {
-        logger.info("No credentials when using API key")
+        myLogger.info("No credentials when using API key")
         return ""
     }
 }
