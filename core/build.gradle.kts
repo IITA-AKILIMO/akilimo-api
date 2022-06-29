@@ -30,7 +30,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-    api("org.springframework.boot:spring-boot-starter-security")
+//    api("org.springframework.boot:spring-boot-starter-security")
+
 //    api("org.springframework.security:spring-security-crypto")
     api("org.springframework.boot:spring-boot-starter-validation")
 
@@ -41,6 +42,7 @@ dependencies {
     api("commons-codec:commons-codec:1.15")
     api("com.github.rozidan:modelmapper-spring-boot-starter:2.3.1")
     api("joda-time:joda-time:2.10.13")
+    api("com.forgerock.spring.security:spring-security-multi-auth-starter:1.0.3")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.0")
 

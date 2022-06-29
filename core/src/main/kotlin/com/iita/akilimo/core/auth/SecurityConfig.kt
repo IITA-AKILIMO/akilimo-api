@@ -25,6 +25,13 @@ class SecurityConfig(
 
     private val API_KEY_AUTH_HEADER_NAME = "key"
 
+
+//    @Throws(Exception::class)
+//    override fun configure(auth: AuthenticationManagerBuilder) {
+//        auth.authenticationProvider()
+//    }
+
+
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
 
@@ -39,17 +46,14 @@ class SecurityConfig(
         http.antMatcher("/api/v2/recommendations/**/**")
 
         http.addFilter(filter)
-            .authorizeRequests()
-            .anyRequest()
-            .authenticated()
-//            .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
+        http.authorizeRequests().anyRequest().authenticated()
+//            .antMatchers(HttpMethod.POST, "/api").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "USER")
 //            .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER")
 
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
             .and().formLogin().disable()
 
         http.csrf().disable()
@@ -68,10 +72,13 @@ class SecurityConfig(
             "/api/**/potato**", "/api/**/potato**/**",
             "/api/**/starch**",
             "/api/**/user-feedback**", "/api/**/user-feedback**/**",
-        ).permitAll().antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN").antMatchers(HttpMethod.POST, "/api/**")
-            .hasAnyRole("ADMIN", "USER").antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
-            .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN").antMatchers(HttpMethod.GET, "/api/**")
-            .hasAnyRole("ADMIN", "USER").and().sessionManagement()
+        ).permitAll()
+            .antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "USER")
+            .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER").and()
+            .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
             .and().formLogin().disable()
 

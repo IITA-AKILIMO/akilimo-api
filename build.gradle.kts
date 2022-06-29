@@ -64,6 +64,9 @@ subprojects {
         maven {
             url = uri("https://jitpack.io")
         }
+        maven {
+            url = uri("https://maven.forgerock.org:443/repo/community")
+        }
     }
     apply {
         plugin("io.spring.dependency-management")
