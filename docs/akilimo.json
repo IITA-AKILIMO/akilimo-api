@@ -2,6 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "AKILIMO API",
+    "version": "7.0.0",
     "description": "AKILIMO API",
     "contact": {
       "name": "Akilimo Team",
@@ -12,454 +13,147 @@
       "name": "GPL",
       "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
     },
-    "version": "5.0.0"
-  },
-  "externalDocs": {
-    "description": "AKILIMO API Documentation",
-    "url": "#"
+    "x-logo": {
+      "url": ""
+    }
   },
   "servers": [
     {
       "url": "http://localhost:8098",
-      "description": "Generated server url"
-    }
-  ],
-  "tags": [
-    {
-      "name": "AKILIMO recommendations for basic applications",
-      "description": "Can be used with basic applications such as chatbots, ussd and other minimal parameter use cases"
+      "description": "Generated server url",
+      "x-last-modified": 1656585649735
     },
     {
-      "name": "AKILIMO recommendations",
-      "description": "Operations pertaining recommendations for various interventions"
+      "url": "https://api.akilimo.org",
+      "description": "Live akilimo api",
+      "x-last-modified": 1656585756700
     }
   ],
   "paths": {
-    "/api/v1/potato-prices/{id}": {
-      "get": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "getPriceById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "updatePotatoPrice",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProducePriceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "deletePotatoPrice",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/maize-prices/{id}": {
-      "get": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "getPriceById_1",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "updateMaizePrice",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProducePriceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "deleteMaizePrice",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/cassava-prices/{id}": {
-      "get": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "getPriceById_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "updateFertilizerPrice",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProducePriceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "deleteFertilizerPrice",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v2/recommendations/pro/sp": {
-      "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeSpRec",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BppRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v2/recommendations/pro/ic/crop/{crop}": {
-      "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeIcRec",
-        "parameters": [
-          {
-            "name": "crop",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IcRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v2/recommendations/pro/fr": {
       "post": {
-        "tags": [
-          "AKILIMO recommendations"
-        ],
-        "operationId": "computeFrRec",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/FrRequest"
+              },
+              "example": {
+                "userInfo": {
+                  "mobileCountryCode": "+254",
+                  "mobileNumber": "2547000000",
+                  "fullPhoneNumber": "2547000000",
+                  "userName": "Demo User",
+                  "fieldDescription": "Demo user field",
+                  "deviceToken": "ad4922dd-3d3e-4b33-a42d-83c6d8f57a4a",
+                  "gender": "NA",
+                  "emailAddress": "NA",
+                  "sendSms": false,
+                  "sendEmail": false
+                },
+                "computeRequest": {
+                  "country": "NG",
+                  "lat": 7.4201,
+                  "lon": 5.1063,
+                  "area": 1,
+                  "areaUnits": "ha",
+                  "PD": "2021-09-17",
+                  "HD": "2022-10-30",
+                  "FCY": 11,
+                  "cassUP": 50000
+                },
+                "fertilizerList": [
+                  {
+                    "name": "NPK_15_15_15",
+                    "weight": 50,
+                    "price": 0,
+                    "nContent": 15,
+                    "kContent": 15,
+                    "pContent": 15
+                  },
+                  {
+                    "name": "DAP",
+                    "weight": 50,
+                    "price": 0,
+                    "nContent": 20,
+                    "kContent": 10,
+                    "pContent": 10
+                  },
+                  {
+                    "name": "UREA",
+                    "weight": 50,
+                    "price": 0,
+                    "nContent": 46,
+                    "kContent": 0,
+                    "pContent": 0
+                  }
+                ]
               }
             }
           },
           "required": true
         },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecommendationResponseDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v2/recommendations/pro/bpp": {
-      "post": {
         "tags": [
           "AKILIMO recommendations"
         ],
-        "operationId": "computeBppRec",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BppRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
-            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RecommendationResponseDto"
+                },
+                "example": {
+                  "country": "NG",
+                  "hasResponse": true,
+                  "responsePayload": [
+                    {
+                      "FR": {
+                        "rec": [
+                          {
+                            "lat": 7.4201,
+                            "lon": 5.1063,
+                            "plDate": 260,
+                            "N": 392.3784,
+                            "P": 64.0766,
+                            "K": 114.4225,
+                            "WLY": 48.933,
+                            "CurrentY": 11.7996,
+                            "TargetY": 48.933,
+                            "TC": 238800,
+                            "NR": 1617900
+                          }
+                        ],
+                        "fertilizer_rates": [
+                          {
+                            "type": "Urea",
+                            "rate": 555
+                          },
+                          {
+                            "type": "NPK15_15_15",
+                            "rate": 915
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "FR": [
+                        "We recommend\n555 kg of Urea\n915 kg of NPK15_15_15 for the area of your field.\nThis will cost NGN 238,800.\n We expect an extra production of 37 tonnes of fresh storage roots, and a net value increase of NGN 1,617,900."
+                      ]
+                    }
+                  ],
+                  "userPhoneCC": "+254",
+                  "userPhoneNr": "2547000000",
+                  "userName": "Demo User",
+                  "userEmail": "NA",
+                  "FR": "We recommend\n555 kg of Urea\n915 kg of NPK15_15_15 for the area of your field.\nThis will cost NGN 238,800.\n We expect an extra production of 37 tonnes of fresh storage roots, and a net value increase of NGN 1,617,900."
                 }
               }
-            }
+            },
+            "description": "OK"
           }
-        }
+        },
+        "operationId": "computeFrRec"
       }
     },
     "/api/v2/recommendations/basic/fr": {
@@ -467,1302 +161,308 @@
         "tags": [
           "AKILIMO recommendations for basic applications"
         ],
-        "operationId": "computeFrRecGet",
         "parameters": [
           {
+            "deprecated": false,
+            "example": "NG",
             "name": "country",
-            "in": "query",
-            "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "in": "query",
+            "required": true,
+            "allowEmptyValue": false,
+            "x-last-modified": 1656585982620
           },
           {
+            "deprecated": false,
+            "example": "10",
             "name": "area",
+            "description": "The are is computed in hectares by default",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
             "in": "query",
             "required": true,
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
+            "allowEmptyValue": false,
+            "x-last-modified": 1656586032718
           },
           {
+            "deprecated": false,
+            "example": "11",
             "name": "fcy",
-            "in": "query",
-            "required": false,
             "schema": {
-              "type": "integer",
               "format": "int32",
-              "default": 11
-            }
-          },
-          {
-            "name": "plantingMonth",
+              "default": 11,
+              "type": "integer"
+            },
             "in": "query",
             "required": true,
+            "allowEmptyValue": false,
+            "x-last-modified": 1656586112929
+          },
+          {
+            "deprecated": false,
+            "example": "5",
+            "name": "plantingMonth",
+            "description": "12 months will be added to the plantingMont to get the harvestMonth to allow computing of recommendations",
             "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+              "format": "int32",
+              "type": "integer"
+            },
+            "in": "query",
+            "required": true,
+            "allowEmptyValue": false,
+            "x-last-modified": 1656586088532
           },
           {
             "name": "lat",
-            "in": "query",
-            "required": true,
             "schema": {
-              "type": "number",
-              "format": "double"
-            }
+              "format": "double",
+              "type": "number"
+            },
+            "in": "query",
+            "required": true
           },
           {
             "name": "lon",
-            "in": "query",
-            "required": true,
             "schema": {
-              "type": "number",
-              "format": "double"
-            }
+              "format": "double",
+              "type": "number"
+            },
+            "in": "query",
+            "required": true
           },
           {
+            "deprecated": false,
+            "example": "150000",
             "name": "maxInv",
+            "description": "Maximum amount the farmer is willing to invest in their farm",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
             "in": "query",
             "required": true,
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
+            "allowEmptyValue": false,
+            "x-last-modified": 1656586202837
           },
           {
+            "deprecated": false,
+            "example": "50000",
             "name": "cassUp",
+            "description": "Unit price of cassava, the unit is measured in tonnes",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
             "in": "query",
             "required": true,
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
+            "allowEmptyValue": false,
+            "x-last-modified": 1656586252103
           },
           {
             "name": "ureaAvailable",
-            "in": "query",
-            "required": true,
             "schema": {
               "type": "boolean"
-            }
+            },
+            "in": "query",
+            "required": true
           },
           {
             "name": "ureaPrice",
-            "in": "query",
-            "required": true,
             "schema": {
-              "type": "number",
-              "format": "double"
-            }
+              "format": "double",
+              "type": "number"
+            },
+            "in": "query",
+            "required": true
           },
           {
             "name": "npk15Available",
-            "in": "query",
-            "required": true,
             "schema": {
               "type": "boolean"
-            }
+            },
+            "in": "query",
+            "required": true
           },
           {
             "name": "npk15Price",
-            "in": "query",
-            "required": true,
             "schema": {
-              "type": "number",
-              "format": "double"
-            }
+              "format": "double",
+              "type": "number"
+            },
+            "in": "query",
+            "required": true
           },
           {
             "name": "npk17Available",
-            "in": "query",
-            "required": true,
             "schema": {
               "type": "boolean"
-            }
+            },
+            "in": "query",
+            "required": true
           },
           {
             "name": "npk17Price",
-            "in": "query",
-            "required": true,
             "schema": {
-              "type": "number",
-              "format": "double"
-            }
+              "format": "double",
+              "type": "number"
+            },
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RecommendationResponseDto"
+                },
+                "example": {
+                  "country": "NG",
+                  "hasResponse": true,
+                  "responsePayload": [
+                    {
+                      "FR": {
+                        "rec": [
+                          {
+                            "lat": 7.4201,
+                            "lon": 5.1063,
+                            "plDate": 274,
+                            "N": 186.0229,
+                            "P": 25.7093,
+                            "K": 52.1134,
+                            "WLY": 479.927,
+                            "CurrentY": 116.3836,
+                            "TargetY": 133.6102,
+                            "TC": 142500,
+                            "NR": 718800
+                          }
+                        ],
+                        "fertilizer_rates": [
+                          {
+                            "type": "Urea",
+                            "rate": 276
+                          },
+                          {
+                            "type": "NPK17_17_17",
+                            "rate": 347
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "FR": [
+                        "We recommend\n276 kg of Urea\n347 kg of NPK17_17_17 for the area of your field.\nThis will cost NGN 142,452.\n We expect an extra production of 17 tonnes of fresh storage roots, and a net value increase of NGN 718,800."
+                      ]
+                    }
+                  ],
+                  "userPhoneCC": "000",
+                  "userPhoneNr": "00",
+                  "userName": "API User",
+                  "userEmail": "NA",
+                  "FR": "We recommend\n276 kg of Urea\n347 kg of NPK17_17_17 for the area of your field.\nThis will cost NGN 142,452.\n We expect an extra production of 17 tonnes of fresh storage roots, and a net value increase of NGN 718,800."
                 }
               }
-            }
+            },
+            "description": "OK"
           }
-        }
+        },
+        "operationId": "computeFrRecGet",
+        "summary": "Gets the Ferterlizer recommendations"
       },
       "post": {
-        "tags": [
-          "AKILIMO recommendations for basic applications"
-        ],
-        "operationId": "computeFrRecPost",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/BasicFrRequest"
+              },
+              "example": {
+                "country": "NG",
+                "lat": 7.4201,
+                "lon": 5.1063,
+                "FCY": 11,
+                "area": 10,
+                "cassUP": 50000,
+                "maxInv": 150000,
+                "areaUnit": "ha",
+                "plantingMonth": 10,
+                "ureaAvailable": true,
+                "ureaPrice": 16000,
+                "npk15Available": false,
+                "npk15Price": 0,
+                "npk17Available": true,
+                "npk17Price": 0
               }
             }
           },
           "required": true
         },
+        "tags": [
+          "AKILIMO recommendations for basic applications"
+        ],
         "responses": {
           "200": {
-            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RecommendationResponseDto"
+                },
+                "example": {
+                  "country": "NG",
+                  "hasResponse": true,
+                  "responsePayload": [
+                    {
+                      "FR": {
+                        "rec": [
+                          {
+                            "lat": 7.4201,
+                            "lon": 5.1063,
+                            "plDate": 274,
+                            "N": 186.0229,
+                            "P": 25.7093,
+                            "K": 52.1134,
+                            "WLY": 479.927,
+                            "CurrentY": 116.3836,
+                            "TargetY": 133.6102,
+                            "TC": 142500,
+                            "NR": 718800
+                          }
+                        ],
+                        "fertilizer_rates": [
+                          {
+                            "type": "Urea",
+                            "rate": 276
+                          },
+                          {
+                            "type": "NPK17_17_17",
+                            "rate": 347
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "FR": [
+                        "We recommend\n276 kg of Urea\n347 kg of NPK17_17_17 for the area of your field.\nThis will cost NGN 142,452.\n We expect an extra production of 17 tonnes of fresh storage roots, and a net value increase of NGN 718,800."
+                      ]
+                    }
+                  ],
+                  "userPhoneCC": "000",
+                  "userPhoneNr": "00",
+                  "userName": "API User",
+                  "userEmail": "NA",
+                  "FR": "We recommend\n276 kg of Urea\n347 kg of NPK17_17_17 for the area of your field.\nThis will cost NGN 142,452.\n We expect an extra production of 17 tonnes of fresh storage roots, and a net value increase of NGN 718,800."
                 }
               }
-            }
+            },
+            "description": "OK"
           }
-        }
-      }
-    },
-    "/api/v1/user": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "List users",
-        "operationId": "listUsers",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Add new api user",
-        "operationId": "addUser",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserRequest"
-              }
-            }
-          },
-          "required": true
         },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/user/{id}/authority": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Add authority to a specific user",
-        "operationId": "addUserAuthority",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AuthorityRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthorityDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/user-feedback/survey": {
-      "post": {
-        "tags": [
-          "User Feedback"
-        ],
-        "summary": "Add user feedback",
-        "operationId": "addUserFeedback",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserFeedBackRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserFeedbackDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/starch-factories": {
-      "get": {
-        "tags": [
-          "starch-factory-controller"
-        ],
-        "operationId": "listFactories",
-        "parameters": [
-          {
-            "name": "country-code",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StarchFactoryDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "starch-factory-controller"
-        ],
-        "operationId": "addFactory",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StarchFactoryRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StarchFactoryDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/potato-prices": {
-      "get": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "getAllPrices",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "addPotatoPrice",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProducePriceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ona-data/download": {
-      "post": {
-        "tags": [
-          "Ona data"
-        ],
-        "summary": "Download csv files",
-        "operationId": "download",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CSVDownloadRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/maize-prices": {
-      "get": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "getAllPrices_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "addMaizePrice",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProducePriceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/fertilizers": {
-      "get": {
-        "tags": [
-          "fertilizers-controller"
-        ],
-        "operationId": "listFertilizers",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FertilizerDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "fertilizers-controller"
-        ],
-        "operationId": "addFertilizer",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FertilizerRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FertilizerDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/cassava-prices": {
-      "get": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "getAllPrices_2",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "addCassava",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProducePriceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProducePriceDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/user/{id}": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Find user by id",
-        "operationId": "findById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Delete user by id",
-        "operationId": "deleteUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/user/username/{username}": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "find user by username",
-        "operationId": "findByUserName",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/user-feedback": {
-      "get": {
-        "tags": [
-          "User Feedback"
-        ],
-        "summary": "Add user feedback",
-        "operationId": "listFeedback",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageUserFeedbackDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/stats/requests": {
-      "get": {
-        "tags": [
-          "Requests"
-        ],
-        "summary": "List recommendations request",
-        "operationId": "listRecommendationRequests",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageRequestStatsDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/stats/requests/json": {
-      "get": {
-        "tags": [
-          "Requests"
-        ],
-        "summary": "Download recommendations request as a json file",
-        "operationId": "downloadRequestStats",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "format": "byte"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/potato-prices/inactive": {
-      "get": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "getInactivePrices",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/potato-prices/country/{country}": {
-      "get": {
-        "tags": [
-          "potato-prices-controller"
-        ],
-        "operationId": "listPrices",
-        "parameters": [
-          {
-            "name": "country",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "KE",
-                "TZ",
-                "NG",
-                "RW",
-                "GH",
-                "BI",
-                "ALL"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/payload": {
-      "get": {
-        "tags": [
-          "requests"
-        ],
-        "summary": "Get all sent requests",
-        "operationId": "listAllPayloads",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagePayloadDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/payload/{requestId}/request-id": {
-      "get": {
-        "tags": [
-          "requests"
-        ],
-        "summary": "Get all sent request by request-id",
-        "operationId": "listPayloadByRequestId",
-        "parameters": [
-          {
-            "name": "requestId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PayloadDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/payload/{id}": {
-      "get": {
-        "tags": [
-          "requests"
-        ],
-        "summary": "Get all sent request by id",
-        "operationId": "listPayloadById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayloadDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/operation-cost": {
-      "get": {
-        "tags": [
-          "operation-cost-controller"
-        ],
-        "operationId": "listOperationCosts",
-        "parameters": [
-          {
-            "name": "op-name",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "op-type",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/OperationCostDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/operation-cost/{id}": {
-      "get": {
-        "tags": [
-          "operation-cost-controller"
-        ],
-        "operationId": "listOperationCost",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OperationCostDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/maize-prices/inactive": {
-      "get": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "getInactivePrices_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/maize-prices/country/{country}": {
-      "get": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "listPrices_1",
-        "parameters": [
-          {
-            "name": "country",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "KE",
-                "TZ",
-                "NG",
-                "RW",
-                "GH",
-                "BI",
-                "ALL"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/maize-prices/country/{country}/produce/{produceType}": {
-      "get": {
-        "tags": [
-          "maize-prices-controller"
-        ],
-        "operationId": "listPrices_2",
-        "parameters": [
-          {
-            "name": "country",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "KE",
-                "TZ",
-                "NG",
-                "RW",
-                "GH",
-                "BI",
-                "ALL"
-              ]
-            }
-          },
-          {
-            "name": "produceType",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/investment-amount/{countryCode}/country": {
-      "get": {
-        "tags": [
-          "investment-amount-controller"
-        ],
-        "operationId": "investmentByCountryCode",
-        "parameters": [
-          {
-            "name": "countryCode",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/InvestmentAmountDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/fertilizer-prices/{fertilizerKey}": {
-      "get": {
-        "tags": [
-          "fertilizer-prices-controller"
-        ],
-        "operationId": "fertilizerPriceByKey",
-        "parameters": [
-          {
-            "name": "country-code",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "fertilizerKey",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FertilizerPriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/dates/planting-dates": {
-      "get": {
-        "tags": [
-          "dates-controller"
-        ],
-        "operationId": "plantingDates",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DateDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/dates/harvest-dates": {
-      "get": {
-        "tags": [
-          "dates-controller"
-        ],
-        "operationId": "harvestDates",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DateDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/currency": {
-      "get": {
-        "tags": [
-          "currency-controller"
-        ],
-        "operationId": "getAllCurrencies",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CurrencyDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/cassava-prices/inactive": {
-      "get": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "getInactivePrices_2",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/cassava-prices/country/{country}": {
-      "get": {
-        "tags": [
-          "cassava-prices-controller"
-        ],
-        "operationId": "listPrices_3",
-        "parameters": [
-          {
-            "name": "country",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "KE",
-                "TZ",
-                "NG",
-                "RW",
-                "GH",
-                "BI",
-                "ALL"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProducePriceDto"
-                  }
-                }
-              }
-            }
-          }
-        }
+        "operationId": "computeFrRecPost"
       }
     }
   },
@@ -1781,7 +481,6 @@
         "type": "object",
         "properties": {
           "country": {
-            "type": "string",
             "enum": [
               "KE",
               "TZ",
@@ -1790,27 +489,28 @@
               "GH",
               "BI",
               "ALL"
-            ]
+            ],
+            "type": "string"
           },
           "minLocalPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxLocalPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "sortOrder": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "minUsd": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxUsd": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "active": {
             "type": "boolean"
@@ -1838,15 +538,14 @@
             "type": "string"
           },
           "priceId": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "priceIndex": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "country": {
-            "type": "string",
             "enum": [
               "KE",
               "TZ",
@@ -1855,30 +554,31 @@
               "GH",
               "BI",
               "ALL"
-            ]
+            ],
+            "type": "string"
           },
           "produceType": {
             "type": "string"
           },
           "minLocalPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxLocalPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "minAllowedPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxAllowedPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "sortOrder": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "active": {
             "type": "boolean"
@@ -1887,8 +587,8 @@
             "type": "string"
           },
           "averagePrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           }
         }
       },
@@ -1914,7 +614,6 @@
         "type": "object",
         "properties": {
           "country": {
-            "type": "string",
             "enum": [
               "KE",
               "TZ",
@@ -1923,23 +622,24 @@
               "GH",
               "BI",
               "ALL"
-            ]
+            ],
+            "type": "string"
           },
           "FCY": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "lat": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "lon": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "area": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "areaUnits": {
             "type": "string"
@@ -1951,12 +651,12 @@
             "type": "string"
           },
           "PD_window": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "HD_window": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "tractor_plough": {
             "type": "boolean"
@@ -1971,36 +671,36 @@
             "type": "string"
           },
           "cost_tractor_ploughing": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_tractor_harrowing": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_tractor_ridging": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_manual_ploughing": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_manual_harrowing": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_manual_ridging": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_weeding1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cost_weeding2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "ploughing": {
             "type": "boolean"
@@ -2024,36 +724,36 @@
             "type": "string"
           },
           "cassUW": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "cassUP": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_m1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_m2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_p1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_p2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxInv": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "riskAtt": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           }
         }
       },
@@ -2099,12 +799,12 @@
             "type": "string"
           },
           "weight": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "price": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "nContent": {
             "type": "string"
@@ -2244,7 +944,6 @@
         "type": "object",
         "properties": {
           "country": {
-            "type": "string",
             "enum": [
               "KE",
               "TZ",
@@ -2253,27 +952,28 @@
               "GH",
               "BI",
               "ALL"
-            ]
+            ],
+            "type": "string"
           },
           "CMP": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "FCY": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "lat": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "lon": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "area": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "areaUnits": {
             "type": "string"
@@ -2285,12 +985,12 @@
             "type": "string"
           },
           "PD_window": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "HD_window": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "saleSF": {
             "type": "boolean"
@@ -2302,58 +1002,58 @@
             "type": "string"
           },
           "cassUW": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "cassUP": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maizePD": {
             "type": "string"
           },
           "maizeUW": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maizeUP": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "sweetPotatoPD": {
             "type": "string"
           },
           "sweetPotatoUW": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "sweetPotatoUP": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_m1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_m2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_p1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_p2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxInv": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "riskAtt": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           }
         }
       },
@@ -2410,7 +1110,6 @@
         "type": "object",
         "properties": {
           "country": {
-            "type": "string",
             "enum": [
               "KE",
               "TZ",
@@ -2419,23 +1118,24 @@
               "GH",
               "BI",
               "ALL"
-            ]
+            ],
+            "type": "string"
           },
           "FCY": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "lat": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "lon": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "area": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "areaUnits": {
             "type": "string"
@@ -2447,16 +1147,16 @@
             "type": "string"
           },
           "cassUP": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "PD_window": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "HD_window": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "saleSF": {
             "type": "boolean"
@@ -2468,32 +1168,32 @@
             "type": "string"
           },
           "cassUW": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "cassUP_m1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_m2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_p1": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP_p2": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxInv": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "riskAtt": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           }
         }
       },
@@ -2547,56 +1247,56 @@
             "type": "string"
           },
           "FCY": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "lat": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "lon": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "area": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxInv": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "cassUP": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "areaUnit": {
             "type": "string"
           },
           "plantingMonth": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "ureaAvailable": {
             "type": "boolean"
           },
           "ureaPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "npk15Available": {
             "type": "boolean"
           },
           "npk15Price": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "npk17Available": {
             "type": "boolean"
           },
           "npk17Price": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           }
         }
       },
@@ -2623,8 +1323,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "username": {
             "type": "string"
@@ -2651,11 +1351,11 @@
             "type": "string"
           },
           "authority": {
-            "type": "string",
             "enum": [
               "ADMIN",
               "USER"
-            ]
+            ],
+            "type": "string"
           }
         }
       },
@@ -2663,18 +1363,18 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "username": {
             "type": "string"
           },
           "authority": {
-            "type": "string",
             "enum": [
               "ADMIN",
               "USER"
-            ]
+            ],
+            "type": "string"
           },
           "createdAt": {
             "type": "string"
@@ -2702,24 +1402,24 @@
             "type": "string"
           },
           "akilimoRecRating": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "akilimoUsefulRating": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "language": {
             "type": "string"
           },
           "userType": {
-            "type": "string",
             "enum": [
               "EA",
               "COMMUNITY_MEMBER",
               "FARMER",
               "OTHER"
-            ]
+            ],
+            "type": "string"
           }
         }
       },
@@ -2733,8 +1433,8 @@
             "type": "string"
           },
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "deviceToken": {
             "type": "string"
@@ -2743,21 +1443,21 @@
             "type": "string"
           },
           "userType": {
-            "type": "string",
             "enum": [
               "EA",
               "COMMUNITY_MEMBER",
               "FARMER",
               "OTHER"
-            ]
+            ],
+            "type": "string"
           },
           "akilimoRecRating": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "akilimoUsefulRating": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "language": {
             "type": "string"
@@ -2852,9 +1552,9 @@
             "type": "string"
           },
           "weight": {
+            "format": "int32",
             "minimum": 1,
-            "type": "integer",
-            "format": "int32"
+            "type": "integer"
           },
           "price": {
             "type": "string"
@@ -2866,16 +1566,16 @@
             "type": "boolean"
           },
           "kcontent": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "pcontent": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "ncontent": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           }
         }
       },
@@ -2889,8 +1589,8 @@
             "type": "string"
           },
           "weight": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "currency": {
             "type": "string"
@@ -2905,8 +1605,8 @@
             "type": "string"
           },
           "fertilizerId": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "type": {
             "type": "string"
@@ -2917,16 +1617,16 @@
         "type": "object",
         "properties": {
           "totalElements": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "totalPages": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "size": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "content": {
             "type": "array",
@@ -2935,15 +1635,15 @@
             }
           },
           "number": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "sort": {
             "$ref": "#/components/schemas/Sort"
           },
           "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "first": {
             "type": "boolean"
@@ -2963,14 +1663,14 @@
         "type": "object",
         "properties": {
           "page": {
+            "format": "int32",
             "minimum": 0,
-            "type": "integer",
-            "format": "int32"
+            "type": "integer"
           },
           "size": {
+            "format": "int32",
             "minimum": 1,
-            "type": "integer",
-            "format": "int32"
+            "type": "integer"
           },
           "sort": {
             "type": "array",
@@ -2998,16 +1698,16 @@
         "type": "object",
         "properties": {
           "totalElements": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "totalPages": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "size": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "content": {
             "type": "array",
@@ -3016,15 +1716,15 @@
             }
           },
           "number": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "sort": {
             "$ref": "#/components/schemas/Sort"
           },
           "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "first": {
             "type": "boolean"
@@ -3044,8 +1744,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "requestDate": {
             "type": "string"
@@ -3075,13 +1775,13 @@
             "type": "string"
           },
           "userType": {
-            "type": "string",
             "enum": [
               "EA",
               "COMMUNITY_MEMBER",
               "FARMER",
               "OTHER"
-            ]
+            ],
+            "type": "string"
           },
           "useCase": {
             "type": "string"
@@ -3101,16 +1801,16 @@
         "type": "object",
         "properties": {
           "totalElements": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "totalPages": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "size": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "content": {
             "type": "array",
@@ -3119,15 +1819,15 @@
             }
           },
           "number": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "sort": {
             "$ref": "#/components/schemas/Sort"
           },
           "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "first": {
             "type": "boolean"
@@ -3147,8 +1847,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "requestId": {
             "type": "string"
@@ -3193,12 +1893,12 @@
             "type": "string"
           },
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "listIndex": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           },
           "operationName": {
             "type": "string"
@@ -3207,40 +1907,40 @@
             "type": "string"
           },
           "minUsd": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxUsd": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "minTzs": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxTzs": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "minNgn": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "maxNgn": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "averageNgnPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "averageTzsPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "averageUsdPrice": {
-            "type": "number",
-            "format": "double"
+            "format": "double",
+            "type": "number"
           },
           "priceRange": {
             "type": "string"
@@ -3257,8 +1957,8 @@
             "type": "string"
           },
           "investmentId": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "country": {
             "type": "string"
@@ -3273,8 +1973,8 @@
             "type": "boolean"
           },
           "sortOrder": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           }
         }
       },
@@ -3282,16 +1982,16 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "priceId": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "sortOrder": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "type": "integer"
           },
           "fertilizerKey": {
             "type": "string"
@@ -3339,8 +2039,8 @@
             "type": "string"
           },
           "windowValue": {
-            "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "type": "integer"
           }
         }
       },
@@ -3369,10 +2069,54 @@
       }
     },
     "securitySchemes": {
-      "api": {
-        "type": "http",
-        "scheme": "basic"
+      "apiKey": {
+        "type": "apiKey",
+        "description": "?key=b930a505249b415c92f5ba7eeac32cf5",
+        "name": "key",
+        "in": "query",
+        "x-last-modified": 1656585882231
       }
+    },
+    "headers": {},
+    "responses": {},
+    "parameters": {}
+  },
+  "security": [
+    {
+      "apiKey": []
     }
+  ],
+  "tags": [
+    {
+      "name": "AKILIMO recommendations for basic applications",
+      "description": "Can be used with basic applications such as chatbots, ussd and other minimal parameter use cases",
+      "x-last-modified": 1656585764454
+    },
+    {
+      "name": "AKILIMO recommendations",
+      "description": "Operations pertaining recommendations for various interventions"
+    },
+    {
+      "name": "fr",
+      "description": "fr",
+      "externalDocs": {},
+      "x-last-modified": 1656585951533
+    },
+    {
+      "name": "basic",
+      "description": "basic",
+      "externalDocs": {},
+      "x-last-modified": 1656585953756
+    },
+    {
+      "name": "advanced",
+      "description": "advanced",
+      "externalDocs": {},
+      "x-last-modified": 1656586342132
+    }
+  ],
+  "externalDocs": {
+    "description": "AKILIMO API Documentation",
+    "url": "https://iita-akilimo.github.io/akilimo-api/"
   }
 }
