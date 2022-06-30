@@ -78,6 +78,7 @@ springdoc:
     path: /akilimo-api
     groups:
       enabled: true
+    resolve-schema-properties: true
   swagger-ui:
     tags-sorter: alpha
     default-models-expand-depth: -1

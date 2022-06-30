@@ -9,6 +9,8 @@ import com.iita.akilimo.core.request.usecases.ic.IcRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
 import io.swagger.v3.oas.annotations.Hidden
+import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.tags.Tags
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
+@Tags(Tag(name = "advanced", description = "Advanced API"))
 @RequestMapping("/api/v2/recommendations/pro")
 @RestController
 class UseCasesControllers(
