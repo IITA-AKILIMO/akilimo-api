@@ -1,10 +1,25 @@
-#
-#server:
-#  error:
-#    include-message: always
-#    include-binding-errors: always
+server:
+#  ssl:
+#    client-auth: WANT
+#    enabled: true
+#    trust-store: classpath:keystores/truststore.jks
+#    trust-store-password: changeit
+#    key-store: classpath:keystores/keystore.jks
+#    key-store-password: changeit
+#    self-signed:
+#      ca-alias: Spring-security-multi-auth-example-ca
+#  port: 8443
+
+#trust-store:
+#  path: classpath:keystores/truststore.jks
+#  password: changeit
+
 
 spring:
   jpa:
     hibernate:
       ddl-auto: none
+logging:
+  level:
+    dev:
+      openbanking4: TRACE
