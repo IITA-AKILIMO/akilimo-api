@@ -71,7 +71,7 @@ spring:
 
 
 springdoc:
-  show-actuator: true
+  show-actuator: false
   default-produces-media-type: "application/json"
   pathsToMatch: /api/**/**
   api-docs:
