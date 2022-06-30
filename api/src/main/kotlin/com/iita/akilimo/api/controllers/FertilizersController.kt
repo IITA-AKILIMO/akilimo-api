@@ -3,20 +3,21 @@ package com.iita.akilimo.api.controllers
 import com.iita.akilimo.core.mapper.FertilizerDto
 import com.iita.akilimo.core.request.FertilizerRequest
 import com.iita.akilimo.core.service.FertilizerService
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
+@Hidden
 @RequestMapping("/api/v1/fertilizers")
 @RestController
 class FertilizersController(
     private val fertilizerService: FertilizerService
 ) : BaseController() {
-    companion object {
-        val logger = LoggerFactory.getLogger(FertilizersController::class.java)
-    }
+
+    val myLogger = LoggerFactory.getLogger(this::class.java)
 
 
     @GetMapping

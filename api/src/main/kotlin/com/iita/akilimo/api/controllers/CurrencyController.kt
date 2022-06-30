@@ -2,6 +2,7 @@ package com.iita.akilimo.api.controllers
 
 import com.iita.akilimo.core.mapper.CurrencyDto
 import com.iita.akilimo.core.service.CurrencyService
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
+@Hidden
 @RequestMapping("/api/v1/currency")
 @RestController
 class CurrencyController(val cassavaPriceService: CurrencyService) {

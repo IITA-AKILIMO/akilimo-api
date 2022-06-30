@@ -4,6 +4,7 @@ import com.iita.akilimo.core.mapper.ProducePriceDto
 import com.iita.akilimo.core.request.ProducePriceRequest
 import com.iita.akilimo.core.service.PotatoPriceService
 import com.iita.akilimo.enums.EnumCountry
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -12,7 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-
+@Hidden
 @RequestMapping("/api/v1/potato-prices")
 @RestController
 class PotatoPricesController(private val potatoPriceService: PotatoPriceService) {

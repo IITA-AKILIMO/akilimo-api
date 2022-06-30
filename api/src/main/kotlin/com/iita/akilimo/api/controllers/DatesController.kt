@@ -2,6 +2,7 @@ package com.iita.akilimo.api.controllers
 
 import com.iita.akilimo.core.mapper.DateDto
 import com.iita.akilimo.core.service.DateService
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Hidden
 @RequestMapping("/api/v1/dates")
 @RestController
 class DatesController(private val dateService: DateService) : BaseController() {

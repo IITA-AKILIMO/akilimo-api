@@ -3,6 +3,7 @@ package com.iita.akilimo.api.controllers
 import com.iita.akilimo.core.mapper.FertilizerPriceDto
 import com.iita.akilimo.core.request.FertilizerPriceRequest
 import com.iita.akilimo.core.service.FertilizerPriceService
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
+@Hidden
 @RequestMapping("/api/v1/fertilizer-prices")
 @RestController
 class FertilizerPricesController(private val fertilizerPriceService: FertilizerPriceService) : BaseController() {

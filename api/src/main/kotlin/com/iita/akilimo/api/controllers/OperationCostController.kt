@@ -2,12 +2,13 @@ package com.iita.akilimo.api.controllers
 
 import com.iita.akilimo.core.mapper.OperationCostDto
 import com.iita.akilimo.core.service.OperationCostService
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-
+@Hidden
 @RequestMapping("/api/v1/operation-cost")
 @RestController
 class OperationCostController(private val operationCostService: OperationCostService) : BaseController() {

@@ -3,6 +3,7 @@ package com.iita.akilimo.api.controllers
 import com.iita.akilimo.core.mapper.StarchFactoryDto
 import com.iita.akilimo.core.request.StarchFactoryRequest
 import com.iita.akilimo.core.service.StarchFactoryService
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
+@Hidden
 @RequestMapping("/api/v1/starch-factories")
 @RestController
 class StarchFactoryController(private val starchFactoryService: StarchFactoryService) : BaseController() {

@@ -5,6 +5,7 @@ import com.iita.akilimo.core.mapper.UserDto
 import com.iita.akilimo.core.request.AuthorityRequest
 import com.iita.akilimo.core.request.UserRequest
 import com.iita.akilimo.core.service.UserService
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
+@Hidden
 @RequestMapping("/api/v1/user")
 @RestController
 class UserController(val userService: UserService) {
@@ -23,7 +25,6 @@ class UserController(val userService: UserService) {
     }
 
     @PostMapping
-    @Operation(summary = "Add new api user", description = "", tags = ["User"])
     fun addUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<UserDto> {
         val userResp = userService.addUser(userRequest)
 
@@ -31,7 +32,6 @@ class UserController(val userService: UserService) {
     }
 
     @GetMapping
-    @Operation(summary = "List users", description = "", tags = ["User"])
     fun listUsers(): ResponseEntity<List<UserDto>> {
         val userResp = userService.listUsers()
 
@@ -40,7 +40,6 @@ class UserController(val userService: UserService) {
 
 
     @PostMapping("{id}/authority")
-    @Operation(summary = "Add authority to a specific user", description = "", tags = ["User"])
     fun addUserAuthority(@PathVariable id: Long, @Valid @RequestBody authorityRequest: AuthorityRequest): ResponseEntity<AuthorityDto> {
         val userResp = userService.addUserAuthority(authorityRequest)
 
@@ -48,7 +47,6 @@ class UserController(val userService: UserService) {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Find user by id", description = "", tags = ["User"])
     fun findById(@PathVariable id: Long): ResponseEntity<UserDto> {
         val userResp = userService.findUser(id)
 
@@ -56,14 +54,12 @@ class UserController(val userService: UserService) {
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Delete user by id", description = "", tags = ["User"])
     fun deleteUser(@PathVariable id: Long): ResponseEntity<UserDto> {
         userService.deleteUser(id)
         return ResponseEntity(HttpStatus.OK)
     }
 
     @GetMapping("/username/{username}")
-    @Operation(summary = "find user by username", description = "", tags = ["User"])
     fun findByUserName(@PathVariable username: String): ResponseEntity<UserDto> {
         val userResp = userService.findUserByUserName(username)
 
