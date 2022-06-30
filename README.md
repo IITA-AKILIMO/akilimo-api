@@ -111,7 +111,7 @@ $  ./gradlew :api:generateOpenApiDocs
 $ npm install --location=global redoc-cli
 ````
 ```bash
-$ redoc-cli bundle -o .\docs\index.html .\docs\akilimo.json
+$ redoc-cli build -o .\docs\index.html .\docs\akilimo.json
 ```
 
 ### Generate markdown files

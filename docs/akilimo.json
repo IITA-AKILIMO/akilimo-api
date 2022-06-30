@@ -5,14 +5,14 @@
     "description": "AKILIMO API",
     "contact": {
       "name": "Akilimo Team",
-      "url": "akilimo.org",
+      "url": "https://akilimo.org",
       "email": "akilimo@cgiar.org"
     },
     "license": {
       "name": "GPL",
       "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
     },
-    "version": "4.0.0"
+    "version": "5.0.0"
   },
   "externalDocs": {
     "description": "AKILIMO API Documentation",
@@ -489,10 +489,11 @@
           {
             "name": "fcy",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "default": 11
             }
           },
           {
@@ -515,6 +516,24 @@
           },
           {
             "name": "lon",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "maxInv",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "cassUp",
             "in": "query",
             "required": true,
             "schema": {
@@ -617,6 +636,28 @@
       }
     },
     "/api/v1/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "List users",
+        "operationId": "listUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "User"
@@ -647,7 +688,7 @@
         }
       }
     },
-    "/api/v1/user/authority/{id}": {
+    "/api/v1/user/{id}/authority": {
       "post": {
         "tags": [
           "User"
@@ -1017,61 +1058,6 @@
         }
       }
     },
-    "/api/v1/users": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "List users",
-        "operationId": "listUsers",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/user/{username}/username": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "find user by username",
-        "operationId": "findByUserName",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/user/{id}": {
       "get": {
         "tags": [
@@ -1117,6 +1103,37 @@
             "schema": {
               "type": "integer",
               "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/username/{username}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "find user by username",
+        "operationId": "findByUserName",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1243,6 +1260,7 @@
                 "NG",
                 "RW",
                 "GH",
+                "BI",
                 "ALL"
               ]
             }
@@ -1466,6 +1484,7 @@
                 "NG",
                 "RW",
                 "GH",
+                "BI",
                 "ALL"
               ]
             }
@@ -1507,6 +1526,7 @@
                 "NG",
                 "RW",
                 "GH",
+                "BI",
                 "ALL"
               ]
             }
@@ -1722,6 +1742,7 @@
                 "NG",
                 "RW",
                 "GH",
+                "BI",
                 "ALL"
               ]
             }
@@ -1767,6 +1788,7 @@
               "NG",
               "RW",
               "GH",
+              "BI",
               "ALL"
             ]
           },
@@ -1831,6 +1853,7 @@
               "NG",
               "RW",
               "GH",
+              "BI",
               "ALL"
             ]
           },
@@ -1860,12 +1883,12 @@
           "active": {
             "type": "boolean"
           },
+          "countryPrice": {
+            "type": "string"
+          },
           "averagePrice": {
             "type": "number",
             "format": "double"
-          },
-          "countryPrice": {
-            "type": "string"
           }
         }
       },
@@ -1898,6 +1921,7 @@
               "NG",
               "RW",
               "GH",
+              "BI",
               "ALL"
             ]
           },
@@ -2227,6 +2251,7 @@
               "NG",
               "RW",
               "GH",
+              "BI",
               "ALL"
             ]
           },
@@ -2392,6 +2417,7 @@
               "NG",
               "RW",
               "GH",
+              "BI",
               "ALL"
             ]
           },
@@ -2502,9 +2528,11 @@
           "FCY",
           "area",
           "areaUnit",
+          "cassUP",
           "country",
           "lat",
           "lon",
+          "maxInv",
           "npk15Available",
           "npk15Price",
           "npk17Available",
@@ -2531,6 +2559,14 @@
             "format": "double"
           },
           "area": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxInv": {
+            "type": "number",
+            "format": "double"
+          },
+          "cassUP": {
             "type": "number",
             "format": "double"
           },
@@ -2880,15 +2916,11 @@
       "PageUserFeedbackDto": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "totalElements": {
             "type": "integer",
             "format": "int64"
           },
-          "number": {
+          "totalPages": {
             "type": "integer",
             "format": "int32"
           },
@@ -2902,18 +2934,22 @@
               "$ref": "#/components/schemas/UserFeedbackDto"
             }
           },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "sort": {
             "$ref": "#/components/schemas/Sort"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
           },
           "first": {
             "type": "boolean"
           },
           "last": {
             "type": "boolean"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
           },
           "pageable": {
             "$ref": "#/components/schemas/Pageable"
@@ -2961,15 +2997,11 @@
       "PageRequestStatsDto": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "totalElements": {
             "type": "integer",
             "format": "int64"
           },
-          "number": {
+          "totalPages": {
             "type": "integer",
             "format": "int32"
           },
@@ -2983,18 +3015,22 @@
               "$ref": "#/components/schemas/RequestStatsDto"
             }
           },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "sort": {
             "$ref": "#/components/schemas/Sort"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
           },
           "first": {
             "type": "boolean"
           },
           "last": {
             "type": "boolean"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
           },
           "pageable": {
             "$ref": "#/components/schemas/Pageable"
@@ -3064,15 +3100,11 @@
       "PagePayloadDto": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "totalElements": {
             "type": "integer",
             "format": "int64"
           },
-          "number": {
+          "totalPages": {
             "type": "integer",
             "format": "int32"
           },
@@ -3086,18 +3118,22 @@
               "$ref": "#/components/schemas/PayloadDto"
             }
           },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "sort": {
             "$ref": "#/components/schemas/Sort"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
           },
           "first": {
             "type": "boolean"
           },
           "last": {
             "type": "boolean"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
           },
           "pageable": {
             "$ref": "#/components/schemas/Pageable"
@@ -3335,7 +3371,6 @@
     "securitySchemes": {
       "api": {
         "type": "http",
-        "in": "header",
         "scheme": "basic"
       }
     }
