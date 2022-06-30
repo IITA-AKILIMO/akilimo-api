@@ -80,6 +80,8 @@ springdoc:
       enabled: true
   swagger-ui:
     tags-sorter: alpha
+    default-models-expand-depth: -1
+    default-model-expand-depth: -1
 #    operations-sorter: alpha
 
 rate:
