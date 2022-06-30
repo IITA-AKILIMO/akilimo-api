@@ -5,7 +5,6 @@ import com.iita.akilimo.api.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.usecases.fr.BasicFrRequest
 import com.iita.akilimo.core.service.basicrec.BasicRecService
-import com.iita.akilimo.enums.EnumCountry
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
@@ -40,24 +39,24 @@ class BasicCasesControllers(
 
     @GetMapping("/fr")
     fun computeFrRecGet(
-        @RequestParam(required = true) @Schema(example = "NG") @Valid country: EnumCountry,
+        @RequestParam(required = true) @Schema(example = "ng") @Valid country: String,
         @RequestParam(required = true) area: Double,
         @RequestParam(required = true) @Schema(example = "11") fcy: Int,
         @RequestParam(required = true) @Schema(example = "10") plantingMonth: Int,
-        @RequestParam(required = true) lat: Double,
-        @RequestParam(required = true) lon: Double,
+        @RequestParam(required = true) @Schema(example = "7.4201") lat: Double,
+        @RequestParam(required = true) @Schema(example = "5.1063") lon: Double,
         @RequestParam(required = true) @Schema(example = "150000") maxInv: Double,
         @RequestParam(required = true) @Schema(example = "50000") cassUp: Double,
         @RequestParam(required = true) @Schema(example = "true") ureaAvailable: Boolean,
-        @RequestParam(required = true) ureaPrice: Double,
+        @RequestParam(required = true) @Schema(example = "0") ureaPrice: Double,
         @RequestParam(required = true) @Schema(example = "true") npk15Available: Boolean,
-        @RequestParam(required = true) npk15Price: Double,
+        @RequestParam(required = true) @Schema(example = "0") npk15Price: Double,
         @RequestParam(required = true) @Schema(example = "true") npk17Available: Boolean,
-        @RequestParam(required = true) npk17Price: Double,
+        @RequestParam(required = true) @Schema(example = "0") npk17Price: Double,
     ): ResponseEntity<RecommendationResponseDto> {
 
         val basicFrRequest = BasicFrRequest(
-            country = country.name,
+            country = country.uppercase(),
             currentFieldYield = fcy,
             lat = lat,
             lon = lon,
