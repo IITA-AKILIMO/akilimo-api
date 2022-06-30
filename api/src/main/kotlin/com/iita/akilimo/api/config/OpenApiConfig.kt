@@ -3,17 +3,18 @@ package com.iita.akilimo.api.config
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.security.SecurityScheme
-import io.swagger.v3.oas.models.ExternalDocumentation
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
+import io.swagger.v3.oas.models.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.util.*
 
 @Configuration
-@SecurityScheme(name = "api", scheme = "basic", type = SecuritySchemeType.HTTP)
+@SecurityScheme(name = "key", type = SecuritySchemeType.APIKEY, `in` = SecuritySchemeIn.QUERY)
 class OpenApiConfig {
     @Bean
     fun api(
@@ -25,18 +26,18 @@ class OpenApiConfig {
         @Value("\${akilimo.developer.email}") developerEmail: String,
         @Value("\${akilimo.developer.url}") developerUrl: String,
     ): OpenAPI {
-        return OpenAPI()
-            .info(
-                Info().title(appName)
-                    .description(appName)
-                    .contact(Contact().email(developerEmail).name(developer).url(developerUrl))
-                    .version(appVersion)
-                    .license(License().name(license).url(licenseUrl))
-            )
-            .externalDocs(
-                ExternalDocumentation()
-                    .description("$appName Documentation")
-                    .url("#")
-            )
+        return OpenAPI().info(
+            Info().title(appName)
+                .description(appName)
+                .contact(
+                    Contact()
+                        .email(developerEmail)
+                        .name(developer)
+                        .url(developerUrl)
+                )
+                .version(appVersion)
+                .license(License().name(license).url(licenseUrl))
+
+        ).security(Collections.singletonList(SecurityRequirement().addList("key")))
     }
 }
