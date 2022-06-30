@@ -1,13 +1,10 @@
 package com.iita.akilimo.api.controllers.rec
 
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.iita.akilimo.api.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
-import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.usecases.fr.BasicFrRequest
 import com.iita.akilimo.core.service.basicrec.BasicRecService
-import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,10 +14,6 @@ import javax.validation.Valid
 
 @RequestMapping("/api/v2/recommendations/basic")
 @RestController
-@Tag(
-    name = "AKILIMO recommendations for basic applications",
-    description = "Can be used with basic applications such as chatbots, ussd and other minimal parameter use cases"
-)
 class BasicCasesControllers(
     private val basicRecService: BasicRecService
 ) : BaseController() {
