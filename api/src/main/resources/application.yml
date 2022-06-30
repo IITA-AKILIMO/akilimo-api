@@ -112,6 +112,7 @@ akilimo:
   externaldoc: ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+  dev-server: "http://localhost:${server.port}"
 
   developer:
     name: ${DEV_NAME:Akilimo Team}
