@@ -78,29 +78,29 @@ SPRING_PROFILES_ACTIVE=uat;SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:543
 ### Generate Liquibase changelog file
 
 ```bash
-$ ./gradlew migrations:generateChangelog  -PchangeName="Name of Changelog"
+./gradlew migrations:generateChangelog  -PchangeName="Name of Changelog"
 ```
 
 example:
 
 ```bash
-$ ./gradlew migrations:generateChangelog -PchangeName="Create Users table"
+./gradlew migrations:generateChangelog -PchangeName="Create Users table"
 ```
 
 The author defaults to the user currently running the command on the system. Optionally, you can use a different author by adding the `-Pauthor`
 argument:
 
 ```bash
-$ ./gradlew migrations:generateChangelog -PchangeName="Create Users table" -Pauthor="The Stig"
+./gradlew migrations:generateChangelog -PchangeName="Create Users table" -Pauthor="The Stig"
 ```
 
 > Remember to add the changelog file to the `changelog.xml` file
 
 
-### Generate Swagerjson file
+### Generate Swagger json file
 
 ```bash
-$  ./gradlew :api:generateOpenApiDocs
+./gradlew :api:generateOpenApiDocs
 ```
 
 
@@ -108,19 +108,19 @@ $  ./gradlew :api:generateOpenApiDocs
 
 ### Generate api HTML
 ```bash
-$ npm install --location=global redoc-cli
+npm install --location=global redoc-cli
 ````
 ```bash
-$ redoc-cli bundle -o .\docs\index.html .\docs\akilimo.json
+redoc-cli bundle -o .\docs\index.html .\docs\akilimo.json
 ```
 
 ### Generate markdown files
 
 ```bash
-$  npm install --location=global openapi-to-md
+npm install --location=global openapi-to-md
 ````
 ```bash
-$  openapi-to-md .\docs\akilimo.json > .\docs\API.MD
+openapi-to-md .\docs\akilimo.json > .\docs\API.MD
 ```
 
 
@@ -131,23 +131,23 @@ Change the path according to your JDK installation
 
 ### Changelog generation
 ```bash
-$ git-chglog -o CHANGELOG.md
+git-chglog -o CHANGELOG.md
 ```
 
 ### Git Hooks
 
 ```bash
-$ pre-commit install
+pre-commit install
 ```
 ```bash
-$ pre-commit uninstall
+pre-commit uninstall
 ```
 ```bash
-$ pre-commit install --hook-type commit-msg
+pre-commit install --hook-type commit-msg
 ```
 ```bash
-$ pre-commit uninstall --hook-type commit-msg
+pre-commit uninstall --hook-type commit-msg
 ```
 ```bash
-$ pre-commit run --all-files
+pre-commit run --all-files
 ```
