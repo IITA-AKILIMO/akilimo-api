@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb,h2"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <changeSet id="20220405134715" author="masgeek" labels="akilimo-migration">
+        <loadData
+                file="/liquibase/changelog/data/investment_amount_burundi_05_05_2022.csv"
+                tableName="investment_amount">
+
+
+            <column name="country" header="country"/>
+            <column name="investment_amount" header="investment_amount"/>
+            <column name="area_unit" header="area_unit"/>
+            <column name="price_active" header="price_active" type="boolean"/>
+            <column name="sort_order" header="sort_order" type="numeric"/>
+
+            <column name="updated_at" type="datetime" defaultValueComputed="TIMESTAMP"/>
+            <column name="created_at" type="datetime" defaultValueComputed="TIMESTAMP"/>
+
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

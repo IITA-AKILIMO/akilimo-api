@@ -1,0 +1,56 @@
+[
+  {
+    "_id": "771bbbdd-6db9-407e-9a32-cf3532de8213",
+    "colId": "cf6beadf-dfa7-4a55-8623-af7de6c81779",
+    "containerId": "",
+    "name": "FR basic",
+    "url": "{{api_url}}/v2/recommendations/basic/fr",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2022-06-28T05:57:19.774Z",
+    "modified": "2022-06-28T06:01:29.818Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"country\": \"NG\",\n  \"lat\": 7.4201,\n  \"lon\": 5.1063,\n  \"FCY\": 11,\n  \"area\": 10,\n  \"areaUnit\": \"ha\",\n  \"plantingMonth\": 10,\n  \"ureaAvailable\": true,\n  \"ureaPrice\": 0,\n  \"npk15Available\": false,\n  \"npk15Price\": 0,\n  \"npk17Available\": true,\n  \"npk17Price\": 0\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "basic",
+      "basic": {
+        "username": "{{username}}",
+        "password": "{{password}}"
+      }
+    },
+    "tests": [],
+    "docs": "### This request users the Basic API feature to fet Fertilizer recommendations"
+  },
+  {
+    "_id": "d94b505a-b6b2-4f7d-9e0f-9756f69ff22a",
+    "colId": "4d9aa2de-23c3-4052-a3b5-301fcdc260c6",
+    "containerId": "",
+    "name": "FR Pro",
+    "url": "{{api_url}}/v2/recommendations/pro/fr",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2022-06-28T06:00:40.655Z",
+    "modified": "2022-06-28T06:01:22.651Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"userInfo\": {\n    \"mobileCountryCode\": \"+254\",\n    \"mobileNumber\": \"2547000000\",\n    \"fullPhoneNumber\": \"2547000000\",\n    \"userName\": \"Demo User\",\n    \"fieldDescription\": \"Demo user field\",\n    \"deviceToken\": \"ad4922dd-3d3e-4b33-a42d-83c6d8f57a4a\",\n    \"gender\": \"NA\",\n    \"emailAddress\": \"NA\",\n    \"sendSms\": false,\n    \"sendEmail\": false\n  },\n  \"computeRequest\": {\n    \"country\": \"NG\",\n    \"lat\": 7.4201,\n    \"lon\": 5.1063,\n    \"area\": 1.0,\n    \"areaUnits\": \"ha\",\n    \"PD\": \"2021-09-17\",\n    \"HD\": \"2022-10-30\",\n    \"FCY\": 11,\n    \"cassUP\": \"50000\"\n  },\n  \"fertilizerList\": [\n    {\n      \"name\": \"NPK_15_15_15\",\n      \"weight\": 50,\n      \"price\": 0.0,\n      \"nContent\": 15,\n      \"kContent\": 15,\n      \"pContent\": 15\n    },\n    {\n      \"name\": \"DAP\",\n      \"weight\": 50,\n      \"price\": 0.0,\n      \"nContent\": 20,\n      \"kContent\": 10,\n      \"pContent\": 10\n    },\n    {\n      \"name\": \"UREA\",\n      \"weight\": 50,\n      \"price\": 0.0,\n      \"nContent\": 46,\n      \"kContent\": 0,\n      \"pContent\": 0\n    }\n  ]\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "basic",
+      "basic": {
+        "username": "{{username}}",
+        "password": "{{password}}"
+      }
+    },
+    "tests": [],
+    "docs": "### This request users the PRO API feature to fet Fertilizer recommendations"
+  }
+]

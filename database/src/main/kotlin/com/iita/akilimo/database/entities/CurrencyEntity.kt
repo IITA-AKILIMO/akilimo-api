@@ -1,6 +1,5 @@
 package com.iita.akilimo.database.entities
 
-import com.iita.akilimo.database.entities.BaseEntity
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -8,6 +7,9 @@ import javax.persistence.Table
 @Entity
 @Table(name = "currencies")
 class CurrencyEntity : BaseEntity() {
+    @Column(name = "country_code")
+    var countryCode: String? = null
+
     @Column(name = "country")
     var country: String? = null
 

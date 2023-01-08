@@ -4,7 +4,7 @@ import com.iita.akilimo.database.entities.FertilizerEntity
 import java.time.LocalDateTime
 
 
-open class RecommendationRequestDto {
+open class RecommendationRequestDto :BaseDto() {
 
     var mapLat: Long? =null
 
