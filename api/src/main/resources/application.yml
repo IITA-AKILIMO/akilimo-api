@@ -24,7 +24,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
+        #        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
         generate_statistics: ${GEN_STATS:false}
         order_inserts: true
         order_updates: true
@@ -36,7 +36,7 @@ spring:
       ddl-auto: validate
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/akilimo}
+    url: ${DB_URL:jdbc:mariadb://127.0.0.1:3306/akilimo}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
     hikari:
@@ -81,9 +81,9 @@ rate:
 
 akilimo:
   name: 'AKILIMO API'
-  version: '4.0.0'
+  version: ${API_VERSION:dev}
   desc: 'Description here'
-  externaldoc: '4.0.0'
+  externaldoc:  ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
   developer:
