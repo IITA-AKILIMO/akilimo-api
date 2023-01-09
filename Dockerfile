@@ -1,5 +1,6 @@
 
-FROM openjdk:16-slim-buster
+#FROM openjdk:17-slim-buster
+FROM eclipse-temurin:17-jre
 
 LABEL maintainer="barsamms@gmail.com"
 
