@@ -80,6 +80,9 @@ constructor(
     }
 
     fun saveFertilizerPrice(producePriceRequest: ProducePriceRequest): ProducePriceDto? {
+
+        modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
+
         val entity = modelMapper.map(producePriceRequest, CassavaPrice::class.java)
 
         val saved = cassavaPriceRepository.save(entity)

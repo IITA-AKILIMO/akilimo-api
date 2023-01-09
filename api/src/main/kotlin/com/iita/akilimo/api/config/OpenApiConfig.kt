@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@SecurityScheme(name = "api", scheme = "basic", type = SecuritySchemeType.HTTP, `in` = SecuritySchemeIn.HEADER)
+@SecurityScheme(name = "api", scheme = "basic", type = SecuritySchemeType.HTTP)
 class OpenApiConfig {
     @Bean
     fun api(

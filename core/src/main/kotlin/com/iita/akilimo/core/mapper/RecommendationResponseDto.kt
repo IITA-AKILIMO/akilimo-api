@@ -1,10 +1,12 @@
 package com.iita.akilimo.core.mapper
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 
-
-open class RecommendationResponseDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)    //  ignore all null fields
+open class RecommendationResponseDto : BaseDto() {
 
     var country: String? = null
 
@@ -31,6 +33,9 @@ open class RecommendationResponseDto {
 
     @JsonProperty("SP")
     var scheduledPlantingRecText: String? = null
+
+    @JsonIgnore
+    var plumberRespString: String? = null
 
     var hasResponse: Boolean = false
 

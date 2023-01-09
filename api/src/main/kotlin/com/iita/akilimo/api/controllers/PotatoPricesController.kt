@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v3/potato-prices")
+@RequestMapping("/api/v1/potato-prices")
 @RestController
 class PotatoPricesController(private val potatoPriceService: PotatoPriceService) {
 

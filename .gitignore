@@ -34,3 +34,5 @@ process.yml
 ### VS Code ###
 .vscode/
 gradle.properties
+
+**/bin/*

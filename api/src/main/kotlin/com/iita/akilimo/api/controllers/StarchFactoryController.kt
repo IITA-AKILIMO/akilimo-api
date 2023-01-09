@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-@RequestMapping("/api/v2/starch-factories")
+@RequestMapping("/api/v1/starch-factories")
 @RestController
 class StarchFactoryController(private val starchFactoryService: StarchFactoryService) : BaseController() {
     companion object {

@@ -1,0 +1,25 @@
+[
+  {
+    "_id": "30166094-927e-4fa4-80e5-df293ba4f6f1",
+    "name": "(Global Env)",
+    "default": false,
+    "global": true,
+    "sortNum": -1,
+    "created": "2022-06-28T05:56:36.006Z",
+    "modified": "2022-06-28T05:58:44.669Z",
+    "data": [
+      {
+        "name": "api_url",
+        "value": "http://localhost:8098/api"
+      },
+      {
+        "name": "username",
+        "value": "masgeek"
+      },
+      {
+        "name": "password",
+        "value": "andalite6"
+      }
+    ]
+  }
+]

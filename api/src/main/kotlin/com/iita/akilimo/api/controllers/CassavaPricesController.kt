@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v3/cassava-prices")
+@RequestMapping("/api/v1/cassava-prices")
 @RestController
 class CassavaPricesController(val cassavaPriceService: CassavaPriceService) {
 
@@ -50,7 +50,7 @@ class CassavaPricesController(val cassavaPriceService: CassavaPriceService) {
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addFertilizerPrice(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
+    fun addCassava(@Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest): ResponseEntity<ProducePriceDto> {
 
         val cassavaPriceDto = cassavaPriceService.saveFertilizerPrice(fertilizerPriceRequest)
 
