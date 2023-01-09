@@ -41,8 +41,7 @@ dependencies {
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    implementation("com.h2database:h2")
-    implementation("mysql:mysql-connector-java:8.0.28")
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.0.6")
 
-    implementation("com.vladmihalcea:hibernate-types-52:2.10.4")
+    implementation("com.vladmihalcea:hibernate-types-52:2.21.1")
 }

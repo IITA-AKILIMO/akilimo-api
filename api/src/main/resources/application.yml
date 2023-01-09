@@ -24,7 +24,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
+#        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
         generate_statistics: ${GEN_STATS:false}
         order_inserts: true
         order_updates: true
@@ -36,7 +36,7 @@ spring:
       ddl-auto: validate
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/akilimo_db}
+    url: ${DB_URL:jdbc:mariadb://127.0.0.1:3306/akilimo_db}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
     hikari:
