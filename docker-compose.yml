@@ -1,31 +1,43 @@
 version: "3.3"
 services:
-  akilimo-api:
+  api:
     image: iita/akilimo-api:latest
     container_name: akilimo-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: on-failure
     depends_on:
-      - akilimo-migration
+      - db
     ports:
       - 8098:8098
     environment:
       SPRING_PROFILES_ACTIVE: uat
-      DB_URL: "jdbc:mysql://db:3306/akilimo"
+      DB_URL: "jdbc:mariadb://db:3306/akilimo"
+      DB_USER: akilimo
+      DB_PASS: akilimo
 
-  akilimo-migration:
+  migration:
     image: iita/akilimo-migration:latest
     container_name: akilimo-migration
+    build:
+      context: .
+      dockerfile: Dockerfile.migration
     restart: on-failure
     depends_on:
       - db
     environment:
-      DB_URL: "jdbc:mysql://db:3306/akilimo"
+      DB_URL: "jdbc:mariadb://db:3306/akilimo"
+      DB_USER: akilimo
+      DB_PASS: akilimo
 
   db:
     container_name: db
-    image: mysql:8.0
-    restart: unless-stopped
+    image: bitnami/mariadb:10.9
+    restart: "on-failure"
     environment:
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
-      MYSQL_DATABASE: akilimo
+      MARIADB_ROOT_HOST: "%"
+      MARIADB_ROOT_PASSWORD: akilimo
+      MARIADB_DATABASE: akilimo
+      MARIADB_USER: akilimo
+      MARIADB_PASSWORD: akilimo

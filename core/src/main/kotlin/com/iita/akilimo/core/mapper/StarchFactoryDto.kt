@@ -3,7 +3,7 @@ package com.iita.akilimo.core.mapper
 import java.time.LocalDateTime
 
 
-class StarchFactoryDto {
+class StarchFactoryDto : BaseDto() {
 
 
     var factoryName: String? = null
@@ -16,9 +16,5 @@ class StarchFactoryDto {
     var factoryNameCountry: String? = null
 
     var factoryActive: Boolean = false
-
-    var createdAt: LocalDateTime? = null
-
-    var updatedAt: LocalDateTime? = null
 
 }

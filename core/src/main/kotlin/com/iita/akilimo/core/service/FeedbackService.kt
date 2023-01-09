@@ -1,6 +1,7 @@
 package com.iita.akilimo.core.service
 
 
+import com.iita.akilimo.core.mapper.UserFeedbackDto
 import com.iita.akilimo.core.request.UserFeedBackRequest
 import com.iita.akilimo.database.entities.UserFeedback
 import com.iita.akilimo.database.repos.UserFeedBackRepo
@@ -21,16 +22,21 @@ constructor(
 
     private val modelMapper = ModelMapper()
 
-    fun addUserFeedBack(userFeedBackRequest: UserFeedBackRequest): UserFeedback {
+    fun addUserFeedBack(userFeedBackRequest: UserFeedBackRequest): UserFeedbackDto? {
         val entity = modelMapper.map(userFeedBackRequest, UserFeedback::class.java)
-        return userFeedBackRepo.save(entity)
+        val result = userFeedBackRepo.save(entity)
+
+        return modelMapper.map(result, UserFeedbackDto::class.java)
     }
 
-    fun listFeedBack(pageable: Pageable): Page<UserFeedback> {
+    fun listFeedBack(pageable: Pageable): Page<UserFeedbackDto> {
 
         val feedBackList = userFeedBackRepo.findAllByOrderByIdDesc(pageable)
 
-        return feedBackList
+        return feedBackList.map { feedback ->
+            val feedbackDto = modelMapper.map(feedback, UserFeedbackDto::class.java)
+            feedbackDto
+        }
 
     }
 

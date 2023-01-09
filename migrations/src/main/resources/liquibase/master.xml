@@ -116,4 +116,6 @@
     <include file="/liquibase/changelog/20220405120401_import_burundi_cassava_prices.xml"/>
     <include file="/liquibase/changelog/20220405134715_import_burundi_investment_amount.xml"/>
 
+    <include file="/liquibase/changelog/20221215091438_add_country_code_column_to_countries_table.xml"/>
+
 </databaseChangeLog>

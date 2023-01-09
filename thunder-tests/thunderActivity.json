@@ -1,0 +1,126 @@
+[
+  {
+    "_id": "1c9271d3-970e-430b-9278-771751656e7a",
+    "colId": "history",
+    "containerId": "",
+    "name": "{api_url}",
+    "url": "{api_url}",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-06-28T05:57:43.138Z",
+    "modified": "2022-06-28T05:57:43.144Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "api_url",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\t\"country\": \"NG\",\r\n\t\"lat\": 7.4201,\r\n\t\"lon\": 5.1063,\r\n\t\"FCY\": 11,\r\n\t\"area\": 10,\r\n\t\"areaUnit\": \"ha\",\r\n\t\"plantingMonth\": 10,\r\n\t\"ureaAvailable\": true,\r\n\t\"ureaPrice\": 0,\r\n\t\"npk15Available\": false,\r\n\t\"npk15Price\": 0,\r\n\t\"npk17Available\": true,\r\n\t\"npk17Price\": 0\r\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "6d0df553-e37c-42c4-b692-d668e7767177",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{api_url}}",
+    "url": "{{api_url}}",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-06-28T05:57:49.527Z",
+    "modified": "2022-06-28T05:57:49.558Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\t\"country\": \"NG\",\r\n\t\"lat\": 7.4201,\r\n\t\"lon\": 5.1063,\r\n\t\"FCY\": 11,\r\n\t\"area\": 10,\r\n\t\"areaUnit\": \"ha\",\r\n\t\"plantingMonth\": 10,\r\n\t\"ureaAvailable\": true,\r\n\t\"ureaPrice\": 0,\r\n\t\"npk15Available\": false,\r\n\t\"npk15Price\": 0,\r\n\t\"npk17Available\": true,\r\n\t\"npk17Price\": 0\r\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "be76dfb7-78a6-493e-9618-e02eec3f5ae4",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{api_url}}/v2/recommendations/basic/fr",
+    "url": "{{api_url}}/v2/recommendations/basic/fr",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-06-28T05:58:00.127Z",
+    "modified": "2022-06-28T05:58:54.663Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\t\"country\": \"NG\",\r\n\t\"lat\": 7.4201,\r\n\t\"lon\": 5.1063,\r\n\t\"FCY\": 11,\r\n\t\"area\": 10,\r\n\t\"areaUnit\": \"ha\",\r\n\t\"plantingMonth\": 10,\r\n\t\"ureaAvailable\": true,\r\n\t\"ureaPrice\": 0,\r\n\t\"npk15Available\": false,\r\n\t\"npk15Price\": 0,\r\n\t\"npk17Available\": true,\r\n\t\"npk17Price\": 0\r\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "basic",
+      "basic": {
+        "username": "{{username}}",
+        "password": "andalite6"
+      }
+    },
+    "tests": []
+  },
+  {
+    "_id": "2dcf938c-fa7e-49f5-89a7-7800a14fd79d",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{api_url}}/v2/recommendations/basic/fr",
+    "url": "{{api_url}}/v2/recommendations/basic/fr",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-06-28T05:59:01.928Z",
+    "modified": "2022-06-28T06:00:48.240Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\t\"country\": \"NG\",\r\n\t\"lat\": 7.4201,\r\n\t\"lon\": 5.1063,\r\n\t\"FCY\": 11,\r\n\t\"area\": 10,\r\n\t\"areaUnit\": \"ha\",\r\n\t\"plantingMonth\": 10,\r\n\t\"ureaAvailable\": true,\r\n\t\"ureaPrice\": 0,\r\n\t\"npk15Available\": false,\r\n\t\"npk15Price\": 0,\r\n\t\"npk17Available\": true,\r\n\t\"npk17Price\": 0\r\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "basic",
+      "basic": {
+        "username": "{{username}}",
+        "password": "{{password}}"
+      }
+    },
+    "tests": [],
+    "docs": "### This request users the Basic API feature to fet Fertilizer recommendations"
+  },
+  {
+    "_id": "615bb339-8427-4130-8b6f-153eded6fa84",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{api_url}}/v2/recommendations/pro/fr",
+    "url": "{{api_url}}/v2/recommendations/pro/fr",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-06-28T06:01:32.344Z",
+    "modified": "2022-06-28T06:02:06.085Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"userInfo\": {\n    \"mobileCountryCode\": \"+254\",\n    \"mobileNumber\": \"2547000000\",\n    \"fullPhoneNumber\": \"2547000000\",\n    \"userName\": \"Demo User\",\n    \"fieldDescription\": \"Demo user field\",\n    \"deviceToken\": \"ad4922dd-3d3e-4b33-a42d-83c6d8f57a4a\",\n    \"gender\": \"NA\",\n    \"emailAddress\": \"NA\",\n    \"sendSms\": false,\n    \"sendEmail\": false\n  },\n  \"computeRequest\": {\n    \"country\": \"NG\",\n    \"lat\": 7.4201,\n    \"lon\": 5.1063,\n    \"area\": 1.0,\n    \"areaUnits\": \"ha\",\n    \"PD\": \"2021-09-17\",\n    \"HD\": \"2022-10-30\",\n    \"FCY\": 11,\n    \"cassUP\": \"50000\"\n  },\n  \"fertilizerList\": [\n    {\n      \"name\": \"NPK_15_15_15\",\n      \"weight\": 50,\n      \"price\": 0.0,\n      \"nContent\": 15,\n      \"kContent\": 15,\n      \"pContent\": 15\n    },\n    {\n      \"name\": \"DAP\",\n      \"weight\": 50,\n      \"price\": 0.0,\n      \"nContent\": 20,\n      \"kContent\": 10,\n      \"pContent\": 10\n    },\n    {\n      \"name\": \"UREA\",\n      \"weight\": 50,\n      \"price\": 0.0,\n      \"nContent\": 46,\n      \"kContent\": 0,\n      \"pContent\": 0\n    }\n  ]\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "basic",
+      "basic": {
+        "username": "{{username}}",
+        "password": "{{password}}"
+      }
+    },
+    "tests": [],
+    "docs": "### This request users the PRO API feature to fet Fertilizer recommendations"
+  }
+]

@@ -16,7 +16,6 @@ open class ComputeRequest {
         const val DEFAULT_BAG_WEIGHT_INT = 50
     }
 
-    @NotEmpty(message = "Country is required")
     @JsonProperty("country")
     var country: String = DEFAULT_EMPTY_VALUE
 
@@ -27,7 +26,7 @@ open class ComputeRequest {
     var mapLong: Double? = null
 
     @JsonProperty("area")
-    var fieldArea: Double? = 1.0
+    var fieldArea: Double? = null
 
     @JsonProperty("areaUnits")
     var areaUnits: String? = null
@@ -63,11 +62,10 @@ open class ComputeRequest {
     var harvestDate: String? = null
 
     @JsonProperty("PD_window")
-    var plantingDateWindow: Int = 0
+    var plantingDateWindow: Int? = null
 
     @JsonProperty("HD_window")
-
-    var harvestDateWindow: Int = 0
+    var harvestDateWindow: Int? = null
 
     @JsonProperty("fallowType")
     var fallowType: String? = null
@@ -94,28 +92,28 @@ open class ComputeRequest {
     var costLmoAreaBasis: String? = null
 
     @JsonProperty("cost_tractor_ploughing")
-    var costTractorPloughing: String? = null
+    var costTractorPloughing: Double? = null
 
     @JsonProperty("cost_tractor_harrowing")
-    var costTractorHarrowing: String? = null
+    var costTractorHarrowing: Double? = null
 
     @JsonProperty("cost_tractor_ridging")
-    var costTractorRidging: String? = null
+    var costTractorRidging: Double? = null
 
     @JsonProperty("cost_manual_ploughing")
-    var costManualPloughing: String? = null
+    var costManualPloughing: Double? = null
 
     @JsonProperty("cost_manual_harrowing")
-    var costManualHarrowing: String? = null
+    var costManualHarrowing: Double? = null
 
     @JsonProperty("cost_manual_ridging")
-    var costManualRidging: String? = null
+    var costManualRidging: Double? = null
 
     @JsonProperty("cost_weeding1")
-    var costWeeding1: String? = null
+    var costWeeding1: Double? = null
 
     @JsonProperty("cost_weeding2")
-    var costWeeding2: String? = null
+    var costWeeding2: Double? = null
 
     @JsonProperty("ploughing")
     var ploughing: Boolean = false
@@ -139,7 +137,7 @@ open class ComputeRequest {
     var currentFieldYield: Int? = null
 
     @JsonProperty("CMP")
-    var currentMaizePerformance: String? = null
+    var currentMaizePerformance: Int? = null
 
     @JsonProperty("saleSF")
     var sellToStarchFactory: Boolean = false
@@ -151,45 +149,45 @@ open class ComputeRequest {
     var cassavaProduceType: String? = null
 
     @JsonProperty("cassUW")
-    var cassavaUnitWeight: Int = 1
+    var cassavaUnitWeight: Double? = null
 
     @JsonProperty("cassUP")
-    var cassavaUnitPrice: String? = null
+    var cassavaUnitPrice: Double? = null
 
     @JsonProperty("cassUP_m1")
-    var cassUPM1: String? = null
+    var cassUpM1: Double? = null
 
     @JsonProperty("cassUP_m2")
-    var cassUpM2: String? = null
+    var cassUpM2: Double? = null
 
     @JsonProperty("cassUP_p1")
-    var cassUpP1: String? = null
+    var cassUpP1: Double? = null
 
     @JsonProperty("cassUP_p2")
-    var cassUpP2: String? = null
+    var cassUpP2: Double? = null
 
     @JsonProperty("maizePD")
     var maizeProduceType: String? = null
 
     @JsonProperty("maizeUW")
-    var maizeUnitWeight: String? = null
+    var maizeUnitWeight: Double? = null
 
     @JsonProperty("maizeUP")
-    var maizeUnitPrice: String? = null
+    var maizeUnitPrice: Double? = null
 
     @JsonProperty("sweetPotatoPD")
     var sweetPotatoProduceType: String? = null
 
     @JsonProperty("sweetPotatoUW")
-    var sweetPotatoUnitWeight: String? = null
+    var sweetPotatoUnitWeight: Double? = null
 
     @JsonProperty("sweetPotatoUP")
-    var sweetPotatoUnitPrice: String? = null
+    var sweetPotatoUnitPrice: Double? = null
 
 
     @JsonProperty("maxInv")
-    var maxInvestment: String? = null
+    var maxInvestment: Double? = null
 
     @JsonProperty("riskAtt")
-    var riskAttitude: Int = 0
+    var riskAttitude: Int? = null
 }

@@ -1,27 +1,43 @@
+# base image to build a JRE
+FROM amazoncorretto:17.0.3-alpine as corretto-jdk
 
-FROM openjdk:16-slim-buster
+# required for strip-debug to work
+RUN apk add --no-cache binutils
+
+# Build small JRE image
+RUN $JAVA_HOME/bin/jlink \
+         --verbose \
+         --add-modules ALL-MODULE-PATH \
+         --strip-debug \
+         --no-man-pages \
+         --no-header-files \
+         --compress=2 \
+         --output /customjre
+
+#RUN apt-get update && apt-get install -y curl && apt-get install -y iputils-ping
+
+
+FROM alpine:latest
 
 LABEL maintainer="barsamms@gmail.com"
 
-ENV SERVER_PORT 8098
-ENV SPRING_BOOT_USER akilimo
-ENV SPRING_BOOT_GROUP akilimo
+ENV JAVA_HOME=/jre
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-ENV TZ=Africa/Nairobi
+ARG USERNAME=akilimo
+ARG USER_GROUP=akilimo
 
-#ENV JAVA_OPTS="$JAVA_OPTS -Dcom.sun.net.ssl.checkRevocation=$VERIFY_CERT"
-
-RUN apt-get update && apt-get install -y curl && apt-get install -y iputils-ping
-
-
-RUN useradd $SPRING_BOOT_USER && usermod -aG $SPRING_BOOT_GROUP $SPRING_BOOT_USER && sh -c 'touch /app.jar'
-
-COPY api/build/libs/api*.jar /app.jar
+COPY api/build/libs/api*.jar app.jar
 COPY api/src/main/resources/logback-spring.xml /src/main/resources/logback-spring.xml
+COPY api/src/main/resources/ehcache.xml /src/main/resources/ehcache.xml
+COPY --from=corretto-jdk /customjre $JAVA_HOME
 
+RUN addgroup -S $USER_GROUP && adduser -S $USERNAME -G $USER_GROUP
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-EXPOSE $SERVER_PORT
+#USER $USERNAME
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+EXPOSE 8098
+
+ENTRYPOINT [ "/jre/bin/java", "-jar", "app.jar" ]

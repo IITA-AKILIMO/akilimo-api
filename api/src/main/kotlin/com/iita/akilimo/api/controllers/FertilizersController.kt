@@ -9,9 +9,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-@RequestMapping("/api/v2/fertilizers")
+@RequestMapping("/api/v1/fertilizers")
 @RestController
-class FertilizersController(private val fertilizerService: FertilizerService
+class FertilizersController(
+    private val fertilizerService: FertilizerService
 ) : BaseController() {
     companion object {
         val logger = LoggerFactory.getLogger(FertilizersController::class.java)
