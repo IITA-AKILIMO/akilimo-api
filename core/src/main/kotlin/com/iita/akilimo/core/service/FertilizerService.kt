@@ -56,12 +56,6 @@ constructor(
             EnumCountry.GH.name -> {
                 currencyCode = EnumCountry.GH.currency()
             }
-            EnumCountry.RW.name -> {
-                currencyCode = EnumCountry.RW.currency()
-            }
-            EnumCountry.BI.name -> {
-                currencyCode = EnumCountry.BI.currency()
-            }
         }
 
         modelMapper.configuration.isSkipNullEnabled = true

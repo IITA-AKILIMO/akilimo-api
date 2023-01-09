@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "cf6beadf-dfa7-4a55-8623-af7de6c81779",
+    "colName": "Basic API",
+    "created": "2022-06-28T05:57:06.151Z",
+    "sortNum": 10000,
+    "folders": []
+  },
+  {
+    "_id": "4d9aa2de-23c3-4052-a3b5-301fcdc260c6",
+    "colName": "Advanced API",
+    "created": "2022-06-28T05:57:12.247Z",
+    "sortNum": 20000,
+    "folders": []
+  }
+]

@@ -18,5 +18,8 @@ class PlumberProperties {
     var computeGh: String? = null
 
     @NotBlank
+    var computeRw: String? = null
+
+    @NotBlank
     var computeBi: String? = null
 }

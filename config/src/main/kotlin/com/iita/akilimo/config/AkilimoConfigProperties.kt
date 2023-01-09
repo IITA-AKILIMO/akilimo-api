@@ -43,4 +43,10 @@ class AkilimoConfigProperties {
     fun onaData(): OnaDataProperties {
         return OnaDataProperties()
     }
+
+    @Bean
+    @ConfigurationProperties(prefix = "akilimo.recommendation")
+    fun recommendations(): RecommendationProperties {
+        return RecommendationProperties()
+    }
 }

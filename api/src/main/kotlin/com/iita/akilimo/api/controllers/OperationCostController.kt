@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
-@RequestMapping("/api/v3/operation-cost")
+@RequestMapping("/api/v1/operation-cost")
 @RestController
 class OperationCostController(private val operationCostService: OperationCostService) : BaseController() {
 
