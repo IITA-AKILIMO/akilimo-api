@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v1/maize-prices")
+@RequestMapping(value = ["/api/v1/maize-prices", "/api/v3/maize-prices"])
 @RestController
 class MaizePricesController(private val maizePriceService: MaizePriceService) {
 
@@ -50,7 +50,10 @@ class MaizePricesController(private val maizePriceService: MaizePriceService) {
     }
 
     @GetMapping("/country/{country}/produce/{produceType}")
-    fun listPrices(@PathVariable country: EnumCountry, @PathVariable produceType: String): ResponseEntity<List<ProducePriceDto>> {
+    fun listPrices(
+        @PathVariable country: EnumCountry,
+        @PathVariable produceType: String
+    ): ResponseEntity<List<ProducePriceDto>> {
         val priceList = maizePriceService.maizePrices(country, produceType)
 
         return ResponseEntity(priceList, HttpStatus.OK)

@@ -1,6 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 buildscript {
@@ -26,14 +24,15 @@ plugins {
 
 allprojects {
     val date = Calendar.getInstance()
-    val versionNumber: String = date.get(Calendar.MONTH).toString()
-    val minorRelease: String = date.get(Calendar.WEEK_OF_MONTH).toString()
+    val versionNumber: Int = 7
+    val minorRelease: Int = 0
+    val bugRelease: String = "1"
     var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
     when {
         buildNumber.isNullOrBlank() -> buildNumber = date.get(Calendar.DAY_OF_YEAR).toString()
     }
     group = "com.iita"
-    version = "$versionNumber.$minorRelease.$buildNumber-build$buildNumber"
+    version = "$versionNumber.$minorRelease.$bugRelease-build-$buildNumber"
 
     tasks.withType<JavaCompile> {
         sourceCompatibility = "17"
