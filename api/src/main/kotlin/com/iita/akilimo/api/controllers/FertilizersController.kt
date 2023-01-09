@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-@RequestMapping("/api/v1/fertilizers")
+@RequestMapping(value = ["/api/v1/fertilizers", "/api/v2/fertilizers"])
 @RestController
 class FertilizersController(
     private val fertilizerService: FertilizerService

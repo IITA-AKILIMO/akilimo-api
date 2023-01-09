@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   api:
-    image: iita/akilimo-api:latest
+    image: iita/akilimo-service:${IMAGE_TAG}
     container_name: akilimo-api
     build:
       context: .
@@ -18,7 +18,7 @@ services:
       DB_PASS: akilimo
 
   migration:
-    image: iita/akilimo-migration:latest
+    image: iita/akilimo-service-migration:${IMAGE_TAG}
     container_name: akilimo-migration
     build:
       context: .

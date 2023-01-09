@@ -27,7 +27,7 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ARG USERNAME=akilimo
 ARG USER_GROUP=akilimo
 
-COPY api/build/libs/api*.jar app.jar
+COPY api/build/libs/api*.jar ./app.jar
 COPY api/src/main/resources/logback-spring.xml /src/main/resources/logback-spring.xml
 COPY api/src/main/resources/ehcache.xml /src/main/resources/ehcache.xml
 COPY --from=corretto-jdk /customjre $JAVA_HOME
