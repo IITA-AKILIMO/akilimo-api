@@ -36,7 +36,7 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
 
     api("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
-    api("commons-codec:commons-codec:1.3")
+    api("commons-codec:commons-codec:1.13")
     api("com.github.rozidan:modelmapper-spring-boot-starter:2.3.1")
     api("joda-time:joda-time:2.10.12")
 

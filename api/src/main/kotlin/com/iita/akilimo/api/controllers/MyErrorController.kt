@@ -25,8 +25,4 @@ class MyErrorController : ErrorController {
         }
         return "error"
     }
-
-    override fun getErrorPath(): String {
-        return "/error"
-    }
 }
