@@ -28,9 +28,7 @@ spring:
     show-sql: ${DEBUG_SQL:false}
     properties:
       hibernate:
-        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
-        generate_statistics: ${DEBUG_SQL:false}
-        format_sql: ${DEBUG_SQL:false}
+        generate_statistics: ${GEN_STATS:false}
         order_inserts: true
         order_updates: true
         ddl-auto: validate
@@ -41,7 +39,7 @@ spring:
       ddl-auto: validate
 
   datasource:
-    url: ${DB_URL:jdbc:mariadb://127.0.0.1:3306/akilimo}
+    url: ${DB_URL:jdbc:mariadb://127.0.0.1:3306/akilimo_db}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
     hikari:

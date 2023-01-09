@@ -18,7 +18,7 @@ tasks.getByName<Jar>("jar") {
 }
 
 dependencies {
-    val springDoc = "1.5.8"
+    val springDoc = "1.6.12"
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
@@ -41,7 +41,6 @@ dependencies {
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    runtimeOnly("mysql:mysql-connector-java:8.0.30")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.0.6")
 
     implementation("com.vladmihalcea:hibernate-types-52:2.21.1")
