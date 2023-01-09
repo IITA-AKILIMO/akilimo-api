@@ -24,8 +24,8 @@
             <column name="max_usd" header="max_usd"/>
             <column name="price_active" header="price_active"/>
 
-            <column name="updated_at" header="updated_at" type="datetime"/>
-            <column name="created_at" header="created_at" type="datetime"/>
+            <column name="updated_at" header="updated_at" type="skip"/>
+            <column name="created_at" header="created_at" type="skip"/>
 
         </loadData>
     </changeSet>

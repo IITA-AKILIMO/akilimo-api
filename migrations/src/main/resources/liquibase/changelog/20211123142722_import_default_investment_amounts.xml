@@ -19,8 +19,8 @@
             <column name="price_active" header="price_active" type="boolean"/>
             <column name="sort_order" header="sort_order" type="numeric"/>
 
-            <column name="updated_at" type="date" defaultValueComputed="TIMESTAMP"/>
-            <column name="created_at" type="date" defaultValueComputed="TIMESTAMP"/>
+            <column name="updated_at" type="skip" defaultValueComputed="TIMESTAMP"/>
+            <column name="created_at" type="skip" defaultValueComputed="TIMESTAMP"/>
 
         </loadData>
 
