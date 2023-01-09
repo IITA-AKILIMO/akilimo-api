@@ -1,20 +1,14 @@
 package com.iita.akilimo.api.controllers
 
 
-import com.iita.akilimo.core.mapper.RecommendationResponseDto
-import com.iita.akilimo.core.request.RecommendationRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+import org.springframework.web.bind.annotation.RequestMapping
 
 
-@RequestMapping("/api/v1/recommendations")
+@RequestMapping(value = ["/api/v1/recommendations", "/api/v2/recommendations"])
 @Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various use cases")
 //@RestController
 class RecommendationsController(
