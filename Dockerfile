@@ -17,7 +17,9 @@ RUN $JAVA_HOME/bin/jlink \
 #RUN apt-get update && apt-get install -y curl && apt-get install -y iputils-ping
 
 
-FROM alpine:latest
+FROM alpine:3.17.1
+
+WORKDIR /
 
 LABEL maintainer="barsamms@gmail.com"
 
