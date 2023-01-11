@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v2/recommendations/basic")
+@RequestMapping("/api/v1/recommendations/basic")
 @RestController
 @Tag(
     name = "AKILIMO recommendations for basic applications",
