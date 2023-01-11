@@ -8,11 +8,11 @@ import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
+import com.iita.akilimo.core.request.usecases.bpp.BppRequest
 import com.iita.akilimo.core.request.usecases.fr.FrRequest
 import com.iita.akilimo.core.request.usecases.ic.IcRequest
-import com.iita.akilimo.core.request.usecases.bpp.BppRequest
-import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.entities.Payload
+import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.repos.PayloadRepository
 import com.iita.akilimo.enums.EnumCountry
 import com.iita.akilimo.enums.EnumFertilizer
@@ -104,6 +104,13 @@ constructor(
         return computeRecommendations(recommendationRequest)
     }
 
+    @Deprecated("To be removed in future revisions")
+    fun computeRecommendations(
+        recommendationRequest: RecommendationRequest,
+        requestContext: String?
+    ): RecommendationResponseDto? {
+        return computeRecommendations(recommendationRequest)
+    }
 
     private fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val countries = ArrayList<String>()
