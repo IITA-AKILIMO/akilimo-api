@@ -6,19 +6,19 @@
   "author": "Sammy M <barsamms@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "openapi": "./gradlew :api:generateOpenApiDocs",
+    "openapi": "curl http://localhost:8098/akilimo-api -o .\\docs\\akilimo.json",
     "changelog": "fast-git-changelog",
     "history": "auto-changelog -p",
-    "docs": "redoc-cli bundle -o .\\docs\\index.html .\\docs\\akilimo.json",
+    "doc": "redocly build-docs -o .\\docs\\index.html .\\docs\\akilimo.json",
     "markdown": "openapi-to-md .\\docs\\akilimo.json > .\\docs\\API.MD",
-    "notes": "release-notes 6.6.0..HEAD changelog --branch main -o > NOTES.md"
+    "notes": "release-notes 7.1.1..HEAD changelog --branch main -o > NOTES.md"
   },
   "devDependencies": {
     "@invisible/changelog-update": "^1.2.2",
+    "@redocly/cli": "^1.0.0-beta.124",
     "auto-changelog": "^2.4.0",
     "fast-git-changelog": "^1.0.3",
     "openapi-to-md": "^1.0.24",
-    "redoc-cli": "^0.13.21",
     "release-notes-cli": "^0.0.6"
   },
   "auto-changelog": {
