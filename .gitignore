@@ -37,3 +37,4 @@ process.yml
 gradle.properties
 
 **/bin/*
+/node_modules/

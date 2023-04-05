@@ -42,7 +42,7 @@ To get you quickly get you started on enjoying the integration process of our RE
 
 [![CircleCI](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/develop.svg?style=svg)](https://circleci.com/gh/IITA-AKILIMO/akilimo-api/tree/develop)
 
-**quality assesment**
+**quality assessment**
 
 [![codebeat badge](https://codebeat.co/badges/c0cb5198-13b9-46dc-b83e-79f8989c1698)](https://codebeat.co/projects/github-com-iita-akilimo-akilimo-api-develop)
 
