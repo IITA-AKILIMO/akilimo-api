@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/users")
 @RestController
 class UserController(val userService: UserService) {
 
@@ -22,7 +22,7 @@ class UserController(val userService: UserService) {
         val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
     }
 
-    @PostMapping("/user")
+    @PostMapping
     @Operation(summary = "Add new api user", description = "", tags = ["User"])
     fun addUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<UserDto> {
         val userResp = userService.addUser(userRequest)
@@ -30,7 +30,7 @@ class UserController(val userService: UserService) {
         return ResponseEntity(userResp, HttpStatus.OK)
     }
 
-    @GetMapping("/users")
+    @GetMapping
     @Operation(summary = "List users", description = "", tags = ["User"])
     fun listUsers(): ResponseEntity<List<UserDto>> {
         val userResp = userService.listUsers()
@@ -39,7 +39,7 @@ class UserController(val userService: UserService) {
     }
 
 
-    @PostMapping("/user/authority/{id}")
+    @PostMapping("/{id}/user-role")
     @Operation(summary = "Add authority to a specific user", description = "", tags = ["User"])
     fun addUserAuthority(@PathVariable id: Long, @Valid @RequestBody authorityRequest: AuthorityRequest): ResponseEntity<AuthorityDto> {
         val userResp = userService.addUserAuthority(authorityRequest)
@@ -47,7 +47,7 @@ class UserController(val userService: UserService) {
         return ResponseEntity(userResp, HttpStatus.CREATED)
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     @Operation(summary = "Find user by id", description = "", tags = ["User"])
     fun findById(@PathVariable id: Long): ResponseEntity<UserDto> {
         val userResp = userService.findUser(id)
@@ -55,14 +55,14 @@ class UserController(val userService: UserService) {
         return ResponseEntity(userResp, HttpStatus.OK)
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete user by id", description = "", tags = ["User"])
     fun deleteUser(@PathVariable id: Long): ResponseEntity<UserDto> {
         userService.deleteUser(id)
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("/user/{username}/username")
+    @GetMapping("/{username}/username")
     @Operation(summary = "find user by username", description = "", tags = ["User"])
     fun findByUserName(@PathVariable username: String): ResponseEntity<UserDto> {
         val userResp = userService.findUserByUserName(username)
