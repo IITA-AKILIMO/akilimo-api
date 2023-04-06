@@ -1,10 +1,12 @@
-package com.iita.akilimo.api.controllers
+package com.iita.akilimo.api.controllers.rec
 
 
+import com.iita.akilimo.api.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.RecommendationRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
@@ -12,7 +14,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
-
 
 @RequestMapping(value = ["/api/v1/recommendations", "/api/v2/recommendations"])
 @Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various use cases")
@@ -27,6 +28,7 @@ class RecommendationsController(
     }
 
     @PostMapping
+    @Operation(deprecated = true)
     fun computeRecommendations(
         @Valid @RequestBody recommendationRequest: RecommendationRequest,
         @RequestHeader headers: Map<String, String>
@@ -38,7 +40,7 @@ class RecommendationsController(
         //check that the request has defined fertilizers
         val modelMapper = ModelMapper()
 
-        val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
+        val response = recommendationService.computeRecommendations(recommendationRequest)
 
         when {
             response != null -> {

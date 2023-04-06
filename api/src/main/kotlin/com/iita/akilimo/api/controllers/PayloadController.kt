@@ -2,6 +2,7 @@ package com.iita.akilimo.api.controllers
 
 import com.iita.akilimo.core.mapper.PayloadDto
 import com.iita.akilimo.core.service.PayloadService
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import org.slf4j.Logger
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
+@Hidden
 @RequestMapping("/api/v1/payload")
 @RestController
 class PayloadController(private val payloadService: PayloadService) : BaseController() {
@@ -25,21 +26,18 @@ class PayloadController(private val payloadService: PayloadService) : BaseContro
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get all sent request by id", description = "", tags = ["requests"])
     fun listPayloadById(@PathVariable id: Long): ResponseEntity<PayloadDto> {
         val payload = payloadService.findPayloadById(id)
         return ResponseEntity(payload, HttpStatus.OK)
     }
 
     @GetMapping("/{requestId}/request-id")
-    @Operation(summary = "Get all sent request by request-id", description = "", tags = ["requests"])
     fun listPayloadByRequestId(@PathVariable requestId: String): ResponseEntity<List<PayloadDto>> {
         val payloadList = payloadService.findPayloadByRequestId(requestId = requestId)
         return ResponseEntity(payloadList, HttpStatus.OK)
     }
 
     @GetMapping
-    @Operation(summary = "Get all sent requests", description = "", tags = ["requests"])
     fun listAllPayloads(@Parameter(hidden = true) pageable: Pageable): ResponseEntity<Page<PayloadDto>> {
 
         val payloadList = payloadService.payloadList(pageable = pageable);

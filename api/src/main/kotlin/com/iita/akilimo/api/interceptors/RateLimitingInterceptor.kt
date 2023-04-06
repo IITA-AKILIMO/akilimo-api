@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
+import org.springframework.web.servlet.HandlerInterceptor
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse
 
 
 @Component
-class RateLimitingInterceptor : HandlerInterceptorAdapter() {
+class RateLimitingInterceptor : HandlerInterceptor {
     @Value("\${rate.limit.enabled}")
     private val enabled = false
 
@@ -37,7 +37,7 @@ class RateLimitingInterceptor : HandlerInterceptorAdapter() {
     var mapper = ObjectMapper()
 
     companion object {
-        private val logger = LoggerFactory.getLogger(RateLimitingInterceptor::class.java)
+        private val logger = LoggerFactory.getLogger(this::class.java)
     }
 
     @Throws(Exception::class)
@@ -79,7 +79,7 @@ class RateLimitingInterceptor : HandlerInterceptorAdapter() {
     }
 
     private fun getRateLimiter(clientId: String): Optional<SimpleRateLimiter> {
-        return limiters.computeIfAbsent(clientId) { _clientId: String -> Optional.of(createRateLimiter(_clientId)) }
+        return limiters.computeIfAbsent(clientId) { clientIdentifier: String -> Optional.of(createRateLimiter(clientIdentifier)) }
     }
 
     private fun createRateLimiter(applicationId: String): SimpleRateLimiter {

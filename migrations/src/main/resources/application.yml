@@ -6,6 +6,7 @@ spring:
     enabled: true
     change-log: "classpath:liquibase/master.xml"
     clear-checksums: ${CLEAR_CHECKSUM:false}
+    rollback-file: log/akilimo.rollback.sql
 
   datasource:
     url: ${DB_URL:jdbc:mariadb://localhost:3306/akilimo_db}

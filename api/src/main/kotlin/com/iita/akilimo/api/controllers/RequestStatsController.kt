@@ -3,6 +3,7 @@ package com.iita.akilimo.api.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.iita.akilimo.core.mapper.RequestStatsDto
 import com.iita.akilimo.core.service.RequestStatsService
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import org.slf4j.Logger
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
-@RequestMapping("/api/v1/stats")
+@Hidden
+@RequestMapping("/api/v1/stats/requests")
 @RestController
 class RequestStatsController(private val statsService: RequestStatsService) {
 
@@ -27,8 +28,7 @@ class RequestStatsController(private val statsService: RequestStatsService) {
     }
 
 
-    @GetMapping("/requests")
-    @Operation(summary = "List recommendations request", description = "", tags = ["Requests"])
+    @GetMapping
     fun listRecommendationRequests(@Parameter(hidden = true) pageable: Pageable): ResponseEntity<Page<RequestStatsDto>> {
 
         val userFeedback: Page<RequestStatsDto> = statsService.getRequestStats(pageable)
@@ -36,8 +36,7 @@ class RequestStatsController(private val statsService: RequestStatsService) {
         return ResponseEntity(userFeedback, HttpStatus.OK)
     }
 
-    @GetMapping("/requests/json")
-    @Operation(summary = "Download recommendations request as a json file", description = "", tags = ["Requests"])
+    @GetMapping("/json")
     fun downloadRequestStats(): ResponseEntity<ByteArray?>? {
         val userFeedbackList = statsService.getRequestStats()
         val objectMapper = ObjectMapper()

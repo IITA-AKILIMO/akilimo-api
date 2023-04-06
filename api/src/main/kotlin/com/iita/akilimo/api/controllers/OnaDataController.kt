@@ -3,6 +3,7 @@ package com.iita.akilimo.api.controllers
 import com.iita.akilimo.core.request.CSVDownloadRequest
 import com.iita.akilimo.core.response.CSVDownloadResponse
 import com.iita.akilimo.core.service.OnaDataService
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,7 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-
+@Hidden
 @RequestMapping("/api/v1/ona-data")
 @RestController
 class OnaDataController(private val onaDataService: OnaDataService) {
@@ -25,7 +26,6 @@ class OnaDataController(private val onaDataService: OnaDataService) {
 
     //    @RequestMapping(value = ["/download"], method = [RequestMethod.GET, RequestMethod.POST])
     @PostMapping("/download")
-    @Operation(summary = "Download csv files", description = "", tags = ["Ona data"])
     fun download(@Valid @RequestBody cSvDownloadRequest: CSVDownloadRequest): ResponseEntity<ByteArrayResource> {
         val csvDownload = onaDataService.processCsv(cSvDownloadRequest)
 

@@ -1,13 +1,16 @@
-package com.iita.akilimo.api.controllers
+package com.iita.akilimo.api.controllers.rec
 
 
+import com.iita.akilimo.api.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
+import com.iita.akilimo.core.request.usecases.bpp.BppRequest
 import com.iita.akilimo.core.request.usecases.fr.FrRequest
 import com.iita.akilimo.core.request.usecases.ic.IcRequest
-import com.iita.akilimo.core.request.usecases.bpp.BppRequest
 import com.iita.akilimo.core.service.MessagingService
 import com.iita.akilimo.core.service.RecommendationService
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.tags.Tags
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
+@Tags(Tag(name = "advanced", description = "Advanced API"))
 @RequestMapping("/api/v1/recommendations/pro")
 @RestController
 @Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various interventions")
@@ -23,9 +27,8 @@ class UseCasesControllers(
     private val recService: RecommendationService, private val messagingService: MessagingService
 ) : BaseController() {
 
-    companion object {
-        private val myLogger = LoggerFactory.getLogger(this::class.java)
-    }
+    private val myLogger = LoggerFactory.getLogger(this::class.java)
+
 
     @PostMapping("/fr")
     fun computeFrRec(
@@ -50,6 +53,7 @@ class UseCasesControllers(
         return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
     }
 
+    @Hidden
     @PostMapping("/ic/crop/{crop}")
     fun computeIcRec(
         @PathVariable(required = true) crop: String, @Valid @RequestBody icRequest: IcRequest, @RequestHeader headers: Map<String, String>
@@ -73,6 +77,7 @@ class UseCasesControllers(
         return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
     }
 
+    @Hidden
     @PostMapping("/sp")
     fun computeSpRec(
         @Valid @RequestBody bppRequest: BppRequest, @RequestHeader headers: Map<String, String>
@@ -97,6 +102,7 @@ class UseCasesControllers(
         return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
     }
 
+    @Hidden
     @PostMapping("/bpp")
     fun computeBppRec(
         @Valid @RequestBody bppRequest: BppRequest, @RequestHeader headers: Map<String, String>

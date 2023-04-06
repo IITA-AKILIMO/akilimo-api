@@ -1,10 +1,11 @@
-package com.iita.akilimo.api.controllers
+package com.iita.akilimo.api.controllers.user
 
 import com.iita.akilimo.core.mapper.AuthorityDto
 import com.iita.akilimo.core.mapper.UserDto
 import com.iita.akilimo.core.request.AuthorityRequest
 import com.iita.akilimo.core.request.UserRequest
 import com.iita.akilimo.core.service.UserService
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
+@Hidden
 @RequestMapping("/api/v1/users")
 @RestController
 class UserController(val userService: UserService) {
@@ -40,7 +42,7 @@ class UserController(val userService: UserService) {
 
 
     @PostMapping("/{id}/user-role")
-    @Operation(summary = "Add authority to a specific user", description = "", tags = ["User"])
+    @Operation(summary = "Add role to a specific user", description = "", tags = ["User"])
     fun addUserAuthority(@PathVariable id: Long, @Valid @RequestBody authorityRequest: AuthorityRequest): ResponseEntity<AuthorityDto> {
         val userResp = userService.addUserAuthority(authorityRequest)
 

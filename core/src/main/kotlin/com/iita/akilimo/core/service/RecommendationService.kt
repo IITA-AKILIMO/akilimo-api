@@ -38,7 +38,7 @@ constructor(
     akilimoConfig: AkilimoConfigProperties
 ) {
 
-    private val logger = LoggerFactory.getLogger(RecommendationService::class.java)
+    private val myLogger = LoggerFactory.getLogger(this::class.java)
 
     private val plumberPropertiesProperties: PlumberProperties = akilimoConfig.plumber()
     private val recProperties = akilimoConfig.recommendations()
@@ -112,7 +112,7 @@ constructor(
         return computeRecommendations(recommendationRequest)
     }
 
-    private fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
+    fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val countries = ArrayList<String>()
         countries.add(EnumCountry.ALL.name)
         countries.add(recommendationRequest.computeRequest.country)
@@ -124,7 +124,7 @@ constructor(
         var fertilizers = recommendationRequest.fertilizerList
 
         if (fertilizers.isEmpty() || fertilizers.size < 2) {
-            logger.warn("Empty fertilizer list, adding default fertilizers")
+            myLogger.warn("Empty fertilizer list, adding default fertilizers")
             fertilizers = getAvailableFertilizers(countries)
         }
 
@@ -135,9 +135,9 @@ constructor(
 
         val headers = this.setHTTPHeaders()
 
-        logger.info("Droid payload is: ${recommendationRequest.userInfo.deviceToken}")
+        myLogger.info("Droid payload is: ${recommendationRequest.userInfo.deviceToken}")
 
-        logger.info("Plumber payload username: ${plumberComputeRequest.userName}")
+        myLogger.info("Plumber payload username: ${plumberComputeRequest.userName}")
 
         val dateTime = LocalDateTime.now()
 
@@ -150,7 +150,7 @@ constructor(
 
         val now = LocalDateTime.now()
         val secondsLapsed = Seconds.secondsBetween(now, dateTime)
-        logger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
+        myLogger.info("Returning response to requesting client $secondsLapsed seconds passed between $dateTime and {$now}")
 
         val payload = Payload()
         payload.requestId = recommendationRequest.userInfo.deviceToken
@@ -182,7 +182,7 @@ constructor(
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
 
-            logger.info("Sending plumber request to endpoint $recommendationUrl")
+            myLogger.info("Sending plumber request to endpoint $recommendationUrl")
 
             val response = restTemplate.postForEntity(recommendationUrl, plumberRequestEntity, Array<Any>::class.java)
             val objects = response.body
@@ -197,7 +197,7 @@ constructor(
                 }
             }
         } catch (ex: Exception) {
-            logger.error("An error occurred while processing plumber request ${ex.message}")
+            myLogger.error("An error occurred while processing plumber request ${ex.message}")
         }
 
         return recommendationResponseDto
@@ -211,7 +211,7 @@ constructor(
                     try {
                         val rec = computedHashMap["FR"] as LinkedHashMap<String, ArrayList<Objects>>
                     } catch (ex: Exception) {
-                        logger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
+                        myLogger.error("Error processing linked hash for FR, must be array, going to array next ${ex.message}")
                         val recommendation = computedHashMap["FR"]
                         if (recommendation is ArrayList<*>) {
                             val frText = computedHashMap.getValue("FR") as ArrayList<String>
@@ -227,7 +227,7 @@ constructor(
                     try {
                         val rec = computedHashMap["SP"] as LinkedHashMap<String, ArrayList<Objects>>
                     } catch (ex: Exception) {
-                        logger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
+                        myLogger.error("Error processing linked hash for SP, must be array, going to array next ${ex.message}")
                         val recommendation = computedHashMap["SP"]
                         if (recommendation is ArrayList<*>) {
                             val spText = computedHashMap.getValue("SP") as ArrayList<String>
@@ -243,7 +243,7 @@ constructor(
                     try {
                         val rec = computedHashMap["PP"] as LinkedHashMap<String, ArrayList<Objects>>
                     } catch (ex: Exception) {
-                        logger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
+                        myLogger.error("Error processing linked hash for PP, must be array, going to array next ${ex.message}")
                         val recommendation = computedHashMap["PP"]
                         if (recommendation is ArrayList<*>) {
                             val ppText = computedHashMap.getValue("PP") as ArrayList<String>
@@ -260,7 +260,7 @@ constructor(
                     try {
                         val rec = computedHashMap["IC"] as LinkedHashMap<String, ArrayList<Objects>>
                     } catch (ex: Exception) {
-                        logger.error("Error processing linked hash for IC, must be array, going to array next ${ex.message}")
+                        myLogger.error("Error processing linked hash for IC, must be array, going to array next ${ex.message}")
                         //check if it is an array
                         val recommendation = computedHashMap["IC"]
                         if (recommendation is ArrayList<*>) {
@@ -276,7 +276,7 @@ constructor(
 
         } catch (ex: Exception) {
             recommendationResponseDto.hasResponse = false
-            logger.error("An error occurred while processing first array object ${ex.message}")
+            myLogger.error("An error occurred while processing first array object ${ex.message}")
         }
 
         return recommendationResponseDto.hasResponse
@@ -314,7 +314,7 @@ constructor(
             }
         } catch (ex: Exception) {
             recommendationResponseDto.hasResponse = false
-            logger.error("An error occurred while processing first array object ${ex.message}")
+            myLogger.error("An error occurred while processing first array object ${ex.message}")
         }
 
         return recommendationResponseDto.hasResponse
