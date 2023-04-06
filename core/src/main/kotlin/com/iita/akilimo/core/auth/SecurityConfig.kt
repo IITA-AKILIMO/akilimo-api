@@ -13,9 +13,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.GrantedAuthority
@@ -30,7 +32,7 @@ import java.util.stream.Stream
 import javax.sql.DataSource
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 //@Order(1)
 class SecurityConfig(
     val encoder: PasswordEncoder, val dataSource: DataSource, val authRepo: UserAuthRepo
@@ -80,29 +82,34 @@ class SecurityConfig(
          * The username is extracted from the 'sub' claim
          * Note: JWT cookies expected to be signed with HMAC with "Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4" as a secret
          */
-        val jwTCollector = CustomJwtCookieCollector.builder().collectorName("Cookie-SSO").authoritiesCollector { token ->
-            token.jwtClaimsSet.getStringListClaim("group").stream().map { g -> SimpleGrantedAuthority(g) }
-                .collect(Collectors.toSet()) as Set<GrantedAuthority>?
-        }.tokenValidator { tokenSerialised ->
-            val jwsObject = JWSObject.parse(tokenSerialised)
-            val verifier: JWSVerifier = MACVerifier("Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4")
-            jwsObject.verify(verifier)
-            JWTParser.parse(tokenSerialised)
-        }.cookieName("SSO").build()
+        val jwTCollector =
+            CustomJwtCookieCollector.builder().collectorName("Cookie-SSO").authoritiesCollector { token ->
+                token.jwtClaimsSet.getStringListClaim("group").stream().map { g -> SimpleGrantedAuthority(g) }
+                    .collect(Collectors.toSet()) as Set<GrantedAuthority>?
+            }.tokenValidator { tokenSerialised ->
+                val jwsObject = JWSObject.parse(tokenSerialised)
+                val verifier: JWSVerifier = MACVerifier("Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4")
+                jwsObject.verify(verifier)
+                JWTParser.parse(tokenSerialised)
+            }.cookieName("SSO").build()
 
 
         val apiKeyCollector =
-            APIKeyCollector.builder<User>().collectorName("API-Key").apiKeyExtractor { req -> req.getHeader("key") }.apiKeyValidator { apiKey ->
-                User(
-                    "bob", "", Stream.of(SimpleGrantedAuthority("repo-42")).collect(Collectors.toSet())
-                )
-            }.usernameCollector(User::getUsername).authoritiesCollector { user -> HashSet<GrantedAuthority>(user.authorities) }.build()
+            APIKeyCollector.builder<User>().collectorName("API-Key").apiKeyExtractor { req -> req.getHeader("key") }
+                .apiKeyValidator { apiKey ->
+                    User(
+                        "bob", "", Stream.of(SimpleGrantedAuthority("repo-42")).collect(Collectors.toSet())
+                    )
+                }.usernameCollector(User::getUsername)
+                .authoritiesCollector { user -> HashSet<GrantedAuthority>(user.authorities) }.build()
 
         /**
          * Static authentication
          * If no authentication was possible with the previous collector, we default to the anonymous user
          */
-        val staticCollector = StaticUserCollector.builder().collectorName("StaticUser-anonymous").usernameCollector { "anonymous" }.build()
+        val staticCollector =
+            StaticUserCollector.builder().collectorName("StaticUser-anonymous").usernameCollector { "anonymous" }
+                .build()
 
         return MultiAuthenticationCollectorConfigurer<HttpSecurity>()
             .collectorForAuthorzation(jwTCollector)
@@ -131,7 +138,8 @@ class SecurityConfig(
 //            .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 //            .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER")
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
+        http.sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
             .and().formLogin().disable()
 
         http.csrf().disable()
@@ -150,8 +158,10 @@ class SecurityConfig(
             "/api/**/potato**", "/api/**/potato**/**",
             "/api/**/starch**",
             "/api/**/user-feedback**", "/api/**/user-feedback**/**",
-        ).permitAll().antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN").antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "USER")
-            .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN").antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+        ).permitAll().antMatchers(HttpMethod.GET, "/api").hasRole("ADMIN").antMatchers(HttpMethod.POST, "/api/**")
+            .hasAnyRole("ADMIN", "USER")
+            .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN").antMatchers(HttpMethod.DELETE, "/api/**")
+            .hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER").and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We don't need sessions to be created.
             .and().formLogin().disable()

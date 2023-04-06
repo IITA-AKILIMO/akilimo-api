@@ -85,7 +85,7 @@ springdoc:
 
 rate:
   limit:
-    enabled: ${ENABLE_RATE_LIMIT:false}
+    enabled: ${ENABLE_RATE_LIMIT:true}
     rate-type: ${RATE_TYPE:minute}
     max-request: ${MAX_REQUESTS:1}
 
