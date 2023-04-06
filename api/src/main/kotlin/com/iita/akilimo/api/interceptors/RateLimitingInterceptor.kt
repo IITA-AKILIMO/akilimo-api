@@ -79,7 +79,7 @@ class RateLimitingInterceptor : HandlerInterceptorAdapter() {
     }
 
     private fun getRateLimiter(clientId: String): Optional<SimpleRateLimiter> {
-        return limiters.computeIfAbsent(clientId) { _clientId: String -> Optional.of(createRateLimiter(_clientId)) }
+        return limiters.computeIfAbsent(clientId) { clientIdentifier: String -> Optional.of(createRateLimiter(clientIdentifier)) }
     }
 
     private fun createRateLimiter(applicationId: String): SimpleRateLimiter {
