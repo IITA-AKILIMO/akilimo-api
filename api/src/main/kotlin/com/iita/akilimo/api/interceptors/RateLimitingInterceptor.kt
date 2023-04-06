@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
+import org.springframework.web.servlet.HandlerInterceptor
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse
 
 
 @Component
-class RateLimitingInterceptor : HandlerInterceptorAdapter() {
+class RateLimitingInterceptor : HandlerInterceptor {
     @Value("\${rate.limit.enabled}")
     private val enabled = false
 
