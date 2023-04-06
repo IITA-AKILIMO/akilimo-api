@@ -37,7 +37,7 @@ class RateLimitingInterceptor : HandlerInterceptorAdapter() {
     var mapper = ObjectMapper()
 
     companion object {
-        private val logger = LoggerFactory.getLogger(RateLimitingInterceptor::class.java)
+        private val logger = LoggerFactory.getLogger(this::class.java)
     }
 
     @Throws(Exception::class)
