@@ -20,8 +20,9 @@ import javax.validation.Valid
 
 
 @Tags(Tag(name = "advanced", description = "Advanced API"))
-@RequestMapping("/api/v2/recommendations/pro")
+@RequestMapping("/api/v1/recommendations/pro")
 @RestController
+@Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various interventions")
 class UseCasesControllers(
     private val recService: RecommendationService, private val messagingService: MessagingService
 ) : BaseController() {
@@ -35,6 +36,7 @@ class UseCasesControllers(
     ): ResponseEntity<RecommendationResponseDto> {
 
         val requestContext = headers["context"]
+        val localeLanguage = headers["locale-lang"]
         myLogger.info("Processing FR request for Pro API for context $requestContext")
         val modelMapper = ModelMapper()
         val response = recService.computeFrRecommendation(frRequest)

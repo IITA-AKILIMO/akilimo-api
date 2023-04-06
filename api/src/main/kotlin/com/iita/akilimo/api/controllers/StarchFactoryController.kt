@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @Hidden
-@RequestMapping("/api/v1/starch-factories")
+@RequestMapping(value = ["/api/v1/starch-factories", "/api/v2/starch-factories"])
 @RestController
 class StarchFactoryController(private val starchFactoryService: StarchFactoryService) : BaseController() {
     companion object {

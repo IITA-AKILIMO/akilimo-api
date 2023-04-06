@@ -104,6 +104,13 @@ constructor(
         return computeRecommendations(recommendationRequest)
     }
 
+    @Deprecated("To be removed in future revisions")
+    fun computeRecommendations(
+        recommendationRequest: RecommendationRequest,
+        requestContext: String?
+    ): RecommendationResponseDto? {
+        return computeRecommendations(recommendationRequest)
+    }
 
     fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val countries = ArrayList<String>()

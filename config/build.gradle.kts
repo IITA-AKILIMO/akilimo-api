@@ -20,7 +20,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("javax.validation:validation-api:2.0.0.Final")
+    implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

@@ -5,17 +5,16 @@ spring:
   liquibase:
     enabled: true
     change-log: "classpath:liquibase/master.xml"
+    clear-checksums: ${CLEAR_CHECKSUM:false}
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/akilimo}
+    url: ${DB_URL:jdbc:mariadb://localhost:3306/akilimo_db}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
-  #    hikari:
-  #      connection-timeout: 20000
-  #      maximum-pool-size: 5
   jpa:
     show-sql: true
     properties:
       hibernate:
+        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
         format_sql: true
         generate_statistics: true

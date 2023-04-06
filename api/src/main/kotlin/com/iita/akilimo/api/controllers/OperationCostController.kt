@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @Hidden
-@RequestMapping("/api/v1/operation-cost")
+@RequestMapping(value = ["/api/v1/operation-cost", "/api/v3/operation-cost"])
 @RestController
 class OperationCostController(private val operationCostService: OperationCostService) : BaseController() {
 
@@ -25,8 +25,8 @@ class OperationCostController(private val operationCostService: OperationCostSer
 
     @GetMapping
     fun listOperationCosts(
-            @RequestHeader("op-name") opName: String,
-            @RequestHeader("op-type") opType: String
+        @RequestHeader("op-name") opName: String,
+        @RequestHeader("op-type") opType: String
     ): ResponseEntity<List<OperationCostDto>> {
 
         val operationCostList = operationCostService.operationCostList(opName.toLowerCase(), opType.toLowerCase())

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @Hidden
-@RequestMapping("/api/v1/fertilizers")
+@RequestMapping(value = ["/api/v1/fertilizers", "/api/v2/fertilizers"])
 @RestController
 class FertilizersController(
     private val fertilizerService: FertilizerService

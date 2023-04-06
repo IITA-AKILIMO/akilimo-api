@@ -16,8 +16,12 @@ import javax.validation.Valid
 
 
 @Tags(Tag(name = "basic", description = "Basic API"))
-@RequestMapping("/api/v2/recommendations/basic")
+@RequestMapping("/api/v1/recommendations/basic")
 @RestController
+@Tag(
+    name = "AKILIMO recommendations for basic applications",
+    description = "Can be used with basic applications such as chatbots, ussd and other minimal parameter use cases"
+)
 class BasicCasesControllers(
     private val basicRecService: BasicRecService
 ) : BaseController() {
