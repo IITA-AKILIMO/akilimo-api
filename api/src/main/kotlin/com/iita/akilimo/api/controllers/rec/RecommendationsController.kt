@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-@RequestMapping("/api/v2/recommendations")
-@Tag(name = "AKILIMO")
+@RequestMapping(value = ["/api/v1/recommendations", "/api/v2/recommendations"])
+@Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various use cases")
 @RestController
 class RecommendationsController(
     private val recommendationService: RecommendationService,

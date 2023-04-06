@@ -8,7 +8,7 @@ server:
       enabled: false
     include-message: always
     include-binding-errors: always
-    include-stacktrace: on_trace_param
+    include-stacktrace: on_param
     include-exception: false
 
 spring:
@@ -85,7 +85,7 @@ springdoc:
 
 rate:
   limit:
-    enabled: ${RATE_ENABLED:false}
+    enabled: ${ENABLE_RATE_LIMIT:false}
     rate-type: ${RATE_TYPE:minute}
     max-request: ${MAX_REQUESTS:1}
 
@@ -108,7 +108,7 @@ akilimo:
   name: 'AKILIMO API'
   version: ${API_VERSION:dev}
   desc: 'Description here'
-  externaldoc:  ${akilimo.version}
+  externaldoc: ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
   dev-server: "http://localhost:${server.port}"

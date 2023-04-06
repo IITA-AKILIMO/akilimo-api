@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 
+class AuthorizationException(message: String) : RuntimeException(message)
+
 class ErrorResponse(
     val status: HttpStatus,
     val message: String,
@@ -12,3 +14,5 @@ class ErrorResponse(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val timeStamp: LocalDateTime = LocalDateTime.now()
 }
+
+class NotFoundException(message: String) : RuntimeException(message)
