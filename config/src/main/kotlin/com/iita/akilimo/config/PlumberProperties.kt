@@ -9,6 +9,9 @@ class PlumberProperties {
     var baseUrl: String? = null
 
     @NotBlank
+    var computeUrl: String? = null
+
+    @NotBlank
     var computeNg: String? = null
 
     @NotBlank
