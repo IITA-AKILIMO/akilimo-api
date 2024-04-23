@@ -25,8 +25,8 @@ plugins {
 allprojects {
     val date = Calendar.getInstance()
     val versionNumber: Int = 7
-    val minorRelease: Int = 0
-    val bugRelease: String = "1"
+    val minorRelease: Int = 2
+    val bugRelease: String = "0"
     var buildNumber: String? = System.getenv("CIRCLE_BUILD_NUM")
     when {
         buildNumber.isNullOrBlank() -> buildNumber = date.get(Calendar.DAY_OF_YEAR).toString()

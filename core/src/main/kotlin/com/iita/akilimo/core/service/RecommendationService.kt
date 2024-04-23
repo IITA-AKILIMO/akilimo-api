@@ -172,13 +172,13 @@ constructor(
             val country = plumberComputeRequest.country
 
             val baseUrl = plumberPropertiesProperties.baseUrl
-            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-            when (country) {
-                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
-                EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
-                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
-            }
+            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeUrl!!}"
+//            when (country) {
+//                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
+//                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
+//                EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
+//                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
+//            }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
 
