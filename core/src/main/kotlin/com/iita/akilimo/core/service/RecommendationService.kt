@@ -335,6 +335,7 @@ constructor(
             )
 
             fertilizerList.fertilizerType = availableFertilizer.fertilizerType!!
+            fertilizerList.selected = false
             fertilizerList
         }
         return availableFertilizers.toSet()
