@@ -2,27 +2,10 @@
 kotlin = { strictly = "2.0.0" }
 springBoot = { strictly = "2.7.18" }
 
-libphonenumber = "8.13.38"
-carrier = "1.222"
-mysqlConnector = "8.0.33"
-mariadbJavaClient = "3.4.0"
-springDoc = "1.8.0"
 dependencyManagement = "1.1.5"
-resilience4j = "2.2.0"
-validationApi = "2.0.1.Final"
-coroutines = "1.8.1"
-jackson = "2.17.1"
-commonsCodec = "1.17.0"
-modelMapper = "2.3.1"
-jsonPatch = "1.13"
-africastalkingSms = "3.5.7"
-commonsCollections = "4.5.0-M1"
-commonsCsv = "1.11.0"
-poi = "5.2.5"
-opencsv = "5.9"
-junitJupiter = "5.9.0"
-liquiBase = "4.28.0"
+
 dependencyUpdates = "0.51.0"
+
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -31,64 +14,3 @@ kotlinJpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }
 dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
 dependencyUpdates = { id = "com.github.ben-manes.versions", version.ref = "dependencyUpdates" }
-
-[libraries]
-kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlinStdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
-kotlinStdlibJdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-
-springBootStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
-springBootStarterMail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "springBoot" }
-springBootStarterThymeLeaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "springBoot" }
-springBootStarter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springBoot" }
-springBootStarterAmqp = { module = "org.springframework.boot:spring-boot-starter-amqp", version.ref = "springBoot" }
-springBootStarterActuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
-springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
-springBootConfigurationProcessor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "springBoot" }
-springBootStarterDataJpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
-springBootStarterDataJdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "springBoot" }
-springBootStarterSecurity = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
-springBootStarterValidation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "springBoot" }
-
-springDocOpenApiUi = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springDoc" }
-springDocOpenApiDataRest = { module = "org.springdoc:springdoc-openapi-data-rest", version.ref = "springDoc" }
-springDocOpenApiKotlin = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "springDoc" }
-
-validationApi = { module = "javax.validation:validation-api", version = "2.0.1.Final" }
-resilience4jRate = { module = "io.github.resilience4j:resilience4j-ratelimiter", version.ref = "resilience4j" }
-resilience4jSpring = { module = "io.github.resilience4j:resilience4j-spring-boot2", version.ref = "resilience4j" }
-
-kotlinxCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
-kotlinxCoroutinesSpring = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-spring", version.ref = "springBoot" }
-kotlinxCoroutinesReactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
-
-jacksonModuleKotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
-jacksonDatatypeJsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
-jacksonDataformatCsv = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-csv", version.ref = "jackson" }
-jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
-
-commonsCodec = { module = "commons-codec:commons-codec", version.ref = "commonsCodec" }
-modelMapperSpringBootStarter = { module = "com.github.rozidan:modelmapper-spring-boot-starter", version.ref = "modelMapper" }
-jsonPatch = { module = "com.github.java-json-tools:json-patch", version.ref = "jsonPatch" }
-libphonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "libphonenumber" }
-carrier = { module = "com.googlecode.libphonenumber:carrier", version.ref = "carrier" }
-africastalkingSms = { module = "com.github.AfricasTalkingLtd.africastalking-java:sms", version.ref = "africastalkingSms" }
-commonsCollections = { module = "org.apache.commons:commons-collections4", version.ref = "commonsCollections" }
-commonsCsv = { module = "org.apache.commons:commons-csv", version.ref = "commonsCsv" }
-poi = { module = "org.apache.poi:poi", version.ref = "poi" }
-poiOoxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
-opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
-junitJupiterApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
-junitJupiterEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
-mariadbJavaClient = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadbJavaClient" }
-mysqlConnector = { module = "mysql:mysql-connector-java", version.ref = "mysqlConnector" }
-liquiBase = { module = "org.liquibase:liquibase-core", version.ref = "liquiBase" }
-
-[bundles]
-kotlin = ["kotlinReflect", "kotlinStdlib", "kotlinStdlibJdk8"]
-resilience4j = ["resilience4jRate", "resilience4jSpring"]
-kotlinxCoroutines = ["kotlinxCoroutinesCore", "kotlinxCoroutinesReactor"]
-jackson = ["jacksonModuleKotlin", "jacksonDatatypeJsr310", "jacksonDataformatCsv", "jacksonDatabind"]
-libphonenumberBundle = ["libphonenumber", "carrier"]
-database = ["mysqlConnector", "mariadbJavaClient"]
-springDoc = ["springDocOpenApiKotlin", "springDocOpenApiDataRest", "springDocOpenApiUi"]
