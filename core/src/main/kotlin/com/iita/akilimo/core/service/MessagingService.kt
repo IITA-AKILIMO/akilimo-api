@@ -39,12 +39,11 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
             val headers = addRequestHeaders()
             val entity = HttpEntity(smsMessage, headers)
 
-            val response = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
-            val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)
-            logger.info(responseString)
+            val smsResponse = restTemplate.postForEntity(postUrl, entity, MessageSendingResponse::class.java)
+            val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(smsResponse)
+            logger.debug(responseString)
         } catch (ex: Exception) {
-            logger.info(ex.message)
-            logger.error(ex.message, ex)
+            logger.error(ex.message, "Sms sending error --> $ex")
         }
     }
 
