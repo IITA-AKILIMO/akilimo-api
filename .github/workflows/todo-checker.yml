@@ -23,4 +23,5 @@ jobs:
           SHA: ${{ github.sha }}
           REF: ${{ github.ref }}
           LABEL: "todo"
-          INCLUDE_PATTERN: "\\.(java|kt|kts)$"
+          INCLUDE_PATTERN: "\\.(java|kt|kts|gradle)$"
+          CLOSE_ON_SAME_BRANCH: true

@@ -1,0 +1,16 @@
+[versions]
+kotlin = { strictly = "2.0.0" }
+springBoot = { strictly = "2.7.18" }
+
+dependencyManagement = "1.1.5"
+
+dependencyUpdates = "0.51.0"
+
+
+[plugins]
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinSpring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlinJpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }
+dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
+dependencyUpdates = { id = "com.github.ben-manes.versions", version.ref = "dependencyUpdates" }
