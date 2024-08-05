@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/akilimo
     docker:
-      - image: cimg/openjdk:17.0.0-node
+      - image: cimg/openjdk:21.0.2-node
 
     steps:
       - checkout
@@ -32,12 +32,12 @@ jobs:
   build_docker:
     working_directory: ~/akilimo
     docker:
-      - image: cimg/openjdk:17.0.0-node
+      - image: cimg/openjdk:21.0.2-node
 
     steps:
       - checkout
       - setup_remote_docker:
-          version: 20.10.14
+          version: 25.0.5
       - run:
           name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
           command: sudo chmod +x ./gradlew
@@ -66,10 +66,10 @@ jobs:
   push_latest:
     working_directory: ~/akilimo
     docker:
-      - image: docker:20.10.14-git
+      - image: docker:25.0.5-git
     steps:
       - setup_remote_docker:
-          version: 20.10.14
+          version: 25.0.5
       - attach_workspace:
           at: /tmp
       - run:
@@ -92,10 +92,10 @@ jobs:
   push_production:
     working_directory: ~/akilimo
     docker:
-      - image: docker:20.10.14-git
+      - image: docker:25.0.5-git
     steps:
       - setup_remote_docker:
-          version: 20.10.14
+          version: 25.0.5
       - attach_workspace:
           at: /tmp
       - run:
