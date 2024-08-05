@@ -16,23 +16,18 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
-
 @Service
-class MessagingService
-constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
+class MessagingService(private val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
 
     private val logger = LoggerFactory.getLogger(MessagingService::class.java)
     private val sms: MessagingProperties = akilimoConfig.sms()
-
     private val phoneUtil = PhoneNumberUtil.getInstance()
-
     private val mapper = ObjectMapper()
     private val restTemplate = RestTemplate()
 
     override fun sendTextMessage(response: RecommendationResponseDto, sendSms: Boolean) {
-        if (!sendSms) {
-            return
-        }
+        if (!sendSms) return
+
         try {
             val smsMessage = buildMessagePayload(response)
             val postUrl = sms.apiUrl()
@@ -43,84 +38,49 @@ constructor(val akilimoConfig: AkilimoConfigProperties) : IMessagingService {
             val responseString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(smsResponse)
             logger.debug(responseString)
         } catch (ex: Exception) {
-            logger.error(ex.message, "Sms sending error --> $ex")
+            logger.error("Sms sending error --> $ex", ex)
         }
     }
 
     private fun buildMessagePayload(response: RecommendationResponseDto): SmsMessage {
-
         val message = SmsMessage(
             user = sms.smsUser!!,
             password = sms.smsPass!!,
             gsm = response.mobileNumber!!
         )
 
-        val brandeCodes = sms.brandedCodes
-
-        if (brandeCodes != null) {
-            if (!brandeCodes.contains(response.mobileCountryCode)) {
-                message.useDefaultSender = true
-                logger.info("Sending SMS using default country service current request country code is ${response.mobileCountryCode}")
-            } else {
-                logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
-            }
+        val brandedCodes = sms.brandedCodes
+        if (brandedCodes == null || !brandedCodes.contains(response.mobileCountryCode)) {
+            message.useDefaultSender = true
+            logger.info("Sending SMS using default country service current request country code is ${response.mobileCountryCode}")
         } else {
             logger.info("Sending SMS using branded AKILIMO current request country code is ${response.mobileCountryCode}")
         }
 
+        response.fertilizerRecText?.let { message.smsText = it }
+        response.interCroppingRecText?.let { message.smsText = it }
+        response.plantingPracticeRecText?.let { message.smsText = it }
+        response.scheduledPlantingRecText?.let { message.smsText = it }
 
-        when {
-            !response.fertilizerRecText.isNullOrEmpty() -> {
-                message.smsText = response.fertilizerRecText
-            }
-        }
-
-        when {
-            !response.interCroppingRecText.isNullOrEmpty() -> {
-                message.smsText = response.interCroppingRecText
-            }
-        }
-
-        when {
-            !response.plantingPracticeRecText.isNullOrEmpty() -> {
-                message.smsText = response.plantingPracticeRecText
-            }
-        }
-
-        when {
-            !response.scheduledPlantingRecText.isNullOrEmpty() -> {
-                message.smsText = response.scheduledPlantingRecText
-            }
-        }
         return message
     }
 
     override fun sendEmailMessage(response: RecommendationResponseDto, email: Boolean) {
-        if (!email) {
-            return
-        }
+        if (!email) return
         logger.info("This feature for sending emails has not been implemented yet, please try again later ${response.userEmail}")
     }
 
     fun processPhoneNumber(recommendationResponseDto: RecommendationResponseDto): Phonenumber.PhoneNumber? {
-        val countryCode = recommendationResponseDto.country
-        val phoneNumber = recommendationResponseDto.mobileNumber?.toLong()
-
-        return phoneUtil.parse(phoneNumber.toString(), countryCode)
+        return phoneUtil.parse(recommendationResponseDto.mobileNumber, recommendationResponseDto.country)
     }
 
     fun convertToInternationalNumber(recommendationResponseDto: RecommendationResponseDto): String? {
-
-        val phoneNumber = processPhoneNumber(recommendationResponseDto)
-
-        return phoneUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164)
+        return processPhoneNumber(recommendationResponseDto)?.let { phoneUtil.format(it, PhoneNumberUtil.PhoneNumberFormat.E164) }
     }
 
     private fun addRequestHeaders(): HttpHeaders {
-        val headers = HttpHeaders()
-
-        headers.contentType = MediaType.APPLICATION_JSON
-
-        return headers
+        return HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
     }
 }
