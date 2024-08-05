@@ -101,7 +101,7 @@ akilimo:
   name: 'AKILIMO API'
   version: ${API_VERSION:dev}
   desc: 'Description here'
-  externaldoc:  ${akilimo.version}
+  externaldoc: ${akilimo.version}
   license: 'GPL'
   license_url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 
@@ -122,6 +122,7 @@ akilimo:
 
   plumber:
     base-url: ${PLUMBER_BASE:http://akilimo.org:8090/api/}
+    compute-url: ${COMPUTE_URL:v2/dst/recommendation/compute}
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
     compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}

@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.util.*
@@ -172,13 +174,13 @@ constructor(
             val country = plumberComputeRequest.country
 
             val baseUrl = plumberPropertiesProperties.baseUrl
-            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-            when (country) {
-                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
-                EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
-                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
-            }
+            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeUrl!!}"
+//            when (country) {
+//                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
+//                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
+//                EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
+//                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
+//            }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
 
@@ -335,6 +337,7 @@ constructor(
             )
 
             fertilizerList.fertilizerType = availableFertilizer.fertilizerType!!
+            fertilizerList.selected = false
             fertilizerList
         }
         return availableFertilizers.toSet()

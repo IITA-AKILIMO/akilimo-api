@@ -1,6 +1,7 @@
-package com.iita.akilimo.api.controllers
+package com.iita.akilimo.api.controllers.rec
 
 
+import com.iita.akilimo.api.controllers.BaseController
 import com.iita.akilimo.core.mapper.RecommendationResponseDto
 import com.iita.akilimo.core.request.usecases.fr.FrRequest
 import com.iita.akilimo.core.request.usecases.ic.IcRequest
@@ -34,7 +35,7 @@ class UseCasesControllers(
 
         val requestContext = headers["context"]
         val localeLanguage = headers["locale-lang"]
-        myLogger.info("Processing FR request for Pro API for context $requestContext")
+        myLogger.info("Processing recommendation request for Pro API for context $requestContext")
         val modelMapper = ModelMapper()
         val response = recService.computeFrRecommendation(frRequest)
         when {
