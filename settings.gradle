@@ -1,7 +1,5 @@
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
 rootProject.name = 'akilimo-api'
-include("enums", "config", "core", "database", "api", "migrations")
+
+include("api")
+include("migrations")
+include("enums", "config", "core", "database")
