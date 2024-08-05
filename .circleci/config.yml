@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 25.0.5
+          docker_layer_caching: true
       - run:
           name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
           command: sudo chmod +x ./gradlew
@@ -69,7 +69,8 @@ jobs:
       - image: docker:25.0.5-git
     steps:
       - setup_remote_docker:
-          version: 25.0.5
+          docker_layer_caching: true
+
       - attach_workspace:
           at: /tmp
       - run:
@@ -95,7 +96,8 @@ jobs:
       - image: docker:25.0.5-git
     steps:
       - setup_remote_docker:
-          version: 25.0.5
+          docker_layer_caching: true
+
       - attach_workspace:
           at: /tmp
       - run:
