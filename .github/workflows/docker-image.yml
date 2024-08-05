@@ -1,0 +1,128 @@
+name: Docker Image CI
+on:
+  push:
+    branches: [ "migration/indexes" ]
+
+jobs:
+
+  run-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run Unit tests
+        run: ./gradlew test
+
+
+  build-artifacts:
+    name: Build artifacts
+    #    needs: run-tests
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
+      BRANCH_NAME: ${{ github.head_ref }}
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Get and set name of current branch ref
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Display current branch name
+        run: echo ${BRANCH_NAME}
+
+      - name: Download requirement file
+        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt
+
+      - name: Download Tag fetching script
+        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt;
+
+      - name: Fetch latest tag
+        run: python latest-tag.py
+
+      - name: Update release version
+        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
+
+      - name: Set branch name
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+
+      - name: Show branch name
+        run: echo $BRANCH_NAME
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Generate jar file
+        run: ./gradlew clean build -x test
+
+      - name: Copy release tag file
+        run: cp  $LATEST_TAG_FILE release
+
+      - name: Copy artifacts
+        run: cp -r api/build/libs/* release
+
+      - name: Copy logback file
+        run: cp -r api/src/main/resources/logback-spring.xml release/logback-spring.xml
+
+      - uses: actions/upload-artifact@v4
+        name: Upload artifact
+        with:
+          name: api-release
+          if-no-files-found: error
+          path: release
+
+
+#  build:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Setup Java JDK
+#        uses: actions/setup-java@v3.4.1
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#
+#      - name: Make gradlew executable
+#        run: chmod +x ./gradlew
+#
+#      - name: Build the Docker image
+#        uses: actions/checkout@v3
+#        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
