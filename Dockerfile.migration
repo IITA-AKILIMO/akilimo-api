@@ -1,8 +1,37 @@
+# base image to build a JRE
+FROM amazoncorretto:21.0.3-alpine as corretto-jdk
 
-FROM openjdk:16-slim-buster
+# required for strip-debug to work
+RUN apk add --no-cache binutils
 
-LABEL maintainer="barsamms@gmail.com"
+# Build small JRE image
+RUN $JAVA_HOME/bin/jlink \
+         --verbose \
+         --add-modules ALL-MODULE-PATH \
+         --strip-debug \
+         --no-man-pages \
+         --no-header-files \
+         --compress=2 \
+         --output /customjre
+
+# main app image
+FROM alpine:latest
+
+ARG USERNAME=akilimo
+ARG USER_GROUP=akilimo
+
+ENV JAVA_HOME=/jre
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# Create the user
+RUN addgroup -S $USER_GROUP && adduser -S $USERNAME -G $USER_GROUP
+
+# copy JRE from the base image
+COPY --from=corretto-jdk /customjre $JAVA_HOME
+
 
 COPY migrations/build/libs/migrations-*.jar migration-app.jar
 
-ENTRYPOINT ["java", "-jar", "migration-app.jar"]
+USER $USERNAME
+
+ENTRYPOINT [ "/jre/bin/java", "-jar", "migration-app.jar" ]

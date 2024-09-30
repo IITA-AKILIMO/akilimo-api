@@ -1,0 +1,30 @@
+{
+  "name": "akilimo-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:IITA-AKILIMO/akilimo-api.git",
+  "author": "Sammy M <barsamms@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "openapi": "curl http://localhost:8098/akilimo-api -o .\\docs\\akilimo.json",
+    "changelog": "fast-git-changelog",
+    "history": "auto-changelog -p",
+    "doc": "redocly build-docs -o .\\docs\\index.html .\\docs\\akilimo.json",
+    "markdown": "openapi-to-md .\\docs\\akilimo.json > .\\docs\\API.MD",
+    "notes": "release-notes 7.1.1..HEAD changelog --branch main -o > NOTES.md"
+  },
+  "devDependencies": {
+    "@invisible/changelog-update": "^1.2.2",
+    "@redocly/cli": "^1.0.0-beta.124",
+    "auto-changelog": "^2.4.0",
+    "fast-git-changelog": "^1.0.3",
+    "openapi-to-md": "^1.0.24",
+    "release-notes-cli": "^0.0.6"
+  },
+  "auto-changelog": {
+    "output": "HISTORY.md",
+    "template": "keepachangelog",
+    "unreleased": true,
+    "commitLimit": false
+  }
+}

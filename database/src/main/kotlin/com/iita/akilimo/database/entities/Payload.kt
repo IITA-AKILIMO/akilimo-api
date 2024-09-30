@@ -1,13 +1,11 @@
 package com.iita.akilimo.database.entities
 
-import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Type
-import org.hibernate.annotations.UpdateTimestamp
-import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
 
-@Entity(name = "Payload")
+@Entity()
 @Table(name = "request_response")
 class Payload : BaseEntity() {
 

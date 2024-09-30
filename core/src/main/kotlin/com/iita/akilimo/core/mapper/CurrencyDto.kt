@@ -3,6 +3,8 @@ package com.iita.akilimo.core.mapper
 
 class CurrencyDto {
 
+    var countryCode: String? = null
+
     var country: String? = null
 
     var currencyName: String? = null

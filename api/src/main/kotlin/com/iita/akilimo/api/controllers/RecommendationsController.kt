@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v1/recommendations")
+@RequestMapping(value = ["/api/v1/recommendations", "/api/v2/recommendations"])
 @Tag(name = "AKILIMO recommendations", description = "Operations pertaining recommendations for various use cases")
-//@RestController
+@RestController
 class RecommendationsController(
     private val recommendationService: RecommendationService,
     private val messagingService: MessagingService
@@ -26,30 +26,30 @@ class RecommendationsController(
         private val myLogger = LoggerFactory.getLogger(RecommendationsController::class.java)
     }
 
-//    @PostMapping
-//    fun computeRecommendations(
-//        @Valid @RequestBody recommendationRequest: RecommendationRequest,
-//        @RequestHeader headers: Map<String, String>
-//    ): ResponseEntity<RecommendationResponseDto> {
-//
-//        val requestContext = headers["context"]
-//        val localeLanguage = headers["locale-lang"]
-//
-//        //check that the request has defined fertilizers
-//        val modelMapper = ModelMapper()
-//
-//        val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
-//
-//        when {
-//            response != null -> {
-//                if (response.hasResponse) {
-//                    messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
-//                    messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
-//                }
-//                val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
-//                return ResponseEntity(resp, HttpStatus.OK)
-//            }
-//        }
-//        return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
-//    }
+    @PostMapping
+    fun computeRecommendations(
+        @Valid @RequestBody recommendationRequest: RecommendationRequest,
+        @RequestHeader headers: Map<String, String>
+    ): ResponseEntity<RecommendationResponseDto> {
+
+        val requestContext = headers["context"]
+        val localeLanguage = headers["locale-lang"]
+
+        //check that the request has defined fertilizers
+        val modelMapper = ModelMapper()
+
+        val response = recommendationService.computeRecommendations(recommendationRequest, requestContext)
+
+        when {
+            response != null -> {
+                if (response.hasResponse) {
+                    messagingService.sendEmailMessage(response, recommendationRequest.userInfo.sendEmail)
+                    messagingService.sendTextMessage(response, recommendationRequest.userInfo.sendSms)
+                }
+                val resp = modelMapper.map(response, RecommendationResponseDto::class.java)
+                return ResponseEntity(resp, HttpStatus.OK)
+            }
+        }
+        return ResponseEntity(RecommendationResponseDto(), HttpStatus.BAD_REQUEST)
+    }
 }

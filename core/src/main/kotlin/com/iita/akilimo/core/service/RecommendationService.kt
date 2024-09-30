@@ -8,11 +8,11 @@ import com.iita.akilimo.core.request.ComputeRequest
 import com.iita.akilimo.core.request.FertilizerList
 import com.iita.akilimo.core.request.PlumberComputeRequest
 import com.iita.akilimo.core.request.RecommendationRequest
+import com.iita.akilimo.core.request.usecases.bpp.BppRequest
 import com.iita.akilimo.core.request.usecases.fr.FrRequest
 import com.iita.akilimo.core.request.usecases.ic.IcRequest
-import com.iita.akilimo.core.request.usecases.bpp.BppRequest
-import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.entities.Payload
+import com.iita.akilimo.database.repos.FertilizerRepo
 import com.iita.akilimo.database.repos.PayloadRepository
 import com.iita.akilimo.enums.EnumCountry
 import com.iita.akilimo.enums.EnumFertilizer
@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.util.*
@@ -104,6 +106,13 @@ constructor(
         return computeRecommendations(recommendationRequest)
     }
 
+    @Deprecated("To be removed in future revisions")
+    fun computeRecommendations(
+        recommendationRequest: RecommendationRequest,
+        requestContext: String?
+    ): RecommendationResponseDto? {
+        return computeRecommendations(recommendationRequest)
+    }
 
     private fun computeRecommendations(recommendationRequest: RecommendationRequest): RecommendationResponseDto? {
         val countries = ArrayList<String>()
@@ -165,13 +174,13 @@ constructor(
             val country = plumberComputeRequest.country
 
             val baseUrl = plumberPropertiesProperties.baseUrl
-            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-            when (country) {
-                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
-                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
-                EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
-                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
-            }
+            var recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeUrl!!}"
+//            when (country) {
+//                EnumCountry.NG.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeNg!!}"
+//                EnumCountry.TZ.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeTz!!}"
+//                EnumCountry.GH.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeGh!!}"
+//                EnumCountry.RW.name -> recommendationUrl = "${baseUrl}${plumberPropertiesProperties.computeRw!!}"
+//            }
             recommendationResponseDto = modelMapper.map(plumberComputeRequest, RecommendationResponseDto::class.java)
 
 
@@ -328,6 +337,7 @@ constructor(
             )
 
             fertilizerList.fertilizerType = availableFertilizer.fertilizerType!!
+            fertilizerList.selected = false
             fertilizerList
         }
         return availableFertilizers.toSet()

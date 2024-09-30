@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/akilimo
     docker:
-      - image: circleci/openjdk:14-jdk-buster
+      - image: cimg/openjdk:21.0.2-node
 
     steps:
       - checkout
@@ -32,15 +32,16 @@ jobs:
   build_docker:
     working_directory: ~/akilimo
     docker:
-      - image: circleci/openjdk:14-jdk-buster
+      - image: cimg/openjdk:21.0.2-node
 
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
           command: sudo chmod +x ./gradlew
-      - run: ./gradlew build -x test
+      - run: ./gradlew bootJar -x test
 
       - run:
           name: Build application and migration images
@@ -65,9 +66,11 @@ jobs:
   push_latest:
     working_directory: ~/akilimo
     docker:
-      - image: docker:18.06.3-ce-git
+      - image: docker:25.0.5-git
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       - attach_workspace:
           at: /tmp
       - run:
@@ -90,9 +93,11 @@ jobs:
   push_production:
     working_directory: ~/akilimo
     docker:
-      - image: docker:18.06.3-ce-git
+      - image: docker:25.0.5-git
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       - attach_workspace:
           at: /tmp
       - run:

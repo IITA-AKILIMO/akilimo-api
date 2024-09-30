@@ -1,4 +1,5 @@
 HELP.md
+.env
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -16,6 +17,7 @@ build/
 
 ### IntelliJ IDEA ###
 .idea
+.jpb
 *.iws
 *.iml
 *.ipr
@@ -36,3 +38,4 @@ process.yml
 gradle.properties
 
 **/bin/*
+/node_modules/

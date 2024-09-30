@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 
-@RequestMapping("/api/v1/cassava-prices")
+@RequestMapping(
+    value = [
+        "/api/v1/cassava-prices",
+        "/api/v3/cassava-prices"
+    ]
+)
 @RestController
 class CassavaPricesController(val cassavaPriceService: CassavaPriceService) {
 
@@ -59,8 +64,8 @@ class CassavaPricesController(val cassavaPriceService: CassavaPriceService) {
 
     @PutMapping("/{id}")
     fun updateFertilizerPrice(
-            @PathVariable id: Long,
-            @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
+        @PathVariable id: Long,
+        @Valid @RequestBody fertilizerPriceRequest: ProducePriceRequest
     ): ResponseEntity<ProducePriceDto> {
 
         val cassavaPriceDto = cassavaPriceService.updateCassavaPrice(id, fertilizerPriceRequest)

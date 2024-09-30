@@ -28,9 +28,7 @@ spring:
     show-sql: ${DEBUG_SQL:false}
     properties:
       hibernate:
-        dialect: ${DIALECT:org.hibernate.dialect.MySQLDialect}
-        generate_statistics: ${DEBUG_SQL:false}
-        format_sql: ${DEBUG_SQL:false}
+        generate_statistics: ${GEN_STATS:false}
         order_inserts: true
         order_updates: true
         ddl-auto: validate
@@ -41,7 +39,7 @@ spring:
       ddl-auto: validate
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/akilimo}
+    url: ${DB_URL:jdbc:mariadb://127.0.0.1:3306/akilimo_db}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
     hikari:
@@ -101,7 +99,7 @@ bucket4j:
 akilimo:
   dev-mode: ${DEV_MODE:false}
   name: 'AKILIMO API'
-  version: '5.0.0'
+  version: ${API_VERSION:dev}
   desc: 'Description here'
   externaldoc: ${akilimo.version}
   license: 'GPL'
@@ -124,6 +122,7 @@ akilimo:
 
   plumber:
     base-url: ${PLUMBER_BASE:http://akilimo.org:8090/api/}
+    compute-url: ${COMPUTE_URL:v2/dst/recommendation/compute}
     compute-ng: ${COMPUTE_NG:v2/dst/recommendation/ng/compute}
     compute-tz: ${COMPUTE_TZ:v2/dst/recommendation/tz/compute}
     compute-gh: ${COMPUTE_GH:v2/dst/recommendation/gh/compute}
