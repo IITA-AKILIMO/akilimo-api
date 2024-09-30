@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="20240930105835" author="masgeek" labels="akilimo-migration">
+        <addForeignKeyConstraint baseTableName="api_tokens"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_api_tokens_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onUpdate="CASCADE"
+                                 onDelete="RESTRICT"/>
+    </changeSet>
+</databaseChangeLog>

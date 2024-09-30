@@ -3,8 +3,11 @@ trace: ${TRACE:false}
 
 spring:
   liquibase:
-    enabled: true
-    change-log: "classpath:liquibase/master.xml"
+    enabled: ${MIGRATION_ENABLED:false}
+    change-log: "classpath:/liquibase/master.xml"
+    rollback-file: log/akilimo.rollback.sql
+#    database-change-log-table: fuelrod_migration
+#    database-change-log-lock-table: fuelrod_migration_lock
     clear-checksums: ${CLEAR_CHECKSUM:false}
 
   datasource:

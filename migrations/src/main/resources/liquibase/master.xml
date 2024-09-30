@@ -123,5 +123,8 @@
     <include file="/liquibase/changelog/20221215091438_add_country_code_column_to_countries_table.xml"/>
 
     <include file="/liquibase/changelog/20240930104325_add_role_column_in_users_table.xml"/>
+    <include file="/liquibase/changelog/20240930104807_create_api_tokens_table.xml"/>
+    <include file="/liquibase/changelog/20240930105835_add_user_fk_to_api_tokens_table.xml"/>
+    <include file="/liquibase/changelog/20240930105916_add_token_index_to_api_tokens_table.xml"/>
 
 </databaseChangeLog>
