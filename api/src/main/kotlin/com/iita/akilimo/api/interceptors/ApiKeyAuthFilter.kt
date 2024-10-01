@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class ApiKeyAuthFilter: OncePerRequestFilter() {
+class ApiKeyAuthFilter : OncePerRequestFilter() {
 
     @Autowired
     lateinit var userService: UserService
@@ -38,8 +38,7 @@ class ApiKeyAuthFilter: OncePerRequestFilter() {
                 val username = decodedJWT.getClaim(EnumJwtClaims.USERNAME.name).asString()
                 val entityUserDetails = userService.loadUserByUsername(username)
                 if (jwtUtils.validateToken(request, entityUserDetails)) {
-                    val id = decodedJWT.getClaim(EnumJwtClaims.ID.name).asString()
-                    val userDetails = UserDetailsImpl(id, username, "")
+                    val userDetails = UserDetailsImpl(username = username, password = "")
                     val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
                     auth.details = WebAuthenticationDetailsSource().buildDetails(request)

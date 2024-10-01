@@ -4,22 +4,53 @@ import com.iita.akilimo.core.mapper.AuthorityDto
 import com.iita.akilimo.core.mapper.UserDto
 import com.iita.akilimo.core.request.AuthorityRequest
 import com.iita.akilimo.core.request.UserRequest
+import com.iita.akilimo.core.response.LoginResponse
+import com.iita.akilimo.core.service.AuthService
 import com.iita.akilimo.core.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 
 @RequestMapping("/api/v1/users")
 @RestController
-class UserController(val userService: UserService) {
+class UserController(
+    val userService: UserService,
+    private val authService: AuthService,
+    private val authenticationManager: AuthenticationManager,
+) {
 
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
+        val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    }
+
+    @PostMapping("/auth")
+    fun authUser(
+        @Valid @RequestBody userRequest: UserRequest,
+        request: HttpServletRequest,
+        @RequestHeader headers: Map<String, String>
+    ): ResponseEntity<LoginResponse> {
+        val authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(userRequest.username, userRequest.password)
+        )
+
+        val remoteIp = headers.getOrDefault("x-real-ip", request.remoteAddr);
+
+        val userResp = authService.auth(
+            loginRequest = userRequest,
+            authentication = authentication,
+            remoteIp = remoteIp
+        )
+
+        return ResponseEntity<LoginResponse>(userResp, HttpStatus.OK)
+
     }
 
     @PostMapping
@@ -41,7 +72,10 @@ class UserController(val userService: UserService) {
 
     @PostMapping("/{id}/user-role")
     @Operation(summary = "Add authority to a specific user", description = "", tags = ["User"])
-    fun addUserAuthority(@PathVariable id: Long, @Valid @RequestBody authorityRequest: AuthorityRequest): ResponseEntity<AuthorityDto> {
+    fun addUserAuthority(
+        @PathVariable id: Long,
+        @Valid @RequestBody authorityRequest: AuthorityRequest
+    ): ResponseEntity<AuthorityDto> {
         val userResp = userService.addUserAuthority(authorityRequest)
 
         return ResponseEntity(userResp, HttpStatus.CREATED)

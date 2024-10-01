@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":config"))
     implementation(project(":enums"))
     implementation(project(":database"))
+    implementation(project(":security"))
 
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))

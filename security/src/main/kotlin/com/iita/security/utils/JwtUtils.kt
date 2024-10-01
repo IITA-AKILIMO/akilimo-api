@@ -35,14 +35,13 @@ class JwtUtils {
 
     private val secureRandom = SecureRandom()
 
-    fun createJwtToken(username: String, refreshTokenId: String): String {
+    fun createJwtToken(username: String, refreshTokenId: Long): String {
         try {
             val algorithm: Algorithm = Algorithm.HMAC256(secret)
 
             return JWT.create()
                 .withSubject(username)
                 .withClaim(EnumJwtClaims.USERNAME.name, username)
-                .withClaim(EnumJwtClaims.ID.name, refreshTokenId)
                 .withIssuer(issuer)
                 .withAudience(username)
                 .withExpiresAt(getExpirationDate(tokenValidity))

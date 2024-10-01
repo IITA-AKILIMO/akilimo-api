@@ -1,5 +1,6 @@
 package com.iita.akilimo.database.entities
 
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -15,8 +16,12 @@ class ApiToken : BaseEntity() {
     @Column(name = "token", nullable = false)
     var token: String? = null
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    var user: UserEntity? = null
+    @Column(name = "username", length = 50)
+    var userName: String? = null
+
+    @Column(name = "ip_address", length = 50)
+    var ipAddress: String? = null
+
+    @Column(name = "expiry_date")
+    var expiryDate: LocalDateTime? = null
 }

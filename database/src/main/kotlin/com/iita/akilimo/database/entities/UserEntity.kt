@@ -11,11 +11,6 @@ import javax.validation.constraints.Size
 @Table(name = "users")
 class UserEntity : BaseEntity() {
 
-    @Size(max = 5)
-    @NotNull
-    @Column(name = "role", nullable = false, length = 5)
-    var role: String? = null
-
     @Column(name = "username", nullable = false)
     var username: String? = null
 

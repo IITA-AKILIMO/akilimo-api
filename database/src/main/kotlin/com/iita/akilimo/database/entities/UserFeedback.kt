@@ -9,10 +9,10 @@ import javax.persistence.*
 class UserFeedback : BaseEntity() {
 
 
-    @Column(name = "device_token", columnDefinition = "TEXT")
+    @Column(name = "device_token", columnDefinition = "MEDIUMTEXT")
     var deviceToken: String? = null
 
-    @Column(name = "akilimo_usage", columnDefinition = "TEXT")
+    @Column(name = "akilimo_usage", columnDefinition = "MEDIUMTEXT")
     var akilimoUsage: String? = null
 
     @Enumerated(EnumType.STRING)

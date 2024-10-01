@@ -6,10 +6,10 @@
 
     <changeSet id="20240930105835" author="masgeek" labels="akilimo-migration">
         <addForeignKeyConstraint baseTableName="api_tokens"
-                                 baseColumnNames="user_id"
-                                 constraintName="fk_api_tokens_user_id"
+                                 baseColumnNames="username"
+                                 constraintName="fk_api_tokens_username"
                                  referencedTableName="users"
-                                 referencedColumnNames="id"
+                                 referencedColumnNames="username"
                                  onUpdate="CASCADE"
                                  onDelete="RESTRICT"/>
     </changeSet>

@@ -37,7 +37,7 @@ class UserService(
         val user = userRepo.findByUsername(username).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         }
-        return UserDetailsImpl("", user.username!!, user.password!!)
+        return UserDetailsImpl(user.username!!, user.password!!)
     }
 
 

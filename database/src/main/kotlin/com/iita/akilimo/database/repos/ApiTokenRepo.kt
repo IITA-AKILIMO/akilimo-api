@@ -8,5 +8,9 @@ import java.util.*
 
 @Repository
 interface ApiTokenRepo : JpaRepository<ApiToken, Long> {
+
     fun findByToken(token: String): Optional<ApiToken>
+
+    fun findByUserName(userName: String): Optional<ApiToken>
+    fun findByUserNameAndIpAddress(userName: String, ipAddress: String): Optional<ApiToken>
 }
