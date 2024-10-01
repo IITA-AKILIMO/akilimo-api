@@ -194,3 +194,9 @@ akilimo:
     cost-weeding1: 0
     cost-weeding2: 0
     max-investment: 0
+
+jwt:
+  issuer: AKILIMO
+  secret: ${JWT_SECRET:secret}
+  token-validity: ${JWT_TOKEN_VALIDITY:54000} # validity in seconds
+  refresh-token-validity: ${JWT_TOKEN_VALIDITY:54000}

@@ -9,7 +9,7 @@ import javax.validation.constraints.Size
 @AttributeOverrides(
     AttributeOverride(name = "createdAt", column = Column(name = "created_at"))
 )
-open class ApiToken : BaseEntity() {
+class ApiToken : BaseEntity() {
     @Size(max = 255)
     @NotNull
     @Column(name = "token", nullable = false)

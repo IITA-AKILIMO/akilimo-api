@@ -1,5 +1,8 @@
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
 rootProject.name = 'akilimo-api'
 
 include("api")
 include("migrations")
-include("enums", "config", "core", "database")
+include("enums", "config", "core", "database", "security")

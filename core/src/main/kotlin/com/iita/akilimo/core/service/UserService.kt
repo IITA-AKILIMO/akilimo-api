@@ -1,6 +1,7 @@
 package com.iita.akilimo.core.service
 
 import com.iita.akilimo.core.mapper.AuthorityDto
+import com.iita.akilimo.core.mapper.UserDetailsImpl
 import com.iita.akilimo.core.mapper.UserDto
 import com.iita.akilimo.core.request.AuthorityRequest
 import com.iita.akilimo.core.request.UserRequest
@@ -11,6 +12,9 @@ import com.iita.akilimo.database.repos.UserRepo
 import org.modelmapper.ModelMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -20,10 +24,22 @@ class UserService(
     val userRepo: UserRepo,
     val authorityRepo: AuthorityRepo,
     val encoder: PasswordEncoder
-) {
+) : UserDetailsService {
 
     private val logger = LoggerFactory.getLogger(UserService::class.java)
     private val modelMapper = ModelMapper()
+
+    override fun loadUserByUsername(username: String?): UserDetails {
+        if (username == null) {
+            throw UsernameNotFoundException("Username not found")
+        }
+
+        val user = userRepo.findByUsername(username).orElseThrow {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        }
+        return UserDetailsImpl("", user.username!!, user.password!!)
+    }
+
 
     fun listUsers(): List<UserDto> {
         val userList = userRepo.findAll()
@@ -50,23 +66,22 @@ class UserService(
 
     fun findUser(id: Long): UserDto {
         val user = userRepo.findById(id)
-        if(!user.isPresent){
-            throw  ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        if (!user.isPresent) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         }
         return modelMapper.map(user.get(), UserDto::class.java)
     }
 
     fun findUserByUserName(username: String): UserDto {
-        val user = userRepo.findByUsername(username)
-        if(!user.isPresent){
-            throw  ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        val user = userRepo.findByUsername(username).orElseThrow {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         }
-        return modelMapper.map(user.get(), UserDto::class.java)
+
+        return modelMapper.map(user, UserDto::class.java)
     }
 
     fun deleteUser(id: Long) {
         userRepo.deleteById(id)
     }
-
 
 }

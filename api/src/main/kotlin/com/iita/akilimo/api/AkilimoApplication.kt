@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct
 
 
 @SpringBootApplication
-@ComponentScan("com.iita.akilimo")
+@ComponentScan("com.iita.akilimo", "com.iita.security.utils")
 @EntityScan("com.iita.akilimo.database.entities")
 @EnableJpaRepositories("com.iita.akilimo.database.repos")
 @EnableCaching
