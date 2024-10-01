@@ -19,6 +19,9 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="ip_address" type="varchar(255)"/>
+            <column name="expiry_date" type="datetime"/>
+
             <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
 

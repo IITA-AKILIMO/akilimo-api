@@ -29,7 +29,6 @@ dependencies {
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     api("org.springframework.boot:spring-boot-starter-security")
-//    api("org.springframework.security:spring-security-crypto")
     api("org.springframework.boot:spring-boot-starter-validation")
 
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
