@@ -34,6 +34,7 @@ spring:
         ddl-auto: validate
         jdbc:
           batch_size: 5
+        dialect: ${DIALECT:org.hibernate.dialect.MariaDB103Dialect}
 
     hibernate:
       ddl-auto: validate
