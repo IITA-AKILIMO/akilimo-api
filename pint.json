@@ -1,0 +1,80 @@
+{
+  "preset": "laravel",
+  "rules": {
+    "header_comment": {
+      "comment_type": "PHPDoc",
+      "location": "after_open",
+      "separate": "both",
+      "header": "(c) 2026 AKILIMO — https://akilimo.co.ke\n\nFor licence information, see the LICENCE file."
+    },
+    "array_indentation": true,
+    "array_syntax": {
+      "syntax": "short"
+    },
+    "cast_spaces": {
+      "space": "none"
+    },
+    "binary_operator_spaces": {
+      "default": "single_space",
+      "operators": {
+        "=": "single_space",
+        "=>": "single_space"
+      }
+    },
+    "concat_space": {
+      "spacing": "one"
+    },
+    "phpdoc_align": {
+      "align": "left"
+    },
+    "control_structure_braces": true,
+    "control_structure_continuation_position": {
+      "position": "same_line"
+    },
+    "braces_position": {
+      "classes_opening_brace": "next_line_unless_newline_at_signature_end",
+      "functions_opening_brace": "next_line_unless_newline_at_signature_end",
+      "anonymous_functions_opening_brace": "same_line",
+      "allow_single_line_empty_anonymous_classes": true,
+      "allow_single_line_anonymous_functions": true
+    },
+    "declare_strict_types": false,
+    "explicit_string_variable": true,
+    "function_declaration": {
+      "closure_fn_spacing": "one"
+    },
+    "modernize_strpos": true,
+    "new_with_braces": {
+      "anonymous_class": false,
+      "named_class": false
+    },
+    "no_empty_phpdoc": true,
+    "no_empty_comment": true,
+    "no_trailing_whitespace": true,
+    "no_unneeded_braces": true,
+    "single_line_empty_body": true,
+    "ordered_imports": true,
+    "ordered_traits": true,
+    "no_unused_imports": true,
+    "single_line_after_imports": true,
+    "simplified_null_return": true,
+    "simple_to_complex_string_variable": true,
+    "statement_indentation": true,
+    "not_operator_with_space": false,
+    "not_operator_with_successor_space": false,
+    "unary_operator_spaces": true,
+    "trailing_comma_in_multiline": {
+      "elements": [
+        "arrays",
+        "parameters"
+      ]
+    }
+  },
+  "exclude": [
+    "bootstrap/*",
+    "storage/*",
+    "vendor/*",
+    "public/*",
+    "resources/views/**/*.blade.php"
+  ]
+}
