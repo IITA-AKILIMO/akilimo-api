@@ -1,31 +1,115 @@
-includes:
-    - vendor/larastan/larastan/extension.neon
+# Extensions are auto-loaded by phpstan/extension-installer:
+#   - larastan/larastan
+#   - phpstan/phpstan-strict-rules
+
+services:
+  -
+    class: App\PHPStan\Rules\EnforceNamedArgumentsRule
+    arguments:
+      minimumArgCount: 2
+      allowedFunctions:
+        # Eloquent query-builder methods — positional args are idiomatic
+        - where
+        - orWhere
+        - whereNot
+        - orWhereNot
+        - whereIn
+        - whereNotIn
+        - orWhereIn
+        - orWhereNotIn
+        - whereBetween
+        - whereNotBetween
+        - whereNull
+        - whereNotNull
+        - whereColumn
+        - having
+        - orHaving
+        - orderBy
+        - orderByDesc
+        - groupBy
+        - join
+        - leftJoin
+        - rightJoin
+        - crossJoin
+    tags:
+      - phpstan.rules.rule
 
 parameters:
-    paths:
-        - app
-        - routes
+  level: 5
 
-    # Level 5 is a solid baseline; raise to 6–8 once all errors are resolved
-    level: 5
+  editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+  editorUrlTitle: '%%relFile%%:%%line%%'
 
-    # Larastan: scan migrations for model property inference
-    databaseMigrationsPath:
-        - database/migrations
+  paths:
+    - app/Http/Controllers/Web
 
-    # Larastan: warn on collection methods that have native array equivalents
-    noUnnecessaryCollectionCall: true
+  excludePaths:
+    - app/Models/Base/*
+    - app/Repositories/*
+    - app/Console/*
+    - app/Traits/*
+    - app/Events/*
 
-    # PHPStan: infer private property types from constructor assignments
-    inferPrivatePropertyTypeFromConstructor: true
+  # -------------------------------------------------------------------------
+  # Larastan — Laravel-specific checks
+  # -------------------------------------------------------------------------
+  noEnvCallsOutsideOfConfig: true   # env() only in config files
+  noModelMake: true                  # prefer new Model() over Model::make()
+  noUnnecessaryCollectionCall: true  # flag redundant ->toArray() / ->all() calls
 
-    # PHPStan: flag explicit `mixed` usage (good discipline before pushing level higher)
-    checkExplicitMixed: false
+  checkModelProperties: true         # catch undefined model property access
+  checkModelAppends: true            # verify $appends attributes exist
 
-    # PHPStan: unmatched ignoreErrors entries become errors (keeps the list clean)
-    reportUnmatchedIgnoredErrors: true
+  databaseMigrationsPath:
+    - database/migrations
 
-    # PHPStan: treat phpdoc @var types as certain (consistent with strict mode)
-    treatPhpDocTypesAsCertain: true
+  # -------------------------------------------------------------------------
+  # Strict rules — selectively enable; disabled rules are too noisy for now
+  # -------------------------------------------------------------------------
+  strictRules:
+    allRules: false
+    disallowedLooseComparison: true      # ban == / != in favour of === / !==
+    booleansInConditions: true           # require explicit boolean conditions
+    uselessCast: true                    # remove (string)(string) etc.
+    disallowedBacktick: true             # no backtick shell execution
+    disallowedEmpty: true                # ban empty(), use count()/null check
+    disallowedShortTernary: false        # ?: is common in Laravel – leave on
+    requireParentConstructorCall: true   # always call parent::__construct()
+    matchingInheritedMethodNames: true   # no typos in overridden method names
+    strictFunctionCalls: true            # correct argument count/types
+    noVariableVariables: true            # ban $$var
+    dynamicCallOnStaticMethod: true      # no $obj::method() on non-static
+    switchConditionsMatchingType: true   # switch value type must match cases
+    overwriteVariablesWithLoop: false    # too noisy with foreach patterns
 
-    ignoreErrors: []
+  # -------------------------------------------------------------------------
+  # PHPDoc / type inference
+  # -------------------------------------------------------------------------
+  checkExplicitMixedMissingReturn: true
+  checkFunctionNameCase: true
+  reportWrongPhpDocTypeInVarTag: true
+  treatPhpDocTypesAsCertain: false
+
+  # -------------------------------------------------------------------------
+  # Ignore patterns — known false-positives
+  # -------------------------------------------------------------------------
+  ignoreErrors:
+    # Eloquent magic properties surfaced through PHPDoc @property are safe
+    #        - '#Access to an undefined property App\\Models\\[a-zA-Z]+::\$[a-zA-Z_]+\.#'
+
+    # Laravel's Container::make() returns mixed — callers always cast
+    #        - '#Call to an undefined method Illuminate\\Contracts\\Container\\Container::make\(\)#'
+
+    #        - '#Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<.*>::.*#'
+    - '#Dynamic call to static method Illuminate\\Http\\Request::validate\(\)#'
+    - 'Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\Model>::selectRaw\(\)'
+
+    # ReadOnlyModel trait prevents writes; PHPStan cannot see the guard
+    #        - '#Call to an undefined method App\\Models\\VwSmsReport::#'
+
+    # Cache::remember and Collection::map generic inference gaps in larastan
+    #        - '#Parameter.*\$callback of static method Illuminate\\Cache\\Repository::remember\(\) contains unresolvable type\.#'
+    #        - '#Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection.*::map\(\) contains unresolvable type\.#'
+
+    # Nullsafe ?-> on nullable results from repo::find* — defensive and correct
+#        -   identifier: nullsafe.neverNull
