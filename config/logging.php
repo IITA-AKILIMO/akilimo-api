@@ -6,6 +6,8 @@
  * For licence information, see the LICENCE file.
  */
 
+use App\Logging\LokiHandler;
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
