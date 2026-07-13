@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -19,7 +25,6 @@ return [
     */
 
     'default' => env('LOG_CHANNEL', 'stack'),
-    'log_channels' => explode(',', env('LOG_CHANNELS', 'daily,stderr')),
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +87,23 @@ return [
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
         ],
-
+        'loki' => [
+            'driver' => 'monolog',
+            'handler' => LokiHandler::class,
+            'level' => env('LOG_LEVEL', 'DEBUG'),
+            'formatter' => JsonFormatter::class,
+            'with' => [
+                'url' => env('LOKI_URL', 'http://loki:3100'),
+                'username' => env('LOKI_USER', ''),
+                'password' => env('LOKI_PASSWORD', ''),
+                'job' => env('LOKI_JOB', 'akilimo'),
+                'labels' => [
+                    'project' => 'akilimo',
+                    'service' => 'akilimo-api',
+                    'log_type' => 'app',
+                ],
+            ],
+        ],
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
@@ -90,7 +111,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],
