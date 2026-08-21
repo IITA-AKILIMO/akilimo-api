@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Repositories\Contracts\Repository;
@@ -25,14 +31,11 @@ abstract class BaseRepo implements Repository
      */
     protected $model;
 
-    protected array $logChannels;
-
     /**
      * BaseRepository constructor.
      */
     public function __construct()
     {
-        $this->logChannels = config('logging.log_channels');
         $this->model = $this->getModelInstance();
     }
 
@@ -173,8 +176,8 @@ abstract class BaseRepo implements Repository
     /**
      * Create or update a record by unique identifiers.
      *
-     * @param  array  $input  The full data array to insert or update.
-     * @param  array  $identifiers  Keys to match existing records (e.g. ['phone' => '123', 'campaign_id' => 5])
+     * @param array $input The full data array to insert or update.
+     * @param array $identifiers Keys to match existing records (e.g. ['phone' => '123', 'campaign_id' => 5])
      * @return TModel
      *
      * @throws Throwable
@@ -206,13 +209,13 @@ abstract class BaseRepo implements Repository
         $query = $this->query();
 
         // Apply standard where conditions
-        if (! empty($conditions)) {
+        if (!empty($conditions)) {
             $query->where($conditions);
         }
 
         // Apply whereIn conditions
         foreach ($whereIn as $column => $values) {
-            if (! is_string($column) || ! is_array($values)) {
+            if (!is_string($column) || !is_array($values)) {
                 throw new InvalidArgumentException("whereIn must be ['column' => [values]]");
             }
 
@@ -242,14 +245,14 @@ abstract class BaseRepo implements Repository
 
         // Apply direct filters
         $cleanFilters = array_filter($filters, fn ($v) => $v !== null && $v !== '');
-        if (! empty($cleanFilters)) {
+        if (!empty($cleanFilters)) {
             $query->where($cleanFilters);
         }
 
         // Apply relation filters only if values are provided
         foreach ($relationFilters as $relation => $conditions) {
             $conditions = array_filter($conditions, fn ($v) => $v !== null && $v !== '');
-            if (! empty($conditions)) {
+            if (!empty($conditions)) {
                 $query->whereHas($relation, function ($q) use ($conditions) {
                     $q->where($conditions);
                 });

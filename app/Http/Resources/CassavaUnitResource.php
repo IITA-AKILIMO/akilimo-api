@@ -21,14 +21,15 @@ class CassavaUnitResource extends JsonResource
         return [
             /** Unique identifier for the unit */
             'id' => $unit->id,
-            /** Unit name */
-            'unit' => $unit->unit,
+			/** Unit weight */
+			'unit_weight' => $unit->unit_weight,
             /** Unit label/code */
             'label' => $unit->label,
             /** Sort order for display */
             'sort_order' => $unit->sort_order,
+			'description' => $unit->description,
             /** Whether the unit is active */
-            'active' => $unit->active,
+			'active' => $unit->is_active,
         ];
     }
 }

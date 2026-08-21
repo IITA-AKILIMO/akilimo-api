@@ -1,17 +1,23 @@
 name: TODO
+
 on:
   push:
     branches:
-      - develop
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   workflow_dispatch:
+
 jobs:
-  check-todo:
+  build:
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
     concurrency:
       cancel-in-progress: true
       group: todo-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - name: Run tdg-github-action
         uses: ribtoks/tdg-github-action@master
         with:

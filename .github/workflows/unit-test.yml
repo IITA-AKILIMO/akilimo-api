@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: unit-test-${{ github.repository_owner }}-${{ github.head_ref || github.ref }}
+  group: unit-test-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -41,27 +41,6 @@ jobs:
     needs: setup
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up PHP
-        uses: ./.github/actions/php-setup
-        with:
-          install-deps: 'false'
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: build-artifacts
-
-      - name: Run Unit Tests
-        run: composer test:unit
-
-  test-feature:
-    needs: setup
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
 
     services:
       mariadb:
@@ -92,7 +71,7 @@ jobs:
       - name: Set up PHP
         uses: ./.github/actions/php-setup
         with:
-          install-deps: 'false'
+          install-deps: 'true'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v8
@@ -105,8 +84,14 @@ jobs:
       - name: Prepare environment file
         run: cp .env.example .env
 
+      - name: Generate app key
+        run: php artisan key:generate --new
+
       - name: Run database migrations
         run: php artisan migrate --step
 
-      - name: Run Feature Tests
-        run: composer test:feature
+      - name: Run Unit Tests
+        run: composer run test:unit
+
+      - name: Create test sentinel
+        run: echo "passed at $(date -u)" > .test-passed

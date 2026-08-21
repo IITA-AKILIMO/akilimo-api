@@ -19,7 +19,7 @@ runs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ inputs.php-version }}
-        extensions: mbstring, bcmath, pdo, pdo_mysql
+        extensions: mbstring, bcmath, pdo, pdo_mysql, pdo_pgsql
         coverage: ${{ inputs.coverage }}
 
     - name: Cache Composer dependencies
@@ -33,4 +33,4 @@ runs:
     - name: Install Composer dependencies
       if: inputs.install-deps == 'true'
       shell: bash
-      run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      run: composer install --no-progress --no-suggest --prefer-dist --no-scripts

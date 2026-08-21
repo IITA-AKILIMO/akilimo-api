@@ -16,7 +16,7 @@ class CassavaUnitsController extends Controller
 {
     use HasPaginationParams;
 
-    public function __construct(protected CassavaUnitRepo $repo) {}
+    public function __construct(protected CassavaUnitRepo $cassavaUnitRepo) {}
 
     /**
      * List Cassava Units
@@ -35,18 +35,19 @@ class CassavaUnitsController extends Controller
         $orderBy = $this->getOrderBy($request, ['sort_order', 'created_at'], 'sort_order');
         $sort = $this->getSortDirection($request);
 
-        $cassavaPrices = $this->repo->paginateWithSort(
+        $cassavaUnits = $this->cassavaUnitRepo->paginateWithSort(
             perPage: $perPage,
             orderBy: $orderBy,
             direction: $sort,
         );
 
-        return CassavaUnitResourceCollection::make($cassavaPrices);
+
+        return CassavaUnitResourceCollection::make($cassavaUnits);
     }
 
     public function store(CassavaUnitRequest $request): JsonResponse
     {
-        $unit = $this->repo->create($request->validated());
+        $unit = $this->cassavaUnitRepo->create($request->validated());
 
         /**
          * @status 201
@@ -59,7 +60,7 @@ class CassavaUnitsController extends Controller
 
     public function update(CassavaUnitRequest $request, int $id): JsonResponse
     {
-        $unit = $this->repo->update($id, $request->validated());
+        $unit = $this->cassavaUnitRepo->update($id, $request->validated());
 
         return response()->json([
             'data' => new CassavaUnitResource($unit),
@@ -69,7 +70,7 @@ class CassavaUnitsController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        $this->repo->delete($id);
+        $this->cassavaUnitRepo->delete($id);
 
         return response()->json(null, 204);
     }

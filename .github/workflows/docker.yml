@@ -1,15 +1,22 @@
 name: DockerBuild
 
 on:
-  push:
+  # Trigger only after unit tests complete successfully on the target branches.
+  # This replaces the direct push trigger — the build cannot start unless tests pass.
+  workflow_run:
+    workflows: ["UnitTests"]
+    types: [completed]
     branches:
-      - 'main'
-      - 'develop'
-      - 'beta/*' # beta/1.0.0
+      - main
+      - develop
+      - 'beta/**'
   workflow_dispatch:
 
 jobs:
   docker:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     uses: ./.github/workflows/docker-build-job.yml
     with:
       dockerfile: Dockerfile

@@ -75,3 +75,11 @@ jobs:
             ${{ inputs.image_name }}:${{ steps.final-tag.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Rollback Release
+        if: failure()
+        uses: author/action-rollback@stable
+        with:
+          tag: ${{ steps.final-tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
