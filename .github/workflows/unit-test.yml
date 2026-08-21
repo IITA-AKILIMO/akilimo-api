@@ -56,7 +56,7 @@ jobs:
           name: build-artifacts
 
       - name: Run Unit Tests
-        run: composer test:unit
+        run: composer run test:unit
 
   test-feature:
     needs: setup
@@ -109,4 +109,4 @@ jobs:
         run: php artisan migrate --step
 
       - name: Run Feature Tests
-        run: composer test:feature
+        run: composer run test:feature
