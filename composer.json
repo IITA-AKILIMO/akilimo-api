@@ -35,7 +35,7 @@
     "laravel/sanctum": "^4.0",
     "laravel/tinker": "^2.10.1",
     "league/csv": "^9.28",
-    "masgeek/artisan-toolkit": "^1.0",
+    "masgeek/artisan-toolkit": "dev-develop",
     "spatie/laravel-data": "^4.15",
     "spatie/laravel-schedule-monitor": "^4.3",
     "vermaysha/pgbouncer-laravel-extension": "^0.0.5@beta"
