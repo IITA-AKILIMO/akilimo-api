@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: unit-test-${{ github.repository_owner }}-${{ github.head_ref || github.ref }}
+  group: unit-test-${{ github.ref }}
   cancel-in-progress: true
 
 env:
