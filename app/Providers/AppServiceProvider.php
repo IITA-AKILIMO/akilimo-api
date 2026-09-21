@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiters();
 
+        // Register security schemes on the generated OpenAPI instance
         Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
             $openApi->secure(SecurityScheme::http('bearer'));
             $openApi->secure(SecurityScheme::apiKey('X-API-Key', 'header'));

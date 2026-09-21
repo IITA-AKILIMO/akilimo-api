@@ -3,11 +3,13 @@
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateWithToken;
 use App\Http\Middleware\EnsureAdminRole;
+use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\JsonFormatResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->trustProxies(at: '*');
+
+        $middleware->prepend(HandleCors::class);
+        $middleware->prepend(ForceHttps::class);
+
         $middleware->web(
             append: [
                 HandleInertiaRequests::class,

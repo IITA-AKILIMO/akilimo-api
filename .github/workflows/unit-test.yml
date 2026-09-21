@@ -2,45 +2,23 @@ name: UnitTests
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   pull_request:
-    branches: [ main, develop ]
   workflow_dispatch:
-
-concurrency:
-  group: unit-test-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   APP_ENV: testing
   APP_KEY: base64:Ny2n0WddJ9K1bJPlK4CkS5I0Wj9BbytcVYdRmqNP/5I=
 
 jobs:
-  setup:
+  test:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up PHP and install dependencies
-        uses: ./.github/actions/php-setup
-
-      - name: Build frontend assets
-        uses: ./.github/actions/node-build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: build-artifacts
-          path: |
-            vendor/
-            public/build/
-          retention-days: 1
-
-  test-unit:
-    needs: setup
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    concurrency:
+      cancel-in-progress: true
+      group: unit-test-${{ github.ref }}
 
     services:
       mariadb:
@@ -66,32 +44,96 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
+      # ── Test-result cache ────────────────────────────────────────────────────
+      - name: Restore test result cache
+        id: test-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: .test-passed
+          key: test-result-${{ github.sha }}
+
+      # ── PHP setup ───────────────────────────────────────────────────────────
       - name: Set up PHP
-        uses: ./.github/actions/php-setup
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        uses: shivammathur/setup-php@v2
         with:
-          install-deps: 'true'
+          php-version: '8.4'
+          extensions: pdo_pgsql,pdo_mysql,mbstring
+          coverage: none
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v8
+      # ── Install DB Client CLI ────────────────────────────────────────────────
+      - name: Install MariaDB Client
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+
+      # ── Composer vendor cache ────────────────────────────────────────────────
+      - name: Restore composer cache
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        id: composer-cache
+        uses: actions/cache@v6
         with:
-          name: build-artifacts
+          path: vendor
+          key: composer-${{ runner.os }}-php8.4-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-php8.4-
 
-      - name: Install MariaDB client
-        run: sudo apt-get install -y mariadb-client
+      - name: Install dependencies
+        if: steps.test-cache.outputs.cache-hit != 'true' && steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --no-progress --no-suggest --prefer-dist --no-scripts
 
-      - name: Prepare environment file
+      - name: Run composer scripts
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: composer run-script post-autoload-dump
+
+      # ── App bootstrap ────────────────────────────────────────────────────────
+      - name: Copy .env
+        if: steps.test-cache.outputs.cache-hit != 'true'
         run: cp .env.example .env
 
       - name: Generate app key
+        if: steps.test-cache.outputs.cache-hit != 'true'
         run: php artisan key:generate --new
 
-      - name: Run database migrations
-        run: php artisan migrate --step
+      # ── Frontend assets ──────────────────────────────────────────────────────
+      - name: Set up pnpm
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.27.0
 
-      - name: Run Unit Tests
-        run: composer run test:unit
+      - name: Restore pnpm cache
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v6
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-${{ runner.os }}-
 
+      - name: Install Node dependencies
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Build assets
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: pnpm build
+
+      # ── Tests ────────────────────────────────────────────────────────────────
+      - name: Run tests
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: composer run test
+
+      # Save sentinel only after tests pass
       - name: Create test sentinel
+        if: steps.test-cache.outputs.cache-hit != 'true' && success()
         run: echo "passed at $(date -u)" > .test-passed
+
+      - name: Save test result cache
+        if: steps.test-cache.outputs.cache-hit != 'true' && success()
+        uses: actions/cache/save@v6
+        with:
+          path: .test-passed
+          key: test-result-${{ github.sha }}

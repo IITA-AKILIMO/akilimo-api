@@ -23,21 +23,22 @@ runs:
     - id: set_tags
       shell: bash
       run: |
-        # Initialize tags with latest
-        TAGS="${{ inputs.image_name }}:latest"
-
-        # Handle different ref types
+        # Reserve the `latest` tag for main-branch builds only. Every other
+        # environment gets its own stable tag and never shadows `latest`.
         if [[ "${{ inputs.ref }}" == refs/tags/* ]]; then
-          # For version tags, add the version tag
+          # For version tags, publish the version tag only.
           VERSION="${{ inputs.ref_name }}"
-          TAGS="$TAGS,${{ inputs.image_name }}:${VERSION}"
+          TAGS="${{ inputs.image_name }}:${VERSION}"
         elif [[ "${{ inputs.ref }}" == "refs/heads/main" ]]; then
-          # For main branch, add production tag
-          TAGS="$TAGS,${{ inputs.image_name }}:production"
-        elif [[ "${{ inputs.ref }}" != "refs/heads/develop" && "${{ inputs.ref }}" != "refs/heads/main" ]]; then
-          # For feature branches (not main or develop), add sanitized branch name tag
+          # Main builds are the production image and own the `latest` tag.
+          TAGS="${{ inputs.image_name }}:latest,${{ inputs.image_name }}:production"
+        elif [[ "${{ inputs.ref }}" == "refs/heads/develop" ]]; then
+          # Develop builds publish the stable `develop` tag.
+          TAGS="${{ inputs.image_name }}:develop"
+        else
+          # Feature branches get a sanitized branch-name tag.
           SAFE_REF_NAME=$(echo "${{ inputs.ref_name }}" | sed 's/[\/]/-/g')
-          TAGS="$TAGS,${{ inputs.image_name }}:${SAFE_REF_NAME}"
+          TAGS="${{ inputs.image_name }}:${SAFE_REF_NAME}"
         fi
 
         echo "tags=$TAGS" >> $GITHUB_OUTPUT

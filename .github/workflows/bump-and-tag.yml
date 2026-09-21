@@ -1,24 +1,23 @@
 name: BumpVersion
-
 on:
-  workflow_run:
-    workflows: ["UnitTests"]
-    types: [completed]
+  push:
+    branches:
+      - 'main'
   workflow_dispatch:
 
 jobs:
   bump-tag-version:
     runs-on: ubuntu-24.04
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
     permissions:
       contents: write
+      packages: write
     concurrency:
       cancel-in-progress: true
       group: bump-version-${{ github.ref }}
     outputs:
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Generate Tag
         id: tag_version
         uses: masgeek/github-tag-action@release
@@ -28,7 +27,7 @@ jobs:
           create_annotated_tag: true
 
       - name: Create a GitHub release
-        uses: ncipollo/release-action@v1.16.0
+        uses: ncipollo/release-action@v1.21.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
@@ -42,12 +41,12 @@ jobs:
   check-and-build:
     needs: bump-tag-version
     if: needs.bump-tag-version.result == 'success'
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/check-tag-job.yml
     with:
       dockerfile: Dockerfile
-      image_name: iita/akilimo-api
+      image_name: ghcr.io/iita-akilimo/akilimo-api
       specific_tag: ${{ needs.bump-tag-version.outputs.new_tag }}
       force_rebuild: true
-    secrets:
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
-      docker_password: ${{ secrets.DOCKER_PASSWORD }}
