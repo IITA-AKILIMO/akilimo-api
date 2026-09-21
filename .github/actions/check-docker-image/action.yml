@@ -1,17 +1,27 @@
 name: Check Docker Image
-description: Check if a Docker Hub image tag exists (unauthenticated, public repos)
+description: Check if Docker image tag exists
 
 inputs:
   image_name:
     required: true
-    description: Docker image name (e.g. iita/akilimo-api)
+    description: Docker image name
   tag:
     required: true
-    description: Docker image tag to check
+    description: Docker image tag
+  username:
+    required: true
+    description: Docker username
+  password:
+    required: true
+    description: Docker password
+  registry:
+    required: false
+    default: ghcr.io
+    description: Container registry
 
 outputs:
   exists:
-    description: Whether the image tag exists
+    description: Whether the image exists
     value: ${{ steps.check.outputs.exists }}
 
 runs:
@@ -20,11 +30,10 @@ runs:
     - id: check
       shell: bash
       run: |
-        REPO_NAME=$(echo "${{ inputs.image_name }}" | cut -d'/' -f2)
-        USERNAME=$(echo "${{ inputs.image_name }}" | cut -d'/' -f1)
-        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-          "https://hub.docker.com/v2/repositories/$USERNAME/$REPO_NAME/tags/${{ inputs.tag }}")
-        if [ "$HTTP_CODE" == "200" ]; then
+        echo "${{ inputs.password }}" | docker login "${{ inputs.registry }}" \
+          -u "${{ inputs.username }}" --password-stdin
+
+        if docker manifest inspect "${{ inputs.image_name }}:${{ inputs.tag }}" > /dev/null 2>&1; then
           echo "exists=true" >> $GITHUB_OUTPUT
         else
           echo "exists=false" >> $GITHUB_OUTPUT
