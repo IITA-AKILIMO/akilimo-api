@@ -47,8 +47,6 @@ jobs:
         uses: actions/checkout@v7
 
       # ── Test-result cache ────────────────────────────────────────────────────
-      # Keyed on the exact commit SHA. If this commit already passed tests on
-      # any branch, all subsequent steps are skipped.
       - name: Restore test result cache
         id: test-cache
         uses: actions/cache/restore@v6
@@ -64,6 +62,13 @@ jobs:
           php-version: '8.4'
           extensions: pdo_pgsql,pdo_mysql,mbstring
           coverage: none
+
+      # ── Install DB Client CLI ────────────────────────────────────────────────
+      - name: Install MariaDB Client
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
 
       # ── Composer vendor cache ────────────────────────────────────────────────
       - name: Restore composer cache
@@ -121,8 +126,7 @@ jobs:
         if: steps.test-cache.outputs.cache-hit != 'true'
         run: composer run test
 
-      # Save sentinel only after tests pass; failed runs produce no cache
-      # entry so the next run will retry rather than skip.
+      # Save sentinel only after tests pass
       - name: Create test sentinel
         if: steps.test-cache.outputs.cache-hit != 'true' && success()
         run: echo "passed at $(date -u)" > .test-passed
