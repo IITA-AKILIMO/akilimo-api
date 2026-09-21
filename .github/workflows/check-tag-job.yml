@@ -59,7 +59,7 @@ jobs:
           image_name: ${{ inputs.image_name }}
           tag: ${{ steps.final-tag.outputs.tag }}
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ github.token }}
 
       - name: Docker login
@@ -67,7 +67,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ github.token }}
 
       - name: Build and push
