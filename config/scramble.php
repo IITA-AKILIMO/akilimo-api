@@ -39,7 +39,7 @@ return [
         /*
          * API version.
          */
-        'version' => env('API_VERSION', '2.0.0'),
+        'version' => env('API_VERSION', '1.0.0'),
 
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
@@ -58,7 +58,7 @@ return [
         'try_it_credentials_policy' => 'include',
     ],
 
-    'renderer' => 'elements',
+    'renderer' => 'scalar',
 
     'renderers' => [
         /*
@@ -78,14 +78,50 @@ return [
          * Scalar API reference config options: https://scalar.com/products/api-references/configuration
          */
         'scalar' => [
-            'view' => 'scramble::scalar',
-            'cdn' => 'https://cdn.jsdelivr.net/npm/@scalar/api-reference',
-            'theme' => 'laravel',
-            'proxyUrl' => 'https://proxy.scalar.com',
-            'darkMode' => false,
-            'showDeveloperTools' => 'never',
-            'agent' => ['disabled' => true],
-            'credentials' => 'include',
+            /*
+             * View and Core Settings
+             */
+            'view' => 'scramble::scalar', // Blade template used to render Scalar
+            'cdn' => 'https://cdn.jsdelivr.net/npm/@scalar/api-reference', // Custom CDN bundle source
+            'proxyUrl' => 'https://proxy.scalar.com', // CORS proxy URL for Try It feature
+            'credentials' => 'include', // Fetch credentials policy: 'omit', 'include', 'same-origin'
+
+            /*
+             * Theme & Styling
+             * Themes available: 'default', 'alternate', 'moon', 'purple', 'solarized',
+             *                   'bluePlanet', 'saturn', 'kepler', 'mars', 'deepSpace', 'laserwave', 'none'
+             */
+            'theme' => 'purple', // Preset color theme
+            'darkMode' => true, // Enables dark mode by default
+            /*
+             * Layout & Interface Elements
+             */
+            'layout' => 'modern', // Interface layout style: 'modern' or 'classic'
+            'showSidebar' => true, // Show or hide the navigation sidebar
+            'hideModels' => true, // Hide the Models/Schemas section from sidebar and page bottom
+            'hideSearch' => false, // Hide the global search input bar
+            'searchHotKey' => 'k', // Keyboard shortcut key for search bar (e.g., 'k', 'f')
+            'showDeveloperTools' => 'never', // Options: 'never', 'always'
+
+            /*
+             * Operation & Schema Ordering
+             */
+            'tagSorter' => 'alpha', // Tag list order: 'alpha' or 'order' (OpenAPI order)
+            'operationSorter' => 'method', // Endpoint order: 'alpha' or 'method'
+            'schemaPropertyOrder' => 'alpha', // Schema property order: 'alpha' or 'preserve'
+
+            /*
+             * Interactive Client & Download Buttons
+             */
+            'hideTestRequestButton' => false, // Hide the "Test Request" / "Try It Out" button
+            'documentDownloadType' => 'both', // OpenAPI spec download options: 'json', 'yaml', 'both', 'none'
+            'defaultHttpClient' => [ // Default code snippet language/client selected
+                'targetKey' => 'shell',
+                'clientKey' => 'curl',
+            ],
+            'agent' => [
+                'disabled' => true, // Disables Scalar background API agent / telemetry
+            ],
         ],
     ],
 
@@ -103,7 +139,12 @@ return [
      * ],
      * ```
      */
-    'servers' => null,
+//    'servers' => null,
+    'servers' => [
+        'Local'      => 'api',
+        'Production' => 'https://api.akilimo.org',
+        'Staging'    => 'https://staging-api.akilimo.org',
+    ],
 
     /**
      * Determines how Scramble stores the descriptions of enum cases.
