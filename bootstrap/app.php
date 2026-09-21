@@ -21,8 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
 
-        $middleware->prepend(HandleCors::class::class);
-        $middleware->prepend(ForceHttps::class::class);
+        $middleware->prepend(HandleCors::class);
+        $middleware->prepend(ForceHttps::class);
 
         $middleware->web(
             append: [
