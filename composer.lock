@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "473ec39a0bdf5a660119e4c83ac48510",
+    "content-hash": "4045978232d57aa5744e7af511d56e93",
     "packages": [
         {
             "name": "angel-source-labs/laravel-expression-grammar",
@@ -9798,32 +9798,32 @@
         },
         {
             "name": "masgeek/reliese-laravel-model-gen",
-            "version": "dev-feat/alphabetical-generation",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/masgeek/reliese-laravel-model-gen.git",
-                "reference": "8c8d3a9dbd352d8653aa4d75015dd1782d1e7ca0"
+                "reference": "49b2160c29cc7361ab13a06fb8ddcbe870a50054"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/masgeek/reliese-laravel-model-gen/zipball/8c8d3a9dbd352d8653aa4d75015dd1782d1e7ca0",
-                "reference": "8c8d3a9dbd352d8653aa4d75015dd1782d1e7ca0",
+                "url": "https://api.github.com/repos/masgeek/reliese-laravel-model-gen/zipball/49b2160c29cc7361ab13a06fb8ddcbe870a50054",
+                "reference": "49b2160c29cc7361ab13a06fb8ddcbe870a50054",
                 "shasum": ""
             },
             "require": {
-                "doctrine/dbal": "^3.0|^4.0",
+                "doctrine/dbal": "^4.0",
                 "illuminate/console": ">=5.1",
                 "illuminate/contracts": ">=5.1",
                 "illuminate/database": ">=5.1",
                 "illuminate/filesystem": ">=5.1",
                 "illuminate/support": ">=5.1",
-                "php": "^7.3|^8.0"
+                "php": "^8.2"
             },
             "require-dev": {
                 "fakerphp/faker": "^1.21",
                 "mockery/mockery": ">=1.4",
-                "orchestra/testbench": "^8.0|^9.0|^10.0",
-                "phpunit/phpunit": "^10|^11"
+                "orchestra/testbench": "^10.0",
+                "phpunit/phpunit": "^11"
             },
             "type": "library",
             "extra": {
@@ -9862,7 +9862,7 @@
                 "issues": "https://github.com/reliese/laravel/issues",
                 "source": "https://github.com/reliese/laravel"
             },
-            "time": "2026-05-25T20:14:56+00:00"
+            "time": "2026-09-20T05:29:07+00:00"
         },
         {
             "name": "masgeek/windows-ext-ignorer",
@@ -12797,7 +12797,6 @@
     "stability-flags": {
         "masgeek/artisan-toolkit": 20,
         "masgeek/composer-scripts": 20,
-        "masgeek/reliese-laravel-model-gen": 20,
         "pestphp/pest": 20,
         "vermaysha/pgbouncer-laravel-extension": 10
     },

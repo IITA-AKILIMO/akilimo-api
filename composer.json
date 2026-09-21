@@ -50,7 +50,7 @@
     "laravel/pint": "^1.13",
     "laravel/sail": "^1.41",
     "masgeek/composer-scripts": "dev-main",
-    "masgeek/reliese-laravel-model-gen": "dev-feat/alphabetical-generation",
+    "masgeek/reliese-laravel-model-gen": "^2.2",
     "masgeek/windows-ext-ignorer": "^0.1.5",
     "mockery/mockery": "^1.6",
     "nunomaduro/collision": "^8.6",
@@ -88,11 +88,11 @@
     ],
     "dev:all": [
       "Composer\\Config::disableProcessTimeout",
-      "npx concurrently -c \"green,cyan\" \"php artisan serve --port=8700\" \"pnpm dev\" --names='server,vite'"
+      "npx concurrently -c \"green,cyan\" \"php artisan serve --port=9100\" \"pnpm dev\" --names='server,vite'"
     ],
     "dev": [
       "Composer\\Config::disableProcessTimeout",
-      "@php artisan serve --port=8600"
+      "@php artisan serve --port=9100"
     ]
   },
   "extra": {
