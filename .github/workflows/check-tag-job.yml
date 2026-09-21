@@ -16,21 +16,19 @@ on:
         required: false
         type: boolean
         default: false
-    secrets:
-      docker_username:
-        required: true
-      docker_password:
-        required: true
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  check-and-build-tag:
+  check-and-build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
     concurrency:
       cancel-in-progress: true
       group: check-tag-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -41,6 +39,11 @@ jobs:
         if: inputs.specific_tag == ''
         uses: ./.github/actions/get-latest-tag
         id: latest-tag
+
+      - name: Set specific tag
+        if: inputs.specific_tag != ''
+        id: specific-tag
+        run: echo "tag=${{ inputs.specific_tag }}" >> $GITHUB_OUTPUT
 
       - name: Set final tag
         id: final-tag
@@ -55,17 +58,22 @@ jobs:
         with:
           image_name: ${{ inputs.image_name }}
           tag: ${{ steps.final-tag.outputs.tag }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
 
       - name: Docker login
         if: steps.final-tag.outputs.tag != '' && (inputs.force_rebuild == true || steps.check-image.outputs.exists != 'true')
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.docker_username }}
-          password: ${{ secrets.docker_password }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
 
       - name: Build and push
+        id: build_push
         if: steps.final-tag.outputs.tag != '' && (inputs.force_rebuild == true || steps.check-image.outputs.exists != 'true')
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -74,7 +82,7 @@ jobs:
             ${{ inputs.image_name }}:latest
             ${{ inputs.image_name }}:${{ steps.final-tag.outputs.tag }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Rollback Release
         if: failure()

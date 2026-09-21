@@ -11,13 +11,14 @@ on:
 
 jobs:
   build:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       cancel-in-progress: true
       group: todo-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Run tdg-github-action
         uses: ribtoks/tdg-github-action@master
         with:
