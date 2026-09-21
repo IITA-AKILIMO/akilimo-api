@@ -10,7 +10,7 @@ permissions:
   packages: write
 
 concurrency:
-  group: fee-syncer-image-${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.ref }}
+  group: akilimo-api-${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -61,4 +61,4 @@ jobs:
           n8n_webhook_token: ${{ secrets.N8N_WEBHOOK_TOKEN }}
           n8n_webhook_url: ${{ vars.N8N_WEBHOOK }}
           compose_id: ${{ vars.DOKPLOY_COMPOSE_ID }}
-          image_name: ghcr.io/masgeek/fee-syncer
+          image_name: ghcr.io/iita-akilimo/akilimo-api

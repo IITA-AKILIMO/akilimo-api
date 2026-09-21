@@ -47,6 +47,6 @@ jobs:
     uses: ./.github/workflows/check-tag-job.yml
     with:
       dockerfile: Dockerfile
-      image_name: ghcr.io/masgeek/fee-syncer
+      image_name: ghcr.io/iita-akilimo/akilimo-api
       specific_tag: ${{ needs.bump-tag-version.outputs.new_tag }}
       force_rebuild: true
