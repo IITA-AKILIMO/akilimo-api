@@ -30,7 +30,7 @@ services:
             # Cache / Redis
             REDIS_HOST: cache-dev
         ports:
-          - "127.0.0.1:9000:80"
+          - "127.0.0.1:9100:80"
         init: true
         stop_grace_period: 2m
         networks:
