@@ -32,6 +32,7 @@
     "inertiajs/inertia-laravel": "^3.0",
     "laracraft-tech/laravel-useful-additions": "^4.1",
     "laravel/framework": "^12.0",
+    "laravel/octane": "^2.19",
     "laravel/sanctum": "^4.0",
     "laravel/tinker": "^2.10.1",
     "league/csv": "^9.28",
