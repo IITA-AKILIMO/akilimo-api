@@ -173,11 +173,13 @@ return [
      *     ],
      * ],
      */
-    'security_strategy' => [
-        MiddlewareAuthSecurityStrategy::class,
-        [
-            'middleware' => ['auth', 'auth:*'],
-            'scheme' => SecurityScheme::http('bearer'),
-        ],
-    ],
+    'security_strategy' => null,
+//    'security_strategy' => MiddlewareAuthSecurityStrategy::class,
+//    'security_strategy' => [
+//        MiddlewareAuthSecurityStrategy::class,
+//        [
+//            'middleware' => ['auth', 'auth:*'],
+//            'scheme' => SecurityScheme::http('bearer'),
+//        ],
+//    ],
 ];
