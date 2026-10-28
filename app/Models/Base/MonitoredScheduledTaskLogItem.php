@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -14,11 +16,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class MonitoredScheduledTaskLogItem
  *
+ * @property Carbon|null $created_at
  * @property int $id
+ * @property string|null $meta
  * @property int $monitored_scheduled_task_id
  * @property string $type
- * @property string|null $meta
- * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property MonitoredScheduledTask $monitoredScheduledTask
  *

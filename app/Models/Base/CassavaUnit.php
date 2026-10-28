@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,13 +14,13 @@ use Carbon\Carbon;
 /**
  * Class CassavaUnit
  *
+ * @property Carbon $created_at
+ * @property string|null $description
  * @property int $id
- * @property float $unit_weight
+ * @property bool $is_active
  * @property string $label
  * @property float $sort_order
- * @property string|null $description
- * @property bool $is_active
- * @property Carbon $created_at
+ * @property float $unit_weight
  * @property Carbon $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CassavaUnit newModelQuery()

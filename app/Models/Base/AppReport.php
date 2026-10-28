@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,23 +14,23 @@ use Carbon\Carbon;
 /**
  * Class AppReport
  *
- * @property int $id
- * @property string|null $device_token
  * @property string|null $country_code
+ * @property Carbon|null $created_at
+ * @property string|null $device_token
+ * @property bool|null $excluded
+ * @property bool|null $fr
+ * @property string|null $full_names
+ * @property string|null $gender
+ * @property bool|null $ic
+ * @property int $id
  * @property float|null $lat
  * @property float|null $lon
- * @property string|null $full_names
  * @property string|null $phone_number
- * @property string|null $gender
- * @property bool|null $excluded
- * @property string|null $user_type
- * @property bool|null $fr
- * @property bool|null $ic
  * @property bool|null $pp
- * @property bool|null $spp
  * @property bool|null $sph
- * @property Carbon|null $created_at
+ * @property bool|null $spp
  * @property Carbon|null $updated_at
+ * @property string|null $user_type
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppReport newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppReport newQuery()

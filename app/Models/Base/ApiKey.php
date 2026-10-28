@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -14,17 +16,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class ApiKey
  *
- * @property int $id
- * @property int $user_id
- * @property string $name
- * @property string $key_prefix
- * @property string $key_hash
  * @property string|null $abilities
- * @property bool $is_active
- * @property Carbon|null $last_used_at
- * @property Carbon|null $expires_at
  * @property Carbon|null $created_at
+ * @property Carbon|null $expires_at
+ * @property int $id
+ * @property bool $is_active
+ * @property string $key_hash
+ * @property string $key_prefix
+ * @property Carbon|null $last_used_at
+ * @property string $name
  * @property Carbon|null $updated_at
+ * @property int $user_id
  * @property User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey newModelQuery()

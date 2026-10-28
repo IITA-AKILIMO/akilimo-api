@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -15,13 +17,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Class StarchFactory
  *
- * @property int $id
- * @property string $factory_name
- * @property string $factory_label
  * @property string $country
- * @property bool|null $factory_active
- * @property int|null $sort_order
  * @property Carbon|null $created_at
+ * @property bool|null $factory_active
+ * @property string $factory_label
+ * @property string $factory_name
+ * @property int $id
+ * @property int|null $sort_order
  * @property Carbon|null $updated_at
  * @property Collection|StarchPrice[] $starchPrices
  * @property-read int|null $starch_prices_count

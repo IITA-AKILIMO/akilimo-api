@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -14,14 +16,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class StarchPrice
  *
- * @property int $id
- * @property int $starch_factory_id
- * @property int $price_class
- * @property float $min_starch
- * @property string|null $range_starch
- * @property float $price
- * @property string|null $currency
  * @property Carbon|null $created_at
+ * @property string|null $currency
+ * @property int $id
+ * @property float $min_starch
+ * @property float $price
+ * @property int $price_class
+ * @property string|null $range_starch
+ * @property int $starch_factory_id
  * @property Carbon|null $updated_at
  * @property StarchFactory $starchFactory
  *
