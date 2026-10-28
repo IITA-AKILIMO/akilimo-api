@@ -1,24 +1,24 @@
 import type { ReactNode } from 'react'
-import type { PaginationLinks, PaginationMeta } from '../types'
+import type { PaginationLinks, PaginationMeta } from '@/types'
 import Pagination from './Pagination'
 
 export interface Column {
     key: string
     label: string
     sortable?: boolean
-    render?: (value: unknown, row: Record<string, unknown>) => ReactNode
+    render?: (value: any, row: Record<string, unknown>) => ReactNode
 }
 
 interface DataTableProps {
     columns: Column[]
-    data: Record<string, unknown>[]
+    data: Record<string, any>[]
     pagination: PaginationMeta
     links: PaginationLinks
     sortBy?: string
     sortDir?: 'asc' | 'desc'
     onSort: (col: string) => void
     onPageChange: (page: number) => void
-    actions?: (row: Record<string, unknown>) => ReactNode
+    actions?: (row: Record<string, any>) => ReactNode
 }
 
 function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
