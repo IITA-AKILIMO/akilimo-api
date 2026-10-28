@@ -10,7 +10,7 @@ export default function Badge({
     inactiveLabel = 'Inactive',
 }: BadgeProps) {
     return (
-        <span className={`badge rounded-pill ${active ? 'bg-success' : 'bg-secondary'}`}>
+        <span className={`badge ${active ? 'bg-success' : 'bg-secondary'}`}>
             {active ? activeLabel : inactiveLabel}
         </span>
     )
