@@ -4,7 +4,7 @@ import ConfirmDialog from '../../components/ConfirmDialog'
 import DataTable from '../../components/DataTable'
 import type {Column} from '../../components/DataTable'
 import AdminLayout from '../../layouts/AdminLayout'
-import type {ApiKey, Paginated} from '../../types'
+import type {ApiKey, Paginated} from '@/types'
 
 interface Props {
     apiKeys: Paginated<ApiKey>
@@ -40,9 +40,23 @@ export default function ApiKeysIndex({apiKeys, filters}: Props) {
         {
             key: 'abilities',
             label: 'Abilities',
-            render: (val) => val && (val as string[]).length > 0
-                ? (val as string[]).join(', ')
-                : <span className="text-muted">*</span>,
+            render: (val) => {
+                const abilities = val as string[] | undefined
+
+                if (!abilities || abilities.length === 0) {
+                    return <span className="text-muted">*</span>
+                }
+
+                return (
+                    <div className="d-flex flex-wrap gap-1" style={{maxWidth: '20rem'}}>
+                        {abilities.map((ability) => (
+                            <span key={ability} className="badge bg-info-subtle text-dark border">
+                        {ability}
+                    </span>
+                        ))}
+                    </div>
+                )
+            },
         },
         {
             key: 'is_active',
