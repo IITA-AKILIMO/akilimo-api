@@ -29,8 +29,10 @@ services:
             DB_PASSWORD: ${DB_PASSWORD}
             # Cache / Redis
             REDIS_HOST: cache-dev
+            #CLI
+            PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS:-4}
         ports:
-          - "127.0.0.1:9100:80"
+            - "127.0.0.1:9100:80"
         init: true
         stop_grace_period: 2m
         networks:
