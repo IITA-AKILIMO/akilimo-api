@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CassavaPricesController;
 use App\Http\Controllers\Api\CassavaUnitsController;
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CoverageController;
+use App\Http\Controllers\Api\CropController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\DefaultPriceController;
 use App\Http\Controllers\Api\FertilizerController;
@@ -44,6 +45,11 @@ Route::middleware('throttle:10,1')->prefix('v1/auth')->group(function () {
 Route::middleware('throttle:120,1')->group(function () {
     Route::prefix('v1/countries')->group(function () {
         Route::get('/', [CountryController::class, 'index']);
+    });
+
+    Route::prefix('v1/crops')->group(function () {
+        Route::get('/', [CropController::class, 'index']);
+        Route::get('/country/{countryCode}', [CropController::class, 'byCountry']);
     });
 
     Route::prefix('v1/currencies')->group(function () {

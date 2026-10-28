@@ -123,6 +123,17 @@ export interface OperationCost {
     is_active: boolean
 }
 
+export interface Crop {
+    id: number
+    crop_key: string
+    name: string
+    description?: string | null
+    active: boolean
+    advice_available: boolean
+    countries: string
+    sort_order: number
+}
+
 export interface Currency {
     id: number
     country_code: string
