@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  *  1. Bearer token  — Authorization: Bearer <token>
  *     Looked up in personal_access_tokens (SHA-256 hash match).
  *
- *  2. API key       — X-Api-Key: <key>
+ *  2. API key       — X-Api-Key: <key>  (or Authorization: Bearer ak_…)
  *     Looked up in api_keys (SHA-256 hash match).
  *     Must be active and not expired.
  *
@@ -29,6 +29,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AuthenticateWithToken
 {
+    private const API_KEY_PREFIX = 'ak_';
+
     public function handle(Request $request, Closure $next, string ...$abilities): Response
     {
         $token = $this->resolveToken($request);
@@ -86,6 +88,10 @@ class AuthenticateWithToken
     private function resolveFromApiKey(Request $request): ?ApiKey
     {
         $raw = $request->header('X-Api-Key');
+
+        if (blank($raw) && str_starts_with((string) $request->bearerToken(), self::API_KEY_PREFIX)) {
+            $raw = $request->bearerToken();
+        }
 
         if (blank($raw)) {
             return null;

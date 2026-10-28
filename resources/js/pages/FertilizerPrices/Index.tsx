@@ -71,7 +71,7 @@ export default function FertilizerPricesIndex({ items, filters }: Props) {
                 )}
             </div>
 
-            <DataTable columns={columns} data={items.data as Record<string, unknown>[]}
+            <DataTable columns={columns} data={items.data as FertilizerPrice[]}
                 pagination={items.meta} links={items.links} sortBy="" onSort={() => {}} onPageChange={handlePageChange}
                 actions={(row) => (
                     <div className="d-flex gap-1 justify-content-end">

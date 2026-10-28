@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,13 +14,13 @@ use Carbon\Carbon;
 /**
  * Class InvestmentAmount
  *
- * @property int $id
- * @property string|null $country
- * @property float $investment_amount
  * @property string|null $area_unit
+ * @property string|null $country
+ * @property Carbon|null $created_at
+ * @property int $id
+ * @property float $investment_amount
  * @property bool|null $price_active
  * @property int $sort_order
- * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvestmentAmount newModelQuery()

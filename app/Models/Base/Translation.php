@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,12 +14,12 @@ use Carbon\Carbon;
 /**
  * Class Translation
  *
+ * @property Carbon|null $created_at
+ * @property string $en
  * @property int $id
  * @property string $key
- * @property string $en
- * @property string|null $sw
  * @property string|null $rw
- * @property Carbon|null $created_at
+ * @property string|null $sw
  * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation newModelQuery()

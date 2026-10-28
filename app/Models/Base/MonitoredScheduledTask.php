@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -15,20 +17,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Class MonitoredScheduledTask
  *
- * @property int $id
- * @property string $name
- * @property string|null $type
- * @property string $cron_expression
- * @property string|null $timezone
- * @property string|null $ping_url
- * @property Carbon|null $last_started_at
- * @property Carbon|null $last_finished_at
- * @property Carbon|null $last_failed_at
- * @property Carbon|null $last_skipped_at
- * @property Carbon|null $registered_on_oh_dear_at
- * @property Carbon|null $last_pinged_at
- * @property int $grace_time_in_minutes
  * @property Carbon|null $created_at
+ * @property string $cron_expression
+ * @property int $grace_time_in_minutes
+ * @property int $id
+ * @property Carbon|null $last_failed_at
+ * @property Carbon|null $last_finished_at
+ * @property Carbon|null $last_pinged_at
+ * @property Carbon|null $last_skipped_at
+ * @property Carbon|null $last_started_at
+ * @property string $name
+ * @property string|null $ping_url
+ * @property Carbon|null $registered_on_oh_dear_at
+ * @property string|null $timezone
+ * @property string|null $type
  * @property Carbon|null $updated_at
  * @property Collection|MonitoredScheduledTaskLogItem[] $monitoredScheduledTaskLogItems
  * @property-read int|null $monitored_scheduled_task_log_items_count

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,19 +14,19 @@ use Carbon\Carbon;
 /**
  * Class Country
  *
- * @property int $id
- * @property string $code
- * @property string $name
  * @property bool $active
- * @property int|null $sort_order
+ * @property string $boundary
+ * @property string $code
+ * @property Carbon|null $created_at
+ * @property int $id
  * @property float|null $latitude
  * @property float|null $longitude
- * @property float|null $min_latitude
  * @property float|null $max_latitude
- * @property float|null $min_longitude
  * @property float|null $max_longitude
- * @property string $boundary
- * @property Carbon|null $created_at
+ * @property float|null $min_latitude
+ * @property float|null $min_longitude
+ * @property string $name
+ * @property int|null $sort_order
  * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newModelQuery()

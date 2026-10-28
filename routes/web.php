@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
 use App\Http\Controllers\Admin\CassavaPriceController;
 use App\Http\Controllers\Admin\CassavaUnitController;
+use App\Http\Controllers\Admin\CropController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -155,6 +156,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUser
         Route::resource('operation-costs', OperationCostController::class)
             ->except(['show'])
             ->parameters(['operation-costs' => 'id']);
+
+        Route::resource('crops', CropController::class)
+            ->except(['show'])
+            ->parameters(['crops' => 'id']);
 
         Route::resource('currencies', CurrencyController::class)
             ->except(['show'])

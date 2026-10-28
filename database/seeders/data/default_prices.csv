@@ -31,8 +31,8 @@ TZ,manual_ploughing,175000
 TZ,manual_ridging,225000
 TZ,tractor_ploughing,150000
 TZ,tractor_ridging,100000
-TZ,weeding1,600000
-TZ,weeding2,450000
+TZ,weeding1,60000
+TZ,weeding2,45000
 TZ,cassUP,180000
 RW,urea,28200
 RW,MOP,27900

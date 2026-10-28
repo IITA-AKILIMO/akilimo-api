@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -11,11 +13,11 @@ use App\Core\Models\BaseModel;
 /**
  * Class RequestFertilizer
  *
- * @property int $fertilizer_id
- * @property int|null $request_id
- * @property string $fertilizer_type
  * @property bool|null $available
+ * @property int $fertilizer_id
+ * @property string $fertilizer_type
  * @property float $price
+ * @property int|null $request_id
  * @property float $weight
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RequestFertilizer newModelQuery()

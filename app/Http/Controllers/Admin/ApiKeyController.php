@@ -99,7 +99,12 @@ class ApiKeyController extends BaseController
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * The raw key is rendered straight into the POST response (never flashed to the
+     * session or stored), so it is visible exactly once. History is encrypted so the
+     * key is not readable from the browser's history state after leaving the page.
+     */
+    public function store(Request $request): Response
     {
         $validAbilities = implode(',', TokenAbility::ALL);
 
@@ -115,18 +120,33 @@ class ApiKeyController extends BaseController
         $prefix = substr($rawKey, 0, 12);
         $hash = hash('sha256', $rawKey);
 
-        ApiKey::create([
+        $apiKey = ApiKey::create([
             'user_id' => $validated['user_id'],
             'name' => $validated['name'],
             'key_prefix' => $prefix,
             'key_hash' => $hash,
-            'abilities' => $validated['abilities'] ?? null,
+            'abilities' => ($validated['abilities'] ?? null) ?: null, // empty = wildcard
             'expires_at' => $validated['expires_at'] ?? null,
             'is_active' => true,
         ]);
+        $apiKey->load('user:id,name,email');
 
-        return redirect()->route('admin.api-keys.index')
-            ->with('success', 'API key created successfully.');
+        Inertia::encryptHistory();
+
+        return Inertia::render('ApiKeys/Created', [
+            'apiKey' => [
+                'id' => $apiKey->id,
+                'name' => $apiKey->name,
+                'key_prefix' => $apiKey->key_prefix,
+                'abilities' => $apiKey->abilities,
+                'expires_at' => $apiKey->expires_at?->toIso8601String(),
+                'user' => $apiKey->user ? [
+                    'name' => $apiKey->user->name,
+                    'email' => $apiKey->user->email,
+                ] : null,
+            ],
+            'plainTextKey' => $rawKey,
+        ]);
     }
 
     public function edit(Request $request, int $id): Response
@@ -186,7 +206,7 @@ class ApiKeyController extends BaseController
         $apiKey->update([
             'user_id' => $validated['user_id'],
             'name' => $validated['name'],
-            'abilities' => $validated['abilities'] ?? null,
+            'abilities' => ($validated['abilities'] ?? null) ?: null, // empty = wildcard
             'expires_at' => $validated['expires_at'] ?? null,
             'is_active' => $validated['is_active'] ?? true,
         ]);

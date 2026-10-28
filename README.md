@@ -14,6 +14,7 @@ Laravel 12 RESTful API that computes and delivers agricultural recommendations (
 | [Architecture](docs/ARCHITECTURE.md) | How the system is structured, request flow, auth, DB schema |
 | [User Onboarding](docs/USER_ONBOARDING.md) | Integrating with the API — auth, endpoints, request/response shapes |
 | [Developer Onboarding](docs/DEVELOPER_ONBOARDING.md) | Local setup, project structure, contributing, testing |
+| [Supported area](docs/COVERAGE.md) | Where recommendations can be computed: GeoJSON ingest, map endpoints, early coordinate validation |
 
 ---
 
