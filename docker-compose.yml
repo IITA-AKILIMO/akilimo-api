@@ -8,6 +8,9 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+            args:
+                BASE_IMAGE: "${BASE_IMAGE:-ghcr.io/masgeek/laravel-frankenphp-base:php8.4}"
+                APP_BASE_PATH: "${APP_BASE_PATH:-/var/www/html/fuelrod}"
         env_file:
             - .env
         environment:
@@ -29,8 +32,10 @@ services:
             DB_PASSWORD: ${DB_PASSWORD}
             # Cache / Redis
             REDIS_HOST: cache-dev
-            #CLI
-            PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS:-4}
+            HORIZON_ENABLED: "${HORIZON_ENABLED:-false}"
+            SCHEDULER_ENABLED: "${SCHEDULER_ENABLED:-false}"
+            LARAVEL_MIGRATE: "${LARAVEL_MIGRATE:-false}"
+            LARAVEL_OPTIMIZE: "${LARAVEL_OPTIMIZE:-false}"
         ports:
             - "127.0.0.1:9100:80"
         init: true
