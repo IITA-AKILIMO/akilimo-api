@@ -1,3 +1,5 @@
+# The base image argument must be declared before the first FROM so Docker can
+# resolve it when parsing the later final-stage FROM instruction.
 ARG BASE_IMAGE=ghcr.io/masgeek/laravel-frankenphp-base:php8.4
 
 # -----------------------------------
@@ -29,7 +31,7 @@ FROM ${BASE_IMAGE}
 
 ARG APP_BASE_PATH=/var/www/html/fuelrod
 
-ENV APP_BASE_PATH=${APP_BASE_PAfTH} \
+ENV APP_BASE_PATH=${APP_BASE_PATH} \
     APP_PUBLIC_PATH=${APP_BASE_PATH}/public
 
 USER root
@@ -41,13 +43,12 @@ WORKDIR ${APP_BASE_PATH}
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts
 
-# Copy application files
+# Copy application files after the dependency layer.
 COPY . .
 
-# Finish framework discovery and ensure the FrankenPHP worker is available.
+# Finish framework discovery and generate the FrankenPHP worker file.
 RUN composer dump-autoload --no-dev --optimize \
     && php artisan octane:install --server=frankenphp --no-interaction
-
 
 # Copy frontend build
 COPY --from=frontend-build --chown=www-data:www-data /app/public/build ./public/build
@@ -61,13 +62,12 @@ RUN chown -R www-data:www-data \
 COPY docker/bash/artisan-aliases.sh /etc/artisan-aliases.sh
 RUN chmod +x /etc/artisan-aliases.sh \
     && echo '[ -f /etc/artisan-aliases.sh ] && source /etc/artisan-aliases.sh' >> /root/.bashrc \
-    && rm -rf "${APP_BASE_PATH}/docker" \
+    && rm -rf "${APP_BASE_PATH}/docker"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl --fail --silent http://127.0.0.1/up > /dev/null || exit 1
 
-# Switch to www-data user for runtime
+# The FrankenPHP base image runs Supervisor and all application processes as www-data.
 USER www-data
 
-# Start all services using Supervisor
 CMD ["/usr/local/bin/start.sh"]
