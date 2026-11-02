@@ -45,6 +45,9 @@ Route::prefix('playground')->name('playground.')->group(function () {
     Route::post('/register', [PlaygroundAuthController::class, 'register'])->name('register.post')->middleware('throttle:5,1');
     Route::get('/check-username', [PlaygroundAuthController::class, 'checkUsername'])->name('check-username')->middleware('throttle:60,1');
     Route::post('/logout', [PlaygroundAuthController::class, 'logout'])->name('logout');
+
+    // Public: it only displays the public /health checks, and the welcome page links here
+    Route::get('/health', [PlaygroundController::class, 'showHealth'])->name('health');
 });
 
 // ── Playground — authenticated ─────────────────────────────────────────────────
@@ -54,7 +57,6 @@ Route::middleware(['auth:web'])->group(function () {
     Route::middleware('throttle:5,1')->post('/playground/compute', [PlaygroundController::class, 'compute']);
 
     // Token management
-    Route::get('/playground/health', [PlaygroundController::class, 'showHealth']);
     Route::get('/playground/tokens', [PlaygroundTokenController::class, 'index']);
     Route::post('/playground/tokens', [PlaygroundTokenController::class, 'store'])->middleware('throttle:10,1');
     Route::post('/playground/tokens/{id}/revoke', [PlaygroundTokenController::class, 'revoke']);

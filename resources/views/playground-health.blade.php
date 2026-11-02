@@ -16,7 +16,9 @@
     </a>
     <span class="pg-nav-badge">System Health</span>
     <div class="pg-nav-user">
-        <span class="pg-nav-user-name" style="color:rgba(255,255,255,0.6)">{{ auth()->user()->name }}</span>
+        @auth
+            <span class="pg-nav-user-name" style="color:rgba(255,255,255,0.6)">{{ auth()->user()->name }}</span>
+        @endauth
         <a href="/playground" class="pg-nav-signout" style="color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.15)">← Playground</a>
     </div>
 </nav>
