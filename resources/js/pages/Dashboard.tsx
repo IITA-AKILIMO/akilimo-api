@@ -1,5 +1,6 @@
-import { router, usePage } from '@inertiajs/react'
-import { useCallback, useState } from 'react'
+import { Link, router, usePage } from '@inertiajs/react'
+import 'bootstrap/js/dist/collapse'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import AdminLayout from '../layouts/AdminLayout'
 
 interface DailyRequest {
@@ -24,12 +25,43 @@ interface DashboardProps {
     charts: {
         dailyRequests: DailyRequest[]
         byUseCase: UseCaseStat[]
+        byCountry: { country_code: string; count: number }[]
+        byGender: { female: number; male: number; not_recorded: number }
     }
     metrics: {
-        avgResponseTimeMs: number
-        successRate: number
+        medianResponseMs: number | null
+        p95ResponseMs: number | null
+        timedRequests: number
+        successRate: number | null
+        answeredRequests: number
+        failedRequests: number
+        unansweredRequests: number
         requestsLastDays: number
+        staffRequests: number
+        uniqueDevices: number
         periodDays: number
+    }
+    feedback: {
+        responses: number
+        responsesLastDays: number
+        avgSatisfaction: number | null
+        ratedResponses: number
+        distribution: Record<string, number>
+        lastResponseAt: string | null
+    }
+    // Admins only
+    failures?: {
+        id: number
+        country_code: string | null
+        use_case: string | null
+        status_code: number | null
+        message: string
+        created_at: string
+    }[]
+    freshness?: {
+        staleAfterDays: number
+        prices: { label: string; href: string; rows: number; last_updated: string | null; stale: boolean }[]
+        coverage: { country_code: string; fetched_at: string | null }[]
     }
     recentRequests: {
         id: number
@@ -49,6 +81,130 @@ function navigate(chartDays: number, metricsDays: number, refresh = false) {
     const params: Record<string, string | number> = { chart_days: chartDays, metrics_days: metricsDays }
     if (refresh) params.refresh = 1
     router.get('/admin', params, { preserveScroll: true, replace: true })
+}
+
+function formatMs(ms: number | null): string {
+    if (ms === null) return '—'
+    return ms >= 1000 ? `${(ms / 1000).toFixed(1)}s` : `${ms}ms`
+}
+
+function formatDate(iso: string | null): string {
+    return iso ? new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Never'
+}
+
+function MetricCard({ label, value, valueClass = '', note }: { label: string; value: string; valueClass?: string; note: string }) {
+    return (
+        <div className="col-sm-6 col-xl-3">
+            <div className="card shadow-sm h-100">
+                <div className="card-body">
+                    <p className="text-muted small fw-medium text-uppercase mb-1">{label}</p>
+                    <p className={`fs-3 fw-bold mb-1 ${valueClass}`}>{value}</p>
+                    <p className="text-muted small mb-0">{note}</p>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const PANELS_KEY = 'dashboard-panels'
+
+function readPanels(): Record<string, boolean> {
+    try {
+        return JSON.parse(localStorage.getItem(PANELS_KEY) ?? '{}') ?? {}
+    } catch {
+        return {}
+    }
+}
+
+interface PanelProps {
+    id: string
+    title: ReactNode
+    extra?: ReactNode
+    /** Stretch to the row's height (cards side by side). */
+    fill?: boolean
+    defaultOpen?: boolean
+    children: ReactNode
+}
+
+/**
+ * A card whose body folds away (Bootstrap Collapse). Each panel's open or
+ * closed state is remembered in this browser.
+ */
+function Panel({ id, title, extra, fill = true, defaultOpen = true, children }: PanelProps) {
+    // Only the first render decides; Bootstrap owns the classes after that.
+    const [open] = useState(() => readPanels()[id] ?? defaultOpen)
+    const body = useRef<HTMLDivElement>(null)
+    const bodyId = `panel-${id}`
+
+    useEffect(() => {
+        const el = body.current
+        if (!el) return
+        const save = (e: Event) => {
+            if (e.target !== el) return
+            try {
+                localStorage.setItem(PANELS_KEY, JSON.stringify({ ...readPanels(), [id]: e.type === 'shown.bs.collapse' }))
+            } catch {
+                // private mode: the choice just isn't remembered
+            }
+        }
+        el.addEventListener('shown.bs.collapse', save)
+        el.addEventListener('hidden.bs.collapse', save)
+        return () => {
+            el.removeEventListener('shown.bs.collapse', save)
+            el.removeEventListener('hidden.bs.collapse', save)
+        }
+    }, [id])
+
+    return (
+        <section className={`card shadow-sm dashboard-panel${fill ? ' h-100' : ''}`} aria-labelledby={`${bodyId}-title`}>
+            <div className="card-header bg-white py-3 d-flex align-items-center gap-2">
+                <h2 className="h6 mb-0 fw-semibold flex-grow-1">
+                    <button
+                        id={`${bodyId}-title`}
+                        type="button"
+                        className={`panel-toggle${open ? '' : ' collapsed'}`}
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#${bodyId}`}
+                        aria-expanded={open}
+                        aria-controls={bodyId}
+                    >
+                        <svg className="panel-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                        {title}
+                    </button>
+                </h2>
+                {extra}
+            </div>
+            <div id={bodyId} ref={body} className={`collapse${open ? ' show' : ''}`}>
+                {children}
+            </div>
+        </section>
+    )
+}
+
+/** A labelled horizontal bar, as in the use case card. */
+function BarRow({ label, count, total }: { label: string; count: number; total: number }) {
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0
+    return (
+        <div>
+            <div className="d-flex justify-content-between mb-1">
+                <span className="small text-truncate" style={{ maxWidth: '60%' }}>{label}</span>
+                <span className="small text-muted">{count.toLocaleString()} ({pct}%)</span>
+            </div>
+            <div className="progress bg-body-secondary" style={{ height: 5, borderRadius: 100 }}>
+                <div
+                    className="progress-bar"
+                    style={{ width: `${pct}%`, background: 'var(--brand-gradient)', borderRadius: 100 }}
+                    role="progressbar"
+                    aria-label={label}
+                    aria-valuenow={pct}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                />
+            </div>
+        </div>
+    )
 }
 
 function Tooltip({ text, children }: { text: string; children: React.ReactNode }) {
@@ -123,8 +279,15 @@ export default function Dashboard() {
 
     const totalUseCases = data?.charts.byUseCase?.reduce((sum, r) => sum + r.count, 0) ?? 0
 
+    const successRate = data?.metrics.successRate ?? null
     const successColor =
-        data?.metrics.successRate >= 95 ? 'text-success' : data?.metrics.successRate >= 80 ? 'text-warning' : 'text-danger'
+        successRate === null ? 'text-body-secondary' : successRate >= 95 ? 'text-success' : successRate >= 80 ? 'text-warning' : 'text-danger'
+
+    const countryTotal = data?.charts.byCountry?.reduce((sum, r) => sum + r.count, 0) ?? 0
+    const gender = data?.charts.byGender ?? { female: 0, male: 0, not_recorded: 0 }
+    const genderTotal = gender.female + gender.male + gender.not_recorded
+    const feedback = data?.feedback
+    const stalePrices = data?.freshness?.prices.filter((p) => p.stale).length ?? 0
 
     return (
         <AdminLayout title="Dashboard">
@@ -207,49 +370,48 @@ export default function Dashboard() {
 
             {/* Metrics Row */}
             {data && (
-                <div className="row g-4 mb-4">
-                    <div className="col-md-4">
-                        <div className="card shadow-sm h-100">
-                            <div className="card-body">
-                                <p className="text-muted small fw-medium text-uppercase mb-1">Avg Response Time</p>
-                                <p className="fs-3 fw-bold text-dark mb-1">{data.metrics.avgResponseTimeMs}ms</p>
-                                <p className="text-muted small mb-0">Last {metricsDays} days</p>
-                            </div>
-                        </div>
+                <>
+                    <h2 className="h6 text-body-secondary fw-semibold mb-3">Last {metricsDays} days</h2>
+                    <div className="row g-4 mb-4">
+                        <MetricCard
+                            label="Requests"
+                            value={data.metrics.requestsLastDays.toLocaleString()}
+                            valueClass="text-primary"
+                            note={data.metrics.staffRequests > 0
+                                ? `Plus ${data.metrics.staffRequests.toLocaleString()} from staff and testing`
+                                : 'From farmers and partners'}
+                        />
+                        <MetricCard
+                            label="Devices reached"
+                            value={data.metrics.uniqueDevices.toLocaleString()}
+                            note="Distinct phones and clients"
+                        />
+                        <MetricCard
+                            label="Success rate"
+                            value={successRate === null ? '—' : `${successRate}%`}
+                            valueClass={successColor}
+                            note={(data.metrics.answeredRequests > 0
+                                ? `${data.metrics.failedRequests.toLocaleString()} of ${data.metrics.answeredRequests.toLocaleString()} failed`
+                                : 'No computed requests')
+                                + (data.metrics.unansweredRequests > 0
+                                    ? ` · ${data.metrics.unansweredRequests.toLocaleString()} with no answer recorded`
+                                    : '')}
+                        />
+                        <MetricCard
+                            label="Response time"
+                            value={formatMs(data.metrics.medianResponseMs)}
+                            note={data.metrics.timedRequests > 0
+                                ? `Median · 95% within ${formatMs(data.metrics.p95ResponseMs)}`
+                                : 'No timed requests'}
+                        />
                     </div>
-                    <div className="col-md-4">
-                        <div className="card shadow-sm h-100">
-                            <div className="card-body">
-                                <p className="text-muted small fw-medium text-uppercase mb-1">Success Rate</p>
-                                <p className={`fs-3 fw-bold mb-1 ${successColor}`}>{data.metrics.successRate}%</p>
-                                <p className="text-muted small mb-0">Last {metricsDays} days</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card shadow-sm h-100">
-                            <div className="card-body">
-                                <p className="text-muted small fw-medium text-uppercase mb-1">Requests</p>
-                                <p className="fs-3 fw-bold text-primary mb-1">{data.metrics.requestsLastDays.toLocaleString()}</p>
-                                <p className="text-muted small mb-0">Last {metricsDays} days</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </>
             )}
 
             <div className="row g-4 mb-4">
                 {/* Daily Requests Bar Chart */}
                 <div className="col-lg-8">
-                    <div className="card shadow-sm h-100">
-                        <div className="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-                            <h6 className="mb-0 fw-semibold">Requests (Last {chartDays} Days)</h6>
-                            {data?.charts.dailyRequests?.length > 0 && (
-                                <span className="badge bg-light text-secondary border">
-                                    peak {maxDaily.toLocaleString()}
-                                </span>
-                            )}
-                        </div>
+                    <Panel id="daily-requests" title={<>Requests (Last {chartDays} Days)</>} extra={<>{data?.charts.dailyRequests?.length > 0 && ( <span className="badge bg-light text-secondary border"> peak {maxDaily.toLocaleString()} </span> )}</>}>
                         <div className="card-body">
                             {data?.charts.dailyRequests?.length ? (
                                 <>
@@ -282,60 +444,166 @@ export default function Dashboard() {
                                 <div className="text-center text-muted py-5">No request data available</div>
                             )}
                         </div>
-                    </div>
+                    </Panel>
                 </div>
 
                 {/* Requests by Use Case */}
                 <div className="col-lg-4">
-                    <div className="card shadow-sm h-100">
-                        <div className="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-                            <h6 className="mb-0 fw-semibold">By Use Case</h6>
-                            {totalUseCases > 0 && (
-                                <span className="badge bg-light text-secondary border">{totalUseCases.toLocaleString()} total</span>
-                            )}
-                        </div>
+                    <Panel id="use-cases" title={<>By Use Case</>} extra={<>{totalUseCases > 0 && ( <span className="badge bg-light text-secondary border">{totalUseCases.toLocaleString()} total</span> )}</>}>
                         <div className="card-body">
                             {data?.charts.byUseCase?.length ? (
                                 <div className="d-flex flex-column gap-3">
-                                    {data.charts.byUseCase.map((item, i) => {
-                                        const pct = totalUseCases > 0 ? Math.round((item.count / totalUseCases) * 100) : 0
-                                        return (
-                                            <div key={i}>
-                                                <div className="d-flex justify-content-between mb-1">
-                                                    <span className="small text-truncate" style={{ maxWidth: '70%' }}>
-                                                        {item.use_case || 'unknown'}
-                                                    </span>
-                                                    <span className="small text-muted">
-                                                        {item.count.toLocaleString()} ({pct}%)
-                                                    </span>
-                                                </div>
-                                                <div className="progress" style={{ height: 5, borderRadius: 100, background: '#e2ece6' }}>
-                                                    <div
-                                                        className="progress-bar"
-                                                        style={{ width: `${pct}%`, background: 'var(--brand-gradient)', borderRadius: 100 }}
-                                                        role="progressbar"
-                                                        aria-valuenow={pct}
-                                                        aria-valuemin={0}
-                                                        aria-valuemax={100}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
+                                    {data.charts.byUseCase.map((item, i) => (
+                                        <BarRow key={i} label={item.use_case || 'unknown'} count={item.count} total={totalUseCases} />
+                                    ))}
                                 </div>
                             ) : (
                                 <div className="text-center text-muted py-5">No use case data</div>
                             )}
                         </div>
-                    </div>
+                    </Panel>
                 </div>
             </div>
 
-            {/* Recent Requests Table */}
-            <div className="card shadow-sm">
-                <div className="card-header bg-white py-3">
-                    <h6 className="mb-0 fw-semibold">Recent Requests</h6>
+            {/* Reach and feedback */}
+            {data && (
+                <div className="row g-4 mb-4">
+                    <div className="col-lg-4">
+                        <Panel id="countries" title={<>By Country</>} extra={<><span className="badge bg-light text-secondary border">{chartDays}d</span></>}>
+                            <div className="card-body">
+                                {data.charts.byCountry?.length ? (
+                                    <div className="d-flex flex-column gap-3">
+                                        {data.charts.byCountry.map((c) => (
+                                            <BarRow key={c.country_code} label={c.country_code} count={c.count} total={countryTotal} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center text-muted py-5">No requests in this period</div>
+                                )}
+                            </div>
+                        </Panel>
+                    </div>
+
+                    <div className="col-lg-4">
+                        <Panel id="gender" title={<>Requests by Gender</>} extra={<><span className="badge bg-light text-secondary border">{chartDays}d</span></>}>
+                            <div className="card-body">
+                                {genderTotal > 0 ? (
+                                    <div className="d-flex flex-column gap-3">
+                                        <BarRow label="Female" count={gender.female} total={genderTotal} />
+                                        <BarRow label="Male" count={gender.male} total={genderTotal} />
+                                        <BarRow label="Not recorded" count={gender.not_recorded} total={genderTotal} />
+                                        <p className="small text-muted mb-0">
+                                            As given in the request; "not recorded" includes the MCP chat's anonymous requests.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="text-center text-muted py-5">No requests in this period</div>
+                                )}
+                            </div>
+                        </Panel>
+                    </div>
+
+                    <div className="col-lg-4">
+                        <Panel id="feedback" title={<>App Feedback</>} extra={<><span className="badge bg-light text-secondary border">{feedback?.responses.toLocaleString() ?? 0} total</span></>}>
+                            <div className="card-body">
+                                {feedback && feedback.ratedResponses > 0 ? (
+                                    <>
+                                        <div className="d-flex align-items-baseline gap-2 mb-1">
+                                            <span className="fs-3 fw-bold">{feedback.avgSatisfaction?.toFixed(1)}</span>
+                                            <span className="text-muted small">/ 5 average satisfaction</span>
+                                        </div>
+                                        <p className="small text-muted mb-3">
+                                            {feedback.ratedResponses.toLocaleString()} ratings ·{' '}
+                                            {feedback.responsesLastDays > 0
+                                                ? `${feedback.responsesLastDays.toLocaleString()} in the last ${metricsDays} days`
+                                                : `last one ${formatDate(feedback.lastResponseAt)}`}
+                                        </p>
+                                        <div className="d-flex flex-column gap-2">
+                                            {[5, 4, 3, 2, 1].map((r) => (
+                                                <BarRow key={r} label={`${r} ★`} count={feedback.distribution[r] ?? 0} total={feedback.ratedResponses} />
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="text-center text-muted py-5">No feedback yet</div>
+                                )}
+                            </div>
+                        </Panel>
+                    </div>
                 </div>
+            )}
+
+            {/* Admins only: what needs attention */}
+            {(data?.failures || data?.freshness) && (
+                <div className="row g-4 mb-4">
+                    {data.failures && (
+                        <div className="col-lg-7">
+                            <Panel id="failures" title={<>Recent Failures</>} extra={<><Link href="/admin/requests" className="small">Request log</Link></>}>
+                                <div className="card-body p-0">
+                                    {data.failures.length ? (
+                                        <ul className="list-group list-group-flush">
+                                            {data.failures.map((f) => (
+                                                <li key={f.id} className="list-group-item px-3 py-2">
+                                                    <div className="d-flex flex-wrap align-items-center gap-2 small mb-1">
+                                                        <Link href={`/admin/requests/${f.id}`} className="fw-medium">#{f.id}</Link>
+                                                        {f.country_code && <span className="badge bg-light text-dark border">{f.country_code}</span>}
+                                                        {f.use_case && <span className="badge bg-light text-dark border">{f.use_case}</span>}
+                                                        {f.status_code && <span className="badge bg-danger-subtle text-danger-emphasis">{f.status_code}</span>}
+                                                        <span className="text-muted ms-auto">{new Date(f.created_at).toLocaleString()}</span>
+                                                    </div>
+                                                    <div className="small text-body-secondary text-break">{f.message}</div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="text-center text-muted py-4">No failed requests</div>
+                                    )}
+                                </div>
+                            </Panel>
+                        </div>
+                    )}
+
+                    {data.freshness && (
+                        <div className="col-lg-5">
+                            <Panel id="freshness" title={<>Data Freshness</>} extra={<>{stalePrices > 0 && ( <span className="badge bg-warning-subtle text-warning-emphasis">{stalePrices} stale</span> )}</>}>
+                                <div className="card-body p-0">
+                                    <ul className="list-group list-group-flush">
+                                        {data.freshness.prices.map((p) => (
+                                            <li key={p.href} className="list-group-item px-3 py-2 d-flex align-items-center gap-2 small">
+                                                <Link href={p.href} className="fw-medium">{p.label}</Link>
+                                                <span className="text-muted">{p.rows.toLocaleString()} rows</span>
+                                                <span className={`ms-auto ${p.stale ? 'text-warning-emphasis fw-medium' : 'text-muted'}`}>
+                                                    {p.last_updated ? formatDate(p.last_updated) : 'No date'}
+                                                </span>
+                                            </li>
+                                        ))}
+                                        <li className="list-group-item px-3 py-2 small">
+                                            <div className="fw-medium mb-1">Supported areas</div>
+                                            <div className="d-flex flex-wrap gap-1">
+                                                {data.freshness.coverage.map((c) => (
+                                                    <span
+                                                        key={c.country_code}
+                                                        className={`badge ${c.fetched_at ? 'bg-light text-dark border' : 'bg-warning-subtle text-warning-emphasis'}`}
+                                                        title={c.fetched_at ? `Synced ${formatDate(c.fetched_at)}` : 'No supported area synced'}
+                                                    >
+                                                        {c.country_code} {c.fetched_at ? '✓' : '— missing'}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <p className="small text-muted px-3 py-2 mb-0 border-top">
+                                        Marked stale after {data.freshness.staleAfterDays} days.
+                                    </p>
+                                </div>
+                            </Panel>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Recent Requests Table */}
+            <Panel id="recent-requests" title={<>Recent Requests</>} fill={false} defaultOpen={false}>
                 <div className="card-body p-0">
                     {data?.recentRequests?.length ? (
                         <div className="table-responsive">
@@ -376,7 +644,7 @@ export default function Dashboard() {
                         <div className="text-center text-muted py-4">No recent requests</div>
                     )}
                 </div>
-            </div>
+            </Panel>
 
             <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
