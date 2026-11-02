@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/scss/playground.scss',
                 'resources/js/app.tsx',
                 'resources/js/playground/index.tsx',
+                'resources/js/theme-switcher.tsx',
             ],
             refresh: true,
         }),

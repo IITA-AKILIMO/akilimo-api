@@ -1,41 +1,17 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// AKILIMO Admin — Bootstrap 5 Sass · Brand-accurate color system
-//
-// Brand palette (from akilimo_logo.svg):
-//   Deep green  #006f45  — primary identity color, the one accent
-//   Lime green  #9aca3c  — small highlights only (too light for text on white)
-// Neutrals are sage-tinted grays so surfaces sit quietly next to the brand green.
+// AKILIMO Admin — Bootstrap 5 Sass on the shared tokens in _brand.scss
+// (the API playground uses the same tokens, so both look like one product)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Brand tokens ─────────────────────────────────────────────────────────────
-$aki-green:      #006f45;   // brand dark green — logo cls-4
-$aki-green-dark: #00573a;   // deeper shade, text on tinted backgrounds
-$aki-green-mid:  #00915a;   // lighter variant
-$aki-lime:       #9aca3c;   // brand lime accent — logo cls-3
-$aki-lime-dark:  #7aab28;   // darker lime for pressed states
-$aki-sidebar-bg: #0e1c11;   // very dark forest — login page backdrop
+// Brand colours, sage neutrals, dark palette, fonts, radii, focus ring.
+// Several are Bootstrap's own variable names ($gray-*, $success, …), which
+// Bootstrap then takes instead of its defaults.
+@import 'brand';
 
 // ── Bootstrap 5 — variable overrides (must precede @import) ──────────────────
 
-// Sage neutrals
-$white:    #fff;
-$gray-100: #f4f7f5;
-$gray-200: #e5ebe7;
-$gray-300: #d2dbd5;
-$gray-400: #aebbb3;
-$gray-500: #83938a;
-$gray-600: #5d6d64;   // 5.4:1 on white — secondary text
-$gray-700: #415048;
-$gray-800: #29352f;
-$gray-900: #16201b;
-$black:    #0b110e;
-
 $primary:    $aki-green;
 $secondary:  $gray-600;
-$success:    #15803d;
-$info:       #0e7490;
-$warning:    #b45309;
-$danger:     #c62828;
 $light:      $gray-100;
 $dark:       $gray-900;
 
@@ -46,8 +22,6 @@ $body-tertiary-color:  $gray-500;
 $border-color:         $gray-200;
 
 // Tinted backgrounds used by badges, alerts and the active nav item
-$primary-bg-subtle:       #e3f1ea;
-$primary-border-subtle:   #b5d9c6;
 $primary-text-emphasis:   $aki-green-dark;
 $secondary-bg-subtle:     $gray-100;
 $secondary-border-subtle: $gray-300;
@@ -57,42 +31,38 @@ $link-color:        $aki-green;
 $link-hover-color:  $aki-green-dark;
 
 // ── Dark mode (Bootstrap colour modes, `data-bs-theme="dark"`) ───────────────
-// Deep sage surfaces; the brand green lightened where it's used as text.
-$body-bg-dark:                 #111814;
-$body-secondary-bg-dark:       #1c2620;
-$body-tertiary-bg-dark:        #172019;
-$body-color-dark:              #dce4df;
-$body-emphasis-color-dark:     #f4f7f5;
-$body-secondary-color-dark:    #a3b2a9;   // 7.9:1 on the dark body
-$body-tertiary-color-dark:     #7f9087;
-$border-color-dark:            #2b3731;
+$body-bg-dark:                 $dark-body-bg;
+$body-secondary-bg-dark:       $dark-secondary-bg;
+$body-tertiary-bg-dark:        $dark-tertiary-bg;
+$body-color-dark:              $dark-body-color;
+$body-emphasis-color-dark:     $dark-emphasis-color;
+$body-secondary-color-dark:    $dark-secondary-color;
+$body-tertiary-color-dark:     $dark-tertiary-color;
+$border-color-dark:            $dark-border-color;
 $headings-color-dark:          null;
-$link-color-dark:              #5cc391;
-$link-hover-color-dark:        #8ad9b0;
-$primary-text-emphasis-dark:   #8ad9b0;
-$primary-bg-subtle-dark:       #11301f;
-$primary-border-subtle-dark:   #1e5a3d;
+$link-color-dark:              $dark-link-color;
+$link-hover-color-dark:        $dark-link-hover;
+$primary-text-emphasis-dark:   $dark-primary-text;
+$primary-bg-subtle-dark:       $dark-primary-bg-subtle;
+$primary-border-subtle-dark:   $dark-primary-border-subtle;
 $secondary-text-emphasis-dark: #c5d0ca;
-$secondary-bg-subtle-dark:     #1c2620;
+$secondary-bg-subtle-dark:     $dark-secondary-bg;
 $secondary-border-subtle-dark: #34423a;
 
-$focus-ring-color:  rgba($aki-green, 0.28);
-$focus-ring-width:  0.2rem;
-
 // Typography
-$font-family-sans-serif: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-$font-family-monospace:  'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+$font-family-sans-serif: $font-sans;
+$font-family-monospace:  $font-mono;
 $font-size-base:         0.9375rem;
 $line-height-base:       1.6;
 $headings-font-weight:   600;
 
 // Border radius
-$border-radius:      0.5rem;
-$border-radius-sm:   0.375rem;
-$border-radius-lg:   0.75rem;
-$border-radius-xl:   1rem;
+$border-radius:      $radius;
+$border-radius-sm:   $radius-sm;
+$border-radius-lg:   $radius-lg;
+$border-radius-xl:   $radius-xl;
 $border-radius-xxl:  1.5rem;
-$border-radius-pill: 50rem;
+$border-radius-pill: $radius-pill;
 
 // Shadows — crisp, directional
 $box-shadow-sm:  0 1px 2px 0 rgb(22 32 27 / 0.06);
@@ -181,7 +151,7 @@ $pagination-focus-box-shadow:    $input-focus-box-shadow;
 
 // ── Dark mode — pieces Bootstrap's colour modes don't cover on their own ────
 @include color-mode(dark) {
-    --aki-canvas: #0b100d;
+    --aki-canvas: #{$dark-canvas};
 
     .logo-on-light { display: none; }
     .logo-on-dark { display: block; }
@@ -199,7 +169,7 @@ $pagination-focus-box-shadow:    $input-focus-box-shadow;
 
     .form-control,
     .form-select,
-    .input-group-text { border-color: #3a4842; }
+    .input-group-text { border-color: $dark-input-border; }
 
     .flash-success { background: #0f2a1b; color: #86efac; border-bottom-color: #1e5a3d; }
     .flash-error   { background: #2d1414; color: #fca5a5; border-bottom-color: #5c2424; }
