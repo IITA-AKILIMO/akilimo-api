@@ -1875,6 +1875,35 @@ body {
     &:hover { background: rgba(45, 107, 68, 0.08); }
 }
 
+// MCP key type picker and Claude Desktop config under a new MCP key
+.tok-type-select {
+    flex: 0 0 auto;
+}
+
+.tok-status--mcp {
+    color: var(--forest);
+    background: rgba(45, 107, 68, 0.1);
+}
+
+.tok-mcp-config {
+    font-family: $font-body;
+    font-size: 0.8125rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+
+    p { margin-bottom: 0.5rem; }
+
+    pre {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.6rem 0.875rem;
+        font-size: 0.8rem;
+        overflow-x: auto;
+        margin: 0;
+    }
+}
+
 .tok-reveal-dismiss {
     font-family: $font-body;
     font-size: 0.8rem;

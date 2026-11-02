@@ -105,6 +105,13 @@ X-Api-Key: ak_a1b2c3d4e5f6...
 | `read` | GET protected endpoints (recommendations history, feedback, translations) |
 | `write` | POST/compute endpoints (compute recommendations, submit feedback) |
 | `api-keys:manage` | Create, list, revoke, delete own API keys |
+| `mcp:use` | The AKILIMO MCP server only (see below); such a key works nowhere else in this API |
+
+---
+
+### MCP keys (AKILIMO tools in Claude Desktop and other AI clients)
+
+The AKILIMO MCP server (`https://akilimo-mcp.akilimo.org/mcp`, repository `akilimo-mcp-agent`) gives AI clients the same data and recommendations as tools. When it requires a key, create one in the playground: sign in at `/playground` > **API keys** > type **MCP key** > **Generate**, and copy it (shown once, with a ready Claude Desktop configuration). Send it to the MCP server, not to this API, as `Authorization: Bearer <key>` or `X-API-Key: <key>`. Revoking or deleting it in the playground stops it within a minute. Details: [MCP_KEYS.md](./MCP_KEYS.md).
 
 ---
 

@@ -70,6 +70,7 @@ Thin — validate input, call one service or repository, return a resource. No b
 | `RecommendationService` | Orchestrates caching, logging, fertilizer mapping, DTO assembly |
 | `AkilimoComputeService` | HTTP client wrapper for the external compute API. Reads all config (base URL, endpoint, timeout, retries) from `config/akilimo-compute.php` |
 | `AuthService` | Login (credential check + token mint), logout (token deletion) |
+| `ApiKeyService` | Issues API keys (`ak_` + 32 hex, SHA-256 stored) and checks users' MCP keys for the AKILIMO MCP server (`verifyMcpKey`, see [MCP_KEYS.md](./MCP_KEYS.md)) |
 
 ### Repositories (`app/Repositories/`)
 All repos extend `BaseRepo` which provides: `find`, `selectOne`, `selectByCondition`, `create`, `update`, `delete`, and `paginateWithSort` (with column allowlist for `order_by`).
@@ -105,10 +106,18 @@ Two mechanisms are accepted on every protected route, tried in order by `Authent
 
 | Constant | Value | Purpose |
 |---|---|---|
-| `READ` | `read` | GET protected endpoints |
-| `WRITE` | `write` | POST/PATCH/DELETE mutations |
+| `RECOMMENDATIONS_COMPUTE` | `recommendations:compute` | Compute recommendations |
+| `RECOMMENDATIONS_READ` | `recommendations:read` | Read recommendation history |
+| `PRICES_WRITE` | `prices:write` | Submit price updates |
+| `FEEDBACK_READ` / `FEEDBACK_WRITE` | `feedback:read` / `feedback:write` | Read / submit user feedback |
+| `TRANSLATIONS_READ` | `translations:read` | Read translations |
+| `MCP_USE` | `mcp:use` | A user's key for the AKILIMO MCP server (works nowhere else in this API) |
+| `MCP_VERIFY_KEYS` | `mcp:verify-keys` | The MCP server's own key, for `POST /v1/mcp/verify-key` |
 | `API_KEYS_MANAGE` | `api-keys:manage` | Manage own API keys |
-| `WILDCARD` | `*` | All abilities (admin) |
+| `READ` / `WRITE` | `read` / `write` | Broad legacy abilities that imply the granular read / write ones (`BROAD_GRANTS`) |
+| `ADMIN`, `WILDCARD` | `admin`, `*` | All abilities |
+
+Presets: `PLAYGROUND_ABILITIES`, `PARTNER_ABILITIES`, `MCP_ABILITIES` (`mcp:use` only).
 
 Routes declare required abilities as middleware parameters:
 ```php

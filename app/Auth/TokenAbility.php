@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Auth;
 
 final class TokenAbility
@@ -28,7 +34,19 @@ final class TokenAbility
 
     const TRANSLATIONS_READ = 'translations:read';
 
+    // ── AKILIMO MCP server (akilimo-mcp-agent) ────────────────────────────────
+    /** A user's key for calling the AKILIMO MCP tools from their own MCP client. */
+    const MCP_USE = 'mcp:use';
+
+    /** The MCP server's own key, for checking users' MCP keys at POST /v1/mcp/verify-key. */
+    const MCP_VERIFY_KEYS = 'mcp:verify-keys';
+
     // ── Role presets ──────────────────────────────────────────────────────────
+
+    /** MCP keys users create for themselves: the MCP tools only. */
+    const MCP_ABILITIES = [
+        self::MCP_USE,
+    ];
 
     /** Playground users: compute recommendations only. */
     const PLAYGROUND_ABILITIES = [
@@ -52,6 +70,8 @@ final class TokenAbility
         self::FEEDBACK_READ,
         self::FEEDBACK_WRITE,
         self::TRANSLATIONS_READ,
+        self::MCP_USE,
+        self::MCP_VERIFY_KEYS,
         self::API_KEYS_MANAGE,
         self::READ,
         self::WRITE,
@@ -85,6 +105,8 @@ final class TokenAbility
         self::FEEDBACK_READ => 'Read user feedback',
         self::FEEDBACK_WRITE => 'Submit user feedback',
         self::TRANSLATIONS_READ => 'Read translations',
+        self::MCP_USE => 'Use the AKILIMO MCP tools',
+        self::MCP_VERIFY_KEYS => 'Verify MCP keys (MCP server only)',
         self::API_KEYS_MANAGE => 'Manage own API keys',
         self::READ => 'Broad read (legacy)',
         self::WRITE => 'Broad write (legacy)',
@@ -129,6 +151,10 @@ final class TokenAbility
         ],
         'Translations' => [
             self::TRANSLATIONS_READ,
+        ],
+        'MCP' => [
+            self::MCP_USE,
+            self::MCP_VERIFY_KEYS,
         ],
         'Keys' => [
             self::API_KEYS_MANAGE,

@@ -15,6 +15,20 @@ interface NewKey extends ApiKey {
     key: string
 }
 
+type KeyType = 'api' | 'mcp'
+
+// The AKILIMO MCP server (akilimo-mcp-agent) that MCP keys are for
+const MCP_URL = 'https://akilimo-mcp.akilimo.org/mcp'
+const MCP_USE = 'mcp:use'
+
+const isMcpKey = (k: ApiKey) => (k.abilities ?? []).length === 1 && k.abilities[0] === MCP_USE
+
+function mcpConfig(key: string): string {
+    return JSON.stringify({
+        mcpServers: { 'akilimo-1.0': { type: 'http', url: MCP_URL, headers: { Authorization: `Bearer ${key}` } } },
+    }, null, 2)
+}
+
 function timeAgo(iso: string): string {
     const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
     if (diff < 60) return `${diff}s ago`
@@ -64,6 +78,16 @@ function KeyRevealBanner({ apiKey, onDismiss }: { apiKey: NewKey; onDismiss: () 
                     {copied ? 'Copied' : 'Copy'}
                 </button>
             </div>
+            {isMcpKey(apiKey) && (
+                <div className="tok-mcp-config">
+                    <p>
+                        Connect your MCP client to <code>{MCP_URL}</code> with this key as{' '}
+                        <code>Authorization: Bearer &lt;key&gt;</code> or <code>X-API-Key</code>.
+                        For Claude Desktop, add this to <code>claude_desktop_config.json</code>:
+                    </p>
+                    <pre>{mcpConfig(apiKey.key)}</pre>
+                </div>
+            )}
             <button className="tok-reveal-dismiss" onClick={onDismiss}>I've saved it</button>
         </div>
     )
@@ -77,6 +101,7 @@ export default function TokensPanel() {
     const [creating, setCreating] = useState(false)
     const [createError, setCreateError] = useState<string | null>(null)
     const [name, setName] = useState('')
+    const [type, setType] = useState<KeyType>('api')
     const [pendingAction, setPendingAction] = useState<number | null>(null)
     const nameRef = useRef<HTMLInputElement>(null)
 
@@ -107,7 +132,7 @@ export default function TokensPanel() {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken(),
                 },
-                body: JSON.stringify({ name: name.trim() }),
+                body: JSON.stringify({ name: name.trim(), type }),
             })
 
             const data = await res.json()
@@ -166,11 +191,21 @@ export default function TokensPanel() {
             <div className="tok-create-card">
                 <h2 className="tok-section-title">Generate API key</h2>
                 <p className="tok-section-sub">
-                    Keys grant <code>read</code> and <code>write</code> access to the API.
-                    Use them in the <code>X-Api-Key</code> header.
+                    An <strong>API key</strong> calls this API; send it in the <code>X-Api-Key</code> header.
+                    An <strong>MCP key</strong> connects your own MCP client (Claude Desktop, Open WebUI) to the
+                    AKILIMO tools at <code>{MCP_URL}</code> and works only there.
                 </p>
 
                 <form className="tok-create-form" onSubmit={handleCreate}>
+                    <select
+                        className="tok-input tok-type-select"
+                        value={type}
+                        onChange={(e) => setType(e.target.value as KeyType)}
+                        aria-label="Key type"
+                    >
+                        <option value="api">API key</option>
+                        <option value="mcp">MCP key</option>
+                    </select>
                     <input
                         ref={nameRef}
                         type="text"
@@ -238,6 +273,7 @@ export default function TokensPanel() {
                             <div key={k.id} className={`tok-row${!k.is_active ? ' tok-row--revoked' : ''}`}>
                                 <div className="tok-row-info">
                                     <span className="tok-name">{k.name}</span>
+                                    {isMcpKey(k) && <span className="tok-status tok-status--mcp">MCP</span>}
                                     <code className="tok-prefix">{k.key_prefix}…</code>
                                     <span className={`tok-status ${k.is_active ? 'tok-status--active' : 'tok-status--revoked'}`}>
                                         {k.is_active ? 'Active' : 'Revoked'}

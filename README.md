@@ -61,7 +61,7 @@ Two methods are supported interchangeably on all protected routes:
 - **Bearer token** — `Authorization: Bearer <token>` — obtained via `POST /v1/auth/login`, valid for `AUTH_TOKEN_TTL_DAYS` days.
 - **API key** — `X-Api-Key: ak_...` — generated via `POST /v1/auth/api-keys`, long-lived, scoped to specific abilities.
 
-See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup.
+See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup, and [MCP keys](docs/MCP_KEYS.md) for the keys users create in the playground for the AKILIMO MCP server.
 
 ---
 
@@ -100,6 +100,7 @@ See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup.
 | `GET` | `/v1/user-feedback` | List feedback |
 | `POST` | `/v1/user-feedback` | Submit feedback |
 | `GET` | `/v1/translations` | Translation strings |
+| `POST` | `/v1/mcp/verify-key` | Check a user's MCP key (AKILIMO MCP server only, ability `mcp:verify-keys`) |
 
 ---
 

@@ -1,10 +1,17 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Web;
 
 use App\Auth\TokenAbility;
 use App\Enums\EnumUserRole as UserRole;
 use App\Models\ApiKey;
+use App\Service\ApiKeyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -29,38 +36,31 @@ class PlaygroundTokenController extends Controller
         ]));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, ApiKeyService $keys): JsonResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
+            // "mcp": a key for the AKILIMO MCP server only (mcp:use), whatever the user's role
+            'type' => ['sometimes', 'string', 'in:api,mcp'],
         ]);
 
         $user = $request->user();
 
-        $abilities = match ($user->role) {
-            UserRole::Admin => [TokenAbility::WILDCARD],
-            UserRole::Partner => TokenAbility::PARTNER_ABILITIES,
-            default => TokenAbility::PLAYGROUND_ABILITIES,
-        };
+        $abilities = ($data['type'] ?? 'api') === 'mcp'
+            ? TokenAbility::MCP_ABILITIES
+            : match ($user->role) {
+                UserRole::Admin => [TokenAbility::WILDCARD],
+                UserRole::Partner => TokenAbility::PARTNER_ABILITIES,
+                default => TokenAbility::PLAYGROUND_ABILITIES,
+            };
 
-        $rawKey = 'ak_'.bin2hex(random_bytes(16));
-        $prefix = substr($rawKey, 0, 12);
-        $hash = hash('sha256', $rawKey);
-
-        $key = ApiKey::create([
-            'user_id' => $user->id,
-            'name' => $data['name'],
-            'key_prefix' => $prefix,
-            'key_hash' => $hash,
-            'abilities' => $abilities,
-            'is_active' => true,
-        ]);
+        ['key' => $key, 'raw' => $rawKey] = $keys->issue($user, $data['name'], $abilities);
 
         return response()->json([
             'id' => $key->id,
             'name' => $key->name,
             'key' => $rawKey,
-            'key_prefix' => $prefix,
+            'key_prefix' => $key->key_prefix,
             'is_active' => true,
             'abilities' => $key->abilities,
             'created_at' => $key->created_at?->toIso8601String(),

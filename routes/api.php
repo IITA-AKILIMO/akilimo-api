@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\FertilizerController;
 use App\Http\Controllers\Api\FertilizerPriceController;
 use App\Http\Controllers\Api\InvestmentAmountController;
 use App\Http\Controllers\Api\MaizePricesController;
+use App\Http\Controllers\Api\McpKeyController;
 use App\Http\Controllers\Api\OperationCostController;
 use App\Http\Controllers\Api\PotatoPricesController;
 use App\Http\Controllers\Api\RecommendationController;
@@ -161,7 +162,12 @@ Route::middleware(['throttle:30,1', 'auth.token:api-keys:manage'])->prefix('v1/a
     Route::delete('/api-keys/{id}', [ApiKeyController::class, 'destroy']);
 });
 
-// ── Admin — lookup data CRUD (requires write) ─────────────────────────────────
+// ── MCP key check (the AKILIMO MCP server's own key, requires mcp:verify-keys) ──
+Route::middleware(['throttle:600,1', 'auth.token:mcp:verify-keys'])->prefix('v1/mcp')->group(function () {
+    Route::post('/verify-key', [McpKeyController::class, 'verify']);
+});
+
+// ── Admin — lookup data CRUD (requires write)─────────────────────────────────
 Route::middleware(['throttle:60,1', 'auth.token:write'])->prefix('v1/admin')->group(function () {
     Route::apiResource('fertilizers', FertilizerController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('fertilizer-prices', FertilizerPriceController::class)->only(['store', 'update', 'destroy']);
