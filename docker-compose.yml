@@ -25,16 +25,16 @@ services:
             LOG_LEVEL: ${LOG_LEVEL:-error}
             # Database
             DB_CONNECTION: ${DB_CONNECTION:-mariadb}
-            DB_HOST: ${DB_HOST:-mariadb}
-            DB_PORT: ${DB_PORT:-3306}
+            DB_HOST: maria
+            DB_PORT: 3306
             DB_DATABASE: ${DB_DATABASE}
             DB_USERNAME: ${DB_USERNAME}
             DB_PASSWORD: ${DB_PASSWORD}
             # Cache / Redis
-            REDIS_HOST: cache-dev
+            REDIS_HOST: redis-dev
             HORIZON_ENABLED: "${HORIZON_ENABLED:-false}"
             SCHEDULER_ENABLED: "${SCHEDULER_ENABLED:-false}"
-            LARAVEL_MIGRATE: "${LARAVEL_MIGRATE:-false}"
+            LARAVEL_MIGRATE: "${LARAVEL_MIGRATE:-true}"
             LARAVEL_OPTIMIZE: "${LARAVEL_OPTIMIZE:-false}"
         ports:
             - "127.0.0.1:9100:80"
