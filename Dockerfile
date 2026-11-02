@@ -3,12 +3,12 @@ ARG BASE_IMAGE=ghcr.io/masgeek/laravel-frankenphp-base:php8.4
 # -----------------------------------
 # Build stage for frontend assets
 # -----------------------------------
-FROM node:24-alpine AS frontend-build
+FROM node:24.14-alpine AS frontend-build
 
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Pin the package manager used for reproducible frontend builds.
+RUN npm install -g pnpm@10.12.4
 
 # Copy only the package.json and pnpm-lock.yaml to leverage Docker cache
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -27,10 +27,9 @@ RUN pnpm build
 # -----------------------------------
 FROM ${BASE_IMAGE}
 
-ENV AGENT_MQTT_ENABLED=false
 ARG APP_BASE_PATH=/var/www/html/fuelrod
 
-ENV APP_BASE_PATH=${APP_BASE_PATH} \
+ENV APP_BASE_PATH=${APP_BASE_PAfTH} \
     APP_PUBLIC_PATH=${APP_BASE_PATH}/public
 
 USER root
@@ -57,6 +56,12 @@ COPY --from=frontend-build --chown=www-data:www-data /app/public/build ./public/
 RUN chown -R www-data:www-data \
     "${APP_BASE_PATH}" \
     && chmod -R u+rwX,go-rwx "${APP_BASE_PATH}/storage" "${APP_BASE_PATH}/bootstrap/cache"
+
+# Install bash aliases so they are available in `docker exec` sessions
+COPY docker/bash/artisan-aliases.sh /etc/artisan-aliases.sh
+RUN chmod +x /etc/artisan-aliases.sh \
+    && echo '[ -f /etc/artisan-aliases.sh ] && source /etc/artisan-aliases.sh' >> /root/.bashrc \
+    && rm -rf "${APP_BASE_PATH}/docker" \
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD curl --fail --silent http://127.0.0.1/up > /dev/null || exit 1
