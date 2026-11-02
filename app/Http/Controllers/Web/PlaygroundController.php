@@ -63,6 +63,12 @@ class PlaygroundController extends Controller
             'cassava_produce_type' => ['required', 'string', 'in:roots,chips,flour,gari'],
             'maize_produce_type' => ['sometimes', 'string', 'in:fresh_cob,grain'],
             'sweet_potato_produce_type' => ['sometimes', 'string', 'in:tubers,flour'],
+            // Selling prices, in local currency per unit. With a price of 0 extra yield
+            // is worth nothing, so fertilizer and intercropping could never pay.
+            'cassava_unit_price' => ['required', 'numeric', 'gt:0'],
+            'cassava_unit_weight' => ['required', 'numeric', 'gt:0'],
+            'maize_unit_price' => ['required_if_accepted:inter_cropping_maize_rec', 'nullable', 'numeric', 'min:0'],
+            'sweet_potato_unit_price' => ['required_if_accepted:inter_cropping_potato_rec', 'nullable', 'numeric', 'min:0'],
             // Recommendation flags
             'fertilizer_rec' => ['required', 'boolean'],
             'planting_practices_rec' => ['required', 'boolean'],
@@ -120,9 +126,6 @@ class PlaygroundController extends Controller
         $cassavaProduce = $data['cassava_produce_type'] ?? 'roots';
         $maizeProduce = $data['maize_produce_type'] ?? 'fresh_cob';
         $potatoProduce = $data['sweet_potato_produce_type'] ?? 'tubers';
-
-        // Cassava unit weight defaults by produce type (kg per unit)
-        $cassavaUnitWeights = ['roots' => 1000.0, 'chips' => 100.0, 'flour' => 100.0, 'gari' => 100.0];
 
         return [
             'user_info' => [
@@ -205,20 +208,22 @@ class PlaygroundController extends Controller
                     'sell_to_starch_factory' => false,
                     'starch_factory_name' => null,
                 ],
+                // The price is per selling unit (1, 50, 100 or 1000 kg, from cassava-units)
                 'cassava' => [
                     'produce_type' => $cassavaProduce,
-                    'unit_weight' => $cassavaUnitWeights[$cassavaProduce] ?? 1000.0,
-                    'unit_price' => 0.0,
+                    'unit_weight' => (float) $data['cassava_unit_weight'],
+                    'unit_price' => (float) $data['cassava_unit_price'],
                 ],
+                // Maize is priced per cob, or per 50 kg bag of grain; sweet potato per tonne
                 'maize' => [
                     'produce_type' => $maizeProduce,
                     'unit_weight' => $maizeProduce === 'grain' ? 50.0 : 1.0,
-                    'unit_price' => 0.0,
+                    'unit_price' => (float) ($data['maize_unit_price'] ?? 0),
                 ],
                 'sweetPotato' => [
                     'produce_type' => $potatoProduce,
                     'unit_weight' => 1000.0,
-                    'unit_price' => 0.0,
+                    'unit_price' => (float) ($data['sweet_potato_unit_price'] ?? 0),
                 ],
                 'maxInvestment' => 0.0,
             ],

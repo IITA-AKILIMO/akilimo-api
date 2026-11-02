@@ -1,7 +1,7 @@
 import {useEffect, useReducer, useRef, useState} from 'react'
 import type {ApiResponse} from './RecommendationResult'
-import type {Country, FertilizerEntry, FormState, Step} from './types'
-import {COUNTRY_COORDS, COUNTRY_INTERCROP, INITIAL_FORM_STATE} from './constants'
+import type {CassavaUnit, Country, FertilizerEntry, FormState, PriceHints, Step} from './types'
+import {COUNTRY_INTERCROP, DEFAULT_CASSAVA_UNITS, INITIAL_FORM_STATE} from './constants'
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
@@ -26,6 +26,11 @@ export function maxHarvestDate(planting: string): string {
     return addMonthsDays(planting ? new Date(planting) : today, 15)
 }
 
+/** A typical cassava season: harvest twelve months after planting. */
+export function typicalHarvestDate(planting: string): string {
+    return addMonthsDays(new Date(planting), 12)
+}
+
 // ── Step helpers ──────────────────────────────────────────────────────────────
 
 export function needsFertilizers(s: string) {
@@ -42,20 +47,69 @@ export function scenarioToFlags(s: string, intercropCrop: string) {
         planting_practices_rec:    s === 'PP'   || s === 'COMPLETE',
         scheduled_planting_rec:    s === 'SPHS' || s === 'COMPLETE',
         scheduled_harvest_rec:     s === 'SPHS' || s === 'COMPLETE',
-        inter_cropping_maize_rec:  (s === 'IC' && intercropCrop === 'MAIZE')  || s === 'COMPLETE',
-        inter_cropping_potato_rec: (s === 'IC' && intercropCrop === 'POTATO') || s === 'COMPLETE',
+        inter_cropping_maize_rec:  (s === 'IC' || s === 'COMPLETE') && intercropCrop === 'MAIZE',
+        inter_cropping_potato_rec: (s === 'IC' || s === 'COMPLETE') && intercropCrop === 'POTATO',
     }
 }
+
+/** Whether the request needs a second-crop price (intercropping maize or sweet potato). */
+export function needsSecondCrop(s: string, country: string): 'MAIZE' | 'POTATO' | null {
+    if (s !== 'IC' && s !== 'COMPLETE') return null
+    return COUNTRY_INTERCROP[country] ?? null
+}
+
+// ── Price lists ───────────────────────────────────────────────────────────────
+
+interface PriceBand {
+    min_local_price?: number | null
+    max_local_price?: number | null
+    average_price?: number | null
+    price_per_bag?: number | null
+}
+
+/**
+ * The middle band's price, skipping the 0 / -1 placeholder rows the lists use for
+ * "exact price" and "I don't know"; null when the list has no real band.
+ */
+function typicalPrice(bands: PriceBand[], field: 'average_price' | 'price_per_bag' = 'average_price'): number | null {
+    const prices = bands
+        .map((b) => Number(b[field] ?? ((Number(b.min_local_price) + Number(b.max_local_price)) / 2)))
+        .filter((p) => Number.isFinite(p) && p > 0)
+        .sort((a, b) => a - b)
+    return prices.length ? prices[Math.floor(prices.length / 2)] : null
+}
+
+/** All rows of an API list, following its pages (the API pages at 50–100 rows). */
+async function getList<T>(url: string): Promise<T[]> {
+    const rows: T[] = []
+    let next: string | null = url
+    for (let page = 0; next && page < 10; page++) {
+        const r: Response = await fetch(next, {headers: {Accept: 'application/json'}})
+        if (!r.ok) break
+        const d = await r.json()
+        rows.push(...((d.data ?? d) as T[]))
+        next = d.links?.next ?? null
+    }
+    return rows
+}
+
+function roundPrice(p: number): string {
+    return String(p >= 100 ? Math.round(p) : Math.round(p * 100) / 100)
+}
+
+const NO_HINTS: PriceHints = {currency: null, cassavaPerTonne: null, maizeCob: null, maizeGrain: null, sweetPotatoPerTonne: null}
 
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 export function usePlaygroundForm() {
     const [step, setStep] = useState<Step>(1)
-    const [form, setForm] = useReducer(
+    const [form, setFormState] = useReducer(
         (prev: FormState, patch: Partial<FormState>) => ({...prev, ...patch}),
         INITIAL_FORM_STATE,
     )
     const [countries, setCountries] = useState<Country[]>([])
+    const [cassavaUnits, setCassavaUnits] = useState<CassavaUnit[]>(DEFAULT_CASSAVA_UNITS)
+    const [priceHints, setPriceHints] = useState<PriceHints>(NO_HINTS)
     const [fertilizers, setFertilizers] = useState<FertilizerEntry[]>([])
     const [loadingFerts, setLoadingFerts] = useState(false)
     const [submitting, setSubmitting] = useState(false)
@@ -65,50 +119,125 @@ export function usePlaygroundForm() {
     const resultRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        fetch('/api/v1/countries')
-            .then((r) => r.json())
-            .then((d) => setCountries(d.data ?? d))
+        getList<Country>('/api/v1/countries').then(setCountries).catch(() => {})
+        getList<CassavaUnit & {active?: boolean}>('/api/v1/cassava-units')
+            .then((units) => {
+                const active = units.filter((u) => u.active !== false && u.unit_weight > 0)
+                if (active.length) setCassavaUnits(active.sort((a, b) => a.unit_weight - b.unit_weight))
+            })
             .catch(() => {})
     }, [])
 
+    /** Update fields and drop the errors about them, so a fixed field stops showing one. */
+    function setForm(patch: Partial<FormState>) {
+        setFormState(patch)
+        const keys = Object.keys(patch)
+        if (keys.includes('mapLat') || keys.includes('mapLong')) keys.push('mapLat', 'mapLong')
+        setValidationErrors((prev) => {
+            if (!keys.some((k) => k in prev)) return prev
+            const next = {...prev}
+            keys.forEach((k) => delete next[k])
+            return next
+        })
+    }
+
+    // Prices for the chosen country, to prefill the crop prices
+    useEffect(() => {
+        if (!form.country) return
+        let cancelled = false
+        const code = form.country
+        Promise.all([
+            getList<PriceBand & {currency?: {currency_code?: string} | null}>(`/api/v1/cassava-prices/country/${code}`),
+            COUNTRY_INTERCROP[code] === 'MAIZE' ? getList<PriceBand & {produce_type?: string}>(`/api/v1/maize-prices/country/${code}`) : Promise.resolve([]),
+            COUNTRY_INTERCROP[code] === 'POTATO' ? getList<PriceBand>(`/api/v1/potato-prices/country/${code}`) : Promise.resolve([]),
+        ]).then(([cassava, maize, potato]) => {
+            if (cancelled) return
+            const hints: PriceHints = {
+                currency: cassava.find((b) => b.currency?.currency_code)?.currency?.currency_code ?? null,
+                cassavaPerTonne: typicalPrice(cassava),
+                maizeCob: typicalPrice(maize.filter((b) => b.produce_type === 'cob')),
+                maizeGrain: typicalPrice(maize.filter((b) => b.produce_type === 'grain')),
+                sweetPotatoPerTonne: typicalPrice(potato),
+            }
+            setPriceHints(hints)
+            // A new country means a new currency, so its prices replace any earlier ones
+            setForm({
+                cassavaPrice: hints.cassavaPerTonne ? roundPrice(hints.cassavaPerTonne * Number(form.cassavaUnitWeight) / 1000) : '',
+                maizePrice: (form.maizeProduceType === 'grain' ? hints.maizeGrain : hints.maizeCob)?.toString() ?? '',
+                sweetPotatoPrice: hints.sweetPotatoPerTonne ? roundPrice(hints.sweetPotatoPerTonne) : '',
+            })
+        }).catch(() => setPriceHints(NO_HINTS))
+        return () => { cancelled = true }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [form.country])
+
     useEffect(() => {
         if (!form.country || !needsFertilizers(form.scenario)) return
+        let cancelled = false
         setLoadingFerts(true)
         setFertilizers([])
-        fetch(`/api/v1/fertilizers/country/${form.country}?per_page=50`)
-            .then((r) => r.json())
-            .then((d) => {
-                const items = d.data ?? d
+        Promise.all([
+            getList<{fertilizer_key: string; name: string; type?: string; weight: number; available: boolean}>(
+                `/api/v1/fertilizers/country/${form.country}?per_page=50`),
+            getList<PriceBand & {fertilizer_key: string; active?: boolean}>(
+                `/api/v1/fertilizer-prices/country/${form.country}?per_page=100`).catch(() => []),
+        ])
+            .then(([items, prices]) => {
+                if (cancelled) return
                 setFertilizers(
                     items
-                        .filter((f: {available: boolean}) => f.available)
-                        .map((f: {fertilizer_key: string; name: string; weight: number}) => ({
+                        .filter((f) => f.available)
+                        .map((f) => ({
                             key:             f.fertilizer_key,
                             name:            f.name,
-                            fertilizer_type: 'STRAIGHT',
+                            fertilizer_type: f.type || f.fertilizer_key,
                             weight:          f.weight ?? 50,
-                            price:           0,
+                            // Typical bag price from the country's list; the user can change it
+                            price:           typicalPrice(prices.filter((p) => p.fertilizer_key === f.fertilizer_key && p.active !== false), 'price_per_bag') ?? 0,
                             selected:        false,
                         })),
                 )
             })
             .catch(() => {})
-            .finally(() => setLoadingFerts(false))
+            .finally(() => { if (!cancelled) setLoadingFerts(false) })
+        return () => { cancelled = true }
     }, [form.country, form.scenario])
 
     function handleCountryChange(code: string) {
-        const coords = COUNTRY_COORDS[code]
         const intercropCrop = COUNTRY_INTERCROP[code]
+        // The map zooms to the country, but the farm pin is the user's to place:
+        // a pin in the country's centre would give advice for the wrong place.
         setForm({
             country:  code,
-            mapLat:   coords ? String(coords[0]) : '',
-            mapLong:  coords ? String(coords[1]) : '',
+            mapLat:   '',
+            mapLong:  '',
             ...(intercropCrop ? {intercropCrop} : {}),
         })
     }
 
+    /** Change the cassava selling unit, keeping the same price per kg (15,000/t = 750 per 50 kg). */
+    function setCassavaUnit(kg: number) {
+        const oldKg = Number(form.cassavaUnitWeight) || 1000
+        const price = Number(form.cassavaPrice)
+        setForm({
+            cassavaUnitWeight: String(kg),
+            ...(price > 0 ? {cassavaPrice: roundPrice(price * kg / oldKg)} : {}),
+        })
+    }
+
+    function setMaizeProduceType(type: string) {
+        const typical = type === 'grain' ? priceHints.maizeGrain : priceHints.maizeCob
+        setForm({maizeProduceType: type, ...(typical ? {maizePrice: String(typical)} : {})})
+    }
+
     function updateFert(key: string, patch: Partial<FertilizerEntry>) {
         setFertilizers((prev) => prev.map((f) => (f.key === key ? {...f, ...patch} : f)))
+        setValidationErrors((prev) => {
+            const next = {...prev}
+            delete next[`price_${key}`]
+            if (patch.selected) delete next.fertilizers
+            return next
+        })
     }
 
     function validateStep(s: Step): Record<string, string> {
@@ -119,8 +248,8 @@ export function usePlaygroundForm() {
             else if (form.scenario === 'IC' && !COUNTRY_INTERCROP[form.country])
                 errs.country = 'Intercropping is only available for Nigeria (maize) and Tanzania (potato)'
             if (!form.fieldSize || +form.fieldSize < 0.1) errs.fieldSize = 'Enter a valid field size (min 0.1)'
-            if (!form.mapLat || isNaN(+form.mapLat))   errs.mapLat  = 'Pin your farm location on the map'
-            if (!form.mapLong || isNaN(+form.mapLong)) errs.mapLong = 'Pin your farm location on the map'
+            if (!form.mapLat || isNaN(+form.mapLat))   errs.mapLat  = 'Click the map to pin your farm location'
+            if (!form.mapLong || isNaN(+form.mapLong)) errs.mapLong = 'Click the map to pin your farm location'
         }
 
         if (s === 3) {
@@ -130,6 +259,13 @@ export function usePlaygroundForm() {
             const sq = Number(form.soilQuality)
             if (isNaN(sq) || sq < 0 || sq > 5)
                 errs.soilQuality = 'Soil quality must be between 0 and 5'
+            if (!(Number(form.cassavaPrice) > 0))
+                errs.cassavaPrice = 'Enter the price you get for your cassava'
+            const second = needsSecondCrop(form.scenario, form.country)
+            if (second === 'MAIZE' && !(Number(form.maizePrice) > 0))
+                errs.maizePrice = 'Enter the price you get for your maize'
+            if (second === 'POTATO' && !(Number(form.sweetPotatoPrice) > 0))
+                errs.sweetPotatoPrice = 'Enter the price you get for your sweet potato'
         }
 
         if (s === 4 && needsFertilizers(form.scenario)) {
@@ -189,7 +325,8 @@ export function usePlaygroundForm() {
         const defaultHarvest = minHarvestDate(todayStr)
         const fertList = fertilizers.length
             ? fertilizers
-            : [{key: 'none', name: 'None', fertilizer_type: 'STRAIGHT', weight: 50, price: 0, selected: false}]
+            : [{key: 'none', name: 'None', fertilizer_type: 'NONE', weight: 50, price: 0, selected: false}]
+        const second = needsSecondCrop(form.scenario, form.country)
 
         const payload = {
             country_code:              form.country,
@@ -203,14 +340,19 @@ export function usePlaygroundForm() {
             soil_quality:              Number.parseFloat(form.soilQuality),
             risk_attitude:             Number.parseInt(form.riskAttitude, 10),
             cassava_produce_type:      form.cassavaProduceType,
+            cassava_unit_price:        Number.parseFloat(form.cassavaPrice),
+            cassava_unit_weight:       Number.parseFloat(form.cassavaUnitWeight),
             maize_produce_type:        form.maizeProduceType,
+            maize_unit_price:          second === 'MAIZE' ? Number.parseFloat(form.maizePrice) : null,
             sweet_potato_produce_type: form.sweetPotatoProduceType,
+            sweet_potato_unit_price:   second === 'POTATO' ? Number.parseFloat(form.sweetPotatoPrice) : null,
             planting_date:             form.plantingDate || todayStr,
             harvest_date:              form.harvestDate  || defaultHarvest,
             planting_date_window:      Number.parseInt(form.plantingDateWindow, 10) || 0,
             harvest_date_window:       Number.parseInt(form.harvestDateWindow, 10)  || 0,
             fertilizer_list:           fertList,
-            ...scenarioToFlags(form.scenario, form.intercropCrop),
+            // Only the country's own intercrop (maize in Nigeria, sweet potato in Tanzania)
+            ...scenarioToFlags(form.scenario, second ?? ''),
         }
 
         const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? ''
@@ -238,16 +380,18 @@ export function usePlaygroundForm() {
         setResult(null)
         setApiError(null)
         setStep(1)
-        setForm(INITIAL_FORM_STATE)
+        setFormState(INITIAL_FORM_STATE)
+        setValidationErrors({})
+        setPriceHints(NO_HINTS)
         setFertilizers([])
     }
 
     return {
         step, form, setForm,
-        countries, fertilizers, loadingFerts,
+        countries, cassavaUnits, priceHints, fertilizers, loadingFerts,
         submitting, result, apiError, validationErrors,
         resultRef,
-        handleCountryChange, updateFert,
+        handleCountryChange, setCassavaUnit, setMaizeProduceType, updateFert,
         advance, back, submit, reset,
     }
 }

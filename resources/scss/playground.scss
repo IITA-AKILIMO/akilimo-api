@@ -95,6 +95,22 @@ body {
     border-radius: $radius-sm;
 }
 
+// Native controls (date pickers, scrollbars, checkboxes) follow the chosen theme,
+// as Bootstrap does for the admin; otherwise a dark page gets light pickers.
+:root { color-scheme: light; }
+:root[data-bs-theme="dark"] { color-scheme: dark; }
+
+// Date fields open their calendar on a click anywhere (StepDates.tsx)
+.pg-date {
+    cursor: pointer;
+
+    &::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.75;
+        &:hover { opacity: 1; }
+    }
+}
+
 // The coloured logo's lettering is dark; the white one replaces it in dark mode.
 .logo-on-dark { display: none; }
 @include dark-theme {
@@ -656,6 +672,18 @@ body:has(> .pg-nav--glass) { background: $aki-sidebar-bg; }
     }
 }
 
+// A titled group inside a step card (e.g. "Selling prices")
+.pg-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 2rem 0 0.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+
+    + .pg-card-sub { margin-bottom: 1.25rem; }
+}
+
 // ── Scenario cards ──────────────────────────────────────────────────────────────
 .scenario-grid {
     display: grid;
@@ -916,6 +944,60 @@ body:has(> .pg-nav--glass) { background: $aki-sidebar-bg; }
         }
     }
 
+    .fert-name {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    // Phones: one small card per fertilizer — tick and name on top, then the
+    // bag weight and price side by side with their own labels, so the price is
+    // never off-screen.
+    @media (max-width: 575.98px) {
+        &, tbody { display: block; }
+
+        thead {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+        }
+
+        tr {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            align-items: center;
+            gap: 0.375rem 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child { border-bottom: none; }
+
+        td {
+            padding: 0 !important;
+            border-bottom: none;
+        }
+
+        td:nth-child(2) { grid-column: 2 / -1; }
+
+        td[data-label] {
+            grid-column: auto;
+            &:nth-child(3) { grid-column: 2; }
+            &:nth-child(4) { grid-column: 3; }
+
+            &::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 0.7rem;
+                font-weight: 600;
+                color: var(--text-muted);
+                margin-bottom: 0.2rem;
+            }
+        }
+
+        input[type="number"] { min-width: 0; }
+    }
 }
 
 .fert-loading {

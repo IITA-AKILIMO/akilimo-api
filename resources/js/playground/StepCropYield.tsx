@@ -1,20 +1,35 @@
 import SubmitButton from './SubmitButton'
-import {CASSAVA_PRODUCE_TYPES, COUNTRY_INTERCROP, MAIZE_PRODUCE_TYPES, SWEET_POTATO_PRODUCE_TYPES} from './constants'
-import type {FormState} from './types'
+import {CASSAVA_PRODUCE_TYPES, COUNTRY_INTERCROP, MAIZE_PRODUCE_TYPES, SWEET_POTATO_PRODUCE_TYPES, cassavaUnitLabel} from './constants'
+import {needsSecondCrop} from './usePlaygroundForm'
+import type {CassavaUnit, FormState, PriceHints} from './types'
 
 interface Props {
     form: FormState
+    cassavaUnits: CassavaUnit[]
+    priceHints: PriceHints
     errors: Record<string, string>
     isLastStep: boolean
     submitting: boolean
     onChange: (patch: Partial<FormState>) => void
+    onCassavaUnitChange: (kg: number) => void
+    onMaizeProduceTypeChange: (type: string) => void
     onBack: () => void
     onNext: () => void
     onSubmit: () => void
 }
 
-export default function StepCropYield({form, errors, isLastStep, submitting, onChange, onBack, onNext, onSubmit}: Readonly<Props>) {
+function money(amount: number, currency: string | null): string {
+    return `${currency ? currency + ' ' : ''}${amount.toLocaleString(undefined, {maximumFractionDigits: 2})}`
+}
+
+export default function StepCropYield({
+    form, cassavaUnits, priceHints, errors, isLastStep, submitting,
+    onChange, onCassavaUnitChange, onMaizeProduceTypeChange, onBack, onNext, onSubmit,
+}: Readonly<Props>) {
     const intercropCrop = COUNTRY_INTERCROP[form.country]
+    const secondCrop = needsSecondCrop(form.scenario, form.country)
+    const currency = priceHints.currency
+    const unitKg = Number(form.cassavaUnitWeight) || 1000
 
     return (
         <div className="pg-card">
@@ -63,14 +78,14 @@ export default function StepCropYield({form, errors, isLastStep, submitting, onC
                             <option key={p.value} value={p.value}>{p.label}</option>
                         ))}
                     </select>
-                    <span className="pg-field-hint">Affects cassava price defaults</span>
+                    <span className="pg-field-hint">What you sell</span>
                 </div>
 
                 {form.scenario === 'IC' && intercropCrop === 'MAIZE' && (
                     <div className="pg-field">
                         <label htmlFor="maizeProduceType">Maize produce type</label>
                         <select id="maizeProduceType" value={form.maizeProduceType}
-                                onChange={(e) => onChange({maizeProduceType: e.target.value})}>
+                                onChange={(e) => onMaizeProduceTypeChange(e.target.value)}>
                             {MAIZE_PRODUCE_TYPES.map((p) => (
                                 <option key={p.value} value={p.value}>{p.label}</option>
                             ))}
@@ -95,6 +110,62 @@ export default function StepCropYield({form, errors, isLastStep, submitting, onC
                         <span className="pg-field-hint" style={{color: 'var(--color-warning, #b45309)'}}>
                             ⚠ Select a supported country in the previous step (Nigeria or Tanzania) to configure intercropping options.
                         </span>
+                    </div>
+                )}
+            </div>
+
+            {/* Without a selling price extra yield is worth nothing, so nothing would ever pay */}
+            <h3 className="pg-section-title">Selling prices</h3>
+            <p className="pg-card-sub">
+                What you are paid{currency ? ` in ${currency}` : ''}. Prefilled with the typical price in the AKILIMO
+                price list; change it to your own.
+            </p>
+            <div className="pg-form-grid pg-form-grid--3">
+                <div className="pg-field">
+                    <label htmlFor="cassavaPrice">Cassava price{currency ? ` (${currency})` : ''}</label>
+                    <input id="cassavaPrice" type="number" min="0" step="any" inputMode="decimal"
+                           value={form.cassavaPrice}
+                           onChange={(e) => onChange({cassavaPrice: e.target.value})}
+                           aria-describedby="cassavaPriceHint"
+                           placeholder="e.g. 15000"/>
+                    {errors.cassavaPrice && <span className="pg-field-error">{errors.cassavaPrice}</span>}
+                    <span className="pg-field-hint" id="cassavaPriceHint">
+                        {priceHints.cassavaPerTonne
+                            ? `Typical: ${money(priceHints.cassavaPerTonne * unitKg / 1000, currency)} ${cassavaUnitLabel(unitKg)}`
+                            : 'No price list for this country: enter your own'}
+                    </span>
+                </div>
+
+                <div className="pg-field">
+                    <label htmlFor="cassavaUnit">Sold</label>
+                    <select id="cassavaUnit" value={String(unitKg)}
+                            onChange={(e) => onCassavaUnitChange(Number(e.target.value))}>
+                        {cassavaUnits.map((u) => (
+                            <option key={u.unit_weight} value={u.unit_weight}>{cassavaUnitLabel(u.unit_weight)}</option>
+                        ))}
+                    </select>
+                    <span className="pg-field-hint">Changing it converts the price</span>
+                </div>
+
+                {secondCrop === 'MAIZE' && (
+                    <div className="pg-field">
+                        <label htmlFor="maizePrice">
+                            Maize price{currency ? ` (${currency})` : ''}, {form.maizeProduceType === 'grain' ? 'per 50 kg bag' : 'per cob'}
+                        </label>
+                        <input id="maizePrice" type="number" min="0" step="any" inputMode="decimal"
+                               value={form.maizePrice}
+                               onChange={(e) => onChange({maizePrice: e.target.value})}/>
+                        {errors.maizePrice && <span className="pg-field-error">{errors.maizePrice}</span>}
+                    </div>
+                )}
+
+                {secondCrop === 'POTATO' && (
+                    <div className="pg-field">
+                        <label htmlFor="sweetPotatoPrice">Sweet potato price{currency ? ` (${currency})` : ''}, per tonne</label>
+                        <input id="sweetPotatoPrice" type="number" min="0" step="any" inputMode="decimal"
+                               value={form.sweetPotatoPrice}
+                               onChange={(e) => onChange({sweetPotatoPrice: e.target.value})}/>
+                        {errors.sweetPotatoPrice && <span className="pg-field-error">{errors.sweetPotatoPrice}</span>}
                     </div>
                 )}
             </div>
