@@ -8,6 +8,7 @@
 
 use App\Enums\EnumUserRole;
 use App\Models\User;
+use App\Service\TrafficExclusionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -28,12 +29,13 @@ function dashboardUser(EnumUserRole $role): User
 
 /**
  * One api_requests row as RecommendationService writes it. country_code,
- * use_case, gender and excluded are generated columns, computed from the
- * stored request JSON, so they are set through `country` and the JSON.
+ * use_case and gender are generated columns, computed from the stored
+ * request JSON, so they are set through `country` and the JSON; `excluded`
+ * comes from the traffic exclusion rules, applied as the service does.
  */
 function loggedRequest(array $overrides = [], string $country = 'NG'): void
 {
-    DB::table('api_requests')->insert(array_merge([
+    $id = DB::table('api_requests')->insertGetId(array_merge([
         'request_id' => (string) Str::uuid(),
         'device_token' => Str::random(12),
         'droid_request' => json_encode(['user_info' => ['gender' => 'F', 'user_name' => 'farmer']]),
@@ -43,9 +45,11 @@ function loggedRequest(array $overrides = [], string $country = 'NG'): void
         'created_at' => now()->subDay(),
         'updated_at' => now()->subDay(),
     ], $overrides));
+
+    app(TrafficExclusionService::class)->refresh($id);
 }
 
-// The old app's userInfo, with a staff phone number, marks a request `excluded`.
+// The old app's userInfo with a staff phone number (seeded rule: starts with 254).
 function staffDroidRequest(): string
 {
     return json_encode(['userInfo' => ['mobileNumber' => '254700000000', 'userName' => 'staff']]);

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\PotatoPriceController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\StarchFactoryController;
 use App\Http\Controllers\Admin\StarchPriceController;
+use App\Http\Controllers\Admin\TrafficExclusionController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Web\HealthCheckController;
@@ -180,5 +181,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUser
         Route::resource('translations', TranslationController::class)
             ->except(['show'])
             ->parameters(['translations' => 'id']);
+
+        // Rules marking staff and test traffic, left out of the dashboard and reports
+        Route::resource('traffic-exclusions', TrafficExclusionController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->parameters(['traffic-exclusions' => 'id']);
     });
 });

@@ -26,6 +26,7 @@ class RecommendationService
         protected FertilizerRepo $fertilizerRepo,
         protected ApiRequestRepo $apiRequestRepo,
         protected AkilimoComputeService $akilimoComputeService,
+        protected ?TrafficExclusionService $trafficExclusions = null,
     ) {
         $ttl = config('cache.ttl'); // e.g. "1d", "1h", "30m"
         $this->cacheTTL = $this->parseTtl($ttl);
@@ -258,12 +259,17 @@ class RecommendationService
      */
     private function logRequest(string $requestUuid, string $deviceToken, array $droidRequest, AkilimoComputeData $plumberRequest): object
     {
-        return $this->apiRequestRepo->create([
+        $log = $this->apiRequestRepo->create([
             'request_id' => $requestUuid,
             'device_token' => $deviceToken,
             'droid_request' => $droidRequest,
             'plumber_request' => $plumberRequest,
         ]);
+
+        // Staff and test traffic is flagged from the admin-managed rules
+        ($this->trafficExclusions ?? app(TrafficExclusionService::class))->refresh($log->id);
+
+        return $log;
     }
 
     /**
