@@ -119,6 +119,10 @@ Two mechanisms are accepted on every protected route, tried in order by `Authent
 
 Presets: `PLAYGROUND_ABILITIES`, `PARTNER_ABILITIES`, `MCP_ABILITIES` (`mcp:use` only).
 
+Who may grant what:
+- `POST /v1/auth/api-keys` (`Api\ApiKeyController`): a new key may only carry abilities the calling token or key has (`can()`); no abilities means wildcard and needs a wildcard or `admin` caller.
+- Admin area, API keys (`Admin\ApiKeyController`, reachable by admins and partners): admins see and manage every key, for any user, with any abilities. Partners see and manage only their own keys (another user's key answers 404), can only name themselves as owner, and can only grant `PARTNER_ABILITIES` plus `mcp:use`: never `admin`, `*`, `mcp:verify-keys`, the broad legacy abilities or an empty (wildcard) list. Tests: `tests/Feature/Auth/ApiKeyScopeTest.php`.
+
 Routes declare required abilities as middleware parameters:
 ```php
 Route::middleware('auth.token:read')->get(...)
