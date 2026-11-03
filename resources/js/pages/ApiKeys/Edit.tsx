@@ -19,6 +19,8 @@ interface Props {
     abilityGroups: Record<string, string[]>
     abilityLabels: Record<string, string>
     rolePresets: Record<string, string[]>
+    // False for partners: they cannot create wildcard keys
+    canWildcard: boolean
 }
 
 interface FormData {
@@ -35,7 +37,7 @@ const PRESET_STYLE: Record<string, string> = {
     admin:      'btn-outline-danger',
 }
 
-export default function ApiKeysEdit({ apiKey, users, abilityGroups, abilityLabels, rolePresets }: Props) {
+export default function ApiKeysEdit({ apiKey, users, abilityGroups, abilityLabels, rolePresets, canWildcard }: Props) {
     const { data, setData, put, processing, errors } = useForm<FormData>({
         user_id:    apiKey.user_id,
         name:       apiKey.name,
@@ -124,7 +126,7 @@ export default function ApiKeysEdit({ apiKey, users, abilityGroups, abilityLabel
                                 className="btn btn-sm btn-outline-secondary"
                                 onClick={() => setData('abilities', [])}
                             >
-                                Clear (wildcard)
+                                {canWildcard ? 'Clear (wildcard)' : 'Clear'}
                             </button>
                         </div>
 
@@ -157,7 +159,7 @@ export default function ApiKeysEdit({ apiKey, users, abilityGroups, abilityLabel
                         </div>
 
                         <div className="form-text mt-2">
-                            Leave empty for wildcard access (<code>*</code>).
+                            {canWildcard ? <>Leave empty for wildcard access (<code>*</code>).</> : <>Choose at least one ability.</>}
                             {data.abilities.length > 0 && (
                                 <> Selected: <strong>{data.abilities.join(', ')}</strong></>
                             )}
