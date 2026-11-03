@@ -104,7 +104,7 @@ X-Api-Key: ak_a1b2c3d4e5f6...
 |---------|-------------|
 | `read` | GET protected endpoints (recommendations history, feedback, translations) |
 | `write` | POST/compute endpoints (compute recommendations, submit feedback) |
-| `api-keys:manage` | Create, list, revoke, delete own API keys |
+| `api-keys:manage` | Create, list, revoke, delete own API keys. A new key can only have abilities the creating token or key has itself (otherwise `422`); leaving `abilities` out asks for a wildcard key, which only a wildcard or admin token may create |
 | `mcp:use` | The AKILIMO MCP server only (see below); such a key works nowhere else in this API |
 
 ---
