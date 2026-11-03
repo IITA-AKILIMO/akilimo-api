@@ -124,6 +124,10 @@ export default function TokensPanel() {
         setCreating(true)
         setCreateError(null)
 
+        // Never leave the button spinning: give up after 20 s and say so
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 20000)
+
         try {
             const res = await fetch('/playground/tokens', {
                 method: 'POST',
@@ -133,21 +137,30 @@ export default function TokensPanel() {
                     'X-CSRF-TOKEN': csrfToken(),
                 },
                 body: JSON.stringify({ name: name.trim(), type }),
+                signal: controller.signal,
             })
 
-            const data = await res.json()
+            // A signed-out session is redirected to the sign-in page, which is HTML, not JSON
+            const data = await res.json().catch(() => null)
 
-            if (!res.ok) {
-                setCreateError(data.message ?? 'Failed to create API key.')
+            if (res.status === 419 || res.redirected || (res.ok && !data)) {
+                setCreateError('Your session has expired. Reload the page and sign in again.')
+                return
+            }
+            if (!res.ok || !data?.key) {
+                setCreateError(data?.message ?? `Could not create the key (error ${res.status}). Please try again.`)
                 return
             }
 
             setNewKey(data as NewKey)
             setName('')
             setKeys((prev) => [data as ApiKey, ...prev])
-        } catch {
-            setCreateError('Network error. Please try again.')
+        } catch (e) {
+            setCreateError(e instanceof DOMException && e.name === 'AbortError'
+                ? 'The server did not answer in time. Please try again.'
+                : 'Network error. Please try again.')
         } finally {
+            clearTimeout(timer)
             setCreating(false)
         }
     }
