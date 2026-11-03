@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Auth\TokenAbility;
 use App\Enums\EnumUserRole;
 use App\Models\ApiKey;
@@ -11,8 +17,8 @@ function apiKeyUser(): User
 {
     return User::create([
         'name' => 'Key User',
-        'username' => 'keyuser_'.str()->random(6),
-        'email' => 'key_'.str()->random(6).'@example.com',
+        'username' => 'keyuser_' . str()->random(6),
+        'email' => 'key_' . str()->random(6) . '@example.com',
         'password' => Hash::make('secret123'),
     ]);
 }
@@ -153,7 +159,7 @@ it('shows the raw key once after an admin creates it, without storing it', funct
     $admin->forceFill(['role' => EnumUserRole::Admin])->save();
     $owner = apiKeyUser();
 
-    $response = $this->actingAs($admin)
+    $response = $this->withoutVite()->actingAs($admin)
         ->post('/admin/api-keys', ['user_id' => $owner->id, 'name' => 'admin made', 'abilities' => []])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
@@ -181,7 +187,7 @@ it('shows the raw key once after an admin creates it, without storing it', funct
 it('expired key returns 401', function () {
     $user = apiKeyUser();
 
-    $rawKey = 'ak_'.bin2hex(random_bytes(16));
+    $rawKey = 'ak_' . bin2hex(random_bytes(16));
     $user->apiKeys()->create([
         'name' => 'expired',
         'key_prefix' => substr($rawKey, 0, 12),
