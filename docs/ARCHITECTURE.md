@@ -137,10 +137,11 @@ Route::middleware('auth.token:write')->post(...)
 |-------|----------|------|-----------|
 | Health | none | none | `GET /health` |
 | Auth | 10/min | mixed | `POST /v1/auth/login` (public), `/logout` (protected) |
-| Public reference data | 120/min | none | currencies, fertilizers, prices, factories, units |
+| Public reference data | `read` (120/min) | none | currencies, fertilizers, prices, factories, units |
 | Protected reads | 120/min | required | recommendations history, user-feedback list, translations |
 | API key management | 30/min | required | `GET/POST/PATCH/DELETE /v1/auth/api-keys` |
-| Protected mutations | 30/min | required | `POST /v1/recommendations/compute`, `POST /v1/user-feedback` |
+| Compute | `compute` (30/min) | none | `POST /v1/recommendations/compute` |
+| Protected mutations | 30/min | required | `POST /v1/user-feedback` |
 
 ---
 

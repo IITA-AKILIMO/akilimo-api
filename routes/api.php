@@ -37,13 +37,13 @@ Route::prefix('health')->group(function () {
 });
 
 // ── Authentication ────────────────────────────────────────────────────────────
-Route::middleware('throttle:10,1')->prefix('v1/auth')->group(function () {
+Route::middleware('throttle:auth')->prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth.token');
 });
 
 // ── Public reference data ─────────────────────────────────────────────────────
-Route::middleware('throttle:120,1')->group(function () {
+Route::middleware('throttle:read')->group(function () {
     Route::prefix('v1/countries')->group(function () {
         Route::get('/', [CountryController::class, 'index']);
     });
@@ -112,7 +112,7 @@ Route::middleware('throttle:120,1')->group(function () {
 });
 
 // ── Supported area (where recommendations can be computed) ────────────────────
-Route::middleware('throttle:120,1')->prefix('v1/coverage')->group(function () {
+Route::middleware('throttle:read')->prefix('v1/coverage')->group(function () {
     Route::get('/', [CoverageController::class, 'index']);
     Route::get('/geojson', [CoverageController::class, 'all']);
     Route::get('/check', [CoverageController::class, 'check']);
@@ -120,34 +120,34 @@ Route::middleware('throttle:120,1')->prefix('v1/coverage')->group(function () {
 });
 
 // ── Recommendations ───────────────────────────────────────────────────────────
-// Route::middleware(['throttle:30,1', 'auth.token:recommendations:compute'])->group(function () {
+// Route::middleware(['throttle:compute', 'auth.token:recommendations:compute'])->group(function () {
 //    Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 // });
 
-Route::middleware(['throttle:30,1'])->group(function () {
+Route::middleware(['throttle:compute'])->group(function () {
     Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 });
 
-Route::middleware(['throttle:120,1', 'auth.token:recommendations:read'])->group(function () {
+Route::middleware(['throttle:read', 'auth.token:recommendations:read'])->group(function () {
     Route::get('v1/recommendations', [RecommendationController::class, 'index']);
 });
 
 // ── User feedback ─────────────────────────────────────────────────────────────
-Route::middleware(['throttle:30,1', 'auth.token:feedback:write'])->group(function () {
+Route::middleware(['throttle:write', 'auth.token:feedback:write'])->group(function () {
     Route::post('v1/user-feedback', [UserFeedbackController::class, 'store']);
 });
 
-Route::middleware(['throttle:120,1', 'auth.token:feedback:read'])->group(function () {
+Route::middleware(['throttle:read', 'auth.token:feedback:read'])->group(function () {
     Route::get('v1/user-feedback', [UserFeedbackController::class, 'index']);
 });
 
 // ── Translations ──────────────────────────────────────────────────────────────
-Route::middleware(['throttle:120,1', 'auth.token:translations:read'])->group(function () {
+Route::middleware(['throttle:read', 'auth.token:translations:read'])->group(function () {
     Route::get('v1/translations', [TranslationController::class, 'index']);
 });
 
 // ── Partner — price submissions (requires prices:write) ───────────────────────
-Route::middleware(['throttle:30,1', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {
+Route::middleware(['throttle:write', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {
     Route::post('/prices/maize', [MaizePricesController::class, 'store']);
     Route::post('/prices/cassava', [CassavaPricesController::class, 'store']);
     Route::post('/prices/potato', [PotatoPricesController::class, 'store']);
@@ -155,7 +155,7 @@ Route::middleware(['throttle:30,1', 'auth.token:prices:write'])->prefix('v1/part
 });
 
 // ── API key self-management ───────────────────────────────────────────────────
-Route::middleware(['throttle:30,1', 'auth.token:api-keys:manage'])->prefix('v1/auth')->group(function () {
+Route::middleware(['throttle:write', 'auth.token:api-keys:manage'])->prefix('v1/auth')->group(function () {
     Route::get('/api-keys', [ApiKeyController::class, 'index']);
     Route::post('/api-keys', [ApiKeyController::class, 'store']);
     Route::patch('/api-keys/{id}/revoke', [ApiKeyController::class, 'revoke']);
@@ -163,12 +163,12 @@ Route::middleware(['throttle:30,1', 'auth.token:api-keys:manage'])->prefix('v1/a
 });
 
 // ── MCP key check (the AKILIMO MCP server's own key, requires mcp:verify-keys) ──
-Route::middleware(['throttle:600,1', 'auth.token:mcp:verify-keys'])->prefix('v1/mcp')->group(function () {
+Route::middleware(['throttle:mcp-verify', 'auth.token:mcp:verify-keys'])->prefix('v1/mcp')->group(function () {
     Route::post('/verify-key', [McpKeyController::class, 'verify']);
 });
 
 // ── Admin — lookup data CRUD (requires write)─────────────────────────────────
-Route::middleware(['throttle:60,1', 'auth.token:write'])->prefix('v1/admin')->group(function () {
+Route::middleware(['throttle:admin-write', 'auth.token:write'])->prefix('v1/admin')->group(function () {
     Route::apiResource('fertilizers', FertilizerController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('fertilizer-prices', FertilizerPriceController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('maize-prices', MaizePricesController::class)->only(['store', 'update', 'destroy']);
@@ -185,7 +185,7 @@ Route::middleware(['throttle:60,1', 'auth.token:write'])->prefix('v1/admin')->gr
 });
 
 // ── Admin — user management (requires admin) ──────────────────────────────────
-Route::middleware(['throttle:30,1', 'auth.token:admin'])->prefix('v1/admin')->group(function () {
+Route::middleware(['throttle:write', 'auth.token:admin'])->prefix('v1/admin')->group(function () {
     Route::get('users', [UserController::class, 'index']);
     Route::post('users', [UserController::class, 'store']);
     Route::get('users/{id}', [UserController::class, 'show']);
