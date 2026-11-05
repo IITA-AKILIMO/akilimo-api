@@ -165,11 +165,18 @@ Content-Type: application/json
     "rec_type": "FR",
     "recommendation": { ... },
     "fertilizer_rates": { ... }
+  },
+  "report": {
+    "url": "https://api.akilimo.org/api/v1/recommendations/reports/<id>/fertilizer_advice.pdf?expires=...&signature=...",
+    "expires_at": "2026-11-12T10:00:00+00:00",
+    "files": [{ "name": "fertilizer_advice.pdf", "url": "..." }]
   }
 }
 ```
 
 `request_id` is a unique UUID per call — use it when reporting issues.
+
+`report` is the PDF report of the recommendation, or `null` when none could be made. Its `url` needs no key, cannot be guessed and stops working at `expires_at` (7 days by default). The report itself is kept with the recommendation history: a key with the `reports:read` ability gets new links at any time with `GET /v1/recommendations/reports/{report.id}`. The report shows the farmer's name and farm, so share the link only with them. A request served from the cache gets a report only when it carries the same personal details as the one that made it.
 
 ---
 

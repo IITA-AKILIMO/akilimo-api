@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Service;
 
 use App\Data\AkilimoComputeData;
@@ -27,6 +33,7 @@ class RecommendationService
         protected ApiRequestRepo $apiRequestRepo,
         protected AkilimoComputeService $akilimoComputeService,
         protected ?TrafficExclusionService $trafficExclusions = null,
+        protected ?RecommendationReportService $reports = null,
     ) {
         $ttl = config('cache.ttl'); // e.g. "1d", "1h", "30m"
         $this->cacheTTL = $this->parseTtl($ttl);
@@ -35,7 +42,7 @@ class RecommendationService
     /**
      * Handles the entire recommendation computation workflow.
      *
-     * @param  array  $droidRequest  The parsed request payload.
+     * @param array $droidRequest The parsed request payload.
      * @return array Contains 'rec_type' and 'recommendation'.
      *
      * @throws \JsonException
@@ -49,15 +56,37 @@ class RecommendationService
 
         // Always assign a fresh request_id — each HTTP call is a distinct trace event
         // even when the computation result is served from cache.
-        $result['request_id'] = (string) Str::uuid();
+        $result['request_id'] = (string)Str::uuid();
+
+        // The cache is shared by everyone with the same farm inputs, but a PDF names the farmer:
+        // a cached report is only handed out to the same person, never to someone else.
+        $stored = Arr::pull($result, '_report');
+        $result['report'] = $stored !== null && hash_equals($stored['owner'], $this->reportOwner($droidRequest))
+            ? $this->reportService()->links($stored['id'])
+            : null;
 
         return $result;
+    }
+
+    private function reportService(): RecommendationReportService
+    {
+        return $this->reports ??= app(RecommendationReportService::class);
+    }
+
+    /** The personal details printed on a report; two requests share a report only when these match */
+    private function reportOwner(array $droidRequest): string
+    {
+        $user = Arr::get($droidRequest, 'user_info', []);
+        $fields = Arr::only(is_array($user) ? $user : [], ['user_name', 'first_name', 'last_name', 'email_address', 'phone_number', 'farm_name', 'device_token']);
+        ksort($fields);
+
+        return hash('sha256', json_encode($fields));
     }
 
     /**
      * Performs computation based on the droid request data.
      *
-     * @param  array  $droidRequest  The input data containing user information, compute request, and fertilizer list.
+     * @param array $droidRequest The input data containing user information, compute request, and fertilizer list.
      * @return array An array containing the recommended type and recommendations.
      *
      * @throws RecommendationException If there is an error specific to the recommendation process.
@@ -84,10 +113,12 @@ class RecommendationService
             $userInfo,
             ['fertilizers' => $computedFertilizers],
         );
+        $akilimoComputeData->returnPdf = $this->reportService()->enabled();
 
         // Generate a server-side UUID as the request correlation ID (#38).
         // The client-supplied device_token is stored separately for device-level queries.
-        $requestUuid = (string) Str::uuid();
+        $requestUuid = (string)Str::uuid();
+        $akilimoComputeData->requestId = $requestUuid; // the report's printed reference
         $requestLog = $this->logRequest($requestUuid, $deviceToken, $droidRequest, $akilimoComputeData);
 
         $startedAt = Carbon::now();
@@ -95,9 +126,17 @@ class RecommendationService
         try {
             $computeResp = $this->akilimoComputeService->compute($akilimoComputeData);
 
+            // The PDFs (base64) go to the report store, never into the request log or the cache
+            $reports = Arr::pull($computeResp, 'reports');
+            $files = is_array($reports) && $reports !== [] ? $this->reportService()->store($requestUuid, $reports) : [];
+
             $this->updateRequestLogResponse($requestLog->id, $computeResp, $startedAt);
 
             return [
+                '_report' => $files === [] ? null : [
+                    'id' => $requestUuid,
+                    'owner' => $this->reportOwner($droidRequest),
+                ],
                 'request_id' => $requestUuid,
                 'status' => Arr::get($computeResp, 'status', 'success'),
                 'version' => Arr::get($computeResp, 'version'),
@@ -194,7 +233,7 @@ class RecommendationService
         });
 
         // Use SHA-256 or xxHash (faster for non-crypto use)
-        return 'rec:'.hash('sha256', json_encode($relevantData, JSON_THROW_ON_ERROR));
+        return 'rec:' . hash('sha256', json_encode($relevantData, JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -229,7 +268,7 @@ class RecommendationService
             $label = $fertilizer->label ?? null;
 
             // Skip if key or label missing (data integrity)
-            if (! $key || ! $label) {
+            if (!$key || !$label) {
                 continue;
             }
 
@@ -273,24 +312,47 @@ class RecommendationService
     }
 
     /**
+     * Make the PDF report of a logged request again, from the exact payload that was sent then (plumber_request),
+     * e.g. after the report template improved or when the request predates stored reports. The recommendation,
+     * the request log and the cache are left as they are; only the stored PDF is replaced.
+     *
+     * @return array|null the new report links, or null when the compute service made no report
+     *
+     * @throws RecommendationException|ConnectionException|RequestException
+     */
+    public function regenerateReport(string $requestId, array $plumberRequest): ?array
+    {
+        // The log keeps the fertilizers nested, as AkilimoComputeData holds them; the service expects them at the top
+        $payload = Arr::except($plumberRequest, ['fertilizers']) + (array)($plumberRequest['fertilizers'] ?? []);
+        $payload = array_merge($payload, ['returnPdf' => true, 'email' => false, 'SMS' => false, 'requestId' => $requestId]);
+
+        $reports = Arr::get($this->akilimoComputeService->computePayload($payload), 'reports');
+        if (!is_array($reports) || $reports === [] || $this->reportService()->store($requestId, $reports) === []) {
+            return null;
+        }
+
+        return $this->reportService()->links($requestId);
+    }
+
+    /**
      * Updates the log entry with the Plumbr response and computed latency.
      *
-     * @param  Carbon  $startedAt  Time immediately before the Plumbr call
+     * @param Carbon $startedAt Time immediately before the Plumbr call
      */
     private function updateRequestLogResponse(int $logId, array $responseData, Carbon $startedAt): void
     {
         $this->apiRequestRepo->update($logId, [
             'plumber_response' => $responseData,
             'request_started_at' => $startedAt,
-            'request_duration_ms' => (int) $startedAt->diffInMilliseconds(now()),
+            'request_duration_ms' => (int)$startedAt->diffInMilliseconds(now()),
         ]);
     }
 
     /**
      * Parses a TTL (time-to-live) string and converts it to a Carbon instance.
      *
-     * @param  string  $ttl  The TTL string to parse. It can be a numeric value in seconds
-     *                       or a string with a unit (e.g., "10d" for 10 days, "5h" for 5 hours, "30m" for 30 minutes).
+     * @param string $ttl The TTL string to parse. It can be a numeric value in seconds
+     *                    or a string with a unit (e.g., "10d" for 10 days, "5h" for 5 hours, "30m" for 30 minutes).
      * @return Carbon The calculated expiration time as a Carbon instance.
      */
     private function parseTtl(string $ttl): Carbon
@@ -299,11 +361,11 @@ class RecommendationService
         $now = Carbon::now();
 
         if (is_numeric($ttl)) {
-            return $now->addSeconds((int) $ttl);
+            return $now->addSeconds((int)$ttl);
         }
 
         if (preg_match('/^(\d+)([sdhm])$/', $ttl, $matches)) {
-            $value = (int) $matches[1];
+            $value = (int)$matches[1];
             $unit = $matches[2];
 
             return match ($unit) {

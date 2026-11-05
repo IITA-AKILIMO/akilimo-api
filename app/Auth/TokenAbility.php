@@ -26,6 +26,9 @@ final class TokenAbility
 
     const RECOMMENDATIONS_READ = 'recommendations:read';
 
+    /** New download links for a stored PDF report (GET /v1/recommendations/reports/{id}); the MCP server's own key */
+    const REPORTS_READ = 'reports:read';
+
     const PRICES_WRITE = 'prices:write';
 
     const FEEDBACK_READ = 'feedback:read';
@@ -66,6 +69,7 @@ final class TokenAbility
     const ALL = [
         self::RECOMMENDATIONS_COMPUTE,
         self::RECOMMENDATIONS_READ,
+        self::REPORTS_READ,
         self::PRICES_WRITE,
         self::FEEDBACK_READ,
         self::FEEDBACK_WRITE,
@@ -101,6 +105,7 @@ final class TokenAbility
     const LABELS = [
         self::RECOMMENDATIONS_COMPUTE => 'Compute recommendations',
         self::RECOMMENDATIONS_READ => 'Read recommendation history',
+        self::REPORTS_READ => 'Renew PDF report links (MCP server)',
         self::PRICES_WRITE => 'Submit price updates',
         self::FEEDBACK_READ => 'Read user feedback',
         self::FEEDBACK_WRITE => 'Submit user feedback',
@@ -141,6 +146,7 @@ final class TokenAbility
         'Recommendations' => [
             self::RECOMMENDATIONS_COMPUTE,
             self::RECOMMENDATIONS_READ,
+            self::REPORTS_READ,
         ],
         'Prices' => [
             self::PRICES_WRITE,

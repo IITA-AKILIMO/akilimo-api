@@ -128,6 +128,17 @@ Route::middleware(['throttle:compute'])->group(function () {
     Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 });
 
+// PDF report of a recommendation: only through the signed, expiring link in the compute answer
+Route::middleware(['throttle:read', 'signed:relative'])
+    ->get('v1/recommendations/reports/{report}/{file}', [RecommendationController::class, 'report'])
+    ->where('file', '[A-Za-z0-9_.-]+\.pdf')
+    ->name('recommendations.report');
+
+// New links for a stored report, e.g. for saved history whose link has expired (the MCP server's own key)
+Route::middleware(['throttle:read', 'auth.token:reports:read'])
+    ->get('v1/recommendations/reports/{report}', [RecommendationController::class, 'reportLinks'])
+    ->whereUuid('report');
+
 Route::middleware(['throttle:read', 'auth.token:recommendations:read'])->group(function () {
     Route::get('v1/recommendations', [RecommendationController::class, 'index']);
 });

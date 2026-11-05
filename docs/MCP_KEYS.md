@@ -55,7 +55,7 @@ Keys are created by `ApiKeyService::issue` (`ak_` + 32 hex characters, SHA-256 s
 
 ## Setting up the MCP server (operators)
 
-1. In this API's admin area (API keys), create a key with the ability **Verify MCP keys (MCP server only)** and nothing else.
+1. In this API's admin area (API keys), create a key with the abilities **Verify MCP keys (MCP server only)** and **Renew PDF report links (MCP server)** and nothing else. The second lets the MCP server give its signed-in users a new link for a PDF report in their saved history.
 2. Set it as the MCP server's `AKILIMO_API_KEY`. Without it the MCP server does not accept `ak_` keys and logs a warning at start.
 3. Every client must send a key: the MCP server always requires one (the old `MCP_REQUIRE_KEY` switch is gone). Until `AKILIMO_API_KEY` is set, only keys the MCP server issues itself or lists in `MCP_API_KEYS` are accepted.
 4. Optional: `MCP_API_KEYS` on the MCP server holds operator keys (e.g. one per partner app) that work without this API, and its admins can issue `amk_` keys in Manage > MCP keys.

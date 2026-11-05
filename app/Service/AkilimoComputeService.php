@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -44,12 +44,22 @@ class AkilimoComputeService
      */
     public function compute(AkilimoComputeData $data): array
     {
+        return $this->computePayload($data->toArray());
+    }
+
+    /**
+     * Send an already built compute payload (the R service's field names), e.g. one kept in api_requests.
+     *
+     * @throws ConnectionException|RecommendationException|RequestException
+     */
+    public function computePayload(array $payload): array
+    {
         try {
             $response = Http::baseUrl($this->baseUrl)
                 ->timeout($this->timeout)
                 ->retry($this->retries)
                 ->acceptJson()
-                ->post($this->endpoint, $data->toArray());
+                ->post($this->endpoint, $payload);
         } catch (ConnectionException $e) {
             Log::error('AKILIMO Compute API Connection Error', ['endpoint' => $this->endpoint, 'error' => $e->getMessage()]);
             throw $e;

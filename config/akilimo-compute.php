@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -61,5 +61,29 @@ return [
     'coverage' => [
         'countries' => ['NG', 'TZ', 'RW', 'GH', 'BI'],
         'validate_requests' => filter_var(env('COVERAGE_VALIDATE', true), FILTER_VALIDATE_BOOL),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | PDF reports
+    |--------------------------------------------------------------------------
+    | The compute service makes a PDF report for every recommendation and sends
+    | it back when asked (returnPdf). The API keeps it on a private disk, next
+    | to the recommendation history (reports/{request_id}/), and answers with a
+    | signed link that expires after `link_ttl_days`; a new link can be made at
+    | any time, so saved history keeps working. Reports are kept as long as the
+    | history unless `keep_days` is set (then `reports:prune` deletes older
+    | ones). A report holds the farmer's name, masked phone number and the
+    | farm's location: keep the disk private and in the backups.
+    */
+    'reports' => [
+        'enabled' => filter_var(env('AKILIMO_REPORTS_ENABLED', true), FILTER_VALIDATE_BOOL),
+        // Any filesystem disk: `local` (storage/app/private, needs a persistent volume) or an S3-compatible one
+        'disk' => env('AKILIMO_REPORTS_DISK', 'local'),
+        'link_ttl_days' => (int)env('AKILIMO_REPORTS_LINK_TTL_DAYS', 7),
+        // Empty or 0 = keep forever, like the recommendation history
+        'keep_days' => (int)env('AKILIMO_REPORTS_KEEP_DAYS', 0),
+        // Largest PDF kept (bytes); anything bigger is dropped and logged
+        'max_bytes' => (int)env('AKILIMO_REPORTS_MAX_BYTES', 10 * 1024 * 1024),
     ],
 ];

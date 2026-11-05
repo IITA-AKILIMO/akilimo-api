@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -16,3 +16,6 @@ Artisan::command('inspire', function () {
 
 // Refresh the supported area copied from the compute service (the yield grids rarely change)
 Schedule::command('coverage:sync')->dailyAt('03:30')->withoutOverlapping()->onOneServer();
+
+// Recommendation PDF reports hold personal details: keep them only as long as their download links last
+Schedule::command('reports:prune')->dailyAt('03:45')->withoutOverlapping()->onOneServer();

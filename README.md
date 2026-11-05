@@ -95,7 +95,9 @@ See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup, and 
 | `POST` | `/v1/auth/api-keys` | Generate API key |
 | `PATCH` | `/v1/auth/api-keys/{id}/revoke` | Revoke API key |
 | `DELETE` | `/v1/auth/api-keys/{id}` | Delete API key |
-| `POST` | `/v1/recommendations/compute` | Compute recommendation |
+| `POST` | `/v1/recommendations/compute` | Compute recommendation (the answer's `report.url` is a signed link to its PDF report) |
+| `GET` | `/v1/recommendations/reports/{id}/{file}` | Download the PDF report (signed, expiring link only; no key) |
+| `GET` | `/v1/recommendations/reports/{id}` | New download links for a stored report (ability `reports:read`) |
 | `GET` | `/v1/recommendations` | Request history |
 | `GET` | `/v1/user-feedback` | List feedback |
 | `POST` | `/v1/user-feedback` | Submit feedback |

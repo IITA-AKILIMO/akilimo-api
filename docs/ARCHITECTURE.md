@@ -70,6 +70,7 @@ Thin — validate input, call one service or repository, return a resource. No b
 | `RecommendationService` | Orchestrates caching, logging, fertilizer mapping, DTO assembly |
 | `AkilimoComputeService` | HTTP client wrapper for the external compute API. Reads all config (base URL, endpoint, timeout, retries) from `config/akilimo-compute.php` |
 | `AuthService` | Login (credential check + token mint), logout (token deletion) |
+| `RecommendationReportService` | Stores the PDF reports the compute service returns and makes their signed, expiring download links; `prune()` for `reports:prune` |
 | `ApiKeyService` | Issues API keys (`ak_` + 32 hex, SHA-256 stored) and checks users' MCP keys for the AKILIMO MCP server (`verifyMcpKey`, see [MCP_KEYS.md](./MCP_KEYS.md)) |
 
 ### Repositories (`app/Repositories/`)
@@ -85,6 +86,18 @@ Spatie LaravelData classes. `AkilimoComputeData` is the main payload sent to the
 
 ---
 
+## PDF reports
+
+The compute service builds a PDF report for every recommendation. `RecommendationService` sends `returnPdf: true` (`akilimo-compute.reports.enabled`, `AKILIMO_REPORTS_ENABLED`), takes the base64 `reports` out of the answer before it is logged or cached, and `RecommendationReportService` stores each valid PDF (plain `*.pdf` name, starts with `%PDF`, at most `max_bytes`) on the reports disk (`AKILIMO_REPORTS_DISK`, default the private `local` disk) under `reports/{request_id}/`, where `request_id` is the computation's row in `api_requests`. **Reports are kept as long as the recommendation history**: nothing is deleted unless `AKILIMO_REPORTS_KEEP_DAYS` is set, and then `reports:prune` (scheduled daily at 03:45) removes older folders.
+
+The compute answer gets `report: {id, url, expires_at, files}`. `url` points at `GET /v1/recommendations/reports/{id}/{file}`, signed relative to the site (`signed:relative`) and put on `APP_URL`, so it is the public address even when the API was called internally (the MCP server calls it at `http://akilimo-api/api`). A link lasts `AKILIMO_REPORTS_LINK_TTL_DAYS` (default 7); the report does not expire with it. New links for a stored report come from `GET /v1/recommendations/reports/{id}` (ability `reports:read`, given to the MCP server's own key so saved chat and guided history keep working) and from the admin request log (Requests > a request > "PDF report"). The result cache is shared by everyone with the same farm inputs, but a report prints the farmer's name and farm, so a cached report is only returned when the request's personal details (`user_info` name, email, phone, farm name, device token) hash to the same value. Tests: `tests/Feature/RecommendationReportTest.php`.
+
+The payload also carries `requestId` (the computation's `request_id`), which the report prints in its footer as its reference, so a printed report leads back to its `api_requests` row. Downloads are named after the advice and the day the report was made (`akilimo-fertilizer-advice-2026-11-05.pdf`). An admin can **make a request's report again** from the request log (`POST /admin/requests/{id}/report`, admin only): `RecommendationService::regenerateReport` sends the stored `plumber_request` again (fertilizers flattened back to the top level, `returnPdf` on, `email`/`SMS` off) and replaces the stored PDF; the recommendation, the log and the cache are untouched. Use it after the report template improves, or for requests made before reports were kept.
+
+Reports hold personal details (name, masked phone and email, farm location), so the reports disk must be private and included in backups. With the `local` disk, `storage/app/private` must be a persistent volume in Docker or the reports are lost on redeploy.
+**Deploying:** spatie/laravel-data caches each Data class's structure forever (`config/data.php` `structure_caching`, in the cache store). After a change to a Data class such as the new `AkilimoComputeData::$returnPdf`, run `php artisan data:cache-structures` (or clear the cache) on deploy, otherwise the new property is silently left out of the request: R never gets `returnPdf` and every `report` is `null`. This happened in local testing.
+
+---
 ## Authentication
 
 Two mechanisms are accepted on every protected route, tried in order by `AuthenticateWithToken` middleware:
@@ -113,6 +126,7 @@ Two mechanisms are accepted on every protected route, tried in order by `Authent
 | `TRANSLATIONS_READ` | `translations:read` | Read translations |
 | `MCP_USE` | `mcp:use` | A user's key for the AKILIMO MCP server (works nowhere else in this API) |
 | `MCP_VERIFY_KEYS` | `mcp:verify-keys` | The MCP server's own key, for `POST /v1/mcp/verify-key` |
+| `REPORTS_READ` | `reports:read` | New links for a stored PDF report, `GET /v1/recommendations/reports/{id}` (the MCP server's own key) |
 | `API_KEYS_MANAGE` | `api-keys:manage` | Manage own API keys |
 | `READ` / `WRITE` | `read` / `write` | Broad legacy abilities that imply the granular read / write ones (`BROAD_GRANTS`) |
 | `ADMIN`, `WILDCARD` | `admin`, `*` | All abilities |
@@ -141,6 +155,7 @@ Route::middleware('auth.token:write')->post(...)
 | Protected reads | 120/min | required | recommendations history, user-feedback list, translations |
 | API key management | 30/min | required | `GET/POST/PATCH/DELETE /v1/auth/api-keys` |
 | Compute | `compute` (30/min) | none | `POST /v1/recommendations/compute` |
+| PDF report | `read` (120/min) | signed link (`signed:relative`) | `GET /v1/recommendations/reports/{id}/{file}` |
 | Protected mutations | 30/min | required | `POST /v1/user-feedback` |
 
 ---

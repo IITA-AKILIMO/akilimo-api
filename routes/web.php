@@ -1,12 +1,18 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Enums\EnumUserRole;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
 use App\Http\Controllers\Admin\CassavaPriceController;
 use App\Http\Controllers\Admin\CassavaUnitController;
-use App\Http\Controllers\Admin\CropController;
 use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\CropController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DefaultPriceController;
@@ -70,7 +76,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 // ── Admin — authenticated (admin + partner) ────────────────────────────────────
-Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUserRole::adminMiddlewareParam()])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUserRole::adminMiddlewareParam()])->group(function () {
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -87,7 +93,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUser
     Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
 
     // ── Admin-only routes ──────────────────────────────────────────────────────
-    Route::middleware('role:'.EnumUserRole::Admin->value)->group(function () {
+    Route::middleware('role:' . EnumUserRole::Admin->value)->group(function () {
+        // Make a request's PDF report again from its stored payload (calls the compute service)
+        Route::post('requests/{id}/report', [RequestLogController::class, 'regenerateReport'])
+            ->middleware('throttle:write')->name('requests.report');
+
         // Users
         Route::resource('users', UserController::class)
             ->except(['show'])
