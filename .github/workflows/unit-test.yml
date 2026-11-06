@@ -98,6 +98,10 @@ jobs:
         if: steps.test-cache.outputs.cache-hit != 'true'
         run: php artisan key:generate --new
 
+      - name: Run db migrations
+        if: steps.test-cache.outputs.cache-hit != 'true'
+        run: php artisan migrate --step --force --isolated
+
       # ── Frontend assets ──────────────────────────────────────────────────────
       - name: Set up pnpm
         if: steps.test-cache.outputs.cache-hit != 'true'
