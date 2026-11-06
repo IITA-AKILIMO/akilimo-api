@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>System Health — {{ config('app.name', 'AKILIMO API') }}</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=dm-serif-display:400,400i|dm-sans:300,400,500,600&display=swap" rel="stylesheet" />
+    @include('partials.theme-head')
     @vite(['resources/scss/playground.scss'])
 </head>
 <body class="pg-health-body">
@@ -17,7 +16,9 @@
     </a>
     <span class="pg-nav-badge">System Health</span>
     <div class="pg-nav-user">
-        <span class="pg-nav-user-name" style="color:rgba(255,255,255,0.6)">{{ auth()->user()->name }}</span>
+        @auth
+            <span class="pg-nav-user-name" style="color:rgba(255,255,255,0.6)">{{ auth()->user()->name }}</span>
+        @endauth
         <a href="/playground" class="pg-nav-signout" style="color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.15)">← Playground</a>
     </div>
 </nav>

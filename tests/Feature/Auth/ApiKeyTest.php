@@ -1,16 +1,24 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Auth\TokenAbility;
+use App\Enums\EnumUserRole;
 use App\Models\ApiKey;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Testing\AssertableInertia as Assert;
 
 function apiKeyUser(): User
 {
     return User::create([
         'name' => 'Key User',
-        'username' => 'keyuser_'.str()->random(6),
-        'email' => 'key_'.str()->random(6).'@example.com',
+        'username' => 'keyuser_' . str()->random(6),
+        'email' => 'key_' . str()->random(6) . '@example.com',
         'password' => Hash::make('secret123'),
     ]);
 }
@@ -76,6 +84,23 @@ it('can authenticate a protected route with the generated key', function () {
         ->assertOk();
 });
 
+it('can authenticate with the generated key sent as a bearer token', function () {
+    $rawKey = $this->actingAsApiUser()
+        ->postJson('/api/v1/auth/api-keys', ['name' => 'bearer test'])
+        ->json('data.key');
+
+    $this->flushHeaders()
+        ->withToken($rawKey)
+        ->getJson('/api/v1/translations')
+        ->assertOk();
+});
+
+it('returns 401 for an invalid api key sent as a bearer token', function () {
+    $this->withToken('ak_invalidkey')
+        ->getJson('/api/v1/translations')
+        ->assertUnauthorized();
+});
+
 it('returns 401 for an invalid api key', function () {
     $this->withHeader('X-Api-Key', 'ak_invalidkey')
         ->getJson('/api/v1/translations')
@@ -127,12 +152,42 @@ it('deleted key returns 401 on subsequent requests', function () {
         ->assertUnauthorized();
 });
 
+// ── Admin UI ──────────────────────────────────────────────────────────────────
+
+it('shows the raw key once after an admin creates it, without storing it', function () {
+    $admin = apiKeyUser();
+    $admin->forceFill(['role' => EnumUserRole::Admin])->save();
+    $owner = apiKeyUser();
+
+    $response = $this->withoutVite()->actingAs($admin)
+        ->post('/admin/api-keys', ['user_id' => $owner->id, 'name' => 'admin made', 'abilities' => []])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('ApiKeys/Created')
+            ->where('apiKey.name', 'admin made')
+            ->has('plainTextKey'));
+
+    $rawKey = $response->viewData('page')['props']['plainTextKey'];
+    $key = ApiKey::latest('id')->first();
+
+    expect($rawKey)->toStartWith('ak_')->toHaveLength(35)
+        ->and($key->key_hash)->toBe(hash('sha256', $rawKey))
+        ->and($key->abilities)->toBeNull()
+        ->and(session()->all())->not->toContain($rawKey);
+
+    $this->get('/admin/api-keys')
+        ->assertInertia(fn (Assert $page) => $page->component('ApiKeys/Index')->missing('plainTextKey'));
+
+    auth()->logout();
+    $this->withToken($rawKey)->getJson('/api/v1/translations')->assertOk();
+});
+
 // ── Expiry ────────────────────────────────────────────────────────────────────
 
 it('expired key returns 401', function () {
     $user = apiKeyUser();
 
-    $rawKey = 'ak_'.bin2hex(random_bytes(16));
+    $rawKey = 'ak_' . bin2hex(random_bytes(16));
     $user->apiKeys()->create([
         'name' => 'expired',
         'key_prefix' => substr($rawKey, 0, 12),

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,20 +14,20 @@ use Carbon\Carbon;
 /**
  * Class Fertilizer
  *
- * @property int $id
- * @property string|null $fertilizer_label
- * @property string $name
- * @property string $type
- * @property string|null $fertilizer_key
- * @property int $weight
- * @property string $country
- * @property int|null $sort_order
- * @property string $use_case
- * @property bool $cis
- * @property bool $cim
  * @property bool|null $available
+ * @property bool $cim
+ * @property bool $cis
+ * @property string $country
  * @property Carbon|null $created_at
+ * @property string|null $fertilizer_key
+ * @property string|null $fertilizer_label
+ * @property int $id
+ * @property string $name
+ * @property int|null $sort_order
+ * @property string $type
  * @property Carbon|null $updated_at
+ * @property string $use_case
+ * @property int $weight
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer newQuery()

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,16 +14,16 @@ use Carbon\Carbon;
 /**
  * Class UserFeedback
  *
- * @property int $id
+ * @property int $akilimo_rec_rating
  * @property string $akilimo_usage
+ * @property int $akilimo_useful_rating
+ * @property Carbon|null $created_at
+ * @property string|null $device_token
+ * @property int $id
+ * @property string|null $language
+ * @property Carbon|null $updated_at
  * @property string|null $use_case
  * @property string $user_type
- * @property int $akilimo_rec_rating
- * @property int $akilimo_useful_rating
- * @property string|null $language
- * @property string|null $device_token
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserFeedback newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserFeedback newQuery()

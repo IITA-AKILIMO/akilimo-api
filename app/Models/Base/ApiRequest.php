@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,30 +14,30 @@ use Carbon\Carbon;
 /**
  * Class ApiRequest
  *
- * @property int $id
- * @property string $request_id
- * @property string|null $device_token
  * @property string|null $country_code
+ * @property Carbon|null $created_at
+ * @property string|null $device_token
+ * @property array $droid_request
+ * @property bool|null $excluded
+ * @property bool|null $fr
+ * @property string|null $full_names
+ * @property string|null $gender
+ * @property string|null $gender_code
+ * @property bool|null $ic
+ * @property int $id
  * @property float|null $lat
  * @property float|null $lon
- * @property string|null $full_names
  * @property string|null $phone_number
- * @property string|null $gender
- * @property bool|null $fr
- * @property bool|null $ic
+ * @property array $plumber_request
+ * @property array $plumber_response
  * @property bool|null $pp
+ * @property int|null $request_duration_ms
+ * @property string $request_id
+ * @property Carbon|null $request_started_at
  * @property bool|null $sph
  * @property bool|null $spp
- * @property bool|null $excluded
- * @property string|null $use_case
- * @property string|null $gender_code
- * @property array $droid_request
- * @property array $plumber_request
- * @property Carbon|null $request_started_at
- * @property int|null $request_duration_ms
- * @property array $plumber_response
- * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $use_case
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest newQuery()

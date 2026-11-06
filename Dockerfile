@@ -1,14 +1,16 @@
+# The base image argument must be declared before the first FROM so Docker can
+# resolve it when parsing the later final-stage FROM instruction.
 ARG BASE_IMAGE=ghcr.io/masgeek/laravel-frankenphp-base:php8.4
 
 # -----------------------------------
 # Build stage for frontend assets
 # -----------------------------------
-FROM node:24-alpine AS frontend-build
+FROM node:24.14-alpine AS frontend-build
 
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Pin the package manager used for reproducible frontend builds.
+RUN npm install -g pnpm@10.12.4
 
 # Copy only the package.json and pnpm-lock.yaml to leverage Docker cache
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -27,7 +29,6 @@ RUN pnpm build
 # -----------------------------------
 FROM ${BASE_IMAGE}
 
-ENV AGENT_MQTT_ENABLED=false
 ARG APP_BASE_PATH=/var/www/html/fuelrod
 
 ENV APP_BASE_PATH=${APP_BASE_PATH} \
@@ -42,13 +43,12 @@ WORKDIR ${APP_BASE_PATH}
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts
 
-# Copy application files
+# Copy application files after the dependency layer.
 COPY . .
 
-# Finish framework discovery and ensure the FrankenPHP worker is available.
+# Finish framework discovery and generate the FrankenPHP worker file.
 RUN composer dump-autoload --no-dev --optimize \
     && php artisan octane:install --server=frankenphp --no-interaction
-
 
 # Copy frontend build
 COPY --from=frontend-build --chown=www-data:www-data /app/public/build ./public/build
@@ -58,11 +58,16 @@ RUN chown -R www-data:www-data \
     "${APP_BASE_PATH}" \
     && chmod -R u+rwX,go-rwx "${APP_BASE_PATH}/storage" "${APP_BASE_PATH}/bootstrap/cache"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+# Install bash aliases so they are available in `docker exec` sessions
+COPY docker/bash/artisan-aliases.sh /etc/artisan-aliases.sh
+RUN chmod +x /etc/artisan-aliases.sh \
+    && echo '[ -f /etc/artisan-aliases.sh ] && source /etc/artisan-aliases.sh' >> /root/.bashrc \
+    && rm -rf "${APP_BASE_PATH}/docker"
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl --fail --silent http://127.0.0.1/up > /dev/null || exit 1
 
-# Switch to www-data user for runtime
+# The FrankenPHP base image runs Supervisor and all application processes as www-data.
 USER www-data
 
-# Start all services using Supervisor
 CMD ["/usr/local/bin/start.sh"]

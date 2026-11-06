@@ -1,11 +1,18 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Enums\EnumUserRole;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
 use App\Http\Controllers\Admin\CassavaPriceController;
 use App\Http\Controllers\Admin\CassavaUnitController;
 use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\CropController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DefaultPriceController;
@@ -19,6 +26,7 @@ use App\Http\Controllers\Admin\PotatoPriceController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\StarchFactoryController;
 use App\Http\Controllers\Admin\StarchPriceController;
+use App\Http\Controllers\Admin\TrafficExclusionController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Web\HealthCheckController;
@@ -38,23 +46,25 @@ Route::prefix('health')->group(function () {
 // ── Playground — public auth ───────────────────────────────────────────────────
 Route::prefix('playground')->name('playground.')->group(function () {
     Route::get('/login', [PlaygroundAuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [PlaygroundAuthController::class, 'login'])->name('login.post')->middleware('throttle:10,1');
+    Route::post('/login', [PlaygroundAuthController::class, 'login'])->name('login.post')->middleware('throttle:auth');
     Route::get('/register', [PlaygroundAuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [PlaygroundAuthController::class, 'register'])->name('register.post')->middleware('throttle:5,1');
-    Route::get('/check-username', [PlaygroundAuthController::class, 'checkUsername'])->name('check-username')->middleware('throttle:60,1');
+    Route::post('/register', [PlaygroundAuthController::class, 'register'])->name('register.post')->middleware('throttle:sensitive');
+    Route::get('/check-username', [PlaygroundAuthController::class, 'checkUsername'])->name('check-username')->middleware('throttle:read');
     Route::post('/logout', [PlaygroundAuthController::class, 'logout'])->name('logout');
+
+    // Public: it only displays the public /health checks, and the welcome page links here
+    Route::get('/health', [PlaygroundController::class, 'showHealth'])->name('health');
 });
 
 // ── Playground — authenticated ─────────────────────────────────────────────────
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/playground', [PlaygroundController::class, 'show']);
     Route::get('/playground/history', [PlaygroundController::class, 'history']);
-    Route::middleware('throttle:5,1')->post('/playground/compute', [PlaygroundController::class, 'compute']);
+    Route::middleware('throttle:sensitive')->post('/playground/compute', [PlaygroundController::class, 'compute']);
 
     // Token management
-    Route::get('/playground/health', [PlaygroundController::class, 'showHealth']);
     Route::get('/playground/tokens', [PlaygroundTokenController::class, 'index']);
-    Route::post('/playground/tokens', [PlaygroundTokenController::class, 'store'])->middleware('throttle:10,1');
+    Route::post('/playground/tokens', [PlaygroundTokenController::class, 'store'])->middleware('throttle:auth');
     Route::post('/playground/tokens/{id}/revoke', [PlaygroundTokenController::class, 'revoke']);
     Route::delete('/playground/tokens/{id}', [PlaygroundTokenController::class, 'destroy']);
 });
@@ -66,7 +76,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 // ── Admin — authenticated (admin + partner) ────────────────────────────────────
-Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUserRole::adminMiddlewareParam()])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUserRole::adminMiddlewareParam()])->group(function () {
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -83,7 +93,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUser
     Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
 
     // ── Admin-only routes ──────────────────────────────────────────────────────
-    Route::middleware('role:'.EnumUserRole::Admin->value)->group(function () {
+    Route::middleware('role:' . EnumUserRole::Admin->value)->group(function () {
+        // Make a request's PDF report again from its stored payload (calls the compute service)
+        Route::post('requests/{id}/report', [RequestLogController::class, 'regenerateReport'])
+            ->middleware('throttle:write')->name('requests.report');
+
         // Users
         Route::resource('users', UserController::class)
             ->except(['show'])
@@ -156,6 +170,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUser
             ->except(['show'])
             ->parameters(['operation-costs' => 'id']);
 
+        Route::resource('crops', CropController::class)
+            ->except(['show'])
+            ->parameters(['crops' => 'id']);
+
         Route::resource('currencies', CurrencyController::class)
             ->except(['show'])
             ->parameters(['currencies' => 'id']);
@@ -175,5 +193,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:'.EnumUser
         Route::resource('translations', TranslationController::class)
             ->except(['show'])
             ->parameters(['translations' => 'id']);
+
+        // Rules marking staff and test traffic, left out of the dashboard and reports
+        Route::resource('traffic-exclusions', TrafficExclusionController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->parameters(['traffic-exclusions' => 'id']);
     });
 });

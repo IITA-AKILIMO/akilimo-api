@@ -14,6 +14,7 @@ Laravel 12 RESTful API that computes and delivers agricultural recommendations (
 | [Architecture](docs/ARCHITECTURE.md) | How the system is structured, request flow, auth, DB schema |
 | [User Onboarding](docs/USER_ONBOARDING.md) | Integrating with the API — auth, endpoints, request/response shapes |
 | [Developer Onboarding](docs/DEVELOPER_ONBOARDING.md) | Local setup, project structure, contributing, testing |
+| [Supported area](docs/COVERAGE.md) | Where recommendations can be computed: GeoJSON ingest, map endpoints, early coordinate validation |
 
 ---
 
@@ -60,7 +61,7 @@ Two methods are supported interchangeably on all protected routes:
 - **Bearer token** — `Authorization: Bearer <token>` — obtained via `POST /v1/auth/login`, valid for `AUTH_TOKEN_TTL_DAYS` days.
 - **API key** — `X-Api-Key: ak_...` — generated via `POST /v1/auth/api-keys`, long-lived, scoped to specific abilities.
 
-See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup.
+See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup, and [MCP keys](docs/MCP_KEYS.md) for the keys users create in the playground for the AKILIMO MCP server.
 
 ---
 
@@ -94,11 +95,14 @@ See [User Onboarding](docs/USER_ONBOARDING.md) for step-by-step auth setup.
 | `POST` | `/v1/auth/api-keys` | Generate API key |
 | `PATCH` | `/v1/auth/api-keys/{id}/revoke` | Revoke API key |
 | `DELETE` | `/v1/auth/api-keys/{id}` | Delete API key |
-| `POST` | `/v1/recommendations/compute` | Compute recommendation |
+| `POST` | `/v1/recommendations/compute` | Compute recommendation (the answer's `report.url` is a signed link to its PDF report) |
+| `GET` | `/v1/recommendations/reports/{id}/{file}` | Download the PDF report (signed, expiring link only; no key) |
+| `GET` | `/v1/recommendations/reports/{id}` | New download links for a stored report (ability `reports:read`) |
 | `GET` | `/v1/recommendations` | Request history |
 | `GET` | `/v1/user-feedback` | List feedback |
 | `POST` | `/v1/user-feedback` | Submit feedback |
 | `GET` | `/v1/translations` | Translation strings |
+| `POST` | `/v1/mcp/verify-key` | Check a user's MCP key (AKILIMO MCP server only, ability `mcp:verify-keys`) |
 
 ---
 

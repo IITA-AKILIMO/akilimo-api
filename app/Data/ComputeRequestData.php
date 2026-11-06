@@ -93,10 +93,12 @@ class ComputeRequestData extends Data
             'costWeedingOne' => $this->weedingCosts->costWeedingOne,
             'costWeedingTwo' => $this->weedingCosts->costWeedingTwo,
 
-            // OperationsDone
-            'ploughingDone' => $this->operationsDone->ploughingDone,
-            'harrowingDone' => $this->operationsDone->harrowingDone,
-            'ridgingDone' => $this->operationsDone->ridgingDone,
+            // OperationsDone: AkilimoComputeData names these ploughing, harrowing and ridging (the keys
+            // the compute service reads). Under the old *Done names nothing matched them, so the
+            // properties stayed uninitialised and were left out of the payload without any error.
+            'ploughing' => $this->operationsDone->ploughingDone,
+            'harrowing' => $this->operationsDone->harrowingDone,
+            'ridging' => $this->operationsDone->ridgingDone,
 
             // Methods
             'methodPloughing' => $this->methods->methodPloughing,

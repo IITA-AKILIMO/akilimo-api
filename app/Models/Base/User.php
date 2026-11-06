@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -18,16 +20,16 @@ use Laravel\Sanctum\PersonalAccessToken;
 /**
  * Class User
  *
+ * @property Carbon|null $created_at
+ * @property string $email
+ * @property Carbon|null $email_verified_at
  * @property int $id
  * @property string $name
- * @property string $username
- * @property string $email
- * @property string $role
- * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
- * @property Carbon|null $created_at
+ * @property string $role
  * @property Carbon|null $updated_at
+ * @property string $username
  * @property Collection|ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications

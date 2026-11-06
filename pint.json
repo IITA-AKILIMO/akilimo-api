@@ -5,7 +5,7 @@
       "comment_type": "PHPDoc",
       "location": "after_open",
       "separate": "both",
-      "header": "(c) 2026 AKILIMO — https://akilimo.co.ke\n\nFor licence information, see the LICENCE file."
+      "header": "(c) 2026 AKILIMO — https://akilimo.org\n\nFor licence information, see the LICENCE file."
     },
     "array_indentation": true,
     "array_syntax": {

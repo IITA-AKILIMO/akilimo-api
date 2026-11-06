@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,28 +14,28 @@ use Carbon\Carbon;
 /**
  * Class YieldRequest
  *
+ * @property string|null $area_units
+ * @property string|null $cassava_pd
+ * @property float|null $cassava_unit_price
+ * @property float|null $cassava_unit_weight
+ * @property string|null $client
+ * @property string $country
+ * @property Carbon|null $created_at
+ * @property float|null $field_area
+ * @property string|null $field_description
+ * @property Carbon $harvest_date
  * @property int $id
  * @property float $map_lat
  * @property float $map_long
- * @property float|null $cassava_unit_weight
- * @property float|null $cassava_unit_price
  * @property float|null $max_investment
- * @property float|null $field_area
  * @property Carbon $planting_date
- * @property Carbon $harvest_date
- * @property string $country
- * @property string|null $client
- * @property string|null $area_units
+ * @property bool|null $processed
+ * @property string|null $recommendation_text
+ * @property Carbon|null $updated_at
+ * @property string|null $user_email
  * @property string|null $user_name
  * @property string|null $user_phone_code
  * @property string|null $user_phone_number
- * @property string|null $cassava_pd
- * @property string|null $field_description
- * @property string|null $user_email
- * @property bool|null $processed
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property string|null $recommendation_text
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|YieldRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|YieldRequest newQuery()

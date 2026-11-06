@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Auth\TokenAbility;
@@ -32,7 +38,7 @@ class ApiKeyController extends Controller
      * The full raw key is returned ONCE in the response and never stored.
      * The caller must copy it immediately.
      *
-     * @throws ValidationException
+     * @throws ValidationException|\Random\RandomException
      */
     public function store(Request $request): JsonResponse
     {
@@ -45,7 +51,17 @@ class ApiKeyController extends Controller
             'expires_at' => ['nullable', 'date', 'after:now'],
         ]);
 
-        $rawKey = 'ak_'.bin2hex(random_bytes(16)); // ak_ + 32 hex chars = 35 chars total
+        // A new key can never do more than the token or key that creates it; no abilities = wildcard
+        $caller = $request->attributes->get('auth_token');
+        $requested = ($validated['abilities'] ?? null) ?: [TokenAbility::WILDCARD];
+        $beyond = array_values(array_filter($requested, fn (string $ability) => !$caller?->can($ability)));
+        if ($beyond !== []) {
+            throw ValidationException::withMessages([
+                'abilities' => 'You cannot grant abilities you do not have: ' . implode(', ', $beyond) . '.',
+            ]);
+        }
+
+        $rawKey = 'ak_' . bin2hex(random_bytes(16)); // ak_ + 32 hex chars = 35 chars total
         $prefix = substr($rawKey, 0, 12);             // "ak_" + first 8 hex chars
         $hash = hash('sha256', $rawKey);
 

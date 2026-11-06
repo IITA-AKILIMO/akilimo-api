@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,13 +14,13 @@ use Carbon\Carbon;
 /**
  * Class DefaultPrice
  *
- * @property int $id
  * @property string $country
+ * @property Carbon|null $created_at
+ * @property string|null $currency
+ * @property int $id
  * @property string $item
  * @property float $price
  * @property string $unit
- * @property string|null $currency
- * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPrice newModelQuery()

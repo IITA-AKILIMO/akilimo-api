@@ -74,13 +74,8 @@ class BackfillAppReport extends Command
                 IF(STRCMP(REPLACE(JSON_EXTRACT(ar.plumber_request, '$.PP'),  '\"', ''), 'false') = 1, 1, 0),
                 IF(STRCMP(REPLACE(JSON_EXTRACT(ar.plumber_request, '$.SPH'), '\"', ''), 'false') = 1, 1, 0),
                 IF(STRCMP(REPLACE(JSON_EXTRACT(ar.plumber_request, '$.SPP'), '\"', ''), 'false') = 1, 1, 0),
-                CASE
-                    WHEN REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.mobileNumber'), '\"', '') LIKE '254%'
-                      OR REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.mobileNumber'), '\"', '') LIKE '49%'  THEN 1
-                    WHEN REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.userName'), '\"', '') LIKE '%KREYE%'
-                      OR REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.userName'), '\"', '') LIKE '%C K%'    THEN 1
-                    ELSE 0
-                END,
+                -- Staff/test flag, set from the admin-managed rules (TrafficExclusionService)
+                ar.excluded,
                 ar.created_at,
                 ar.updated_at
             FROM api_requests ar

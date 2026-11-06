@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -7,9 +13,12 @@ use App\Http\Requests\ComputeRequest;
 use App\Http\Resources\ApiRequestResourceCollection;
 use App\Http\Resources\RecommendationResource;
 use App\Repositories\ApiRequestRepo;
+use App\Service\RecommendationReportService;
 use App\Service\RecommendationService;
 use App\Traits\HasPaginationParams;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RecommendationController extends Controller
 {
@@ -44,7 +53,7 @@ class RecommendationController extends Controller
      * Adjusts the area unit in the request to standardized values for further processing.
      * Sends the request to the computation service and returns the original request data, the computed response, and the final request sent to the service.
      *
-     * @param  ComputeRequest  $request  The incoming compute request containing user data, computation details, and a list of fertilizers.
+     * @param ComputeRequest $request The incoming compute request containing user data, computation details, and a list of fertilizers.
      *
      * @throws \JsonException
      */
@@ -53,5 +62,26 @@ class RecommendationController extends Controller
         $result = $this->recommendationService->compute(droidRequest: $request->toArray());
 
         return RecommendationResource::make($result);
+    }
+
+    /**
+     * Download a recommendation's PDF report. Reached only through a signed, expiring link (`report.url` in the
+     * compute answer, or one from reportLinks); the signature is checked by the `signed:relative` middleware.
+     */
+    public function report(string $report, string $file, RecommendationReportService $reports): Response
+    {
+        return $reports->download($report, $file) ?? abort(404, 'This report is no longer available.');
+    }
+
+    /**
+     * New download links for a stored report: an old link (in saved history) has expired, the report has not.
+     * The id is report.id from the compute answer (the request_id of the computation).
+     */
+    public function reportLinks(string $report, RecommendationReportService $reports): JsonResponse
+    {
+        $links = $reports->links($report);
+        abort_if($links === null, 404, 'This recommendation has no report.');
+
+        return response()->json(['data' => $links]);
     }
 }

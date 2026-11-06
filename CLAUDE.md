@@ -66,8 +66,9 @@ Routes are split into four groups in `routes/api.php`:
 
 **Protected — requires `Authorization: Bearer <token>` or `X-Api-Key: <key>`:**
 - `POST /v1/auth/logout`, `/v1/auth/api-keys` (CRUD) — throttle 30/min
-- `POST /v1/recommendations/compute`, `POST /v1/user-feedback` — throttle 30/min
+- `POST /v1/recommendations/compute` — limiter `compute`, 30/min per IP; `POST /v1/user-feedback` — limiter `write`, 30/min. **All request limits are in `config/rate-limits.php`** (seven keys: `auth` 10, `sensitive` 5, `read` 120, `write` 30, `compute` 30, `admin-write` 60, `mcp-verify` 600, each set by `API_RATE_<KEY>_PER_MINUTE` in `.env`), registered as named limiters in `AppServiceProvider` and used as `throttle:<key>`; routes sharing a key share one counter per IP; never write a number in a route file
 - `GET /v1/recommendations`, `GET /v1/user-feedback`, `GET /v1/translations` — throttle 120/min
+- `POST /v1/mcp/verify-key` — ability `mcp:verify-keys` (the AKILIMO MCP server's own key), throttle 600/min; checks users' MCP keys (`ApiKeyService::verifyMcpKey`, see `docs/MCP_KEYS.md`)
 
 To protect a new route use the `auth.token` middleware alias. Ability-scoped protection:
 ```php
@@ -84,7 +85,7 @@ Two auth mechanisms are accepted on every protected route (tried in order by `Au
 
 1. **Bearer token** — `Authorization: Bearer <token>`. Short-lived; stored hashed in `personal_access_tokens`. Issued by `POST /v1/auth/login`, revoked by `POST /v1/auth/logout`. TTL controlled by `AUTH_TOKEN_TTL_DAYS` (default 30 days).
 
-2. **API key** — `X-Api-Key: ak_...`. Long-lived; stored hashed in `api_keys`. Generated via `POST /v1/auth/api-keys`. Only the SHA-256 hash is persisted — the raw key is shown once at creation. Keys have scoped abilities (`read`, `write`, `api-keys:manage`) or wildcard (`null` = `*`).
+2. **API key** — `X-Api-Key: ak_...`. Long-lived; stored hashed in `api_keys`. Generated via `POST /v1/auth/api-keys`. Only the SHA-256 hash is persisted — the raw key is shown once at creation. Keys have scoped abilities (`read`, `write`, `api-keys:manage`, granular ones such as `recommendations:compute`, and `mcp:use` for users' MCP keys created in the playground) or wildcard (`null` = `*`). New keys are issued through `ApiKeyService::issue`.
 
 **`TokenAbility` constants** (`app/Auth/TokenAbility.php`) — single source of truth for all ability names. Reference these constants everywhere instead of raw strings.
 

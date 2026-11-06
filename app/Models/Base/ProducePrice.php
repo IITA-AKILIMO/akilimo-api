@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,16 +14,16 @@ use Carbon\Carbon;
 /**
  * Class ProducePrice
  *
- * @property int $id
  * @property string $country
- * @property string $produce_name
- * @property float $min_price
- * @property float $max_price
- * @property float $is_min_price
- * @property float $is_max_price
- * @property bool $is_active
- * @property int $sort_order
  * @property Carbon $created_at
+ * @property int $id
+ * @property bool $is_active
+ * @property float $is_max_price
+ * @property float $is_min_price
+ * @property float $max_price
+ * @property float $min_price
+ * @property string $produce_name
+ * @property int $sort_order
  * @property Carbon $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProducePrice newModelQuery()

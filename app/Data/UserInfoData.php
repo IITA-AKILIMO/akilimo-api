@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Data;
 
 use Spatie\LaravelData\Attributes\MapInputName;
@@ -11,7 +17,8 @@ class UserInfoData extends Data
 {
     public string $deviceToken;
 
-    public string $farmName;
+    // Optional (UserInfoRules allows null); a missing name must not drop the field silently
+    public ?string $farmName = null;
 
     public string $firstName;
 

@@ -15,10 +15,10 @@ export default function App() {
 
     const {
         step, form, setForm,
-        countries, fertilizers, loadingFerts,
+        countries, cassavaUnits, priceHints, fertilizers, loadingFerts,
         submitting, result, apiError, validationErrors,
         resultRef,
-        handleCountryChange, updateFert,
+        handleCountryChange, setCassavaUnit, setMaizeProduceType, updateFert,
         advance, back, submit, reset,
     } = usePlaygroundForm()
 
@@ -30,8 +30,8 @@ export default function App() {
             <div className="pg-header">
                 <h1 className="pg-header-title">Try the <em>recommendations API</em></h1>
                 <p className="pg-header-sub">
-                    Select a scenario, fill in your farm details, and receive tailored agricultural
-                    recommendations — no account required.
+                    Pick a scenario, describe a farm, and see the recommendations the AKILIMO API
+                    returns for it.
                 </p>
             </div>
 
@@ -42,7 +42,7 @@ export default function App() {
                     <line x1="12" y1="8" x2="12" y2="12"/>
                     <line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
-                Limited to 5 requests per minute. For production use, obtain an API key from the admin panel.
+                Limited to 5 requests per minute. To call the API from your own app, create a key in the API Keys tab.
             </div>
 
             <div className="pg-tabs">
@@ -104,10 +104,14 @@ export default function App() {
                     {step === 3 && (
                         <StepCropYield
                             form={form}
+                            cassavaUnits={cassavaUnits}
+                            priceHints={priceHints}
                             errors={validationErrors}
                             isLastStep={isLastStep}
                             submitting={submitting}
                             onChange={setForm}
+                            onCassavaUnitChange={setCassavaUnit}
+                            onMaizeProduceTypeChange={setMaizeProduceType}
                             onBack={back}
                             onNext={advance}
                             onSubmit={submit}
@@ -117,6 +121,7 @@ export default function App() {
                     {step === 4 && needsFertilizers(form.scenario) && (
                         <StepFertilizers
                             country={form.country}
+                            currency={priceHints.currency}
                             fertilizers={fertilizers}
                             loading={loadingFerts}
                             errors={validationErrors}

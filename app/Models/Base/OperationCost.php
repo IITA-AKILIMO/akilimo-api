@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.co.ke
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
@@ -12,14 +14,14 @@ use Carbon\Carbon;
 /**
  * Class OperationCost
  *
+ * @property string $country_code
+ * @property Carbon $created_at
  * @property int $id
+ * @property bool $is_active
+ * @property float $max_cost
+ * @property float $min_cost
  * @property string $operation_name
  * @property string $operation_type
- * @property string $country_code
- * @property float $min_cost
- * @property float $max_cost
- * @property bool $is_active
- * @property Carbon $created_at
  * @property Carbon $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OperationCost newModelQuery()
