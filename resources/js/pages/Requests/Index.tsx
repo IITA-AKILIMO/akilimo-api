@@ -28,7 +28,7 @@ const USE_CASE_COLORS: Record<string, string> = {
     NA: 'secondary',
 }
 
-function navigate(path: string, params: Record<string, unknown>) {
+function navigate(path: string, params: Record<string, any>) {
     router.get(path, params, { preserveScroll: true, replace: true })
 }
 
