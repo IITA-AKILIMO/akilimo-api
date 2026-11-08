@@ -38,8 +38,9 @@ class StarchPricesController extends Controller
         $orderBy = $this->getOrderBy($request, ['created_at'], 'created_at');
         $sort = $this->getSortDirection($request);
 
+        // Inactive factories (e.g. unconfirmed prices) stay out of the feed clients compute with
         $relationFilters = [
-            'starchFactory' => ['country' => $request->input('country')],
+            'starchFactory' => ['country' => $request->input('country'), 'factory_active' => true],
         ];
 
         $starchPrices = $this->repo->paginateWithSort(

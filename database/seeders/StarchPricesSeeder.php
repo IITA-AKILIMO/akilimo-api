@@ -30,6 +30,8 @@ class StarchPricesSeeder extends Seeder
                 [
                     'factory_label' => $record['starchFactory_label'] ?? '',
                     'country' => $record['country'] ?? '',
+                    // Only applies when the factory is created; an admin's later toggle is kept
+                    'factory_active' => ($record['active'] ?? '1') !== '0',
                 ]
             );
 
@@ -39,6 +41,7 @@ class StarchPricesSeeder extends Seeder
                 'min_starch' => (float) $record['minStarch'],
                 'range_starch' => $record['rangeStarch'] ?? '',
                 'price' => (float) $record['price'],
+                'currency' => ($record['currency'] ?? '') ?: null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

@@ -64,6 +64,7 @@ class StarchFactoryController extends Controller
 
         $filters = [
             'country' => strtoupper(trim($countryCode)),
+            'factory_active' => true,
         ];
 
         $starchFactory = $this->repo->paginateWithSort(
