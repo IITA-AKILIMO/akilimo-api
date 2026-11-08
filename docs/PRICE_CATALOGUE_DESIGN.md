@@ -101,7 +101,7 @@ Add one question to the fertiliser screen: **"Do you get subsidised fertiliser?"
 
 | Phase | Scope | Who | Visible change |
 |---|---|---|---|
-| 1 | Catalogue columns, history, `GET /v1/prices`, admin review screens, draft import | API | None for clients |
+| 1 | Catalogue columns, history, `GET /v1/prices`, admin screens for prices (draft, review, activate), per-country basis and reviewers, draft import | API | None for clients; country teams can start entering prices |
 | 2 | Engine syncs `/v1/prices`; hardcoded defaults become fallbacks | Engine | Engine uses reviewed prices |
 | 3 | Choice lists generated from the catalogue; fixes the ranges in all five countries | API | App choices and ranges follow the catalogue |
 | 4 | App reads `/v1/prices` directly (optional) | Mobile | Fewer endpoints |
@@ -127,7 +127,8 @@ Decided 2026-11-08.
 | D5 | Regional prices | **Later.** National only for now, with a nullable `region` column so regional rows can be added without a redesign |
 | D6 | Engine and out-of-range request prices | **Accept and log.** Compute with the farmer's price, log a WARN, return a note with the expected range; never reject or clamp |
 
-Still to settle with the teams, without blocking phase 1:
-- each country's `default_price_basis`;
-- the wording of the subsidy question in the app;
-- who is the reviewer for each country.
+Country-team input is entered later through the admin UI, so none of it blocks phase 1. Phase 1 ships these as editable settings with safe starting values:
+- **Each country's `default_price_basis`:** set on the country's admin page. It starts as `open_market` everywhere until a team changes it.
+- **Prices:** country teams enter and update them as drafts in the admin price screens; activation follows D4. The review drafts in `docs/data/` are imported as the starting drafts.
+- **Reviewers per country:** assigned in the admin user screens. Until someone is assigned, any admin can review.
+- **The subsidy question's wording:** stored as a translation key served by `GET /v1/translations`, so it can be edited in the admin and translated without an app release.
