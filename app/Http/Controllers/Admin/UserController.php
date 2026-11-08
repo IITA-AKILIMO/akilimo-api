@@ -23,11 +23,17 @@ class UserController extends Controller
             ? $request->get('sort_by')
             : 'created_at';
         $direction = $request->get('sort_dir') === 'asc' ? 'asc' : 'desc';
-        $search = (string) $request->get('search', '');
+        $search = trim((string) $request->get('search', ''));
+        $role = EnumUserRole::tryFrom((string) $request->get('role', ''))?->value ?? '';
 
-        $paginator = $search !== ''
-            ? $this->repo->paginateWithSearch($search, $perPage, $orderBy, $direction)
-            : $this->repo->paginateWithSort(perPage: $perPage, orderBy: $orderBy, direction: $direction);
+        $paginator = $this->repo->paginateWithSort(
+            perPage: $perPage,
+            orderBy: $orderBy,
+            direction: $direction,
+            filters: ['role' => $role],
+            search: $search,
+            searchColumns: ['name', 'username', 'email'],
+        );
 
         return Inertia::render('Users/Index', [
             'users' => [
@@ -58,6 +64,7 @@ class UserController extends Controller
                 'sort_by' => $orderBy,
                 'sort_dir' => $direction,
                 'search' => $search,
+                'role' => $role,
             ],
         ]);
     }

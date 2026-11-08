@@ -15,16 +15,21 @@ class InvestmentAmountController extends AdminController
 
     public function index(Request $request): Response
     {
-        $filters = $this->filtersFrom($request, ['country']);
+        $values = $this->filterValues($request, ['country', 'area_unit', 'active']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
-            filters: $filters,
+            filters: [
+                'country' => $values['country'],
+                'area_unit' => $values['area_unit'],
+                'price_active' => $values['active'],
+            ],
         );
 
         return Inertia::render('InvestmentAmounts/Index', [
-            'filters' => ['country' => $request->get('country', '')],
+            'filters' => $values,
+            'areaUnits' => $this->distinctValues('investment_amount', 'area_unit'),
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'country' => $f->country,

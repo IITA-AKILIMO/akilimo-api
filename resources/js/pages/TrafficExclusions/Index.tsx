@@ -1,6 +1,7 @@
 import { router, useForm } from '@inertiajs/react'
 import { useState, type FormEvent } from 'react'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import TableFilters from '../../components/TableFilters'
 import AdminLayout from '../../layouts/AdminLayout'
 
 type Field = 'phone' | 'name' | 'device'
@@ -21,6 +22,7 @@ interface Props {
     fields: Record<Field, string>
     matchTypes: Record<MatchType, string>
     totals: { requests: number; excluded: number }
+    filters: Record<string, string>
 }
 
 const PLACEHOLDERS: Record<Field, Record<MatchType, string>> = {
@@ -35,7 +37,8 @@ const HINTS: Record<Field, string> = {
     device: 'The device ID the app sends with each request, ignoring case.',
 }
 
-export default function TrafficExclusionsIndex({ rules, fields, matchTypes, totals }: Props) {
+export default function TrafficExclusionsIndex({ rules, fields, matchTypes, totals, filters }: Props) {
+    const filtered = Object.values(filters).some((v) => v !== '')
     const form = useForm<{ field: Field; match_type: MatchType; value: string; note: string }>({
         field: 'phone',
         match_type: 'starts_with',
@@ -155,6 +158,12 @@ export default function TrafficExclusionsIndex({ rules, fields, matchTypes, tota
                 </div>
             </div>
 
+            <TableFilters url="/admin/traffic-exclusions" filters={filters} total={rules.length} defs={[
+                { type: 'search', key: 'search', placeholder: 'Search value or note…' },
+                { type: 'select', key: 'field', label: 'Checks', options: Object.entries(fields).map(([value, label]) => ({ value, label })) },
+                { type: 'active', key: 'active' },
+            ]} />
+
             <div className="card shadow-sm">
                 <div className="card-header bg-white py-3">
                     <h2 className="h6 mb-0 fw-semibold">Rules</h2>
@@ -213,7 +222,9 @@ export default function TrafficExclusionsIndex({ rules, fields, matchTypes, tota
                         </table>
                     </div>
                 ) : (
-                    <div className="card-body text-center text-muted py-4">No rules: every request counts as real traffic.</div>
+                    <div className="card-body text-center text-muted py-4">
+                        {filtered ? 'No rule matches these filters.' : 'No rules: every request counts as real traffic.'}
+                    </div>
                 )}
             </div>
 

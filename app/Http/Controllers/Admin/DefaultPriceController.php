@@ -16,16 +16,18 @@ class DefaultPriceController extends AdminController
 
     public function index(Request $request): Response
     {
-        $filters = $this->filtersFrom($request, ['country']);
+        $values = $this->filterValues($request, ['search', 'country']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'country',
             direction: 'asc',
-            filters: $filters,
+            filters: ['country' => $values['country']],
+            search: $values['search'],
+            searchColumns: ['item', 'unit', 'currency'],
         );
 
         return Inertia::render('DefaultPrices/Index', [
-            'filters' => ['country' => $request->get('country', '')],
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'country' => $f->country,

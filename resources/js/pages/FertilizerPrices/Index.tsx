@@ -2,18 +2,17 @@ import { Link, router } from '@inertiajs/react'
 import { useState } from 'react'
 import Badge from '../../components/Badge'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import CountryFilter from '../../components/CountryFilter'
+import TableFilters from '../../components/TableFilters'
 import DataTable, { type Column } from '../../components/DataTable'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { FertilizerPrice, Paginated } from '../../types'
 
-interface Filters { country: string; fertilizer_key: string }
+type Filters = Record<string, string>
 interface Props { items: Paginated<FertilizerPrice>; filters: Filters }
 
 export default function FertilizerPricesIndex({ items, filters }: Props) {
     const [deleting, setDeleting] = useState<FertilizerPrice | null>(null)
     const [processing, setProcessing] = useState(false)
-    const [keyInput, setKeyInput] = useState(filters.fertilizer_key)
 
     const columns: Column[] = [
         { key: 'country', label: 'Country' },
@@ -23,10 +22,6 @@ export default function FertilizerPricesIndex({ items, filters }: Props) {
         { key: 'price_per_bag', label: 'Price/Bag' },
         { key: 'price_active', label: 'Active', render: (v) => <Badge active={!!v} /> },
     ]
-
-    function navigate(next: Partial<Filters>) {
-        router.get('/admin/fertilizer-prices', { ...filters, ...next, page: 1 }, { preserveState: true })
-    }
 
     function handlePageChange(page: number) {
         router.get('/admin/fertilizer-prices', { ...filters, page }, { preserveState: true })
@@ -42,8 +37,7 @@ export default function FertilizerPricesIndex({ items, filters }: Props) {
 
     return (
         <AdminLayout title="Fertilizer Prices">
-            <div className="d-flex align-items-center justify-content-between mb-3">
-                <span className="text-muted small">{items.meta.total} records</span>
+            <div className="d-flex align-items-center justify-content-end mb-3">
                 <div className="d-flex gap-2">
                     <Link href="/admin/fertilizer-prices/batch-edit" className="btn btn-outline-secondary btn-sm">Batch Edit</Link>
                     <Link href="/admin/fertilizer-prices/batch-create" className="btn btn-outline-success btn-sm">Batch Add</Link>
@@ -51,26 +45,11 @@ export default function FertilizerPricesIndex({ items, filters }: Props) {
                 </div>
             </div>
 
-            <div className="row g-2 mb-3">
-                <div className="col-auto">
-                    <CountryFilter value={filters.country} onChange={(v) => navigate({ country: v })} />
-                </div>
-                <div className="col-auto">
-                    <input
-                        type="text" className="form-control form-control-sm" placeholder="Fertilizer key…"
-                        value={keyInput} onChange={(e) => setKeyInput(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') navigate({ fertilizer_key: keyInput }) }}
-                        onBlur={() => navigate({ fertilizer_key: keyInput })}
-                        style={{ width: 160 }}
-                    />
-                </div>
-                {(filters.country || filters.fertilizer_key) && (
-                    <div className="col-auto">
-                        <button className="btn btn-outline-secondary btn-sm" onClick={() => { setKeyInput(''); navigate({ country: '', fertilizer_key: '' }) }}>Clear</button>
-                    </div>
-                )}
-            </div>
-
+            <TableFilters url="/admin/fertilizer-prices" filters={filters} total={items.meta.total} defs={[
+                { type: 'search', key: 'search', placeholder: 'Search fertilizer key or description…' },
+                { type: 'country', key: 'country' },
+                { type: 'active', key: 'active' },
+            ]} />
             <DataTable columns={columns} data={items.data as FertilizerPrice[]}
                 pagination={items.meta} links={items.links} sortBy="" onSort={() => {}} onPageChange={handlePageChange}
                 actions={(row) => (

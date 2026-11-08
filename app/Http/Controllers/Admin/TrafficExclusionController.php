@@ -7,6 +7,7 @@ use App\Models\TrafficExclusion;
 use App\Repositories\TrafficExclusionRepo;
 use App\Service\TrafficExclusionService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,12 +23,22 @@ class TrafficExclusionController extends AdminController
         protected TrafficExclusionService $exclusions,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $rules = TrafficExclusion::query()->orderByDesc('active')->orderBy('id')->get();
+        $values = $this->filterValues($request, ['search', 'field', 'active']);
+        $like = '%'.addcslashes($values['search'], '\\%_').'%';
+
+        $rules = TrafficExclusion::query()
+            ->when($values['search'] !== '', fn ($q) => $q->where(fn ($w) => $w->where('value', 'like', $like)->orWhere('note', 'like', $like)))
+            ->when(array_key_exists($values['field'], TrafficExclusionService::FIELDS), fn ($q) => $q->where('field', $values['field']))
+            ->when($values['active'] !== '', fn ($q) => $q->where('active', $values['active'] === '1'))
+            ->orderByDesc('active')
+            ->orderBy('id')
+            ->get();
         $matches = $this->exclusions->matchCounts($rules);
 
         return Inertia::render('TrafficExclusions/Index', [
+            'filters' => $values,
             'rules' => $rules
                 ->map(fn (TrafficExclusion $r) => [
                     'id' => $r->id,

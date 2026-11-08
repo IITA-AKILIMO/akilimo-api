@@ -20,19 +20,19 @@ class FertilizerPriceController extends AdminController
 
     public function index(Request $request): Response
     {
-        $filters = $this->filtersFrom($request, ['country', 'fertilizer_key']);
+        $values = $this->filterValues($request, ['search', 'country', 'active']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
-            filters: $filters,
+            filters: ['country' => $values['country'], 'price_active' => $values['active']],
+            // Was an exact fertilizer_key match; part of a key ("NPK", "UREA") now finds it
+            search: $values['search'],
+            searchColumns: ['fertilizer_key', 'desc'],
         );
 
         return Inertia::render('FertilizerPrices/Index', [
-            'filters' => [
-                'country' => $request->get('country', ''),
-                'fertilizer_key' => $request->get('fertilizer_key', ''),
-            ],
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'country' => $f->country,

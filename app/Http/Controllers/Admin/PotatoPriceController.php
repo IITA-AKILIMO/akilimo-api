@@ -15,16 +15,16 @@ class PotatoPriceController extends AdminController
 
     public function index(Request $request): Response
     {
-        $filters = $this->filtersFrom($request, ['country']);
+        $values = $this->filterValues($request, ['country', 'active']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
-            filters: $filters,
+            filters: ['country' => $values['country'], 'price_active' => $values['active']],
         );
 
         return Inertia::render('PotatoPrices/Index', [
-            'filters' => ['country' => $request->get('country', '')],
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'country' => $f->country,

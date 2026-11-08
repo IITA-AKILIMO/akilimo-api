@@ -232,6 +232,10 @@ abstract class BaseRepo implements Repository
 
     /**
      * Paginate with sorting and optional filters.
+     *
+     * @param  string|null  $search  Text to look for (case-insensitive, anywhere in the value)
+     * @param  string[]  $searchColumns  Columns the search looks in; any of them may match
+     * @param  \Closure|null  $scope  Any other condition, given the query (e.g. a JSON or "is empty" test)
      */
     public function paginateWithSort(
         int $perPage = 50,
@@ -240,13 +244,31 @@ abstract class BaseRepo implements Repository
         array $filters = [],
         array $with = [],
         array $relationFilters = [],
+        ?string $search = null,
+        array $searchColumns = [],
+        ?\Closure $scope = null,
     ): LengthAwarePaginator {
         $query = $this->query($with);
+
+        if ($scope) {
+            $scope($query);
+        }
 
         // Apply direct filters
         $cleanFilters = array_filter($filters, fn ($v) => $v !== null && $v !== '');
         if (!empty($cleanFilters)) {
             $query->where($cleanFilters);
+        }
+
+        // Apply the text search; % and _ in it are matched literally
+        $term = trim((string) $search);
+        if ($term !== '' && $searchColumns !== []) {
+            $like = '%'.addcslashes($term, '\\%_').'%';
+            $query->where(function ($q) use ($searchColumns, $like) {
+                foreach ($searchColumns as $column) {
+                    $q->orWhere($column, 'like', $like);
+                }
+            });
         }
 
         // Apply relation filters only if values are provided

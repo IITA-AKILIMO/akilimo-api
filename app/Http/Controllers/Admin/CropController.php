@@ -15,13 +15,26 @@ class CropController extends AdminController
 
     public function index(Request $request): Response
     {
+        $values = $this->filterValues($request, ['search', 'country', 'active', 'advice']);
+        $country = strtoupper($values['country']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
+            filters: [
+                'active' => $values['active'],
+                'advice_available' => in_array($values['advice'], ['0', '1'], true) ? $values['advice'] : '',
+            ],
+            search: $values['search'],
+            searchColumns: ['crop_key', 'name', 'description'],
+            // Offered in a country: no country list (everywhere) or a list that names it
+            scope: $country === '' ? null : fn ($q) => $q->where(
+                fn ($w) => $w->whereNull('countries')->orWhereJsonContains('countries', $country)
+            ),
         );
 
         return Inertia::render('Crops/Index', [
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($c) => [
                 'id' => $c->id,
                 'crop_key' => $c->crop_key,

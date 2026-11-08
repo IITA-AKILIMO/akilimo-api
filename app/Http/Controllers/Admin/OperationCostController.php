@@ -16,17 +16,19 @@ class OperationCostController extends AdminController
 
     public function index(Request $request): Response
     {
-        // country_code is the DB column; request sends 'country'
-        $filters = $this->filtersFrom($request, ['country' => 'country_code']);
+        $values = $this->filterValues($request, ['search', 'country', 'active']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'created_at',
             direction: 'asc',
-            filters: $filters,
+            // country_code is the DB column; request sends 'country'
+            filters: ['country_code' => $values['country'], 'is_active' => $values['active']],
+            search: $values['search'],
+            searchColumns: ['operation_name', 'operation_type'],
         );
 
         return Inertia::render('OperationCosts/Index', [
-            'filters' => ['country' => $request->get('country', '')],
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'operation_name' => $f->operation_name,

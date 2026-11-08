@@ -2,15 +2,15 @@ import { Link, router } from '@inertiajs/react'
 import { useState } from 'react'
 import Badge from '../../components/Badge'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import CountryFilter from '../../components/CountryFilter'
+import TableFilters from '../../components/TableFilters'
 import DataTable, { type Column } from '../../components/DataTable'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { Fertilizer, Paginated } from '../../types'
 
-interface Filters { country: string; use_case: string; available: string }
-interface Props { items: Paginated<Fertilizer>; filters: Filters }
+type Filters = Record<string, string>
+interface Props { items: Paginated<Fertilizer>; filters: Filters; useCases: string[] }
 
-export default function FertilizersIndex({ items, filters }: Props) {
+export default function FertilizersIndex({ items, filters, useCases }: Props) {
     const [deleting, setDeleting] = useState<Fertilizer | null>(null)
     const [processing, setProcessing] = useState(false)
 
@@ -24,9 +24,6 @@ export default function FertilizersIndex({ items, filters }: Props) {
         { key: 'available', label: 'Available', sortable: false, render: (v) => <Badge active={!!v} /> },
     ]
 
-    function navigate(next: Partial<Filters>) {
-        router.get('/admin/fertilizers', { ...filters, ...next, page: 1 }, { preserveState: true })
-    }
 
     function handlePageChange(page: number) {
         router.get('/admin/fertilizers', { ...filters, page }, { preserveState: true })
@@ -42,36 +39,16 @@ export default function FertilizersIndex({ items, filters }: Props) {
 
     return (
         <AdminLayout title="Fertilizers">
-            <div className="d-flex align-items-center justify-content-between mb-3">
-                <span className="text-muted small">{items.meta.total} records</span>
+            <div className="d-flex align-items-center justify-content-end mb-3">
                 <Link href="/admin/fertilizers/create" className="btn btn-success btn-sm">+ New</Link>
             </div>
 
-            <div className="row g-2 mb-3">
-                <div className="col-auto">
-                    <CountryFilter value={filters.country} onChange={(v) => navigate({ country: v })} />
-                </div>
-                <div className="col-auto">
-                    <select className="form-select form-select-sm" value={filters.use_case} onChange={(e) => navigate({ use_case: e.target.value })}>
-                        <option value="">All Use Cases</option>
-                        <option value="CIS">CIS</option>
-                        <option value="CIM">CIM</option>
-                    </select>
-                </div>
-                <div className="col-auto">
-                    <select className="form-select form-select-sm" value={filters.available} onChange={(e) => navigate({ available: e.target.value })}>
-                        <option value="">All Availability</option>
-                        <option value="1">Available</option>
-                        <option value="0">Unavailable</option>
-                    </select>
-                </div>
-                {(filters.country || filters.use_case || filters.available) && (
-                    <div className="col-auto">
-                        <button className="btn btn-outline-secondary btn-sm" onClick={() => navigate({ country: '', use_case: '', available: '' })}>Clear</button>
-                    </div>
-                )}
-            </div>
-
+            <TableFilters url="/admin/fertilizers" filters={filters} total={items.meta.total} defs={[
+                { type: 'search', key: 'search', placeholder: 'Search name, type or key…' },
+                { type: 'country', key: 'country' },
+                { type: 'select', key: 'use_case', label: 'Use case', options: useCases.map((u) => ({ value: u, label: u })) },
+                { type: 'select', key: 'available', label: 'Availability', options: [{ value: '1', label: 'Available' }, { value: '0', label: 'Unavailable' }] },
+            ]} />
             <DataTable columns={columns} data={items.data as Record<string, unknown>[]}
                 pagination={items.meta} links={items.links} sortBy="" onSort={() => {}} onPageChange={handlePageChange}
                 actions={(row) => (

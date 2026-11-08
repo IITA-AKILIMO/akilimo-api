@@ -499,6 +499,16 @@ $rail-width:    72px;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Table filter bar (components/TableFilters.tsx)
+// ─────────────────────────────────────────────────────────────────────────────
+.table-filters-search {
+    flex: 1 1 14rem;
+    max-width: 22rem;
+
+    @include media-breakpoint-down(sm) { max-width: none; flex-basis: 100%; }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Dashboard panels — cards whose body folds away (Bootstrap Collapse)
 // ─────────────────────────────────────────────────────────────────────────────
 .dashboard-panel {

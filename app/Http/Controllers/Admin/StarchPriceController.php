@@ -20,16 +20,18 @@ class StarchPriceController extends AdminController
 
     public function index(Request $request): Response
     {
-        $filters = $this->filtersFrom($request, ['starch_factory_id']);
+        $values = $this->filterValues($request, ['country', 'starch_factory_id']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'price_class',
             direction: 'asc',
-            filters: $filters,
+            filters: ['starch_factory_id' => $values['starch_factory_id']],
+            // Prices have no country of their own; it is their factory's
+            relationFilters: ['starchFactory' => ['country' => $values['country']]],
         );
 
         return Inertia::render('StarchPrices/Index', [
-            'filters' => ['starch_factory_id' => $request->get('starch_factory_id', '')],
+            'filters' => $values,
             'factories' => $this->factories(),
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,

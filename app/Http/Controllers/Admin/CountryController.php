@@ -15,13 +15,18 @@ class CountryController extends AdminController
 
     public function index(Request $request): Response
     {
+        $values = $this->filterValues($request, ['search', 'active']);
         $paginator = $this->repo->paginateWithSort(
             perPage: (int) $request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
+            filters: ['active' => $values['active']],
+            search: $values['search'],
+            searchColumns: ['code', 'name'],
         );
 
         return Inertia::render('Countries/Index', [
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($c) => [
                 'id' => $c->id,
                 'code' => $c->code,
