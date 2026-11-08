@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
