@@ -18,10 +18,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('country_reviewers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('country', 2);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamps();
+            $table->timestampsTz();
 
             $table->unique(['country', 'user_id']);
             $table->index('country');
