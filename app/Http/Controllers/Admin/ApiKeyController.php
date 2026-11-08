@@ -120,7 +120,10 @@ class ApiKeyController extends BaseController
         ]);
         $apiKey->load('user:id,name,email');
 
-        Inertia::encryptHistory();
+        // The client can only encrypt history with WebCrypto (HTTPS); on plain http it throws and the page never changes
+        if ($request->secure()) {
+            Inertia::encryptHistory();
+        }
 
         return Inertia::render('ApiKeys/Created', [
             'apiKey' => [
