@@ -4,10 +4,10 @@
 declare module 'bootstrap/js/dist/collapse'
 
 declare module 'bootstrap/js/dist/offcanvas' {
-    export default class Offcanvas {
+    export default class OffCanvas {
         constructor(element: Element, options?: { backdrop?: boolean | 'static'; keyboard?: boolean; scroll?: boolean })
-        static getInstance(element: Element): Offcanvas | null
-        static getOrCreateInstance(element: Element): Offcanvas
+        static getInstance(element: Element): OffCanvas | null
+        static getOrCreateInstance(element: Element): OffCanvas
         show(): void
         hide(): void
         toggle(): void
