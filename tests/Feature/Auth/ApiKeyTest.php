@@ -182,6 +182,20 @@ it('shows the raw key once after an admin creates it, without storing it', funct
     $this->withToken($rawKey)->getJson('/api/v1/translations')->assertOk();
 });
 
+it('asks the client to encrypt history only over https', function (bool $secure) {
+    $admin = apiKeyUser();
+    $admin->forceFill(['role' => EnumUserRole::Admin])->save();
+
+    $page = $this->actingAs($admin)
+        ->withHeaders(['X-Inertia' => 'true', 'X-Requested-With' => 'XMLHttpRequest'])
+        ->post(($secure ? 'https' : 'http') . '://localhost/admin/api-keys',['user_id' => $admin->id, 'name' => 'enc', 'abilities' => []])
+        ->assertOk()
+        ->json();
+
+    expect($page['component'])->toBe('ApiKeys/Created')
+        ->and($page['encryptHistory'] ?? false)->toBe($secure);
+})->with(['http' => false, 'https' => true]);
+
 // ── Expiry ────────────────────────────────────────────────────────────────────
 
 it('expired key returns 401', function () {
