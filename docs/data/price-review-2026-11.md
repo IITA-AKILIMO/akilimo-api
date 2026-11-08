@@ -7,14 +7,16 @@ Units, all in local currency: fertilisers per 50 kg bag (except Burundi, see bel
 ## Headline findings
 
 1. **Fertiliser defaults are stale everywhere, by 1.3× to 7×.** Nigeria is the worst: urea is ₦7,500 against about ₦32,500–50,500.
-2. **The app's allowed fertiliser price ranges reject real prices** in NG, TZ, RW, GH and BI (table below). In several countries the stored defaults themselves fall outside the range.
+2. **The price options farmers pick from (`fertilizer_prices`) are far from current prices** in NG, TZ, RW, GH and BI (table below). Their min/max, the "allowed range", would also reject real prices, but nothing enforces it. Checked in `akilimo-mobile` on 2026-11-08: the app never uses `min_allowed_price`/`max_allowed_price`, and its "Exact price" option accepts any value. So the harm is stale options, not rejected input.
 3. **Burundi's FOMI prices are per 25 kg bag, not 50 kg.** PNSEB bags have been 25 kg since at least 2023, and the stored values match the 2023 full price of a 25 kg bag.
 4. **Cassava root prices (`cassUP`) are weakly evidenced everywhere** and probably understated in TZ, RW and GH. Nigeria is the exception: a 2026 glut reportedly crashed prices. No government series covers fresh roots, so field surveys are needed.
 5. **Subsidy policy decides what a default means.** Rwanda subsidises about 45%. Ghana gives fertiliser free to programme farmers in 2026. Burundi's subsidised FOMI was mostly unavailable in 2025–26. Defaults should state whether they are the subsidised or the open-market price.
 
-## Allowed fertiliser price ranges (`fertilizer_prices` min/max)
+## Fertiliser price options and their range (`fertilizer_prices`)
 
-| Country | Allowed range / bag | Stored defaults | Current market | Verdict |
+The range is the lowest to highest option, apart from the `0` "I don't know" and negative "Exact price" marker rows. The verdicts describe how far the **options** are from the market; the app doesn't enforce the range.
+
+| Country | Options range / bag | Stored defaults | Current market | Verdict |
 |---|---|---|---|---|
 | NG | 15,201–24,239 | 7,200–22,364 | 32,500–60,000 | Fails both ways. About 25,000–70,000 needed |
 | TZ | 85,174–135,818 | 53,000–68,000 | 61,000–125,500 (TFRA) | Rejects urea, CAN and MOP market prices. Lower the minimum to about 50,000 |
@@ -108,6 +110,6 @@ The official rate is ~2,910–3,000 BIF/USD against a parallel premium of about 
 
 1. Ask each country team for current subsidised and open-market fertiliser prices, and decide which one the default represents.
 2. Fix the Burundi fertiliser bag size: store prices per 25 kg, or convert them to 50 kg.
-3. Widen the allowed fertiliser ranges in `fertilizer_prices` (NG, TZ, RW, GH, BI) so real prices aren't rejected.
+3. Bring the `fertilizer_prices` options up to date (NG, TZ, RW, GH, BI), ideally by generating them from the catalogue (phase 3 of `docs/PRICE_CATALOGUE_DESIGN.md`) and keeping the `0` and negative marker rows.
 4. ~~Update Tanzania's fertiliser defaults from the TFRA notices; they are the only high-confidence official series found.~~ **Done** in `87721bc` (TFRA September 2025 national averages, rounded to 100 TZS).
 5. Get field prices for cassava roots and labour before changing `cassUP` or labour defaults.
