@@ -81,7 +81,7 @@ class PlaygroundController extends Controller
             'harvest_date' => ['required', 'date_format:Y-m-d', 'after:planting_date',
                 function (string $attribute, mixed $value, \Closure $fail) use ($request) {
                     $planting = $request->input('planting_date');
-                    if (! $planting) {
+                    if (! is_string($planting) || $planting === '') {
                         return;
                     }
                     $plantingTs = strtotime($planting);
@@ -108,13 +108,13 @@ class PlaygroundController extends Controller
         ]);
 
         try {
-            $result = $this->recommendationService->compute($this->buildDroidRequest($data, $request));
+            $result = $this->recommendationService->compute($this->buildDroidRequest(data: $data, request: $request));
 
             return response()->json($result);
         } catch (\Throwable $e) {
             return response()->json(
-                ['message' => $e->getMessage()],
-                $e instanceof RecommendationException ? $e->getCode() : 422,
+                data: ['message' => $e->getMessage()],
+                status: $e instanceof RecommendationException ? $e->getCode() : 422,
             );
         }
     }

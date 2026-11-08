@@ -103,7 +103,8 @@ parameters:
 
     #        - '#Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<.*>::.*#'
     - '#Dynamic call to static method Illuminate\\Http\\Request::validate\(\)#'
-    - '#Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::selectRaw\(\)#'
+    # Eloquent builder methods that Laravel also declares static; calling them on a query is correct
+    - '#Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<.+>::(selectRaw|exists|orderBy)\(\)#'
 
     # ReadOnlyModel trait prevents writes; PHPStan cannot see the guard
     #        - '#Call to an undefined method App\\Models\\VwSmsReport::#'
