@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CassavaUnitRequest;
@@ -17,7 +23,7 @@ class CassavaUnitController extends AdminController
     {
         $values = $this->filterValues($request, ['search', 'active']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: ['is_active' => $values['active']],
@@ -32,7 +38,7 @@ class CassavaUnitController extends AdminController
                 'label' => $f->label,
                 'unit_weight' => $f->unit_weight,
                 'description' => $f->description,
-                'is_active' => (bool) $f->is_active,
+                'is_active' => (bool)$f->is_active,
                 'sort_order' => $f->sort_order,
             ]),
         ]);

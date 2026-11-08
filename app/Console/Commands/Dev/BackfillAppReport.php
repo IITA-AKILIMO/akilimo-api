@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Console\Commands\Dev;
 
 use Illuminate\Console\Command;
@@ -21,7 +27,7 @@ class BackfillAppReport extends Command
             return self::FAILURE;
         }
 
-        $limit = (int) $this->option('limit');
+        $limit = (int)$this->option('limit');
         $limitClause = $limit > 0 ? "LIMIT {$limit}" : '';
 
         $pendingQuery = "SELECT COUNT(*) AS cnt FROM (
@@ -41,7 +47,7 @@ class BackfillAppReport extends Command
 
         $this->line("Rows to backfill: <comment>{$pending}</comment>");
 
-        if (! $this->option('force') && ! $this->confirm('Proceed?', true)) {
+        if (!$this->option('force') && !$this->confirm('Proceed?', true)) {
             $this->line('Aborted.');
 
             return self::SUCCESS;

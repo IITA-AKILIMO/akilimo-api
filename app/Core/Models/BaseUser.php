@@ -1,9 +1,9 @@
 <?php
 
 /**
- * (c) 2026 Munywele Consulting LTD — https://munywele.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
- * For license information, see the LICENSE file.
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Core\Models;

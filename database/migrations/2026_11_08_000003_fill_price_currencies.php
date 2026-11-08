@@ -18,7 +18,6 @@ return new class extends Migration {
     private const CURRENCIES = ['NG' => 'NGN', 'TZ' => 'TZS', 'RW' => 'RWF', 'GH' => 'GHS', 'BI' => 'BIF'];
 
     /**
-     * @return void
      * @throws Throwable
      */
     public function up(): void

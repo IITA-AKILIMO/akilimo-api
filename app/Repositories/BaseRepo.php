@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -233,9 +233,9 @@ abstract class BaseRepo implements Repository
     /**
      * Paginate with sorting and optional filters.
      *
-     * @param  string|null  $search  Text to look for (case-insensitive, anywhere in the value)
-     * @param  string[]  $searchColumns  Columns the search looks in; any of them may match
-     * @param  \Closure|null  $scope  Any other condition, given the query (e.g. a JSON or "is empty" test)
+     * @param string|null $search Text to look for (case-insensitive, anywhere in the value)
+     * @param string[] $searchColumns Columns the search looks in; any of them may match
+     * @param \Closure|null $scope Any other condition, given the query (e.g. a JSON or "is empty" test)
      */
     public function paginateWithSort(
         int $perPage = 50,
@@ -261,9 +261,9 @@ abstract class BaseRepo implements Repository
         }
 
         // Apply the text search; % and _ in it are matched literally
-        $term = trim((string) $search);
+        $term = trim((string)$search);
         if ($term !== '' && $searchColumns !== []) {
-            $like = '%'.addcslashes($term, '\\%_').'%';
+            $like = '%' . addcslashes($term, '\\%_') . '%';
             $query->where(function ($q) use ($searchColumns, $like) {
                 foreach ($searchColumns as $column) {
                     $q->orWhere($column, 'like', $like);

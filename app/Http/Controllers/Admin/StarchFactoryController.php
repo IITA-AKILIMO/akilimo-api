@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\StarchFactoryRequest;
@@ -17,7 +23,7 @@ class StarchFactoryController extends AdminController
     {
         $values = $this->filterValues($request, ['search', 'country', 'active']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: ['country' => $values['country'], 'factory_active' => $values['active']],
@@ -32,7 +38,7 @@ class StarchFactoryController extends AdminController
                 'factory_name' => $f->factory_name,
                 'factory_label' => $f->factory_label,
                 'country' => $f->country,
-                'factory_active' => (bool) $f->factory_active,
+                'factory_active' => (bool)$f->factory_active,
                 'sort_order' => $f->sort_order,
             ]),
         ]);

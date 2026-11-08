@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Api;
 
-use App\Data\MinMaxPriceDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CassavaPriceRequest;
 use App\Http\Resources\CassavaPriceResource;
@@ -18,9 +23,7 @@ class CassavaPricesController extends Controller
 {
     use HasPaginationParams;
 
-    public function __construct(protected CassavaPriceRepo $repo)
-    {
-    }
+    public function __construct(protected CassavaPriceRepo $repo) {}
 
     /**
      * List Cassava Prices

@@ -19,9 +19,9 @@ beforeEach(fn () => $this->withoutVite());
 function dashboardUser(EnumUserRole $role): User
 {
     return User::create([
-        'name' => ucfirst($role->value).' User',
-        'username' => $role->value.'_'.Str::random(6),
-        'email' => $role->value.'_'.Str::random(6).'@example.com',
+        'name' => ucfirst($role->value) . ' User',
+        'username' => $role->value . '_' . Str::random(6),
+        'email' => $role->value . '_' . Str::random(6) . '@example.com',
         'password' => Hash::make('secret123'),
         'role' => $role,
     ]);
@@ -36,7 +36,7 @@ function dashboardUser(EnumUserRole $role): User
 function loggedRequest(array $overrides = [], string $country = 'NG'): void
 {
     $id = DB::table('api_requests')->insertGetId(array_merge([
-        'request_id' => (string) Str::uuid(),
+        'request_id' => (string)Str::uuid(),
         'device_token' => Str::random(12),
         'droid_request' => json_encode(['user_info' => ['gender' => 'F', 'user_name' => 'farmer']]),
         'plumber_request' => json_encode(['country' => $country, 'FR' => true]),

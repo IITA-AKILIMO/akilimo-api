@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Resources;
 
 use App\Models\CassavaUnit;
@@ -21,15 +27,15 @@ class CassavaUnitResource extends JsonResource
         return [
             /** Unique identifier for the unit */
             'id' => $unit->id,
-			/** Unit weight */
-			'unit_weight' => $unit->unit_weight,
+            /** Unit weight */
+            'unit_weight' => $unit->unit_weight,
             /** Unit label/code */
             'label' => $unit->label,
             /** Sort order for display */
             'sort_order' => $unit->sort_order,
-			'description' => $unit->description,
+            'description' => $unit->description,
             /** Whether the unit is active */
-			'active' => $unit->is_active,
+            'active' => $unit->is_active,
         ];
     }
 }

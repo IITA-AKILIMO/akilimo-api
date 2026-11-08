@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\FertilizerPriceRequest;
@@ -22,7 +28,7 @@ class FertilizerPriceController extends AdminController
     {
         $values = $this->filterValues($request, ['search', 'country', 'active']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: ['country' => $values['country'], 'price_active' => $values['active']],
@@ -40,7 +46,7 @@ class FertilizerPriceController extends AdminController
                 'min_price' => $f->min_price,
                 'max_price' => $f->max_price,
                 'price_per_bag' => $f->price_per_bag,
-                'price_active' => (bool) $f->price_active,
+                'price_active' => (bool)$f->price_active,
                 'sort_order' => $f->sort_order,
                 'desc' => $f->desc,
             ]),
@@ -113,7 +119,7 @@ class FertilizerPriceController extends AdminController
         });
 
         return redirect()->route('admin.fertilizer-prices.index')
-            ->with('success', count($validated['rows']).' fertilizer price(s) created.');
+            ->with('success', count($validated['rows']) . ' fertilizer price(s) created.');
     }
 
     public function batchEdit(Request $request): Response
@@ -131,7 +137,7 @@ class FertilizerPriceController extends AdminController
                 'min_price' => $p->min_price,
                 'max_price' => $p->max_price,
                 'price_per_bag' => $p->price_per_bag,
-                'price_active' => (bool) $p->price_active,
+                'price_active' => (bool)$p->price_active,
                 'sort_order' => $p->sort_order,
                 'desc' => $p->desc ?? '',
             ])->all();
@@ -169,7 +175,7 @@ class FertilizerPriceController extends AdminController
         $country = $validated['country'];
 
         DB::transaction(function () use ($validated, $country) {
-            if (! empty($validated['deleted_ids'])) {
+            if (!empty($validated['deleted_ids'])) {
                 $this->repo->deleteByIds($validated['deleted_ids'], $country);
             }
 
@@ -185,7 +191,7 @@ class FertilizerPriceController extends AdminController
                     'desc' => $row['desc'] ?? null,
                 ];
 
-                if (! empty($row['id'])) {
+                if (!empty($row['id'])) {
                     $this->repo->update($row['id'], $fields);
                 } else {
                     $this->repo->create($fields);

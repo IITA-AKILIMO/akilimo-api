@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CropRequest;
@@ -18,7 +24,7 @@ class CropController extends AdminController
         $values = $this->filterValues($request, ['search', 'country', 'active', 'advice']);
         $country = strtoupper($values['country']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: [

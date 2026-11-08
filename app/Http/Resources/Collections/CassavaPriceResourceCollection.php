@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Resources\Collections;
 
-use App\Data\MinMaxPriceDto;
 use App\Http\Enums\EnumCountry;
 use App\Http\Resources\CassavaPriceResource;
 use App\Models\Currency;
@@ -57,5 +62,4 @@ class CassavaPriceResourceCollection extends ResourceCollection
 
         return $resources->toArray();
     }
-
 }

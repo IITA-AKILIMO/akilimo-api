@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Data\MinMaxPriceDto;
@@ -23,7 +29,7 @@ class MaizePriceRepo extends BaseRepo
             ->where('produce_type', $produceType)
             ->max('max_local_price');
 
-        return new MinMaxPriceDto((float) ($minPrice ?? 0), (float) ($maxPrice ?? 0));
+        return new MinMaxPriceDto((float)($minPrice ?? 0), (float)($maxPrice ?? 0));
     }
 
     /**
@@ -42,8 +48,8 @@ class MaizePriceRepo extends BaseRepo
         $map = [];
         foreach ($results as $row) {
             $map["{$row->country}:{$row->produce_type}"] = new MinMaxPriceDto(
-                (float) ($row->min_price ?? 0),
-                (float) ($row->max_price ?? 0)
+                (float)($row->min_price ?? 0),
+                (float)($row->max_price ?? 0)
             );
         }
 
@@ -54,7 +60,7 @@ class MaizePriceRepo extends BaseRepo
      * Load price bands for a specific set of country codes in one query.
      * Returns an array keyed by "country:produce_type".
      *
-     * @param  string[]  $countries
+     * @param string[] $countries
      * @return array<string, MinMaxPriceDto>
      */
     public function findPriceBandsBulkForCountries(array $countries): array
@@ -68,8 +74,8 @@ class MaizePriceRepo extends BaseRepo
         $map = [];
         foreach ($results as $row) {
             $map["{$row->country}:{$row->produce_type}"] = new MinMaxPriceDto(
-                (float) ($row->min_price ?? 0),
-                (float) ($row->max_price ?? 0)
+                (float)($row->min_price ?? 0),
+                (float)($row->max_price ?? 0)
             );
         }
 

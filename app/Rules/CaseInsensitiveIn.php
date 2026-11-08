@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
@@ -25,7 +31,7 @@ class CaseInsensitiveIn implements Rule
 
     public function message(): string
     {
-        return 'The :attribute value "'.$this->inputValue.
-            '" is invalid. Allowed values are: '.implode(', ', $this->allowed).'.';
+        return 'The :attribute value "' . $this->inputValue .
+            '" is invalid. Allowed values are: ' . implode(', ', $this->allowed) . '.';
     }
 }

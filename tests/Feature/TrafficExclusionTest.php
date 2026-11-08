@@ -20,9 +20,9 @@ beforeEach(fn () => $this->withoutVite());
 function exclusionUser(EnumUserRole $role): User
 {
     return User::create([
-        'name' => ucfirst($role->value).' User',
-        'username' => $role->value.'_'.Str::random(6),
-        'email' => $role->value.'_'.Str::random(6).'@example.com',
+        'name' => ucfirst($role->value) . ' User',
+        'username' => $role->value . '_' . Str::random(6),
+        'email' => $role->value . '_' . Str::random(6) . '@example.com',
         'password' => Hash::make('secret123'),
         'role' => $role,
     ]);
@@ -32,8 +32,8 @@ function exclusionUser(EnumUserRole $role): User
 function newFormatRequest(array $userInfo, ?string $deviceToken = null): int
 {
     $id = DB::table('api_requests')->insertGetId([
-        'request_id' => (string) Str::uuid(),
-        'device_token' => $deviceToken ?? (string) Str::uuid(),
+        'request_id' => (string)Str::uuid(),
+        'device_token' => $deviceToken ?? (string)Str::uuid(),
         'droid_request' => json_encode(['user_info' => array_merge([
             'user_name' => 'farmer1', 'first_name' => 'Ada', 'last_name' => 'Obi', 'gender' => 'F', 'phone_number' => null,
         ], $userInfo)]),
@@ -48,7 +48,7 @@ function newFormatRequest(array $userInfo, ?string $deviceToken = null): int
 
 function isExcluded(int $id): bool
 {
-    return (bool) DB::table('api_requests')->where('id', $id)->value('excluded');
+    return (bool)DB::table('api_requests')->where('id', $id)->value('excluded');
 }
 
 it('seeds the old staff rules', function () {
@@ -102,7 +102,7 @@ it('flags new requests as they are logged', function () {
     $payload['user_info']['user_name'] = 'akilimo-mcp';
     $this->postJson('/api/v1/recommendations/compute', $payload)->assertOk();
 
-    expect((bool) DB::table('api_requests')->latest('id')->value('excluded'))->toBeTrue();
+    expect((bool)DB::table('api_requests')->latest('id')->value('excluded'))->toBeTrue();
 });
 
 it('recomputes every request when an admin switches a rule off', function () {

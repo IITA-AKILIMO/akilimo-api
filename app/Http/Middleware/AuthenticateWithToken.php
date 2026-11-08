@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Middleware;
 
 use App\Models\ApiKey;
@@ -40,7 +46,7 @@ class AuthenticateWithToken
         }
 
         foreach ($abilities as $ability) {
-            if (! $token->can($ability)) {
+            if (!$token->can($ability)) {
                 return response()->json(
                     ['message' => "Forbidden. This token does not have the [{$ability}] ability."],
                     Response::HTTP_FORBIDDEN,
@@ -89,7 +95,7 @@ class AuthenticateWithToken
     {
         $raw = $request->header('X-Api-Key');
 
-        if (blank($raw) && str_starts_with((string) $request->bearerToken(), self::API_KEY_PREFIX)) {
+        if (blank($raw) && str_starts_with((string)$request->bearerToken(), self::API_KEY_PREFIX)) {
             $raw = $request->bearerToken();
         }
 
@@ -101,7 +107,7 @@ class AuthenticateWithToken
             ->with('user')
             ->first();
 
-        if ($apiKey === null || ! $apiKey->isUsable()) {
+        if ($apiKey === null || !$apiKey->isUsable()) {
             return null;
         }
 

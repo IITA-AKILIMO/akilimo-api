@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Http\Enums\EnumAreaUnit;
 
 it('normalizes known lowercase values to their enum case', function () {

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Repositories\UserFeedBackRepo;
@@ -14,17 +20,17 @@ class FeedbackController extends Controller
 
     public function index(Request $request): Response
     {
-        $perPage = min((int) $request->get('per_page', 25), 100);
+        $perPage = min((int)$request->get('per_page', 25), 100);
         $orderBy = $request->get('sort_by', 'created_at');
         $direction = $request->get('sort_dir', 'desc');
 
         $filters = [
-            'use_case' => (string) $request->get('use_case', ''),
-            'user_type' => (string) $request->get('user_type', ''),
-            'language' => (string) $request->get('language', ''),
-            'date_from' => (string) $request->get('date_from', ''),
-            'date_to' => (string) $request->get('date_to', ''),
-            'search' => (string) $request->get('search', ''),
+            'use_case' => (string)$request->get('use_case', ''),
+            'user_type' => (string)$request->get('user_type', ''),
+            'language' => (string)$request->get('language', ''),
+            'date_from' => (string)$request->get('date_from', ''),
+            'date_to' => (string)$request->get('date_to', ''),
+            'search' => (string)$request->get('search', ''),
         ];
 
         $paginator = $this->repo->paginate($perPage, $orderBy, $direction, $filters);
@@ -33,7 +39,7 @@ class FeedbackController extends Controller
             'feedback' => [
                 'data' => collect($paginator->items())->map(fn ($f) => [
                     'id' => $f->id,
-                    'device_token' => $f->device_token ? substr($f->device_token, 0, 8).'****' : null,
+                    'device_token' => $f->device_token ? substr($f->device_token, 0, 8) . '****' : null,
                     'use_case' => $f->use_case,
                     'user_type' => $f->user_type,
                     'akilimo_rec_rating' => $f->akilimo_rec_rating,

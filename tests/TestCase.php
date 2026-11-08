@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace Tests;
 
 use App\Models\PersonalAccessToken;
@@ -17,8 +23,8 @@ abstract class TestCase extends BaseTestCase
     {
         $user = User::create([
             'name' => 'Test User',
-            'username' => 'testuser_'.str()->random(8),
-            'email' => 'test_'.str()->random(8).'@example.com',
+            'username' => 'testuser_' . str()->random(8),
+            'email' => 'test_' . str()->random(8) . '@example.com',
             'password' => bcrypt('password'),
         ]);
 

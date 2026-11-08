@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Data\InterCroppingData;
 
 it('isRecommended returns true when only maize rec is enabled', function () {

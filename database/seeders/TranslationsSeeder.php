@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -43,7 +49,7 @@ class TranslationsSeeder extends Seeder
             }
         }
 
-        if (! empty($batch)) {
+        if (!empty($batch)) {
             DB::table('translations')->upsert(
                 $batch,
                 ['key'],

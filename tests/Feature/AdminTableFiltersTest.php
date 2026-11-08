@@ -18,9 +18,9 @@ beforeEach(fn () => $this->withoutVite());
 function filterAdmin(EnumUserRole $role = EnumUserRole::Admin): User
 {
     return User::create([
-        'name' => ucfirst($role->value).' Filter',
-        'username' => $role->value.'_'.Str::random(6),
-        'email' => $role->value.'_'.Str::random(6).'@example.com',
+        'name' => ucfirst($role->value) . ' Filter',
+        'username' => $role->value . '_' . Str::random(6),
+        'email' => $role->value . '_' . Str::random(6) . '@example.com',
         'password' => Hash::make('secret123'),
         'role' => $role,
     ]);

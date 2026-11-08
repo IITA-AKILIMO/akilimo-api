@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
@@ -33,15 +39,15 @@ abstract class AdminController extends Controller
      * The filter values as the page sent them, for its filter bar ('' when unset).
      * An `active` filter only keeps '1' or '0', so a stray value cannot reach the query.
      *
-     * @param  string[]  $params
+     * @param string[] $params
      * @return array<string, string>
      */
     protected function filterValues(Request $request, array $params): array
     {
         $values = [];
         foreach ($params as $param) {
-            $value = trim((string) $request->get($param, ''));
-            $values[$param] = $param === 'active' && ! in_array($value, ['0', '1'], true) ? '' : $value;
+            $value = trim((string)$request->get($param, ''));
+            $values[$param] = $param === 'active' && !in_array($value, ['0', '1'], true) ? '' : $value;
         }
 
         return $values;
@@ -61,7 +67,7 @@ abstract class AdminController extends Controller
             ->distinct()
             ->orderBy($column)
             ->pluck($column)
-            ->map(fn ($v) => (string) $v)
+            ->map(fn ($v) => (string)$v)
             ->all();
     }
 

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Support\Documentation;
 
 use Dedoc\Scramble\Support\Type\ObjectType;
@@ -12,20 +18,20 @@ trait DefinitionLink
 
     private function getGoToDefinitionLink(Type $type): string
     {
-        if (! $type instanceof ObjectType) {
+        if (!$type instanceof ObjectType) {
             return '';
         }
 
         $className = $this->getClassName($type);
 
-        if (! class_exists($className)) {
+        if (!class_exists($className)) {
             return '';
         }
 
         $classReflection = new \ReflectionClass($className);
 
-        $url = GoToDefinitionOperationExtension::REPO_URL.Str::replace(base_path(), '', $classReflection->getFileName());
+        $url = GoToDefinitionOperationExtension::REPO_URL . Str::replace(base_path(), '', $classReflection->getFileName());
 
-        return "[Open on GitHub]($url)";
+        return "[Open on GitHub]({$url})";
     }
 }

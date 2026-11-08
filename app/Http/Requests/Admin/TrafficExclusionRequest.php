@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Requests\Admin;
 
 use App\Models\TrafficExclusion;
@@ -44,9 +50,9 @@ class TrafficExclusionRequest extends FormRequest
             $field = $this->input('field', $saved?->field);
             $match = $this->input('match_type', $saved?->match_type);
 
-            if ($match === 'regex' && ! TrafficExclusionService::isValidPattern((string) $value)) {
+            if ($match === 'regex' && !TrafficExclusionService::isValidPattern((string)$value)) {
                 $fail('This is not a valid pattern.');
-            } elseif ($field === 'phone' && $match !== 'regex' && ! preg_match('/\d/', (string) $value)) {
+            } elseif ($field === 'phone' && $match !== 'regex' && !preg_match('/\d/', (string)$value)) {
                 $fail('A phone number rule needs at least one digit.');
             }
         };

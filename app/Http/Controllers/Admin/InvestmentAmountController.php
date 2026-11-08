@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\InvestmentAmountRequest;
@@ -17,7 +23,7 @@ class InvestmentAmountController extends AdminController
     {
         $values = $this->filterValues($request, ['country', 'area_unit', 'active']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: [
@@ -35,7 +41,7 @@ class InvestmentAmountController extends AdminController
                 'country' => $f->country,
                 'investment_amount' => $f->investment_amount,
                 'area_unit' => $f->area_unit,
-                'price_active' => (bool) $f->price_active,
+                'price_active' => (bool)$f->price_active,
                 'sort_order' => $f->sort_order,
             ]),
         ]);

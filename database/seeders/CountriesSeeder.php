@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -32,8 +38,8 @@ class CountriesSeeder extends Seeder
             $batch[] = [
                 'code' => $record['country'],
                 'name' => $record['name'],
-                'latitude' => (float) $record['latitude'],
-                'longitude' => (float) $record['longitude'],
+                'latitude' => (float)$record['latitude'],
+                'longitude' => (float)$record['longitude'],
 
                 // bounding box unknown for now
                 'min_latitude' => null,
@@ -73,7 +79,7 @@ class CountriesSeeder extends Seeder
         }
 
         // Insert remaining rows
-        if (! empty($batch)) {
+        if (!empty($batch)) {
             DB::table('countries')->upsert(
                 $batch,
                 ['code'],

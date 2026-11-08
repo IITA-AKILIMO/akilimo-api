@@ -1,11 +1,9 @@
 <?php
 
 /**
- * This file is part of the Fuelrod project.
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
- * (c) 2025 Munywele Consulting LTD — https://munywele.co.ke
- *
- * For license information, see the LICENSE file.
+ * For licence information, see the LICENCE file.
  */
 
 return [
@@ -130,7 +128,7 @@ return [
     'include_helpers' => false,
 
     'helper_files' => [
-        base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
+        base_path() . '/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ],
 
     /*

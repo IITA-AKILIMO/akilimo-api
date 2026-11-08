@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
@@ -123,7 +129,7 @@ class HealthCheckController extends Controller
     private function checkCache(): array
     {
         try {
-            $testKey = 'health_check_'.uniqid();
+            $testKey = 'health_check_' . uniqid();
             Cache::put(key: $testKey, value: 'test', ttl: 60);
             $value = Cache::get($testKey);
             Cache::forget($testKey);
@@ -143,7 +149,7 @@ class HealthCheckController extends Controller
     private function checkFileStorage(): array
     {
         try {
-            $testFile = 'health_check_'.uniqid().'.txt';
+            $testFile = 'health_check_' . uniqid() . '.txt';
             Storage::put(path: $testFile, contents: 'Storage health check');
             $fileExists = Storage::exists($testFile);
             Storage::delete($testFile);
@@ -233,7 +239,7 @@ class HealthCheckController extends Controller
     private function checkEnvironmentConfig(): array
     {
         return [
-            'status' => (bool) config('app.debug') ? 'DOWN' : 'UP',
+            'status' => (bool)config('app.debug') ? 'DOWN' : 'UP',
             'debug_mode' => config('app.debug'),
             'timezone' => config('app.timezone'),
         ];
@@ -263,8 +269,8 @@ class HealthCheckController extends Controller
 
     private function checkAkilimoCompute(): array
     {
-        $baseUrl = rtrim((string) config('akilimo-compute.base_url', ''), '/');
-        $healthUrl = $baseUrl !== '' ? $baseUrl.'/health' : null;
+        $baseUrl = rtrim((string)config('akilimo-compute.base_url', ''), '/');
+        $healthUrl = $baseUrl !== '' ? $baseUrl . '/health' : null;
 
         $result = [
             'status' => 'DOWN',
@@ -284,11 +290,11 @@ class HealthCheckController extends Controller
             $result['http_status'] = $response->status();
 
             // If the health endpoint returns JSON like {"status":"UP"}
-            if ((bool) $response->json('status')) {
+            if ((bool)$response->json('status')) {
                 $result['service_status'] = $response->json('status');
             }
         } catch (ConnectionException $e) {
-            $result['error'] = 'Connection failed: '.$e->getMessage();
+            $result['error'] = 'Connection failed: ' . $e->getMessage();
         } catch (\Throwable $e) {
             $result['error'] = $e->getMessage();
         }

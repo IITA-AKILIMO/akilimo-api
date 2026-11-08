@@ -67,7 +67,7 @@ class TrafficExclusionService
      * How many requests each rule matches, whether or not it is switched on, in one pass
      * over the table.
      *
-     * @param  Collection<int, TrafficExclusion>  $rules
+     * @param Collection<int, TrafficExclusion> $rules
      * @return array<int, int> rule id => count
      */
     public function matchCounts(Collection $rules): array
@@ -84,9 +84,9 @@ class TrafficExclusionService
             array_push($bindings, ...$ruleBindings);
         }
 
-        $row = (array) DB::selectOne('SELECT '.implode(', ', $selects).' FROM api_requests', $bindings);
+        $row = (array)DB::selectOne('SELECT ' . implode(', ', $selects) . ' FROM api_requests', $bindings);
 
-        return $rules->mapWithKeys(fn ($r) => [$r->id => (int) ($row["r{$r->id}"] ?? 0)])->all();
+        return $rules->mapWithKeys(fn ($r) => [$r->id => (int)($row["r{$r->id}"] ?? 0)])->all();
     }
 
     /**
@@ -107,7 +107,7 @@ class TrafficExclusionService
     /**
      * The rules as one condition (any rule matches), with its bindings.
      *
-     * @param  Collection<int, TrafficExclusion>  $rules
+     * @param Collection<int, TrafficExclusion> $rules
      * @return array{0: string, 1: array<int, string>}
      */
     public function conditionSql(Collection $rules): array
@@ -156,10 +156,10 @@ class TrafficExclusionService
 
         [$op, $operand] = match ($rule->match_type) {
             'exact' => ['=', $value],
-            'starts_with' => ['LIKE', $this->escapeLike($value).'%'],
-            'contains' => ['LIKE', '%'.$this->escapeLike($value).'%'],
+            'starts_with' => ['LIKE', $this->escapeLike($value) . '%'],
+            'contains' => ['LIKE', '%' . $this->escapeLike($value) . '%'],
             // Names and device IDs are matched ignoring case, like the other match types
-            'regex' => ['REGEXP', $rule->field === 'phone' ? $value : '(?i)'.$value],
+            'regex' => ['REGEXP', $rule->field === 'phone' ? $value : '(?i)' . $value],
             default => [null, null],
         };
         if ($op === null) {

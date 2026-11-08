@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -10,17 +10,17 @@ namespace App\Console\Commands;
 
 use App\Auth\TokenAbility;
 use App\Enums\EnumUserRole as UserRole;
-use App\Models\ApiKey;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Random\RandomException;
-use Throwable;
 
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
+
+use Random\RandomException;
+use Throwable;
 
 class GenerateApiKey extends Command
 {
@@ -107,7 +107,7 @@ class GenerateApiKey extends Command
             return $user;
         }
 
-        if (! $this->input->isInteractive()) {
+        if (!$this->input->isInteractive()) {
             $this->components->error('Pass --user when running without interaction.');
 
             return null;

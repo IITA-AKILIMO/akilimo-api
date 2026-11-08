@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\ValidationException;
+use Random\RandomException;
 
 class ApiKeyController extends Controller
 {
@@ -38,7 +39,7 @@ class ApiKeyController extends Controller
      * The full raw key is returned ONCE in the response and never stored.
      * The caller must copy it immediately.
      *
-     * @throws ValidationException|\Random\RandomException
+     * @throws ValidationException|RandomException
      */
     public function store(Request $request): JsonResponse
     {

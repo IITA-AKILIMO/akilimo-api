@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Models\User;
 
 return [
@@ -21,7 +27,7 @@ return [
     ],
 
     // Lifetime of bearer tokens issued on login, in days.
-    'token_ttl_days' => (int) env('AUTH_TOKEN_TTL_DAYS', 30),
+    'token_ttl_days' => (int)env('AUTH_TOKEN_TTL_DAYS', 30),
 
     /*
     |--------------------------------------------------------------------------
