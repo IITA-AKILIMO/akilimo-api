@@ -1,6 +1,6 @@
 # Design: one price catalogue, with the API as source of truth
 
-**IITA Internal Use** · Draft for team review, 2026-11-08 · Status: **proposed, not started**
+**IITA Internal Use** · Draft for team review, 2026-11-08 · Status: **proposed, not started**; open questions decided 2026-11-08 (see [Decisions](#decisions))
 
 ## Problem
 
@@ -23,7 +23,7 @@ Consequences seen in the November 2026 price review ([docs/data/price-review-202
 
 One reviewed price per country and item, held in the API. The mobile app and the recommendations engine both read it, and every derived value (choice lists, allowed ranges, engine defaults) comes from it.
 
-Non-goals: live market feeds; per-district prices (possible later via an optional `region` column); changing how recommendations are computed.
+Non-goals: live market feeds; regional prices now (the schema leaves room for them, see D5); changing how recommendations are computed.
 
 ## Design
 
@@ -34,18 +34,21 @@ Extend `default_prices` rather than add a new table, so the engine's existing sy
 | Column | Notes |
 |---|---|
 | `country`, `item` | Existing. `item` keys come from a fixed catalogue (below) |
-| `price` | Existing. The reference price clients pre-fill |
+| `region` | New, nullable, unused for now. Null means national. Leaves room for regional rows without a redesign (D5) |
+| `price` | Existing. The **open-market** reference price clients pre-fill |
+| `subsidised_price` | New, nullable. The programme farmer price where a subsidy exists (D1) |
 | `unit` | Fixed to real units: `per_bag` + `bag_kg`, `per_tonne`, `per_kg`, `per_cob`, `per_acre` |
-| `bag_kg` | New. 50 by default; 25 for Burundi FOMI |
+| `bag_kg` | New. 50 by default; **25 for Burundi FOMI**, priced per real 25 kg bag (D2) |
 | `currency` | Existing, now filled (ISO code) |
-| `min_price`, `max_price` | New. The allowed range clients validate against |
-| `price_basis` | New: `open_market` or `subsidised` |
-| `status` | New: `draft` or `active`. Only `active` rows are served |
+| `min_price`, `max_price` | New. The allowed range clients validate against; covers both prices |
+| `status` | New: `draft`, `pending_second_review` or `active`. Only `active` rows are served (D4) |
 | `source`, `source_date`, `confidence` | New. Where the number comes from (e.g. "TFRA notice, Sep 2025", `high`) |
 | `effective_from` | New. Lets a reviewed price be scheduled for a season |
 | `updated_by` | New. The admin user who last changed it |
 
 A `default_price_history` table records every change (old value, new value, who, when) for audit.
+
+Each country also gets a `default_price_basis` (`open_market` or `subsidised`), set by its team. It decides which price applies when a farmer hasn't said whether they get subsidised fertiliser (D1).
 
 **Item catalogue** (keys as used today):
 - fertilisers: `urea`, `DAP`, `NPK171717`, … matching `fertilizers.fertilizer_key` per country;
@@ -57,7 +60,7 @@ Starch prices keep their own tables, because they are priced by starch class; th
 
 ### 2. Read endpoint
 
-`GET /v1/prices?country=TZ[&updated_since=ISO8601]`. It is public like the other reference data and returns only `active` rows whose `effective_from` has passed. Each row carries `price`, `min_price`, `max_price`, `unit`, `bag_kg`, `currency`, `price_basis`, `source_date` and `updated_at`. The response has an `ETag`, and `updated_since` lets clients download only changes.
+`GET /v1/prices?country=TZ[&updated_since=ISO8601]`. It is public like the other reference data and returns only `active`, national (`region` null) rows whose `effective_from` has passed. Each row carries `price`, `subsidised_price`, `min_price`, `max_price`, `unit`, `bag_kg`, `currency`, `source_date` and `updated_at`. The response also includes the country's `default_price_basis`. The response has an `ETag`, and `updated_since` lets clients download only changes.
 
 `GET /v1/default-prices` stays as it is until the engine has moved over, then becomes an alias.
 
@@ -66,27 +69,32 @@ Starch prices keep their own tables, because they are priced by starch class; th
 The mobile app's existing endpoints (`/v1/fertilizer-prices`, `/v1/cassava-prices`, `/v1/maize-prices`, `/v1/potato-prices`, `/v1/operation-costs`, `/v1/investment-amounts`) keep their response shape, but their rows are **generated** from the catalogue instead of hand-edited:
 
 - an "exact price / don't know" row, as today;
-- options at fixed steps around the reference price, e.g. −30 %, −10 %, +10 %, +30 %, rounded to a sensible unit per currency;
+- four options at **−30 %, −10 %, +10 % and +30 %** of the applicable reference price (D3), rounded to the nearest 100 for NGN, TZS, RWF and BIF and to the nearest 5 for GHS;
 - `min_allowed_price` and `max_allowed_price` from the catalogue's `min_price` and `max_price`.
 
-Generation runs when a catalogue row is activated or changed, either as a job or a model observer that writes the existing tables. The app then needs **no change** in phase 1, and one price edit moves the choices and ranges with it. The step percentages and rounding are configuration, to be agreed with the app team.
+The applicable reference price is the country's `default_price_basis`: the subsidised price where that is the basis and one exists, otherwise the open-market price.
+
+Generation runs when a catalogue row is activated or changed, either as a job or a model observer that writes the existing tables. The app then needs **no change** in phase 1, and one price edit moves the choices and ranges with it. The step percentages and rounding live in config, so they can be tuned without code changes.
 
 ### 4. Recommendations engine
 
 - `refresh_prices.R` reads `/v1/prices` (paginated, with `updated_since`) into the SQLite `default_prices` table, keeping unit, bag size, currency and range.
 - The hardcoded defaults in `R/AkilimoMain.R` (labour, maize, sweet potato) become lookups in that table. A hardcoded value is used only if the table has no row, and that is logged at WARN.
-- Optionally, the engine rejects or clamps request prices outside `min_price` and `max_price`, using the same range as the app.
+- **Which price:** a new optional request field, `subsidisedFertilizer` (boolean), says whether the farmer gets subsidised fertiliser. If absent, the country's `default_price_basis` applies. Fertiliser costs the farmer typed always win over catalogue prices (D1).
+- **Out-of-range prices are accepted and logged** (D6). The engine computes with the farmer's price, logs a WARN, and adds a note to the response naming the expected range. It never rejects or clamps the price.
 - Existing behaviour is kept: refresh on start and on staleness (`*_MAX_AGE_DAYS`); the seed CSV only bootstraps a fresh install; a failed or empty refresh keeps the last good data.
 
 ### 5. Mobile app (later, at the app team's pace)
 
-Optionally switch to `/v1/prices` directly: fetch when a country is selected, cache for offline use with `updated_at`, pre-fill `price`, and validate against the range. Until then the generated choice lists cover it.
+Optionally switch to `/v1/prices` directly: fetch when a country is selected, cache for offline use with `updated_at`, pre-fill the applicable price, and validate against the range. Until then the generated choice lists cover it.
+
+Add one question to the fertiliser screen: **"Do you get subsidised fertiliser?"** (yes / no / not sure). Send it as `subsidisedFertilizer`, and leave it out for "not sure" so the country default applies (D1). Where a subsidised price exists, show both prices so the farmer recognises the one they pay.
 
 ### 6. Price update workflow
 
 1. Research or field data is entered as `draft` rows. The review drafts in `docs/data/*.csv` can be imported this way.
 2. The country team reviews the drafts in the admin, which shows each row's source and confidence.
-3. A reviewer activates them, which also schedules them via `effective_from`.
+3. A reviewer assigned to that country activates them, which also schedules them via `effective_from`. If a price moves more than **±30 %** from the current active price, activating it puts the row in `pending_second_review` instead. A second admin, not the first reviewer, must then confirm it (D4). New items with no current price need one reviewer.
 4. Choice lists regenerate, and the app and engine pick up the change on their next sync.
 
 ## Rollout
@@ -106,10 +114,20 @@ Each phase can ship and roll back on its own. Phase 3 replaces the hand-made ran
 - **Contract test:** a fixture of the `/v1/prices` response is checked in both repos. The engine's sync runs against it in CI, so a format change fails the build instead of quietly breaking prices.
 - Engine: the existing regression suite (`tests/test_small.R`) must pass unchanged when phase 2 lands with the same values.
 
-## Open questions
+## Decisions
 
-1. **Subsidy basis.** For each country, should the default be the subsidised or the open-market price? Ghana's programme fertiliser is free in 2026, and Rwanda subsidises about 45%.
-2. **Burundi bag size.** Store FOMI per 25 kg bag, or convert to 50 kg?
-3. **Choice-list steps and rounding,** to agree with the mobile app team.
-4. **Approval.** One reviewer per country, or a second sign-off for changes over a threshold, e.g. ±30%?
-5. **Regional prices.** Needed soon (e.g. TFRA prices vary ~15% by region), or later?
+Decided 2026-11-08.
+
+| # | Question | Decision |
+|---|---|---|
+| D1 | Subsidised or open-market price? | **Store both.** `price` is open-market and `subsidised_price` is optional. The farmer says whether they get subsidised fertiliser; if they don't say, the country's `default_price_basis` (set by its team) applies. Prices the farmer typed always win |
+| D2 | Burundi FOMI bag size | **Per real 25 kg bag** (`bag_kg = 25`), matching what farmers buy. The engine already takes bag weight per fertiliser |
+| D3 | App choice lists | **Generated:** −30 %, −10 %, +10 %, +30 % plus "exact price / don't know", rounded to 100 (NGN, TZS, RWF, BIF) or 5 (GHS). Values live in config |
+| D4 | Approval | **One country reviewer, plus a second admin for changes over ±30 %** (`pending_second_review`) |
+| D5 | Regional prices | **Later.** National only for now, with a nullable `region` column so regional rows can be added without a redesign |
+| D6 | Engine and out-of-range request prices | **Accept and log.** Compute with the farmer's price, log a WARN, return a note with the expected range; never reject or clamp |
+
+Still to settle with the teams, without blocking phase 1:
+- each country's `default_price_basis`;
+- the wording of the subsidy question in the app;
+- who is the reviewer for each country.
