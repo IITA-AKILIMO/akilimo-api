@@ -32,6 +32,7 @@ function RatingStars({ value, max = 5 }: { value: number; max?: number }) {
 }
 
 function navigate(params: Record<string, unknown>) {
+    // @ts-ignore
     router.get('/admin/feedback', params, { preserveScroll: true, replace: true })
 }
 

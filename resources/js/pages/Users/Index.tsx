@@ -1,11 +1,11 @@
-import { Link, router } from '@inertiajs/react'
-import { useState } from 'react'
+import {Link, router} from '@inertiajs/react'
+import {useState} from 'react'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import DataTable from '../../components/DataTable'
-import type { Column } from '../../components/DataTable'
+import type {Column} from '../../components/DataTable'
 import TableFilters from '../../components/TableFilters'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { Paginated, User } from '../../types'
+import type {Paginated, User} from '../../types'
 
 interface Props {
     users: Paginated<User>
@@ -17,21 +17,21 @@ interface Props {
     }
 }
 
-export default function UsersIndex({ users, filters }: Props) {
+export default function UsersIndex({users, filters}: Props) {
     const [deleting, setDeleting] = useState<User | null>(null)
     const [processing, setProcessing] = useState(false)
 
     const ROLE_BADGE: Record<string, string> = {
-        admin:      'bg-danger',
-        partner:    'bg-primary',
+        admin: 'bg-danger',
+        partner: 'bg-primary',
         user: 'bg-secondary',
     }
 
     const columns: Column[] = [
-        { key: 'id', label: 'ID', sortable: true },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'username', label: 'Username', sortable: true },
-        { key: 'email', label: 'Email', sortable: true },
+        {key: 'id', label: 'ID', sortable: true},
+        {key: 'name', label: 'Name', sortable: true},
+        {key: 'username', label: 'Username', sortable: true},
+        {key: 'email', label: 'Email', sortable: true},
         {
             key: 'role',
             label: 'Role',
@@ -57,11 +57,11 @@ export default function UsersIndex({ users, filters }: Props) {
     function handleSort(col: string) {
         const dir =
             filters.sort_by === col && filters.sort_dir === 'asc' ? 'desc' : 'asc'
-        router.get('/admin/users', { ...filters, sort_by: col, sort_dir: dir, page: 1 }, { preserveState: true })
+        router.get('/admin/users', {...filters, sort_by: col, sort_dir: dir, page: 1}, {preserveState: true})
     }
 
     function handlePageChange(page: number) {
-        router.get('/admin/users', { ...filters, page }, { preserveState: true })
+        router.get('/admin/users', {...filters, page}, {preserveState: true})
     }
 
     function handleDelete() {
@@ -84,17 +84,19 @@ export default function UsersIndex({ users, filters }: Props) {
             </div>
 
             <TableFilters url="/admin/users" filters={filters} total={users.meta.total} defs={[
-                { type: 'search', key: 'search', placeholder: 'Search name, username or email…' },
-                { type: 'select', key: 'role', label: 'Role', options: [
-                    { value: 'admin', label: 'Admin' },
-                    { value: 'partner', label: 'Partner' },
-                    { value: 'user', label: 'User' },
-                ] },
-            ]} />
+                {type: 'search', key: 'search', placeholder: 'Search name, username or email…'},
+                {
+                    type: 'select', key: 'role', label: 'Role', options: [
+                        {value: 'admin', label: 'Admin'},
+                        {value: 'partner', label: 'Partner'},
+                        {value: 'user', label: 'User'},
+                    ]
+                },
+            ]}/>
 
             <DataTable
                 columns={columns}
-                data={users.data as Record<string, unknown>[]}
+                data={users.data as User[]}
                 pagination={users.meta}
                 links={users.links}
                 sortBy={filters.sort_by}
@@ -110,7 +112,7 @@ export default function UsersIndex({ users, filters }: Props) {
                             Edit
                         </Link>
                         <button
-                            onClick={() => setDeleting(row as unknown as User)}
+                            onClick={() => setDeleting(row as User)}
                             className="btn btn-outline-danger btn-sm"
                         >
                             Delete
