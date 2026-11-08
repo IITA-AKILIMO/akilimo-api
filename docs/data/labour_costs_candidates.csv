@@ -1,0 +1,15 @@
+Country,Item,Price,currency,unit,price_status,confidence,basis,source_url
+RW,manual_ploughing,20000,RWF,per_acre,estimate,low,"2,000 RWF/day x 10 person-days",https://en.igihe.com/social/article/inside-rwandas-pay-scale-who-earns-what-across-sectors
+RW,manual_ridging,16000,RWF,per_acre,estimate,low,"2,000 RWF/day x 8 person-days",https://en.igihe.com/social/article/inside-rwandas-pay-scale-who-earns-what-across-sectors
+RW,weeding1,16000,RWF,per_acre,estimate,low,"2,000 RWF/day x 8 person-days",https://en.igihe.com/social/article/inside-rwandas-pay-scale-who-earns-what-across-sectors
+RW,weeding2,12000,RWF,per_acre,estimate,low,"2,000 RWF/day x 6 person-days",https://en.igihe.com/social/article/inside-rwandas-pay-scale-who-earns-what-across-sectors
+BI,manual_ploughing,43000,BIF,per_acre,estimate,low,"4,300 BIF/day x 10 person-days",https://fews.net/east-africa/burundi/food-security-outlook/june-2026
+BI,manual_ridging,34000,BIF,per_acre,estimate,low,"4,300 BIF/day x 8 person-days",https://fews.net/east-africa/burundi/food-security-outlook/june-2026
+BI,weeding1,34000,BIF,per_acre,estimate,low,"4,300 BIF/day x 8 person-days",https://fews.net/east-africa/burundi/food-security-outlook/june-2026
+BI,weeding2,26000,BIF,per_acre,estimate,low,"4,300 BIF/day x 6 person-days",https://fews.net/east-africa/burundi/food-security-outlook/june-2026
+GH,manual_ploughing,550,GHS,per_acre,estimate,low,"55 GHS/day x 10 person-days",https://agrighanaonline.com/2024-high-pricing-of-cassava-sways-farmers-into-large-scale-scale-farming-at-ashanti-akim-agogo/
+GH,manual_ridging,440,GHS,per_acre,estimate,low,"55 GHS/day x 8 person-days",https://agrighanaonline.com/2024-high-pricing-of-cassava-sways-farmers-into-large-scale-scale-farming-at-ashanti-akim-agogo/
+GH,weeding1,440,GHS,per_acre,estimate,low,"55 GHS/day x 8 person-days; with weeding2 and planting matches the 2024 Agogo budget of GHS 1,050/acre",https://agrighanaonline.com/2024-high-pricing-of-cassava-sways-farmers-into-large-scale-scale-farming-at-ashanti-akim-agogo/
+GH,weeding2,330,GHS,per_acre,estimate,low,"55 GHS/day x 6 person-days",https://agrighanaonline.com/2024-high-pricing-of-cassava-sways-farmers-into-large-scale-scale-farming-at-ashanti-akim-agogo/
+GH,tractor_ploughing,250,GHS,per_acre,reported,medium,"Reported tractor ploughing rate, 2023-2024",https://gna.org.gh/2023/09/farmers-decry-high-farm-inputs-prices-as-pfj-ends/
+GH,tractor_ridging,250,GHS,per_acre,estimate,low,"Assumed equal to ploughing; service providers often charge one per-acre rate per operation",https://www.howwemadeitinafrica.com/linking-farmers-with-tractors-the-business-model-of-ghanas-trotro-tractor/146275/
