@@ -27,6 +27,8 @@ Draft rows in the seeder's format, plus source and confidence columns: [`starch_
 
 ## Rwanda
 
+> **Update (price review, Nov 2026):** a second search found only 2012–2019 reports of Kinazi paying 75–100 RWF/kg, and rated the Esoko 2026 farm-gate series low-confidence. The 330 RWF/kg estimate is therefore disputed; keep the factory inactive until KCP quotes a price. See [price-review-2026-11.md](price-review-2026-11.md).
+
 **Kinazi Cassava Plant (KCP).** Wet-mills fresh roots into fine flour, not starch ([kcp.rw](https://kcp.rw/)). It buys fresh roots by weight, which is what AKILIMO's starch-factory option models, so it is the best fit available. Whether to list a flour mill as a "starch factory" is a product decision.
 - Historic prices paid: **RWF 90/kg** (2019, [KT Press](https://www.ktpress.rw/2019/01/rwandas-kinazi-cassava-plant-targets-three-key-u-s-markets/)) and as low as **RWF 75/kg** (around 2020, [The EastAfrican](https://www.theeastafrican.co.ke/tea/rwanda-today/cassava-maize-farmers-in-rwanda-count-losses-as-prices-drop-1390034)); 60–110 RWF/kg in 2011 ([WUR thesis](https://edepot.wur.nl/298432)).
 - Current farmgate (Esoko Rwanda, July 2026): **350 RWF/kg in Ruhango**, KCP's district ([TangaBid](https://www.tangabid.com/market/prices/160018/)); 300–413 RWF/kg in other markets ([TangaBid](https://www.tangabid.com/market/prices/?product=9)).
