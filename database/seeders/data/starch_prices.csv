@@ -1,39 +1,39 @@
 starchFactory,starchFactory_label,class,country,KEY,minStarch,rangeStarch,price,currency,active
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,1,NG,AlliedAtlanticDistilleries1,20,>20,19000,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,2,NG,AlliedAtlanticDistilleries2,19,19-20,17750,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,3,NG,AlliedAtlanticDistilleries3,18,18-19,16500,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,4,NG,AlliedAtlanticDistilleries4,17,17-18,15250,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,5,NG,AlliedAtlanticDistilleries5,16,16-17,14000,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,6,NG,AlliedAtlanticDistilleries6,15,15-16,12750,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,7,NG,AlliedAtlanticDistilleries7,14,14-15,11500,,1
-AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,8,NG,AlliedAtlanticDistilleries8,0,0-14,5750,,1
-MatnaStarch,Matna Starch Ltd.,1,NG,MatnaStarch1,24,>24,17000,,1
-MatnaStarch,Matna Starch Ltd.,2,NG,MatnaStarch2,22,22-23,16000,,1
-MatnaStarch,Matna Starch Ltd.,3,NG,MatnaStarch3,20,20-21,15500,,1
-MatnaStarch,Matna Starch Ltd.,4,NG,MatnaStarch4,18,18-19,14500,,1
-MatnaStarch,Matna Starch Ltd.,5,NG,MatnaStarch5,16,16-17,13500,,1
-MatnaStarch,Matna Starch Ltd.,6,NG,MatnaStarch6,13,13-15,12000,,1
-MatnaStarch,Matna Starch Ltd.,7,NG,MatnaStarch7,0,0-12,6000,,1
-PsaltryMarketers,Psaltry (marketers),1,NG,PsaltryMarketers1,26.1,>26.1,13000,,1
-PsaltryMarketers,Psaltry (marketers),2,NG,PsaltryMarketers2,23.1,23.1-26,12000,,1
-PsaltryMarketers,Psaltry (marketers),3,NG,PsaltryMarketers3,20.1,20.1-23,11000,,1
-PsaltryMarketers,Psaltry (marketers),4,NG,PsaltryMarketers4,18.1,18.1-20,10000,,1
-PsaltryMarketers,Psaltry (marketers),5,NG,PsaltryMarketers5,16.1,16.1-18,9000,,1
-PsaltryMarketers,Psaltry (marketers),6,NG,PsaltryMarketers6,0,0-16,4500,,1
-PsaltryOutgrowers,Psaltry (outgrowers),3,NG,PsaltryOutgrowers3,20,>20,18000,,1
-PsaltryOutgrowers,Psaltry (outgrowers),4,NG,PsaltryOutgrowers4,16,16-20,17000,,1
-PsaltryOutgrowers,Psaltry (outgrowers),5,NG,PsaltryOutgrowers5,11,15-20,16000,,1
-PsaltryOutgrowers,Psaltry (outgrowers),6,NG,PsaltryOutgrowers6,0,0-10,8000,,1
-Greentech,Greentech Industries Ltd.,1,NG,GreenTech1,25,>25,25000,,1
-Greentech,Greentech Industries Ltd.,2,NG,GreenTech2,22,22-24,24000,,1
-Greentech,Greentech Industries Ltd.,3,NG,GreenTech3,20,20-22,22000,,1
-Greentech,Greentech Industries Ltd.,4,NG,GreenTech4,18,18-20,20000,,1
-Greentech,Greentech Industries Ltd.,5,NG,GreenTech5,16,16-18,18000,,1
-Greentech,Greentech Industries Ltd.,6,NG,GreenTech6,14,14-16,16000,,1
-Greentech,Greentech Industries Ltd.,7,NG,GreenTech7,0,0-14,8000,,1
-PremiumCassavaProducts,Premium Cassava Products Ltd.,1,NG,PremiumCassavaProducts1,0,>0,20000,,1
-FJS,African Starch Development Company Ltd. (FJS),1,TZ,FJS1,0,>0,125000,,1
-CSTC,Cassava Starch Tanzania Corporation (CSTC),1,TZ,CSTC1,0,>0,83333.33333,,1
-DarCanton,Dar Canton Investment Company (DCI),1,TZ,DarCanton1,0,>0,93333.33333,,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,1,NG,AlliedAtlanticDistilleries1,20,>20,19000,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,2,NG,AlliedAtlanticDistilleries2,19,19-20,17750,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,3,NG,AlliedAtlanticDistilleries3,18,18-19,16500,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,4,NG,AlliedAtlanticDistilleries4,17,17-18,15250,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,5,NG,AlliedAtlanticDistilleries5,16,16-17,14000,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,6,NG,AlliedAtlanticDistilleries6,15,15-16,12750,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,7,NG,AlliedAtlanticDistilleries7,14,14-15,11500,NGN,1
+AlliedAtlanticDistilleries,Allied Atlantic Distilleries Ltd.,8,NG,AlliedAtlanticDistilleries8,0,0-14,5750,NGN,1
+MatnaStarch,Matna Starch Ltd.,1,NG,MatnaStarch1,24,>24,17000,NGN,1
+MatnaStarch,Matna Starch Ltd.,2,NG,MatnaStarch2,22,22-23,16000,NGN,1
+MatnaStarch,Matna Starch Ltd.,3,NG,MatnaStarch3,20,20-21,15500,NGN,1
+MatnaStarch,Matna Starch Ltd.,4,NG,MatnaStarch4,18,18-19,14500,NGN,1
+MatnaStarch,Matna Starch Ltd.,5,NG,MatnaStarch5,16,16-17,13500,NGN,1
+MatnaStarch,Matna Starch Ltd.,6,NG,MatnaStarch6,13,13-15,12000,NGN,1
+MatnaStarch,Matna Starch Ltd.,7,NG,MatnaStarch7,0,0-12,6000,NGN,1
+PsaltryMarketers,Psaltry (marketers),1,NG,PsaltryMarketers1,26.1,>26.1,13000,NGN,1
+PsaltryMarketers,Psaltry (marketers),2,NG,PsaltryMarketers2,23.1,23.1-26,12000,NGN,1
+PsaltryMarketers,Psaltry (marketers),3,NG,PsaltryMarketers3,20.1,20.1-23,11000,NGN,1
+PsaltryMarketers,Psaltry (marketers),4,NG,PsaltryMarketers4,18.1,18.1-20,10000,NGN,1
+PsaltryMarketers,Psaltry (marketers),5,NG,PsaltryMarketers5,16.1,16.1-18,9000,NGN,1
+PsaltryMarketers,Psaltry (marketers),6,NG,PsaltryMarketers6,0,0-16,4500,NGN,1
+PsaltryOutgrowers,Psaltry (outgrowers),3,NG,PsaltryOutgrowers3,20,>20,18000,NGN,1
+PsaltryOutgrowers,Psaltry (outgrowers),4,NG,PsaltryOutgrowers4,16,16-20,17000,NGN,1
+PsaltryOutgrowers,Psaltry (outgrowers),5,NG,PsaltryOutgrowers5,11,15-20,16000,NGN,1
+PsaltryOutgrowers,Psaltry (outgrowers),6,NG,PsaltryOutgrowers6,0,0-10,8000,NGN,1
+Greentech,Greentech Industries Ltd.,1,NG,GreenTech1,25,>25,25000,NGN,1
+Greentech,Greentech Industries Ltd.,2,NG,GreenTech2,22,22-24,24000,NGN,1
+Greentech,Greentech Industries Ltd.,3,NG,GreenTech3,20,20-22,22000,NGN,1
+Greentech,Greentech Industries Ltd.,4,NG,GreenTech4,18,18-20,20000,NGN,1
+Greentech,Greentech Industries Ltd.,5,NG,GreenTech5,16,16-18,18000,NGN,1
+Greentech,Greentech Industries Ltd.,6,NG,GreenTech6,14,14-16,16000,NGN,1
+Greentech,Greentech Industries Ltd.,7,NG,GreenTech7,0,0-14,8000,NGN,1
+PremiumCassavaProducts,Premium Cassava Products Ltd.,1,NG,PremiumCassavaProducts1,0,>0,20000,NGN,1
+FJS,African Starch Development Company Ltd. (FJS),1,TZ,FJS1,0,>0,125000,TZS,1
+CSTC,Cassava Starch Tanzania Corporation (CSTC),1,TZ,CSTC1,0,>0,83333.33333,TZS,1
+DarCanton,Dar Canton Investment Company (DCI),1,TZ,DarCanton1,0,>0,93333.33333,TZS,1
 AyensuStarch,Ayensu Starch Company (ASCo),1,GH,AyensuStarch1,0,>0,900,GHS,0
 KinaziCassavaPlant,Kinazi Cassava Plant (KCP),1,RW,KinaziCassavaPlant1,0,>0,330000,RWF,0
