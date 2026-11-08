@@ -36,8 +36,11 @@ class DefaultPriceController extends Controller
         $orderBy = $this->getOrderBy($request, ['created_at'], 'created_at');
         $sort = $this->getSortDirection($request);
 
+        $country = $request->input('country');
+
         $filters = [
-            'country' => $request->input('country'),
+            // Burundi was filed as "BU" before its ISO code; older clients may still ask for it
+            'country' => is_string($country) && strtoupper($country) === 'BU' ? 'BI' : $country,
         ];
 
         $defaultPrices = $this->repo->paginateWithSort(
