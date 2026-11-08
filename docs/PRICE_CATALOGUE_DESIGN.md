@@ -1,6 +1,6 @@
 # Design: one price catalogue, with the API as source of truth
 
-**IITA Internal Use** · Draft for team review, 2026-11-08 · Status: **proposed, not started**; open questions decided 2026-11-08 (see [Decisions](#decisions))
+**IITA Internal Use** · Draft for team review, 2026-11-08 · Status: **phase 1 implemented**; open questions decided 2026-11-08 (see [Decisions](#decisions))
 
 ## Problem
 

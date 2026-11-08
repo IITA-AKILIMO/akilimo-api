@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
+use Database\Seeders\DefaultPricesSeeder;
 use Illuminate\Support\Facades\DB;
 
 function tzFertilizerMigration(): object
@@ -17,17 +24,17 @@ it('updates TZ fertiliser defaults that still hold the old price, and keeps edit
     tzFertilizerMigration()->up();
     tzFertilizerMigration()->up(); // idempotent
 
-    $prices = DB::table('default_prices')->get()->mapWithKeys(fn ($r) => ["{$r->country}/{$r->item}" => (float) $r->price])->all();
+    $prices = DB::table('default_prices')->whereIn('country', ['TZ', 'NG'])->get()->mapWithKeys(fn ($r) => ["{$r->country}/{$r->item}" => (float)$r->price])->all();
     expect($prices)->toEqual(['TZ/urea' => 77100.0, 'TZ/DAP' => 99000.0, 'NG/urea' => 58000.0]);
 
     tzFertilizerMigration()->down();
-    expect((float) DB::table('default_prices')->where(['country' => 'TZ', 'item' => 'urea'])->value('price'))->toBe(58000.0);
+    expect((float)DB::table('default_prices')->where(['country' => 'TZ', 'item' => 'urea'])->value('price'))->toBe(58000.0);
 });
 
 it('seeds the TFRA September 2025 TZ fertiliser prices', function () {
-    $this->seed(\Database\Seeders\DefaultPricesSeeder::class);
+    $this->seed(DefaultPricesSeeder::class);
 
-    $tz = DB::table('default_prices')->where('country', 'TZ')->pluck('price', 'item')->map(fn ($p) => (float) $p);
+    $tz = DB::table('default_prices')->where('country', 'TZ')->pluck('price', 'item')->map(fn ($p) => (float)$p);
     expect($tz->only(['urea', 'CAN', 'DAP', 'MOP', 'NPK171717', 'NPK201010', 'TSP'])->all())->toEqual([
         'urea' => 77100.0, 'CAN' => 61000.0, 'DAP' => 125500.0, 'MOP' => 76000.0,
         'NPK171717' => 89200.0, 'NPK201010' => 89200.0, 'TSP' => 103100.0,

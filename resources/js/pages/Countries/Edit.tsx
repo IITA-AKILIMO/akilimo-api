@@ -3,15 +3,19 @@ import type { FormEvent } from 'react'
 import FormField from '../../components/FormField'
 import ResourceForm from '../../components/ResourceForm'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { Country } from '../../types'
+import type { Country, PriceBasis } from '../../types'
 
-interface Props { item: Country }
+interface Props {
+    item: Country
+    basisOptions: { value: PriceBasis; label: string }[]
+}
 
-export default function CountriesEdit({ item }: Props) {
+export default function CountriesEdit({ item, basisOptions }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         code: item.code,
         name: item.name,
         active: item.active ?? true,
+        default_price_basis: (item.default_price_basis ?? 'open_market') as PriceBasis,
         sort_order: item.sort_order != null ? String(item.sort_order) : '',
     })
 
@@ -50,6 +54,19 @@ export default function CountriesEdit({ item }: Props) {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                 />
+                            </FormField>
+                        </div>
+                        <div className="col-md-4">
+                            <FormField label="Default Price Basis" error={errors.default_price_basis}>
+                                <select
+                                    className="form-select"
+                                    value={data.default_price_basis}
+                                    onChange={(e) => setData('default_price_basis', e.target.value as PriceBasis)}
+                                >
+                                    {basisOptions.map((b) => (
+                                        <option key={b.value} value={b.value}>{b.label}</option>
+                                    ))}
+                                </select>
                             </FormField>
                         </div>
                         <div className="col-md-4">

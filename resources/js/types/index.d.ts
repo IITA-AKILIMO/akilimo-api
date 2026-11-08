@@ -1,11 +1,15 @@
 export type UserRole = 'admin' | 'partner' | 'user'
 
+export type PriceStatus = 'draft' | 'pending_second_review' | 'active'
+export type PriceBasis = 'open_market' | 'subsidised'
+
 export interface User {
     id: number
     name: string
     username: string
     email: string
     role: UserRole
+    reviewer_countries?: string[]
     created_at?: string
 }
 
@@ -14,6 +18,7 @@ export interface Country {
     code: string
     name: string
     active?: boolean
+    default_price_basis?: PriceBasis
     sort_order?: number
     has_boundary?: boolean
 }
@@ -165,10 +170,32 @@ export interface Translation {
 export interface DefaultPrice {
     id: number
     country: string
+    region?: string | null
     item: string
     price: number
+    subsidised_price?: number | null
     unit: string
+    bag_kg?: number | null
     currency?: string
+    min_price?: number | null
+    max_price?: number | null
+    status: PriceStatus
+    source?: string | null
+    source_date?: string | null
+    confidence?: string | null
+    effective_from?: string | null
+    submitted_by?: number | null
+    updated_at?: string
+}
+
+export interface DefaultPriceHistory {
+    id: number
+    action: string
+    old_values?: Record<string, unknown> | null
+    new_values?: Record<string, unknown> | null
+    changed_by?: number | null
+    note?: string | null
+    created_at?: string
 }
 
 export interface AuthUser {

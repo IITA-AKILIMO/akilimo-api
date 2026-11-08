@@ -1,8 +1,16 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
+use App\Enums\PriceStatus;
 use App\Models\DefaultPrice;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 class DefaultPriceRepo extends BaseRepo
@@ -19,6 +27,23 @@ class DefaultPriceRepo extends BaseRepo
     {
         return $this->query()
             ->where('country', $country)
+            ->orderBy('item')
+            ->get();
+    }
+
+    /**
+     * The rows GET /v1/prices serves: active, national and already effective.
+     *
+     * @return Collection<int, DefaultPrice>
+     */
+    public function activeForCountry(string $country, ?CarbonInterface $updatedSince = null): Collection
+    {
+        return $this->query()
+            ->where('country', $country)
+            ->where('status', PriceStatus::Active->value)
+            ->whereNull('region')
+            ->where(fn ($q) => $q->whereNull('effective_from')->orWhere('effective_from', '<=', now()->toDateString()))
+            ->when($updatedSince, fn ($q) => $q->where('updated_at', '>', $updatedSince))
             ->orderBy('item')
             ->get();
     }

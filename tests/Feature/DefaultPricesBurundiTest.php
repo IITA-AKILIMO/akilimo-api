@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use Illuminate\Support\Facades\DB;
 
 function insertDefaultPrice(string $country, string $item, float $price): void
@@ -26,7 +32,7 @@ it('moves legacy BU default prices to BI with their prices unchanged', function 
     runBuToBiMigration(); // idempotent
 
     expect(DB::table('default_prices')->where('country', 'BU')->count())->toBe(0)
-        ->and(DB::table('default_prices')->where('country', 'BI')->pluck('price', 'item')->all())
+        ->and(DB::table('default_prices')->where('country', 'BI')->whereIn('item', ['cassUP', 'FOMIIMBURA'])->pluck('price', 'item')->all())
         ->toEqual(['cassUP' => 700000, 'FOMIIMBURA' => 85390]);
 });
 

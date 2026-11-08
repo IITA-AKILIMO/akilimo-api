@@ -1,6 +1,14 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Models\StarchFactory;
+use Database\Seeders\DefaultPricesSeeder;
+use Database\Seeders\StarchPricesSeeder;
 use Illuminate\Support\Facades\DB;
 
 function runFillCurrenciesMigration(): void
@@ -22,18 +30,23 @@ it('fills missing and obsolete currencies from the country, leaving prices and o
     runFillCurrenciesMigration();
     runFillCurrenciesMigration(); // idempotent
 
-    $currencies = DB::table('default_prices')->get()->mapWithKeys(fn ($r) => ["{$r->country}/{$r->item}" => $r->currency])->all();
+    $currencies = DB::table('default_prices')
+        ->whereIn('country', ['NG', 'TZ', 'GH', 'RW', 'BI'])
+        ->whereIn('item', ['urea', 'DAP', 'cassUP'])
+        ->get()
+        ->mapWithKeys(fn ($r) => ["{$r->country}/{$r->item}" => $r->currency])
+        ->all();
 
     expect($currencies)->toEqual([
         'NG/urea' => 'NGN', 'TZ/urea' => 'TZS', 'GH/urea' => 'GHS', 'RW/urea' => 'RWF', 'BI/cassUP' => 'BIF', 'NG/DAP' => 'USD',
     ])
-        ->and(DB::table('default_prices')->sum('price'))->toEqual(600)
+        ->and(DB::table('default_prices')->whereIn('country', ['NG', 'TZ', 'GH', 'RW', 'BI'])->whereIn('item', ['urea', 'DAP', 'cassUP'])->sum('price'))->toEqual(600)
         ->and(DB::table('starch_prices')->where('starch_factory_id', $factory->id)->value('currency'))->toBe('TZS');
 });
 
 it('seeds every default and starch price with its country currency', function () {
-    $this->seed(\Database\Seeders\DefaultPricesSeeder::class);
-    $this->seed(\Database\Seeders\StarchPricesSeeder::class);
+    $this->seed(DefaultPricesSeeder::class);
+    $this->seed(StarchPricesSeeder::class);
 
     expect(DB::table('default_prices')->where(fn ($q) => $q->whereNull('currency')->orWhere('currency', ''))->count())->toBe(0)
         ->and(DB::table('starch_prices')->where(fn ($q) => $q->whereNull('currency')->orWhere('currency', ''))->count())->toBe(0)
