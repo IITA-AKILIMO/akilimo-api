@@ -18,11 +18,11 @@ The range is the lowest to highest option, apart from the `0` "I don't know" and
 
 | Country | Options range / bag | Stored defaults | Current market | Verdict |
 |---|---|---|---|---|
-| NG | 15,201–24,239 | 7,200–22,364 | 32,500–60,000 | Fails both ways. About 25,000–70,000 needed |
-| TZ | 85,174–135,818 | 53,000–68,000 | 61,000–125,500 (TFRA) | Rejects urea, CAN and MOP market prices. Lower the minimum to about 50,000 |
-| RW | 37,185–59,295 | 27,900–35,650 | 52,700–54,500 subsidised; 93,000–99,000 unsubsidised | Fits subsidised only, and the ceiling is close |
-| GH | ~122–160 | 142–160 | 400–550 open market | Rejects every recent price. About 300–700 needed |
-| BI | FOMI 67,000–85,390; dolomite 6,000–16,000 | 77,600–85,390 | 28,000–33,000 subsidised / 112,500+ parallel (per 25 kg) | Neither subsidised nor parallel prices fit |
+| NG | 15,201–24,239 | 7,200–22,364 | 32,500–60,000 | Every option is below market. Options around 25,000–70,000 needed |
+| TZ | 85,174–135,818 | 53,000–68,000 | 61,000–125,500 (TFRA) | Options miss urea, CAN and MOP market prices (~61,000–77,000); start them around 50,000 |
+| RW | 37,185–59,295 | 27,900–35,650 | 52,700–54,500 subsidised; 93,000–99,000 unsubsidised | Options cover subsidised prices only, near the top of the list |
+| GH | ~122–160 | 142–160 | 400–550 open market | Every option is far below market. Options around 300–700 needed |
+| BI | FOMI 67,000–85,390; dolomite 6,000–16,000 | 77,600–85,390 | 28,000–33,000 subsidised / 112,500+ parallel (per 25 kg) | Options match neither subsidised nor parallel prices |
 
 ## By country
 
