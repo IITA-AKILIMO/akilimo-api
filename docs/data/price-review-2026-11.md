@@ -109,5 +109,5 @@ The official rate is ~2,910–3,000 BIF/USD against a parallel premium of about 
 1. Ask each country team for current subsidised and open-market fertiliser prices, and decide which one the default represents.
 2. Fix the Burundi fertiliser bag size: store prices per 25 kg, or convert them to 50 kg.
 3. Widen the allowed fertiliser ranges in `fertilizer_prices` (NG, TZ, RW, GH, BI) so real prices aren't rejected.
-4. Update Tanzania's fertiliser defaults from the TFRA notices; they are the only high-confidence official series found.
+4. ~~Update Tanzania's fertiliser defaults from the TFRA notices; they are the only high-confidence official series found.~~ **Done** in `87721bc` (TFRA September 2025 national averages, rounded to 100 TZS).
 5. Get field prices for cassava roots and labour before changing `cassUP` or labour defaults.

@@ -62,7 +62,7 @@ Starch prices keep their own tables, because they are priced by starch class; th
 
 `GET /v1/prices?country=TZ[&updated_since=ISO8601]`. It is public like the other reference data and returns only `active`, national (`region` null) rows whose `effective_from` has passed. Each row carries `price`, `subsidised_price`, `min_price`, `max_price`, `unit`, `bag_kg`, `currency`, `source_date` and `updated_at`. The response also includes the country's `default_price_basis`. The response has an `ETag`, and `updated_since` lets clients download only changes.
 
-`GET /v1/default-prices` stays as it is until the engine has moved over, then becomes an alias.
+`GET /v1/default-prices` keeps its response shape until the engine has moved over, then becomes an alias. Since phase 1 it returns only `active` rows, so drafts never reach the engine. It does not apply the `region` or `effective_from` filters.
 
 ### 3. Choice lists generated from the catalogue
 
@@ -101,7 +101,7 @@ Add one question to the fertiliser screen: **"Do you get subsidised fertiliser?"
 
 | Phase | Scope | Who | Visible change |
 |---|---|---|---|
-| 1 | Catalogue columns, history, `GET /v1/prices`, admin screens for prices (draft, review, activate), per-country basis and reviewers, draft import | API | None for clients; country teams can start entering prices |
+| 1 ✅ | Catalogue columns, history, `GET /v1/prices`, admin screens for prices (draft, review, activate), per-country basis and reviewers, draft import. **Done** on branch `feat/price-review`, not yet merged into `develop` | API | None for clients; country teams can start entering prices |
 | 2 | Engine syncs `/v1/prices`; hardcoded defaults become fallbacks | Engine | Engine uses reviewed prices |
 | 3 | Choice lists generated from the catalogue; fixes the ranges in all five countries | API | App choices and ranges follow the catalogue |
 | 4 | App reads `/v1/prices` directly (optional) | Mobile | Fewer endpoints |
