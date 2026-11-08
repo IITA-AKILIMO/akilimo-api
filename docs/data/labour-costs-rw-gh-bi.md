@@ -61,7 +61,7 @@ Land preparation (ploughing + ridging, ~45 person-days/ha) sits between the FAO 
    | tractor_ridging | 115,000 | 100,000 |
 
    Both weeding values differ by exactly 10×, which looks like a slipped zero on one side. The other TZ items match.
-   **Resolved 2026-11-08:** the API values (600,000 / 450,000) are correct, and the compute service's defaults were corrected to match. Tractor ridging was aligned the same way, to the API's 100,000.
+   **Resolved 2026-11-08:** this was a stale database row. The API's seed file has had 60,000 / 45,000 since b8db4fd (27 Oct, "correct the Tanzanian weeding default prices"), matching the compute service; re-seeding brought the database in line. Tractor ridging was aligned to the API's 100,000 in the compute service.
 3. **Wrong unit:** the API labels labour items `per_bag`; they are per acre.
 4. **Harrowing:** the compute service also has harrowing defaults (manual and tractor), but the API has no harrowing items.
 
