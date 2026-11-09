@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -10,6 +10,9 @@ namespace App\Models\Base;
 
 use App\Core\Models\BaseUser;
 use App\Models\ApiKey;
+use App\Models\CountryReviewer;
+use App\Models\DefaultPrice;
+use App\Models\DefaultPriceHistory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,7 +34,13 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property Carbon|null $updated_at
  * @property string $username
  * @property Collection|ApiKey[] $apiKeys
+ * @property Collection|CountryReviewer[] $countryReviewers
+ * @property Collection|DefaultPriceHistory[] $defaultPriceHistories
+ * @property Collection|DefaultPrice[] $defaultPrices
  * @property-read int|null $api_keys_count
+ * @property-read int|null $country_reviewers_count
+ * @property-read int|null $default_price_histories_count
+ * @property-read int|null $default_prices_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
@@ -79,5 +88,20 @@ class User extends BaseUser
     public function apiKeys(): HasMany
     {
         return $this->hasMany(ApiKey::class);
+    }
+
+    public function countryReviewers(): HasMany
+    {
+        return $this->hasMany(CountryReviewer::class);
+    }
+
+    public function defaultPriceHistories(): HasMany
+    {
+        return $this->hasMany(DefaultPriceHistory::class, 'changed_by');
+    }
+
+    public function defaultPrices(): HasMany
+    {
+        return $this->hasMany(DefaultPrice::class, 'updated_by');
     }
 }

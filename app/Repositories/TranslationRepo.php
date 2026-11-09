@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Models\Translation;
@@ -23,7 +29,7 @@ class TranslationRepo extends BaseRepo
         string $direction = 'asc',
     ): LengthAwarePaginator {
         return $this->query()
-            ->where('key', 'like', '%'.$search.'%')
+            ->where('key', 'like', '%' . $search . '%')
             ->orderBy($orderBy, $direction)
             ->paginate($perPage);
     }
@@ -38,7 +44,7 @@ class TranslationRepo extends BaseRepo
         $query = $this->query()->orderBy('key');
 
         if ($search !== '') {
-            $query->where('key', 'like', '%'.$search.'%');
+            $query->where('key', 'like', '%' . $search . '%');
         }
 
         return $query->limit($limit)->get();

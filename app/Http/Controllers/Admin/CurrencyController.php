@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CurrencyRequest;
@@ -17,7 +23,7 @@ class CurrencyController extends AdminController
     {
         $values = $this->filterValues($request, ['search', 'country']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'country_code',
             direction: 'asc',
             // country_code is the DB column; request sends 'country'

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -9,7 +9,10 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Models\CountryReviewer;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Country
@@ -18,6 +21,7 @@ use Carbon\Carbon;
  * @property string $boundary
  * @property string $code
  * @property Carbon|null $created_at
+ * @property string $default_price_basis
  * @property int $id
  * @property float|null $latitude
  * @property float|null $longitude
@@ -28,6 +32,8 @@ use Carbon\Carbon;
  * @property string $name
  * @property int|null $sort_order
  * @property Carbon|null $updated_at
+ * @property Collection|CountryReviewer[] $countryReviewers
+ * @property-read int|null $country_reviewers_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newQuery()
@@ -36,6 +42,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereBoundary($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereDefaultPriceBasis($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereLongitude($value)
@@ -69,6 +76,7 @@ class Country extends BaseModel
         'code',
         'name',
         'active',
+        'default_price_basis',
         'sort_order',
         'latitude',
         'longitude',
@@ -78,4 +86,9 @@ class Country extends BaseModel
         'max_longitude',
         'boundary',
     ];
+
+    public function countryReviewers(): HasMany
+    {
+        return $this->hasMany(CountryReviewer::class, 'country', 'code');
+    }
 }

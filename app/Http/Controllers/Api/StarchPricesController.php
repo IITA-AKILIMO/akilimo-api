@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -16,9 +22,7 @@ class StarchPricesController extends Controller
 {
     use HasPaginationParams;
 
-    public function __construct(protected StarchPriceRepo $repo)
-    {
-    }
+    public function __construct(protected StarchPriceRepo $repo) {}
 
     /**
      * List Starch Prices

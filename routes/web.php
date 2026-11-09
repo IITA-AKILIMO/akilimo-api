@@ -141,11 +141,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
             ->except(['show'])
             ->parameters(['starch-prices' => 'id']);
 
-        // Default prices — batch routes before resource
+        // Default prices — batch and workflow routes before resource
         Route::get('default-prices/batch-create', [DefaultPriceController::class, 'batchCreate'])->name('default-prices.batch-create');
         Route::post('default-prices/batch', [DefaultPriceController::class, 'batchStore'])->name('default-prices.batch-store');
         Route::get('default-prices/batch-edit', [DefaultPriceController::class, 'batchEdit'])->name('default-prices.batch-edit');
         Route::put('default-prices/batch', [DefaultPriceController::class, 'batchUpdate'])->name('default-prices.batch-update');
+
+        Route::post('default-prices/{id}/activate', [DefaultPriceController::class, 'activate'])->name('default-prices.activate');
+        Route::post('default-prices/{id}/confirm', [DefaultPriceController::class, 'confirm'])->name('default-prices.confirm');
 
         Route::resource('default-prices', DefaultPriceController::class)
             ->except(['show'])

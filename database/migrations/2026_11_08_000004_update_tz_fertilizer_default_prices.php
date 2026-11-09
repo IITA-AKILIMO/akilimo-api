@@ -37,6 +37,9 @@ return new class extends Migration {
         $this->apply(1, 0);
     }
 
+    /**
+     * @throws Throwable
+     */
     private function apply(int $from, int $to): void
     {
         DB::transaction(function () use ($from, $to) {

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Utils;
 
 use App\Models\Currency as CurrencyDto;
@@ -12,7 +18,7 @@ class CurrencyConversion
         float $maxUsd,
         float $currencyRate,
         float $nearestValue,
-        CurrencyDto $currency
+        CurrencyDto $currency,
     ): string {
         $min = $this->roundToNearestSpecifiedValue(
             $this->convertToSpecifiedCurrencyValue($minUsd, $currencyRate),
@@ -32,7 +38,7 @@ class CurrencyConversion
         float $amount,
         float $currencyRate,
         float $nearestValue,
-        CurrencyDto $currencyDto
+        CurrencyDto $currencyDto,
     ): float {
         if (Str::isMatch($currencyDto->currency_code, 'USD')) {
             return $amount;
@@ -69,6 +75,6 @@ class CurrencyConversion
 
         $currency = $currencyDto->currency_symbol ?: $currencyDto->currency_code;
 
-        return number_format($number, 0, '.', ',').' '.$currency;
+        return number_format($number, 0, '.', ',') . ' ' . $currency;
     }
 }

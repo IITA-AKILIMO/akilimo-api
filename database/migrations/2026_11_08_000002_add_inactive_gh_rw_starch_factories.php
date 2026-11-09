@@ -21,6 +21,9 @@ return new class extends Migration {
         ['name' => 'KinaziCassavaPlant', 'label' => 'Kinazi Cassava Plant (KCP)', 'country' => 'RW', 'price' => 330000, 'currency' => 'RWF'],
     ];
 
+    /**
+     * @throws Throwable
+     */
     public function up(): void
     {
         DB::transaction(function () {

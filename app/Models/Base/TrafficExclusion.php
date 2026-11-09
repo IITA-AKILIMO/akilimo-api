@@ -10,10 +10,9 @@ namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class TrafficExclusion — a rule that marks requests as staff or test traffic.
+ * Class TrafficExclusion
  *
  * @property bool $active
  * @property Carbon|null $created_at
@@ -24,15 +23,27 @@ use Illuminate\Database\Eloquent\Builder;
  * @property Carbon|null $updated_at
  * @property string $value
  *
- * @method static Builder<static>|TrafficExclusion newModelQuery()
- * @method static Builder<static>|TrafficExclusion newQuery()
- * @method static Builder<static>|TrafficExclusion query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereField($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereMatchType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TrafficExclusion whereValue($value)
  *
  * @mixin \Eloquent
  */
 class TrafficExclusion extends BaseModel
 {
     protected $table = 'traffic_exclusions';
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
 
     protected $fillable = [
         'field',
@@ -41,14 +52,4 @@ class TrafficExclusion extends BaseModel
         'note',
         'active',
     ];
-
-    protected $casts = [
-        'active' => 'boolean',
-    ];
-
-    /** Rules that are switched on */
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->where('active', true);
-    }
 }

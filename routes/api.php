@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\MaizePricesController;
 use App\Http\Controllers\Api\McpKeyController;
 use App\Http\Controllers\Api\OperationCostController;
 use App\Http\Controllers\Api\PotatoPricesController;
+use App\Http\Controllers\Api\PriceController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Api\StarchFactoryController;
 use App\Http\Controllers\Api\StarchPricesController;
@@ -89,6 +90,10 @@ Route::middleware('throttle:read')->group(function () {
 
     Route::prefix('v1/default-prices')->group(function () {
         Route::get('/', [DefaultPriceController::class, 'index']);
+    });
+
+    Route::prefix('v1/prices')->group(function () {
+        Route::get('/', [PriceController::class, 'index']);
     });
 
     Route::prefix('v1/cassava-units')->group(function () {

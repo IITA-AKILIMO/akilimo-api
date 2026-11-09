@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
@@ -48,14 +54,14 @@ class HealthCheckController extends Controller
 
         $overallStatus = true;
         foreach ($healthChecks as $check) {
-            $status = Arr::get($check, 'status', 'DOWN');
+            $status = Arr::get(array: $check, key: 'status', default: 'DOWN');
             if ($status === 'DOWN') {
                 $overallStatus = false;
                 break;
             }
         }
 
-        return response()->json([
+        return response()->json(data: [
             'status' => $overallStatus ? 'healthy' : 'unhealthy',
             'timestamp' => Carbon::now()->toIso8601String(),
             //            'server_info' => [
@@ -64,7 +70,7 @@ class HealthCheckController extends Controller
             //                'environment' => app()->environment(),
             //            ],
             'checks' => $healthChecks,
-        ], $overallStatus ? 200 : 500);
+        ], status: $overallStatus ? 200 : 500);
     }
 
     private function checkDatabase(): array
@@ -96,10 +102,10 @@ class HealthCheckController extends Controller
         try {
             $redis = Redis::connection();
             //            $ping = $redis->ping();
-            $info = $redis->info();
+            $info = $redis->command('info');
             $serviceName = $info['executable'] ?? 'NA';
 
-            $memory = Arr::get($info, 'Memory', $info);
+            $memory = Arr::get(array: $info, key: 'Memory', default: $info);
 
             return [
                 'status' => 'UP',
@@ -123,8 +129,8 @@ class HealthCheckController extends Controller
     private function checkCache(): array
     {
         try {
-            $testKey = 'health_check_'.uniqid();
-            Cache::put($testKey, 'test', 60);
+            $testKey = 'health_check_' . uniqid();
+            Cache::put(key: $testKey, value: 'test', ttl: 60);
             $value = Cache::get($testKey);
             Cache::forget($testKey);
 
@@ -143,8 +149,8 @@ class HealthCheckController extends Controller
     private function checkFileStorage(): array
     {
         try {
-            $testFile = 'health_check_'.uniqid().'.txt';
-            Storage::put($testFile, 'Storage health check');
+            $testFile = 'health_check_' . uniqid() . '.txt';
+            Storage::put(path: $testFile, contents: 'Storage health check');
             $fileExists = Storage::exists($testFile);
             Storage::delete($testFile);
 
@@ -233,7 +239,7 @@ class HealthCheckController extends Controller
     private function checkEnvironmentConfig(): array
     {
         return [
-            'status' => config('app.debug') ? 'DOWN' : 'UP',
+            'status' => (bool)config('app.debug') ? 'DOWN' : 'UP',
             'debug_mode' => config('app.debug'),
             'timezone' => config('app.timezone'),
         ];
@@ -263,15 +269,15 @@ class HealthCheckController extends Controller
 
     private function checkAkilimoCompute(): array
     {
-        $baseUrl = rtrim((string) config('akilimo-compute.base_url', ''), '/');
-        $healthUrl = $baseUrl ? $baseUrl.'/health' : null;
+        $baseUrl = rtrim((string)config('akilimo-compute.base_url', ''), '/');
+        $healthUrl = $baseUrl !== '' ? $baseUrl . '/health' : null;
 
         $result = [
             'status' => 'DOWN',
             'url' => $healthUrl,
         ];
 
-        if (empty($healthUrl)) {
+        if ($healthUrl === null) {
             $result['error'] = 'AKILIMO_COMPUTE_BASE_URL is not configured';
 
             return $result;
@@ -284,11 +290,11 @@ class HealthCheckController extends Controller
             $result['http_status'] = $response->status();
 
             // If the health endpoint returns JSON like {"status":"UP"}
-            if ($response->json('status')) {
+            if ((bool)$response->json('status')) {
                 $result['service_status'] = $response->json('status');
             }
         } catch (ConnectionException $e) {
-            $result['error'] = 'Connection failed: '.$e->getMessage();
+            $result['error'] = 'Connection failed: ' . $e->getMessage();
         } catch (\Throwable $e) {
             $result['error'] = $e->getMessage();
         }

@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Models\StarchFactory;
+use Database\Seeders\StarchPricesSeeder;
 use Illuminate\Support\Facades\DB;
 
 function starchFactoryWithPrice(string $name, string $country, bool $active, float $price): StarchFactory
@@ -61,17 +68,17 @@ it('adds the GH and RW factories inactive with their estimated prices, once', fu
 
     expect($rows)->toHaveCount(2)
         ->and($rows['AyensuStarch']->country)->toBe('GH')
-        ->and((float) $rows['AyensuStarch']->price)->toBe(900.0)
+        ->and((float)$rows['AyensuStarch']->price)->toBe(900.0)
         ->and($rows['AyensuStarch']->currency)->toBe('GHS')
-        ->and((float) $rows['KinaziCassavaPlant']->price)->toBe(330000.0)
+        ->and((float)$rows['KinaziCassavaPlant']->price)->toBe(330000.0)
         ->and($rows['KinaziCassavaPlant']->currency)->toBe('RWF')
-        ->and($rows->every(fn ($r) => ! $r->factory_active))->toBeTrue();
+        ->and($rows->every(fn ($r) => !$r->factory_active))->toBeTrue();
 
     expect($this->getJson('/api/v1/starch-prices?country=GH')->json('data'))->toBe([]);
 });
 
 it('seeds the CSV factories with their active flag and currency', function () {
-    $this->seed(\Database\Seeders\StarchPricesSeeder::class);
+    $this->seed(StarchPricesSeeder::class);
 
     $factories = StarchFactory::whereIn('factory_name', ['AlliedAtlanticDistilleries', 'AyensuStarch', 'KinaziCassavaPlant'])
         ->pluck('factory_active', 'factory_name');
@@ -85,6 +92,6 @@ it('keeps a price an admin already set', function () {
 
     runInactiveStarchMigration();
 
-    expect((float) DB::table('starch_prices')->where('starch_factory_id', $factory->id)->value('price'))->toBe(1200.0)
-        ->and((bool) $factory->fresh()->factory_active)->toBeTrue();
+    expect((float)DB::table('starch_prices')->where('starch_factory_id', $factory->id)->value('price'))->toBe(1200.0)
+        ->and((bool)$factory->fresh()->factory_active)->toBeTrue();
 });

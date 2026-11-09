@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Support\Documentation\GoToDefinitionOperationExtension;
 use App\Support\Documentation\GoToDefinitionSchemaExtension;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
@@ -47,7 +53,7 @@ return [
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => file_get_contents(__DIR__.'/../README.md'),
+        'description' => file_get_contents(__DIR__ . '/../README.md'),
     ],
 
     'ui' => [
@@ -139,11 +145,11 @@ return [
      * ],
      * ```
      */
-//    'servers' => null,
+    //    'servers' => null,
     'servers' => [
-        'Local'      => 'api',
+        'Local' => 'api',
         'Production' => 'https://api.akilimo.org',
-        'Staging'    => 'https://staging-api.akilimo.org',
+        'Staging' => 'https://staging-api.akilimo.org',
     ],
 
     /**
@@ -215,12 +221,12 @@ return [
      * ],
      */
     'security_strategy' => null,
-//    'security_strategy' => MiddlewareAuthSecurityStrategy::class,
-//    'security_strategy' => [
-//        MiddlewareAuthSecurityStrategy::class,
-//        [
-//            'middleware' => ['auth', 'auth:*'],
-//            'scheme' => SecurityScheme::http('bearer'),
-//        ],
-//    ],
+    //    'security_strategy' => MiddlewareAuthSecurityStrategy::class,
+    //    'security_strategy' => [
+    //        MiddlewareAuthSecurityStrategy::class,
+    //        [
+    //            'middleware' => ['auth', 'auth:*'],
+    //            'scheme' => SecurityScheme::http('bearer'),
+    //        ],
+    //    ],
 ];

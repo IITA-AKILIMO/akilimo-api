@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Models\ApiRequest;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Support\Documentation;
 
 use Dedoc\Scramble\Support\Type\ObjectType;
@@ -15,7 +21,7 @@ class GoToDefinitionSchemaExtension extends JsonResourceTypeToSchema
         $schema = parent::toSchema($type);
 
         $schema->setDescription(
-            $schema->description.' '.$this->getGoToDefinitionLink($type)
+            $schema->description . ' ' . $this->getGoToDefinitionLink($type)
         );
 
         return $schema;

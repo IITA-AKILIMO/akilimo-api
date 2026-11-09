@@ -22,6 +22,11 @@ export default function CountriesIndex({items, filters}: Props) {
         {key: 'sort_order', label: 'Order'},
         {key: 'code', label: 'Code'},
         {key: 'name', label: 'Country Name'},
+        {
+            key: 'default_price_basis',
+            label: 'Price basis',
+            render: (v) => v === 'subsidised' ? 'Subsidised' : 'Open market',
+        },
         {key: 'active', label: 'Active', render: (v) => <Badge active={!!v}/>},
         {
             key: 'has_boundary',

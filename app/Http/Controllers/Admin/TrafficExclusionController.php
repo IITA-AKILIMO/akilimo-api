@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\TrafficExclusionRequest;
@@ -26,7 +32,7 @@ class TrafficExclusionController extends AdminController
     public function index(Request $request): Response
     {
         $values = $this->filterValues($request, ['search', 'field', 'active']);
-        $like = '%'.addcslashes($values['search'], '\\%_').'%';
+        $like = '%' . addcslashes($values['search'], '\\%_') . '%';
 
         $rules = TrafficExclusion::query()
             ->when($values['search'] !== '', fn ($q) => $q->where(fn ($w) => $w->where('value', 'like', $like)->orWhere('note', 'like', $like)))
@@ -52,8 +58,8 @@ class TrafficExclusionController extends AdminController
             'fields' => TrafficExclusionService::FIELDS,
             'matchTypes' => TrafficExclusionService::MATCH_TYPES,
             'totals' => [
-                'requests' => (int) DB::table('api_requests')->count(),
-                'excluded' => (int) DB::table('api_requests')->where('excluded', true)->count(),
+                'requests' => (int)DB::table('api_requests')->count(),
+                'excluded' => (int)DB::table('api_requests')->where('excluded', true)->count(),
             ],
         ]);
     }
@@ -84,6 +90,6 @@ class TrafficExclusionController extends AdminController
         $changed = $this->exclusions->refresh();
 
         return redirect()->route('admin.traffic-exclusions.index')
-            ->with('success', $message.' '.trans_choice('{0} No request changed.|{1} 1 request changed.|[2,*] :count requests changed.', $changed, ['count' => number_format($changed)]));
+            ->with('success', $message . ' ' . trans_choice('{0} No request changed.|{1} 1 request changed.|[2,*] :count requests changed.', $changed, ['count' => number_format($changed)]));
     }
 }

@@ -204,7 +204,8 @@ These endpoints are public — no authentication required.
 | `GET /v1/starch-factories` | Cassava starch factories |
 | `GET /v1/starch-factories/country/{code}` | Factories for a country |
 | `GET /v1/starch-prices` | Starch price list |
-| `GET /v1/default-prices` | Default price reference data |
+| `GET /v1/default-prices` | Default price reference data (active rows only) |
+| `GET /v1/prices?country={code}` | Reviewed price catalogue with basis, ranges and ETag sync |
 | `GET /v1/cassava-units` | Cassava unit definitions |
 
 ---

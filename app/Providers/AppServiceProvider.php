@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Providers;
 
 use App\Models\User;
@@ -32,13 +38,13 @@ class AppServiceProvider extends ServiceProvider
         // Every limit comes from config/rate-limits.php (read on each request); each key is a limiter used by the routes
         // as "throttle:<key>", with one counter per IP shared by the routes that use the same key
         foreach (array_keys(config('rate-limits')) as $name) {
-            RateLimiter::for($name, fn (Request $request) => Limit::perMinute((int) config("rate-limits.$name"))->by($name.'|'.$request->ip()));
+            RateLimiter::for($name, fn (Request $request) => Limit::perMinute((int)config("rate-limits.{$name}"))->by($name . '|' . $request->ip()));
         }
 
         // Admin sign-in uses the "sensitive" limit but redirects back with a field error on breach
         RateLimiter::for('admin-login', function (Request $request) {
-            return Limit::perMinute((int) config('rate-limits.sensitive'))
-                ->by('admin-login|'.$request->ip())
+            return Limit::perMinute((int)config('rate-limits.sensitive'))
+                ->by('admin-login|' . $request->ip())
                 ->response(fn () => back()
                     ->withErrors(['username' => 'Too many login attempts. Please wait a minute and try again.'])
                     ->onlyInput('username')

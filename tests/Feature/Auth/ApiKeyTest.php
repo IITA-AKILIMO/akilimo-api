@@ -188,7 +188,7 @@ it('asks the client to encrypt history only over https', function (bool $secure)
 
     $page = $this->actingAs($admin)
         ->withHeaders(['X-Inertia' => 'true', 'X-Requested-With' => 'XMLHttpRequest'])
-        ->post(($secure ? 'https' : 'http') . '://localhost/admin/api-keys',['user_id' => $admin->id, 'name' => 'enc', 'abilities' => []])
+        ->post(($secure ? 'https' : 'http') . '://localhost/admin/api-keys', ['user_id' => $admin->id, 'name' => 'enc', 'abilities' => []])
         ->assertOk()
         ->json();
 

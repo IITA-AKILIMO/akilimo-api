@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Models\ApiKey;
@@ -27,9 +33,9 @@ class ApiRequestStatsRepo extends BaseRepo
     /**
      * Get dashboard stats with customizable day intervals.
      *
-     * @param  int  $chartDays  Days for chart data (default 30)
-     * @param  int  $metricsDays  Days for metrics calculations (default 7)
-     * @param  int  $cacheMinutes  Cache duration in minutes (default 15)
+     * @param int $chartDays Days for chart data (default 30)
+     * @param int $metricsDays Days for metrics calculations (default 7)
+     * @param int $cacheMinutes Cache duration in minutes (default 15)
      */
     /** Price lists older than this are flagged on the dashboard. */
     public const STALE_AFTER_DAYS = 90;
@@ -40,7 +46,7 @@ class ApiRequestStatsRepo extends BaseRepo
     public function getDashboardStats(
         int $chartDays = 30,
         int $metricsDays = 7,
-        int $cacheMinutes = 15
+        int $cacheMinutes = 15,
     ): array {
         return Cache::remember($this->cacheKey($chartDays, $metricsDays), $cacheMinutes * 60, function () use ($chartDays, $metricsDays) {
             return [
@@ -93,13 +99,13 @@ class ApiRequestStatsRepo extends BaseRepo
     {
         return [
             // Count directly on the source table — avoids the view and its expressions
-            'totalRequests' => (int) DB::table('api_requests')->count(),
-            'totalUsers' => (int) User::count(),
-            'activeKeys' => (int) ApiKey::where('is_active', true)
+            'totalRequests' => (int)DB::table('api_requests')->count(),
+            'totalUsers' => (int)User::count(),
+            'activeKeys' => (int)ApiKey::where('is_active', true)
                 ->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))
                 ->count(),
-            'totalFertilizers' => (int) Fertilizer::where('available', true)->count(),
-            'totalCountries' => (int) Country::where('active', true)->count(),
+            'totalFertilizers' => (int)Fertilizer::where('available', true)->count(),
+            'totalCountries' => (int)Country::where('active', true)->count(),
         ];
     }
 
@@ -115,7 +121,7 @@ class ApiRequestStatsRepo extends BaseRepo
             ->get()
             ->map(fn ($row) => [
                 'date' => $row->date,
-                'count' => (int) $row->count,
+                'count' => (int)$row->count,
             ]);
 
         $byUseCase = $this->model
@@ -128,7 +134,7 @@ class ApiRequestStatsRepo extends BaseRepo
             ->get()
             ->map(fn ($row) => [
                 'use_case' => $row->use_case,
-                'count' => (int) $row->count,
+                'count' => (int)$row->count,
             ]);
 
         $byCountry = $this->userRequests($days)
@@ -141,7 +147,7 @@ class ApiRequestStatsRepo extends BaseRepo
             ->get()
             ->map(fn ($row) => [
                 'country_code' => $row->country_code,
-                'count' => (int) $row->count,
+                'count' => (int)$row->count,
             ]);
 
         // Older rows have gender in the column (free text, English and Swahili);
@@ -167,9 +173,9 @@ class ApiRequestStatsRepo extends BaseRepo
             'byUseCase' => $byUseCase,
             'byCountry' => $byCountry,
             'byGender' => [
-                'female' => (int) ($byGender['female'] ?? 0),
-                'male' => (int) ($byGender['male'] ?? 0),
-                'not_recorded' => (int) ($byGender['not_recorded'] ?? 0),
+                'female' => (int)($byGender['female'] ?? 0),
+                'male' => (int)($byGender['male'] ?? 0),
+                'not_recorded' => (int)($byGender['not_recorded'] ?? 0),
             ],
         ];
     }
@@ -183,28 +189,28 @@ class ApiRequestStatsRepo extends BaseRepo
             ->where('created_at', '>=', now()->subDays($days))
             ->first();
 
-        $total = (int) ($row->total ?? 0);
-        $excluded = (int) ($row->excluded_count ?? 0);
+        $total = (int)($row->total ?? 0);
+        $excluded = (int)($row->excluded_count ?? 0);
 
         // Success: real-user requests the compute service answered without an error.
         // Requests with nothing saved (the process stopped first) are counted apart.
         $outcome = $this->userRequests($days)
-            ->selectRaw('SUM(CASE WHEN '.self::ANSWERED_SQL.' THEN 1 ELSE 0 END) as answered,
-                SUM(CASE WHEN '.self::ANSWERED_SQL.' AND '.self::FAILED_SQL.' THEN 1 ELSE 0 END) as failed,
-                SUM(CASE WHEN '.self::ANSWERED_SQL.' THEN 0 ELSE 1 END) as unanswered')
+            ->selectRaw('SUM(CASE WHEN ' . self::ANSWERED_SQL . ' THEN 1 ELSE 0 END) as answered,
+                SUM(CASE WHEN ' . self::ANSWERED_SQL . ' AND ' . self::FAILED_SQL . ' THEN 1 ELSE 0 END) as failed,
+                SUM(CASE WHEN ' . self::ANSWERED_SQL . ' THEN 0 ELSE 1 END) as unanswered')
             ->first();
 
-        $answered = (int) ($outcome->answered ?? 0);
-        $failed = (int) ($outcome->failed ?? 0);
+        $answered = (int)($outcome->answered ?? 0);
+        $failed = (int)($outcome->failed ?? 0);
 
         // Only recent requests record a duration; failures (timeouts) are left out
         // so the figure describes the answers farmers actually got.
         $durations = $this->userRequests($days)
             ->whereNotNull('request_duration_ms')
-            ->whereRaw('NOT ('.self::FAILED_SQL.')')
+            ->whereRaw('NOT (' . self::FAILED_SQL . ')')
             ->orderBy('request_duration_ms')
             ->pluck('request_duration_ms')
-            ->map(fn ($ms) => (int) $ms)
+            ->map(fn ($ms) => (int)$ms)
             ->all();
 
         return [
@@ -214,10 +220,10 @@ class ApiRequestStatsRepo extends BaseRepo
             'successRate' => $answered > 0 ? round((($answered - $failed) / $answered) * 100, 1) : null,
             'answeredRequests' => $answered,
             'failedRequests' => $failed,
-            'unansweredRequests' => (int) ($outcome->unanswered ?? 0),
+            'unansweredRequests' => (int)($outcome->unanswered ?? 0),
             'requestsLastDays' => $total - $excluded,
             'staffRequests' => $excluded,
-            'uniqueDevices' => (int) $this->userRequests($days)
+            'uniqueDevices' => (int)$this->userRequests($days)
                 ->whereNotNull('device_token')
                 ->distinct()
                 ->count('device_token'),
@@ -228,7 +234,7 @@ class ApiRequestStatsRepo extends BaseRepo
     /**
      * Nearest-rank percentile of an ascending list; null when it is empty.
      *
-     * @param  int[]  $sorted
+     * @param int[] $sorted
      */
     protected function percentile(array $sorted, int $p): ?int
     {
@@ -236,7 +242,7 @@ class ApiRequestStatsRepo extends BaseRepo
             return null;
         }
 
-        $rank = (int) ceil($p / 100 * count($sorted));
+        $rank = (int)ceil($p / 100 * count($sorted));
 
         return $sorted[max(0, $rank - 1)];
     }
@@ -256,11 +262,11 @@ class ApiRequestStatsRepo extends BaseRepo
             ->pluck('count', 'rating');
 
         return [
-            'responses' => (int) DB::table('user_feedback')->count(),
-            'responsesLastDays' => (int) DB::table('user_feedback')->where('created_at', '>=', now()->subDays($days))->count(),
-            'avgSatisfaction' => ($avg = (clone $rated)->avg('akilimo_rec_rating')) !== null ? round((float) $avg, 2) : null,
-            'ratedResponses' => (int) (clone $rated)->count(),
-            'distribution' => collect(range(1, 5))->mapWithKeys(fn ($r) => [$r => (int) ($distribution[$r] ?? 0)])->all(),
+            'responses' => (int)DB::table('user_feedback')->count(),
+            'responsesLastDays' => (int)DB::table('user_feedback')->where('created_at', '>=', now()->subDays($days))->count(),
+            'avgSatisfaction' => ($avg = (clone $rated)->avg('akilimo_rec_rating')) !== null ? round((float)$avg, 2) : null,
+            'ratedResponses' => (int)(clone $rated)->count(),
+            'distribution' => collect(range(1, 5))->mapWithKeys(fn ($r) => [$r => (int)($distribution[$r] ?? 0)])->all(),
             'lastResponseAt' => ($last = DB::table('user_feedback')->max('created_at')) ? Carbon::parse($last)->toIso8601String() : null,
         ];
     }
@@ -276,8 +282,8 @@ class ApiRequestStatsRepo extends BaseRepo
             ->limit($limit)
             ->get(['id', 'country_code', 'use_case', 'created_at', 'plumber_response'])
             ->map(function ($r) {
-                $body = json_decode((string) $r->plumber_response, true) ?: [];
-                $message = trim(($body['error'] ?? 'Error').(isset($body['message']) ? ': '.$body['message'] : ''));
+                $body = json_decode((string)$r->plumber_response, true) ?: [];
+                $message = trim(($body['error'] ?? 'Error') . (isset($body['message']) ? ': ' . $body['message'] : ''));
 
                 return [
                     'id' => $r->id,
@@ -318,10 +324,10 @@ class ApiRequestStatsRepo extends BaseRepo
                 return [
                     'label' => $l['label'],
                     'href' => $l['href'],
-                    'rows' => (int) $row->n,
+                    'rows' => (int)$row->n,
                     'last_updated' => $last ? Carbon::parse($last)->toIso8601String() : null,
                     // No date at all counts as stale: nobody can tell how old it is.
-                    'stale' => ! $last || Carbon::parse($last)->lt(now()->subDays(self::STALE_AFTER_DAYS)),
+                    'stale' => !$last || Carbon::parse($last)->lt(now()->subDays(self::STALE_AFTER_DAYS)),
                 ];
             })
             ->values()
@@ -353,7 +359,7 @@ class ApiRequestStatsRepo extends BaseRepo
             ->map(fn ($r) => [
                 'id' => $r->id,
                 'request_id' => $r->request_id,
-                'device_token' => $r->device_token ? substr($r->device_token, 0, 8).'****' : null,
+                'device_token' => $r->device_token ? substr($r->device_token, 0, 8) . '****' : null,
                 'duration_ms' => $r->request_duration_ms,
                 'created_at' => $r->created_at?->toIso8601String(),
                 'use_case' => $r->use_case,

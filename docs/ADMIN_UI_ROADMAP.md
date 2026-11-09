@@ -140,6 +140,7 @@ Each module follows an identical pattern: **list → create → edit → delete*
 - ✅ Cassava prices
 - ✅ Potato prices
 - ✅ Starch prices + default prices (both with batch create/edit)
+- ✅ Default price review workflow — draft → activate, second review over ±30 %, history
 
 ### 5c — Supporting Data ✅
 - ✅ **Investment amounts** — per country, min/max

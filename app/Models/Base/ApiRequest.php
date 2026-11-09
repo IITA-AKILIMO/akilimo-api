@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) 2026 AKILIMO — https://akilimo.co.ke
+ * (c) 2026 AKILIMO — https://akilimo.org
  *
  * For licence information, see the LICENCE file.
  */
@@ -18,7 +18,7 @@ use Carbon\Carbon;
  * @property Carbon|null $created_at
  * @property string|null $device_token
  * @property array $droid_request
- * @property bool|null $excluded
+ * @property bool $excluded
  * @property bool|null $fr
  * @property string|null $full_names
  * @property string|null $gender

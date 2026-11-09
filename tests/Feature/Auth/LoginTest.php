@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -8,8 +14,8 @@ function createTestUser(string $password = 'secret123'): User
 {
     return User::create([
         'name' => 'Auth Test User',
-        'username' => 'authuser_'.str()->random(6),
-        'email' => 'auth_'.str()->random(6).'@example.com',
+        'username' => 'authuser_' . str()->random(6),
+        'email' => 'auth_' . str()->random(6) . '@example.com',
         'password' => Hash::make($password),
     ]);
 }

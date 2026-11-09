@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Resources;
 
 use App\Data\MinMaxPriceDto;
@@ -11,6 +17,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class CassavaPriceResource extends JsonResource
 {
     private ?MinMaxPriceDto $priceBand = null;
+
     private ?Currency $currency = null;
 
     public static function makeWithContext($resource, MinMaxPriceDto $priceBand, ?Currency $currency = null): self
@@ -18,6 +25,7 @@ class CassavaPriceResource extends JsonResource
         $instance = new self($resource);
         $instance->priceBand = $priceBand;
         $instance->currency = $currency;
+
         return $instance;
     }
 
@@ -30,7 +38,7 @@ class CassavaPriceResource extends JsonResource
         $cassavaPrice = $this->resource;
         $currencyResource = $this->currency ? CurrencyResource::make($this->currency) : null;
         $avgPrice = ($cassavaPrice->min_local_price + $cassavaPrice->max_local_price) / 2;
-        $tag = "$cassavaPrice->id";
+        $tag = "{$cassavaPrice->id}";
         if ($avgPrice === -1.0) {
             $tag = 'exact';
         }

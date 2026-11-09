@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\CassavaPriceRequest;
@@ -17,7 +23,7 @@ class CassavaPriceController extends AdminController
     {
         $values = $this->filterValues($request, ['country', 'active']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: ['country' => $values['country'], 'price_active' => $values['active']],
@@ -34,7 +40,7 @@ class CassavaPriceController extends AdminController
                 'max_local_price' => $f->max_local_price,
                 'min_usd' => $f->min_usd,
                 'max_usd' => $f->max_usd,
-                'price_active' => (bool) $f->price_active,
+                'price_active' => (bool)$f->price_active,
                 'sort_order' => $f->sort_order,
             ]),
         ]);

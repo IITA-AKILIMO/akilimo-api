@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\StarchPriceRequest;
@@ -22,7 +28,7 @@ class StarchPriceController extends AdminController
     {
         $values = $this->filterValues($request, ['country', 'starch_factory_id']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'price_class',
             direction: 'asc',
             filters: ['starch_factory_id' => $values['starch_factory_id']],
@@ -116,7 +122,7 @@ class StarchPriceController extends AdminController
         });
 
         return redirect()->route('admin.starch-prices.index')
-            ->with('success', count($validated['rows']).' starch price(s) created.');
+            ->with('success', count($validated['rows']) . ' starch price(s) created.');
     }
 
     public function batchEdit(Request $request): Response
@@ -161,7 +167,7 @@ class StarchPriceController extends AdminController
 
         DB::transaction(function () use ($validated, $factoryId) {
             // Delete removed rows (scoped to this factory for safety)
-            if (! empty($validated['deleted_ids'])) {
+            if (!empty($validated['deleted_ids'])) {
                 $this->repo->deleteByIds($validated['deleted_ids'], $factoryId);
             }
 
@@ -175,7 +181,7 @@ class StarchPriceController extends AdminController
                     'currency' => $row['currency'] ?? null,
                 ];
 
-                if (! empty($row['id'])) {
+                if (!empty($row['id'])) {
                     $this->repo->update($row['id'], $fields);
                 } else {
                     $this->repo->create($fields);

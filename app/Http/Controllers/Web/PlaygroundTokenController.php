@@ -54,9 +54,9 @@ class PlaygroundTokenController extends Controller
                 default => TokenAbility::PLAYGROUND_ABILITIES,
             };
 
-        ['key' => $key, 'raw' => $rawKey] = $keys->issue($user, $data['name'], $abilities);
+        ['key' => $key, 'raw' => $rawKey] = $keys->issue(user: $user, name: $data['name'], abilities: $abilities);
 
-        return response()->json([
+        return response()->json(data: [
             'id' => $key->id,
             'name' => $key->name,
             'key' => $rawKey,
@@ -64,7 +64,7 @@ class PlaygroundTokenController extends Controller
             'is_active' => true,
             'abilities' => $key->abilities,
             'created_at' => $key->created_at?->toIso8601String(),
-        ], 201);
+        ], status: 201);
     }
 
     public function revoke(Request $request, int $id): JsonResponse

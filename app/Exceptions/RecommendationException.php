@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Exceptions;
 
 use Exception;
@@ -19,16 +25,16 @@ final class RecommendationException extends Exception
     /**
      * Create a new recommendation exception instance.
      *
-     * @param  string  $message  Exception message
-     * @param  int  $code  HTTP status code (default: 500)
-     * @param  array  $body  Structured error data from the API
-     * @param  Throwable|null  $previous  Previous exception for chaining
+     * @param string $message Exception message
+     * @param int $code HTTP status code (default: 500)
+     * @param array $body Structured error data from the API
+     * @param Throwable|null $previous Previous exception for chaining
      */
     public function __construct(
         string $message = '',
         int $code = Response::HTTP_INTERNAL_SERVER_ERROR,
         array $body = [],
-        ?Throwable $previous = null
+        ?Throwable $previous = null,
     ) {
         // Extract nested data if present, otherwise use body as-is
         $this->body = Arr::get($body, 'data', $body);
@@ -70,7 +76,7 @@ final class RecommendationException extends Exception
             'status' => $status,
         ];
 
-        if (! empty($this->body['errors'])) {
+        if (!empty($this->body['errors'])) {
             $response['errors'] = $this->body['errors'];
         }
 
@@ -115,7 +121,7 @@ final class RecommendationException extends Exception
     public static function serviceUnavailable(
         string $message = 'Recommendation service is currently unavailable',
         array $body = [],
-        ?Throwable $previous = null
+        ?Throwable $previous = null,
     ): RecommendationException {
         return new self($message, Response::HTTP_SERVICE_UNAVAILABLE, $body, $previous);
     }

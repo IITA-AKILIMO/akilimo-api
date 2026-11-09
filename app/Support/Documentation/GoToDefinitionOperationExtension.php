@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Support\Documentation;
 
 use Dedoc\Scramble\Extensions\OperationExtension;
@@ -13,12 +19,12 @@ class GoToDefinitionOperationExtension extends OperationExtension
 
     public function handle(Operation $operation, RouteInfo $routeInfo): void
     {
-        $url = self::REPO_URL.Str::replace(base_path(), '', $routeInfo->reflectionMethod()->getFileName());
+        $url = self::REPO_URL . Str::replace(base_path(), '', $routeInfo->reflectionMethod()->getFileName());
         $line = $routeInfo->reflectionMethod()->getStartLine();
         $methodLineUrl = "{$url}#L{$line}";
 
         $operation->description(
-            $operation->description." [View source]($methodLineUrl)"
+            $operation->description . " [View source]({$methodLineUrl})"
         );
     }
 }

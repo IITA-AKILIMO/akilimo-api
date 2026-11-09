@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\FertilizerRequest;
@@ -17,7 +23,7 @@ class FertilizerController extends AdminController
     {
         $values = $this->filterValues($request, ['search', 'country', 'use_case', 'available']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
             filters: [
@@ -41,9 +47,9 @@ class FertilizerController extends AdminController
                 'country' => $f->country,
                 'weight' => $f->weight,
                 'use_case' => $f->use_case,
-                'available' => (bool) $f->available,
-                'cis' => (bool) $f->cis,
-                'cim' => (bool) $f->cim,
+                'available' => (bool)$f->available,
+                'cis' => (bool)$f->cis,
+                'cim' => (bool)$f->cim,
                 'sort_order' => $f->sort_order,
             ]),
         ]);

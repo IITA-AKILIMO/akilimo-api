@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Models\FertilizerPrice;
@@ -40,7 +46,7 @@ class FertilizerPriceRepo extends BaseRepo
      * Load min (sort_order=1) and max (sort_order=4) price band records for a list of
      * fertilizer keys in two queries instead of two queries per row.
      *
-     * @param  string[]  $keys
+     * @param string[] $keys
      * @return array<string, array{min: FertilizerPrice|null, max: FertilizerPrice|null}>
      */
     public function findMinMaxBandsByKeys(array $keys): array

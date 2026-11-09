@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace Database\Seeders;
 
 use App\Models\StarchFactory;
@@ -24,7 +30,7 @@ class StarchPricesSeeder extends Seeder
 
         $batch = [];
         $batchSize = 1000;
-        $starchPriceTable = (new \App\Models\StarchPrice())->getTable();
+        $starchPriceTable = (new StarchPrice)->getTable();
 
         foreach ($csv as $record) {
             $factory = StarchFactory::firstOrCreate(

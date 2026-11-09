@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Data\MinMaxPriceDto;
@@ -24,8 +30,8 @@ class CassavaPriceRepo extends BaseRepo
             ->first();
 
         return new MinMaxPriceDto(
-            minLocalPrice: (float) ($result->min_price ?? 0),
-            maxLocalPrice: (float) ($result->max_price ?? 0)
+            minLocalPrice: (float)($result->min_price ?? 0),
+            maxLocalPrice: (float)($result->max_price ?? 0)
         );
     }
 
@@ -45,8 +51,8 @@ class CassavaPriceRepo extends BaseRepo
         $map = [];
         foreach ($results as $row) {
             $map[$row->country] = new MinMaxPriceDto(
-                minLocalPrice: (float) ($row->min_price ?? 0),
-                maxLocalPrice: (float) ($row->max_price ?? 0)
+                minLocalPrice: (float)($row->min_price ?? 0),
+                maxLocalPrice: (float)($row->max_price ?? 0)
             );
         }
 
@@ -57,7 +63,7 @@ class CassavaPriceRepo extends BaseRepo
      * Load price bands for a specific set of country codes in one query.
      * Returns an array keyed by country code.
      *
-     * @param  string[]  $countries
+     * @param string[] $countries
      * @return array<string, MinMaxPriceDto>
      */
     public function findPriceBandsForCountries(array $countries): array
@@ -71,8 +77,8 @@ class CassavaPriceRepo extends BaseRepo
         $map = [];
         foreach ($results as $row) {
             $map[$row->country] = new MinMaxPriceDto(
-                minLocalPrice: (float) ($row->min_price ?? 0),
-                maxLocalPrice: (float) ($row->max_price ?? 0)
+                minLocalPrice: (float)($row->min_price ?? 0),
+                maxLocalPrice: (float)($row->max_price ?? 0)
             );
         }
 

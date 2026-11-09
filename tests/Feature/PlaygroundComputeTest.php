@@ -17,8 +17,8 @@ function playgroundUser(): User
 {
     return User::create([
         'name' => 'Playground User',
-        'username' => 'pg_'.Str::random(6),
-        'email' => 'pg_'.Str::random(6).'@example.com',
+        'username' => 'pg_' . Str::random(6),
+        'email' => 'pg_' . Str::random(6) . '@example.com',
         'password' => Hash::make('secret123'),
         'role' => EnumUserRole::User,
     ]);
@@ -69,7 +69,7 @@ it('sends the cassava price and selling unit to the compute service', function (
         ->assertOk();
 
     // Before, the playground always sent a price of 0, so fertilizer could never pay
-    Http::assertSent(fn (HttpRequest $r) => (float) $r['cassUP'] === 750.0 && (float) $r['cassUW'] === 50.0);
+    Http::assertSent(fn (HttpRequest $r) => (float)$r['cassUP'] === 750.0 && (float)$r['cassUW'] === 50.0);
 });
 
 it('refuses a request without a cassava price', function () {
@@ -98,5 +98,5 @@ it('needs the maize price only when maize intercropping is asked for', function 
         ]))
         ->assertOk();
 
-    Http::assertSent(fn (HttpRequest $r) => (float) ($r['maizeUP'] ?? -1) === 15.0);
+    Http::assertSent(fn (HttpRequest $r) => (float)($r['maizeUP'] ?? -1) === 15.0);
 });

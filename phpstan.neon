@@ -1,6 +1,7 @@
-# Extensions are auto-loaded by phpstan/extension-installer:
-#   - larastan/larastan
-#   - phpstan/phpstan-strict-rules
+# Extensions are included explicitly (phpstan/extension-installer is not installed)
+includes:
+  - vendor/larastan/larastan/extension.neon
+  - vendor/phpstan/phpstan-strict-rules/rules.neon
 
 services:
   -
@@ -102,7 +103,8 @@ parameters:
 
     #        - '#Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<.*>::.*#'
     - '#Dynamic call to static method Illuminate\\Http\\Request::validate\(\)#'
-    - 'Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\Model>::selectRaw\(\)'
+    # Eloquent builder methods that Laravel also declares static; calling them on a query is correct
+    - '#Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<.+>::(selectRaw|exists|orderBy)\(\)#'
 
     # ReadOnlyModel trait prevents writes; PHPStan cannot see the guard
     #        - '#Call to an undefined method App\\Models\\VwSmsReport::#'

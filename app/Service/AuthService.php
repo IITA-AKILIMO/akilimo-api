@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Service;
 
 use App\Auth\TokenAbility;
@@ -25,11 +31,11 @@ class AuthService
             ->orWhere('email', $username)
             ->first();
 
-        if ($user === null || ! Hash::check($password, $user->password)) {
+        if ($user === null || !Hash::check($password, $user->password)) {
             return null;
         }
 
-        $ttlDays = (int) config('auth.token_ttl_days', 30);
+        $ttlDays = (int)config('auth.token_ttl_days', 30);
         $expiresAt = now()->addDays($ttlDays);
         $rawToken = bin2hex(random_bytes(32));
 

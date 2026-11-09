@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\TranslationRequest;
@@ -21,7 +27,7 @@ class TranslationController extends AdminController
         $missing = in_array($values['missing'], ['sw', 'rw'], true) ? $values['missing'] : null;
 
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'key',
             direction: 'asc',
             // Was the key only; the text in any language now finds a row too
@@ -82,8 +88,8 @@ class TranslationController extends AdminController
 
     public function batchEdit(Request $request): Response
     {
-        $search = (string) $request->get('search', '');
-        $limit = (int) $request->get('limit', 50);
+        $search = (string)$request->get('search', '');
+        $limit = (int)$request->get('limit', 50);
 
         $rows = $this->repo->forBatchEdit($search, $limit)->map(fn ($t) => [
             'id' => $t->id,
@@ -114,7 +120,7 @@ class TranslationController extends AdminController
         ]);
 
         DB::transaction(function () use ($validated) {
-            if (! empty($validated['deleted_ids'])) {
+            if (!empty($validated['deleted_ids'])) {
                 $this->repo->deleteByIds($validated['deleted_ids']);
             }
 
@@ -126,7 +132,7 @@ class TranslationController extends AdminController
                     'rw' => $row['rw'] ?? null,
                 ];
 
-                if (! empty($row['id'])) {
+                if (!empty($row['id'])) {
                     $this->repo->update($row['id'], $fields);
                 } else {
                     $this->repo->create($fields);
