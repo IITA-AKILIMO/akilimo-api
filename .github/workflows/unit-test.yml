@@ -97,10 +97,6 @@ jobs:
       - name: Generate app key
         if: steps.test-cache.outputs.cache-hit != 'true'
         run: php artisan key:generate --new
-#
-#      - name: Generate cache table migration
-#        if: steps.test-cache.outputs.cache-hit != 'true'
-#        run: php artisan cache:table
 
       - name: Run db migrations
         if: steps.test-cache.outputs.cache-hit != 'true'
