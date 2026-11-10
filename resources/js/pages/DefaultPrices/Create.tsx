@@ -15,12 +15,12 @@ interface Props extends PriceLookups {
     defaultBagKg: number
 }
 
-export default function DefaultPricesCreate({ confidenceLevels, defaultBagKg, currencies, units, currencyByCountry, items }: Props) {
+export default function DefaultPricesCreate({ confidenceLevels, defaultBagKg, currencies, units, currencyByCountry, items, fertilizerTypes }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         country: '', item: '', region: '', price: '', subsidised_price: '',
         unit: 'per_bag', bag_kg: String(defaultBagKg), currency: '',
         min_price: '', max_price: '', source: '', source_date: '',
-        confidence: '', effective_from: '', fertilizer_key: '',
+        confidence: '', effective_from: '', fertilizer_type: '',
     })
 
     function handleSubmit(e: FormEvent) { e.preventDefault(); post('/admin/default-prices') }
@@ -45,6 +45,9 @@ export default function DefaultPricesCreate({ confidenceLevels, defaultBagKg, cu
         setData('item', item)
         const unit = items.find((i) => i.item === item)?.unit
         if (unit) changeUnit(unit)
+        // A fertilizer is named the same way in the catalogue (urea) and in its type's label
+        const type = fertilizerTypes.find((t) => (t.label ?? '').toLowerCase() === item.toLowerCase())?.type
+        setData('fertilizer_type', type ?? '')
     }
 
     return (
@@ -71,7 +74,7 @@ export default function DefaultPricesCreate({ confidenceLevels, defaultBagKg, cu
                         <div className="col-md-4"><FormField label="Max allowed price" error={errors.max_price}><input type="number" min={0} step="0.01" className="form-control" value={data.max_price} onChange={e => setData('max_price', e.target.value)} /></FormField></div>
                         <div className="col-md-4"><FormField label="Confidence" error={errors.confidence}><select className="form-select" value={data.confidence} onChange={e => setData('confidence', e.target.value)}><option value="">Unset</option>{confidenceLevels.map(c => <option key={c} value={c}>{c}</option>)}</select></FormField></div>
 
-                        <div className="col-md-4"><FormField label="Fertiliser key" error={errors.fertilizer_key}><input type="text" maxLength={50} className="form-control" value={data.fertilizer_key} onChange={e => setData('fertilizer_key', e.target.value.toUpperCase())} placeholder="e.g. UREA_TZ (fertilisers only)" /></FormField></div>
+                        <div className="col-md-4"><FormField label="Fertiliser" error={errors.fertilizer_type}><select className={`form-select ${errors.fertilizer_type ? 'is-invalid' : ''}`} value={data.fertilizer_type} onChange={e => setData('fertilizer_type', e.target.value)} disabled={data.unit !== 'per_bag'}><option value="">{data.unit === 'per_bag' ? 'Select fertilizer' : 'Fertilisers only'}</option>{fertilizerTypes.map(t => <option key={t.type} value={t.type}>{t.name}</option>)}</select></FormField></div>
 
                         <div className="col-md-8"><FormField label="Source" error={errors.source}><input type="text" maxLength={255} className="form-control" value={data.source} onChange={e => setData('source', e.target.value)} placeholder="e.g. TFRA notice, Sep 2025" /></FormField></div>
                         <div className="col-md-4"><FormField label="Source date" error={errors.source_date}><input type="date" className="form-control" value={data.source_date} onChange={e => setData('source_date', e.target.value)} /></FormField></div>

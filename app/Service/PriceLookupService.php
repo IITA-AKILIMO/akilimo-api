@@ -9,6 +9,7 @@
 namespace App\Service;
 
 use App\Models\Currency;
+use App\Models\FertilizerType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Exists;
@@ -38,7 +39,21 @@ class PriceLookupService
             'units' => $this->units(),
             'items' => $this->items(),
             'currencyByCountry' => $this->currencyByCountry(),
+            'fertilizerTypes' => $this->fertilizerTypes(),
         ];
+    }
+
+    /**
+     * The fertilisers a per-bag price can be for. The label is how the catalogue
+     * names it (urea), so choosing the item can pick the fertiliser.
+     *
+     * @return list<array{type: string, name: string, label: string|null}>
+     */
+    public function fertilizerTypes(): array
+    {
+        return FertilizerType::query()->orderBy('name')->get(['type', 'name', 'label'])
+            ->map(fn (FertilizerType $t) => ['type' => $t->type, 'name' => $t->name, 'label' => $t->label])
+            ->all();
     }
 
     /**

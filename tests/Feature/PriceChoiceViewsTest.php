@@ -28,11 +28,12 @@ function viewFertilizer(string $country, string $label, string $key): int
 {
     $type = preg_replace('/_' . preg_quote($country, '/') . '$/', '', $key);
 
-    $typeId = DB::table('fertilizer_types')->where('type', $type)->value('id')
-        ?? DB::table('fertilizer_types')->insertGetId(['type' => $type, 'label' => $label, 'name' => $label, 'weight' => 50]);
+    if (! DB::table('fertilizer_types')->where('type', $type)->exists()) {
+        DB::table('fertilizer_types')->insert(['type' => $type, 'label' => $label, 'name' => $label, 'weight' => 50]);
+    }
 
     return DB::table('country_fertilizers')->insertGetId([
-        'fertilizer_type_id' => $typeId,
+        'fertilizer_type' => $type,
         'country' => $country,
         'use_case' => 'FR',
         'cis' => 1,
@@ -47,7 +48,7 @@ function viewPrice(array $overrides = []): int
     return DB::table('default_prices')->insertGetId(array_merge([
         'country' => 'TZ',
         'item' => 'urea',
-        'fertilizer_key' => 'UREA_TZ',
+        'fertilizer_type' => 'UREA',
         'price' => 50000,
         'subsidised_price' => null,
         'unit' => 'per_bag',
@@ -79,8 +80,8 @@ it('rounds to the currency step and does not round an unlisted currency', functi
     viewCountry('XX');
     viewFertilizer('GH', 'urea', 'UREA_GH');
     viewFertilizer('XX', 'urea', 'UREA_XX');
-    viewPrice(['country' => 'GH', 'fertilizer_key' => 'UREA_GH', 'currency' => 'GHS', 'price' => 33]);
-    viewPrice(['country' => 'XX', 'fertilizer_key' => 'UREA_XX', 'currency' => 'XYZ', 'price' => 100]);
+    viewPrice(['country' => 'GH', 'fertilizer_type' => 'UREA', 'currency' => 'GHS', 'price' => 33]);
+    viewPrice(['country' => 'XX', 'fertilizer_type' => 'UREA', 'currency' => 'XYZ', 'price' => 100]);
 
     expect(viewOptions('UREA_GH'))->toBe([25.0, 30.0, 35.0, 45.0])
         ->and(viewOptions('UREA_XX'))->toBe([70.0, 90.0, 110.0, 130.0]);
@@ -92,7 +93,7 @@ it('uses the subsidised price only when the country basis is subsidised', functi
     viewFertilizer('TZ', 'urea', 'UREA_TZ');
     viewFertilizer('RW', 'urea', 'UREA_RW');
     viewPrice(['subsidised_price' => 30000]);
-    viewPrice(['country' => 'RW', 'fertilizer_key' => 'UREA_RW', 'currency' => 'RWF', 'subsidised_price' => 30000]);
+    viewPrice(['country' => 'RW', 'fertilizer_type' => 'UREA', 'currency' => 'RWF', 'subsidised_price' => 30000]);
 
     expect(viewOptions('UREA_TZ'))->toBe([21000.0, 27000.0, 33000.0, 39000.0])
         ->and(viewOptions('UREA_RW'))->toBe([35000.0, 45000.0, 55000.0, 65000.0]);
@@ -103,11 +104,11 @@ it('serves only active, national, effective prices that have a fertiliser key', 
     foreach (['DAP', 'MOP', 'TSP', 'CAN', 'SSP'] as $label) {
         viewFertilizer('TZ', $label, $label . '_TZ');
     }
-    viewPrice(['item' => 'DAP', 'fertilizer_key' => 'DAP_TZ', 'status' => 'draft']);
-    viewPrice(['item' => 'MOP', 'fertilizer_key' => 'MOP_TZ', 'region' => 'Arusha']);
-    viewPrice(['item' => 'TSP', 'fertilizer_key' => 'TSP_TZ', 'effective_from' => now()->addWeek()->toDateString()]);
-    viewPrice(['item' => 'CAN', 'fertilizer_key' => null]);
-    viewPrice(['item' => 'SSP', 'fertilizer_key' => 'SSP_TZ', 'effective_from' => now()->subDay()->toDateString()]);
+    viewPrice(['item' => 'DAP', 'fertilizer_type' => 'DAP', 'status' => 'draft']);
+    viewPrice(['item' => 'MOP', 'fertilizer_type' => 'MOP', 'region' => 'Arusha']);
+    viewPrice(['item' => 'TSP', 'fertilizer_type' => 'TSP', 'effective_from' => now()->addWeek()->toDateString()]);
+    viewPrice(['item' => 'CAN', 'fertilizer_type' => null]);
+    viewPrice(['item' => 'SSP', 'fertilizer_type' => 'SSP', 'effective_from' => now()->subDay()->toDateString()]);
 
     $withOptions = DB::table('fertilizer_prices')->where('price_per_bag', '>', 0)->distinct()->pluck('fertilizer_key')->all();
 
@@ -168,7 +169,7 @@ it('is read-only: the app lists cannot be written to', function () {
 
 it('serves cassava as contiguous bands whose average is each step, plus the exact-price row', function () {
     viewCountry('NG');
-    viewPrice(['country' => 'NG', 'item' => 'cassUP', 'fertilizer_key' => null, 'unit' => 'per_tonne', 'currency' => 'NGN', 'price' => 12000]);
+    viewPrice(['country' => 'NG', 'item' => 'cassUP', 'fertilizer_type' => null, 'unit' => 'per_tonne', 'currency' => 'NGN', 'price' => 12000]);
 
     $rows = DB::table('cassava_prices')->where('country', 'NG')->orderBy('min_local_price')->get();
 
@@ -183,9 +184,9 @@ it('serves cassava as contiguous bands whose average is each step, plus the exac
 
 it('writes the band rule once: price_bands holds any non-bag item, the crop views filter it', function () {
     viewCountry('NG');
-    viewPrice(['country' => 'NG', 'item' => 'cassUP', 'fertilizer_key' => null, 'unit' => 'per_tonne', 'currency' => 'NGN', 'price' => 12000]);
-    viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_key' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
-    viewPrice(['country' => 'NG', 'item' => 'urea', 'unit' => 'per_bag', 'currency' => 'NGN', 'price' => 9000]);
+    viewPrice(['country' => 'NG', 'item' => 'cassUP', 'fertilizer_type' => null, 'unit' => 'per_tonne', 'currency' => 'NGN', 'price' => 12000]);
+    viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_type' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
+    viewPrice(['country' => 'NG', 'item' => 'urea', 'fertilizer_type' => null, 'unit' => 'per_bag', 'currency' => 'NGN', 'price' => 9000]);
 
     $items = DB::table('price_bands')->distinct()->orderBy('item')->pluck('item')->all();
 
@@ -198,7 +199,7 @@ it('writes the band rule once: price_bands holds any non-bag item, the crop view
 it('serves sweet potato bands only for countries with a sweetPotato_tuber price', function () {
     viewCountry('TZ');
     viewCountry('NG');
-    viewPrice(['item' => 'sweetPotato_tuber', 'fertilizer_key' => null, 'unit' => 'per_tonne', 'price' => 120000]);
+    viewPrice(['item' => 'sweetPotato_tuber', 'fertilizer_type' => null, 'unit' => 'per_tonne', 'price' => 120000]);
 
     expect(DB::table('potato_prices')->where('country', 'TZ')->where('min_local_price', '>', 0)->count())->toBe(4)
         ->and(DB::table('potato_prices')->where('country', 'NG')->count())->toBe(0);
@@ -206,8 +207,8 @@ it('serves sweet potato bands only for countries with a sweetPotato_tuber price'
 
 it('serves maize grain per 50 kg and fresh cob per cob, each with its exact-price row', function () {
     viewCountry('NG');
-    viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_key' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
-    viewPrice(['country' => 'NG', 'item' => 'maize_freshCob', 'fertilizer_key' => null, 'unit' => 'per_cob', 'currency' => 'NGN', 'price' => 50]);
+    viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_type' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
+    viewPrice(['country' => 'NG', 'item' => 'maize_freshCob', 'fertilizer_type' => null, 'unit' => 'per_cob', 'currency' => 'NGN', 'price' => 50]);
 
     $grain = DB::table('maize_prices')->where('produce_type', 'grain')->where('min_local_price', '>', 0)->orderBy('min_local_price')->get();
     $cob = DB::table('maize_prices')->where('produce_type', 'cob')->where('min_local_price', '>', 0)->orderBy('min_local_price')->get();
@@ -226,7 +227,7 @@ it('serves maize grain per 50 kg and fresh cob per cob, each with its exact-pric
 it('serves investment amounts as multiples of the reference amount, with a 0 row', function () {
     viewCountry('TZ');
     viewCountry('NG');
-    viewPrice(['item' => 'investment_amount', 'fertilizer_key' => null, 'unit' => 'per_acre', 'price' => 57550]);
+    viewPrice(['item' => 'investment_amount', 'fertilizer_type' => null, 'unit' => 'per_acre', 'price' => 57550]);
 
     $amounts = DB::table('investment_amount')->where('country', 'TZ')->orderBy('sort_order')->pluck('investment_amount')->map(fn ($a) => (float) $a)->all();
 
@@ -237,8 +238,8 @@ it('serves investment amounts as multiples of the reference amount, with a 0 row
 
 it('serves operation costs as bands around the mapped labour price', function () {
     viewCountry('NG');
-    viewPrice(['country' => 'NG', 'item' => 'manual_ploughing', 'fertilizer_key' => null, 'unit' => 'per_acre', 'currency' => 'NGN', 'price' => 17000]);
-    viewPrice(['country' => 'NG', 'item' => 'weeding2', 'fertilizer_key' => null, 'unit' => 'per_acre', 'currency' => 'NGN', 'price' => 30000]);
+    viewPrice(['country' => 'NG', 'item' => 'manual_ploughing', 'fertilizer_type' => null, 'unit' => 'per_acre', 'currency' => 'NGN', 'price' => 17000]);
+    viewPrice(['country' => 'NG', 'item' => 'weeding2', 'fertilizer_type' => null, 'unit' => 'per_acre', 'currency' => 'NGN', 'price' => 30000]);
 
     $rows = DB::table('operation_costs')->where('country_code', 'NG')->orderBy('min_cost')->get();
 
@@ -252,8 +253,8 @@ it('serves operation costs as bands around the mapped labour price', function ()
 
 it('follows the units, multiples and operation mapping tables', function () {
     viewCountry('NG');
-    viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_key' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
-    viewPrice(['country' => 'NG', 'item' => 'investment_amount', 'fertilizer_key' => null, 'unit' => 'per_acre', 'currency' => 'NGN', 'price' => 10000]);
+    viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_type' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
+    viewPrice(['country' => 'NG', 'item' => 'investment_amount', 'fertilizer_type' => null, 'unit' => 'per_acre', 'currency' => 'NGN', 'price' => 10000]);
 
     DB::table('price_choice_units')->where('item', 'maize_grain')->update(['quantity' => 100]);
     DB::table('price_choice_multiples')->where('step_order', 5)->update(['multiple' => 10]);

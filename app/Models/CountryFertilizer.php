@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * computes it, it is not stored.
  *
  * @property int $id
- * @property int $fertilizer_type_id
+ * @property string $fertilizer_type
  * @property string $country
  * @property string $use_case
  * @property bool $cis
@@ -37,7 +37,7 @@ class CountryFertilizer extends BaseModel
     ];
 
     protected $fillable = [
-        'fertilizer_type_id',
+        'fertilizer_type',
         'country',
         'use_case',
         'cis',
@@ -51,6 +51,6 @@ class CountryFertilizer extends BaseModel
      */
     public function fertilizerType(): BelongsTo
     {
-        return $this->belongsTo(FertilizerType::class);
+        return $this->belongsTo(FertilizerType::class, 'fertilizer_type', 'type');
     }
 }

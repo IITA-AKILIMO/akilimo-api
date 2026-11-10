@@ -34,7 +34,7 @@ function fertilizerType(string $type = 'UREA', string $label = 'urea', string $n
 function soldIn(FertilizerType $type, string $country, array $overrides = []): CountryFertilizer
 {
     return CountryFertilizer::create(array_merge([
-        'fertilizer_type_id' => $type->id,
+        'fertilizer_type' => $type->type,
         'country' => $country,
         'use_case' => 'FR',
         'cis' => true,
@@ -51,6 +51,40 @@ it('stores a fertiliser once and the countries that sell it separately', functio
 
     expect(FertilizerType::count())->toBe(1)
         ->and(CountryFertilizer::count())->toBe(2);
+});
+
+it('uses the type code as the key and follows a rename', function () {
+    $urea = fertilizerType();
+    $row = soldIn($urea, 'TZ');
+    $priceId = DB::table('default_prices')->insertGetId([
+        'country' => 'TZ', 'item' => 'urea', 'fertilizer_type' => 'UREA', 'price' => 50000, 'unit' => 'per_bag',
+        'currency' => 'TZS', 'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
+    ]);
+
+    DB::table('fertilizer_types')->where('type', 'UREA')->update(['type' => 'UREA_46']);
+
+    expect(FertilizerType::find('UREA_46')->name)->toBe('Urea')
+        ->and(CountryFertilizer::find($row->id)->fertilizer_type)->toBe('UREA_46')
+        ->and(Fertilizer::find($row->id)->fertilizer_key)->toBe('UREA_46_TZ')
+        ->and(DB::table('default_prices')->where('id', $priceId)->value('fertilizer_type'))->toBe('UREA_46');
+});
+
+it('refuses a catalogue price for a fertiliser that does not exist, or removing one that has prices', function () {
+    $urea = fertilizerType();
+    soldIn($urea, 'TZ');
+
+    expect(fn () => DB::table('default_prices')->insert([
+        'country' => 'TZ', 'item' => 'mystery', 'fertilizer_type' => 'NOPE', 'price' => 1, 'unit' => 'per_bag',
+        'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
+    ]))->toThrow(Illuminate\Database\QueryException::class);
+
+    DB::table('default_prices')->insert([
+        'country' => 'TZ', 'item' => 'urea', 'fertilizer_type' => 'UREA', 'price' => 50000, 'unit' => 'per_bag',
+        'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
+    ]);
+    DB::table('country_fertilizers')->delete();
+
+    expect(fn () => DB::table('fertilizer_types')->where('type', 'UREA')->delete())->toThrow(Illuminate\Database\QueryException::class);
 });
 
 it('does not let a fertiliser be sold twice in one country', function () {

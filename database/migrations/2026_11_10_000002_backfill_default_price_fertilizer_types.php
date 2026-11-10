@@ -10,19 +10,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Fill default_prices.fertilizer_key for the existing per-bag rows. Each item is
+ * Fill default_prices.fertilizer_type for the existing per-bag rows. Each item is
  * matched to its fertiliser first by label (urea = UREA, DAP = DAP), then by
- * comparing letters and digits only, with the country suffix removed
- * (NPK201010 = NPK_20_10_10_GH, FOMIIMBURA ~ FOM_II_MBUR_BI: either may be the
- * prefix of the other). Only a single match is accepted; an item with none keeps
- * a null key and has no option list until a reviewer sets one.
+ * comparing letters and digits only, with the country suffix removed from the
+ * fertiliser's key (NPK201010 = NPK_20_10_10_GH, FOMIIMBURA ~ FOM_II_MBUR_BI:
+ * either may be the prefix of the other). Only a single match is accepted; an
+ * item with none keeps a null type and has no option list until a reviewer sets
+ * one.
+ *
+ * Runs while fertilizers is still the original table, which carries each
+ * fertiliser's type.
  */
 return new class extends Migration {
     public function up(): void
     {
-        $fertilizers = DB::table('fertilizers')->get(['country', 'fertilizer_label', 'fertilizer_key'])->groupBy('country');
+        $fertilizers = DB::table('fertilizers')->get(['country', 'fertilizer_label', 'fertilizer_key', 'type'])->groupBy('country');
 
-        foreach (DB::table('default_prices')->where('unit', 'per_bag')->whereNull('fertilizer_key')->get(['id', 'country', 'item']) as $price) {
+        foreach (DB::table('default_prices')->where('unit', 'per_bag')->whereNull('fertilizer_type')->get(['id', 'country', 'item']) as $price) {
             $candidates = $fertilizers->get($price->country, collect());
             $item = $this->normalise($price->item);
 
@@ -37,14 +41,14 @@ return new class extends Migration {
             }
 
             if ($matches->count() === 1) {
-                DB::table('default_prices')->where('id', $price->id)->update(['fertilizer_key' => $matches->first()->fertilizer_key]);
+                DB::table('default_prices')->where('id', $price->id)->update(['fertilizer_type' => $matches->first()->type]);
             }
         }
     }
 
     public function down(): void
     {
-        DB::table('default_prices')->update(['fertilizer_key' => null]);
+        DB::table('default_prices')->update(['fertilizer_type' => null]);
     }
 
     private function normalise(string $value): string

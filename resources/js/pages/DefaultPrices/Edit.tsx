@@ -33,7 +33,7 @@ function str(value: unknown): string {
     return value === null || value === undefined ? '' : String(value)
 }
 
-export default function DefaultPricesEdit({ item, history, currentUserId, confidenceLevels, defaultBagKg, currencies, units, items, currencyByCountry }: Props) {
+export default function DefaultPricesEdit({ item, history, currentUserId, confidenceLevels, defaultBagKg, currencies, units, items, currencyByCountry, fertilizerTypes }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         country: item.country,
         item: item.item,
@@ -49,7 +49,7 @@ export default function DefaultPricesEdit({ item, history, currentUserId, confid
         source_date: item.source_date ?? '',
         confidence: item.confidence ?? '',
         effective_from: item.effective_from ?? '',
-        fertilizer_key: item.fertilizer_key ?? '',
+        fertilizer_type: item.fertilizer_type ?? '',
     })
 
     const status = (item.status ?? 'draft') as PriceStatus
@@ -76,6 +76,9 @@ export default function DefaultPricesEdit({ item, history, currentUserId, confid
         setData('item', name)
         const unit = items.find((i) => i.item === name)?.unit
         if (unit) changeUnit(unit)
+        // A fertilizer is named the same way in the catalogue (urea) and in its type's label
+        const type = fertilizerTypes.find((t) => (t.label ?? '').toLowerCase() === name.toLowerCase())?.type
+        if (type) setData('fertilizer_type', type)
     }
 
     function activate() {
@@ -120,7 +123,7 @@ export default function DefaultPricesEdit({ item, history, currentUserId, confid
 
                         <div className="col-md-4"><FormField label="Unit" required error={errors.unit}><UnitSelect value={data.unit} onChange={changeUnit} units={units} error={errors.unit} required /></FormField></div>
                         <div className="col-md-4"><FormField label="Bag size (kg)" error={errors.bag_kg}><input type="number" min={1} max={1000} className="form-control" value={data.bag_kg} onChange={e => setData('bag_kg', e.target.value)} disabled={data.unit !== 'per_bag'} /></FormField></div>
-                        <div className="col-md-4"><FormField label="Fertiliser key" error={errors.fertilizer_key}><input type="text" maxLength={50} className="form-control" value={data.fertilizer_key} onChange={e => setData('fertilizer_key', e.target.value.toUpperCase())} placeholder="e.g. UREA_TZ" disabled={data.unit !== 'per_bag'} /></FormField></div>
+                        <div className="col-md-4"><FormField label="Fertiliser" error={errors.fertilizer_type}><select className={`form-select ${errors.fertilizer_type ? 'is-invalid' : ''}`} value={data.fertilizer_type} onChange={e => setData('fertilizer_type', e.target.value)} disabled={data.unit !== 'per_bag'}><option value="">{data.unit === 'per_bag' ? 'Select fertilizer' : 'Fertilisers only'}</option>{fertilizerTypes.map(t => <option key={t.type} value={t.type}>{t.name}</option>)}</select></FormField></div>
                         <div className="col-md-4"><FormField label="Effective from" error={errors.effective_from}><input type="date" className="form-control" value={data.effective_from} onChange={e => setData('effective_from', e.target.value)} /></FormField></div>
 
                         <div className="col-md-4"><FormField label="Min allowed price" error={errors.min_price}><input type="number" min={0} step="0.01" className="form-control" value={data.min_price} onChange={e => setData('min_price', e.target.value)} /></FormField></div>

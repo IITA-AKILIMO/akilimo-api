@@ -49,7 +49,7 @@ class FertilizerRepo extends BaseRepo
     public function create(array $data): Model
     {
         return DB::transaction(function () use ($data) {
-            $row = CountryFertilizer::create($this->columns($data) + ['fertilizer_type_id' => $this->typeId($data['type'])]);
+            $row = CountryFertilizer::create($this->columns($data) + ['fertilizer_type' => $data['type']]);
 
             return $this->findOrFail($row->id);
         });
@@ -62,7 +62,7 @@ class FertilizerRepo extends BaseRepo
             $columns = $this->columns($data);
 
             if (isset($data['type'])) {
-                $columns['fertilizer_type_id'] = $this->typeId($data['type']);
+                $columns['fertilizer_type'] = $data['type'];
             }
 
             $row->update($columns);
@@ -85,10 +85,5 @@ class FertilizerRepo extends BaseRepo
     private function columns(array $data): array
     {
         return array_intersect_key($data, array_flip(['country', 'use_case', 'cis', 'cim', 'available', 'sort_order']));
-    }
-
-    private function typeId(string $type): int
-    {
-        return (int) DB::table('fertilizer_types')->where('type', $type)->value('id');
     }
 }

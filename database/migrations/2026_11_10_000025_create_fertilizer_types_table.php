@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Schema;
  * times, DAP four times). This table holds those facts one time; the next
  * migration links a type to a country.
  *
- *  - type: the code used in the fertiliser key (UREA, NPK_20_10_10)
+ *  - type (the primary key): the code used in the fertiliser key (UREA,
+ *    NPK_20_10_10). It is the natural key: everything that names a fertiliser
+ *    (the key, the admin form, the API) already uses it, and it cascades if it is
+ *    ever renamed.
  *  - label: how the catalogue and the engine name it (urea, NPK201010)
  *  - name: what a person reads (Urea, NPK 20:10:10)
  *  - weight: the usual bag weight in kg
@@ -29,14 +32,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('fertilizer_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('type', 50)->unique();
+            $table->string('type', 50)->primary();
             $table->string('label', 50)->nullable();
             $table->string('name', 255);
             $table->unsignedSmallInteger('weight')->default(50);
             $table->timestamps();
         });
 
+        // The database compares codes without regard to case, so UREA and urea are one type
         $seen = [];
 
         foreach (DB::table('fertilizers')->orderBy('id')->get() as $row) {

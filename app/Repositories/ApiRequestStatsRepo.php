@@ -309,7 +309,7 @@ class ApiRequestStatsRepo extends BaseRepo
         $catalogue = fn (callable $where) => fn () => $where(DB::table('default_prices')->where('status', 'active')->whereNull('region'));
         $lists = [
             ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/default-prices',
-                'source' => $catalogue(fn ($q) => $q->where('unit', 'per_bag')->whereNotNull('fertilizer_key'))],
+                'source' => $catalogue(fn ($q) => $q->where('unit', 'per_bag')->whereNotNull('fertilizer_type'))],
             ['label' => 'Cassava prices', 'table' => 'cassava_prices', 'href' => '/admin/default-prices',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'cassUP'))],
             ['label' => 'Maize prices', 'table' => 'maize_prices', 'href' => '/admin/default-prices',

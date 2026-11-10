@@ -30,8 +30,8 @@ class DefaultPriceRequest extends FormRequest
             'region' => ['nullable', 'string', 'max:50'],
             // Picked from price_items; a new item is added there first
             'item' => [...$required, 'string', 'max:50', $lookups->itemRule()],
-            // The fertiliser option list this price feeds (UREA_TZ); blank = matched by item name
-            'fertilizer_key' => ['nullable', 'string', 'max:50', 'exists:fertilizers,fertilizer_key'],
+            // The fertiliser this per-bag price is for (UREA); with the country it gives the option list key (UREA_TZ)
+            'fertilizer_type' => ['nullable', 'string', 'max:50', Rule::exists('fertilizer_types', 'type')],
             'price' => [...$required, 'numeric', 'min:0'],
             'subsidised_price' => ['nullable', 'numeric', 'min:0'],
             // Picked from lists in the form, so a typo cannot reach a price list

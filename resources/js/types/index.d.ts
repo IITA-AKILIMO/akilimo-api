@@ -197,6 +197,8 @@ export interface PriceLookups {
     items: PriceItem[]
     /** The currency a country uses, so choosing the country fills in the currency */
     currencyByCountry: Record<string, string>
+    /** The fertilizers a per-bag price can be for; the label is how the catalogue names it */
+    fertilizerTypes: { type: string; name: string; label: string | null }[]
 }
 
 export interface DefaultPrice {
@@ -204,7 +206,7 @@ export interface DefaultPrice {
     country: string
     region?: string | null
     item: string
-    fertilizer_key?: string | null
+    fertilizer_type?: string | null
     price: number
     subsidised_price?: number | null
     unit: string

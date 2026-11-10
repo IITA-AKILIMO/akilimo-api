@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
  * so the model, resource and API response are unchanged.
  *
  *  - Each active, national, effective per-bag catalogue price with a
- *    fertilizer_key gives one option per step in price_choice_steps, rounded per
+ *    fertilizer_type gives one option per step in price_choice_steps, rounded per
  *    price_choice_rounding. The country's default_price_basis picks open-market
  *    or subsidised as the reference (decision D1).
  *  - Every fertiliser also gets the two marker rows the app relies on: "I don't
@@ -48,7 +48,7 @@ SELECT x.id * 10 + x.step_order AS id,
        x.updated_at AS created_at,
        x.updated_at AS updated_at
 FROM (
-    SELECT d.id, d.country, d.fertilizer_key, d.updated_at, s.step_order, s.change_pct,
+    SELECT d.id, d.country, CONCAT(d.fertilizer_type, '_', d.country) AS fertilizer_key, d.updated_at, s.step_order, s.change_pct,
            CAST(ROUND(
                (CASE WHEN c.default_price_basis = 'subsidised' AND d.subsidised_price IS NOT NULL THEN d.subsidised_price ELSE d.price END)
                * (1 + s.change_pct / 100) / COALESCE(r.step, 1)
@@ -58,7 +58,7 @@ FROM (
     CROSS JOIN price_choice_steps s
     LEFT JOIN price_choice_rounding r ON r.currency = d.currency
     WHERE d.unit = 'per_bag'
-      AND d.fertilizer_key IS NOT NULL
+      AND d.fertilizer_type IS NOT NULL
       AND d.status = 'active'
       AND d.region IS NULL
       AND (d.effective_from IS NULL OR d.effective_from <= CURDATE())

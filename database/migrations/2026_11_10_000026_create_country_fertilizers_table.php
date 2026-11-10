@@ -13,19 +13,20 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Which fertiliser is sold in which country, and how the app uses it there. One
- * row per fertiliser type and country; its fertilizer key is the type, an
- * underscore and the country (UREA_TZ), so the key is no longer stored and
- * cannot disagree with them.
+ * row per fertiliser type and country (enforced); its fertilizer key is the type,
+ * an underscore and the country (UREA_TZ), so the key is not stored and cannot
+ * disagree with them.
  *
- * Row ids are the ids the fertilizers rows had, so ids the apps and the option
- * lists already hold stay valid.
+ * fertilizer_type references fertilizer_types.type and follows a rename. Row ids
+ * are the ids the fertilizers rows had, so ids the apps and the option lists
+ * already hold stay valid.
  */
 return new class extends Migration {
     public function up(): void
     {
         Schema::create('country_fertilizers', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true)->primary();
-            $table->unsignedBigInteger('fertilizer_type_id');
+            $table->string('fertilizer_type', 50);
             $table->string('country', 5);
             $table->string('use_case', 50)->default('ALL');
             $table->boolean('cis')->default(false);
@@ -34,21 +35,14 @@ return new class extends Migration {
             $table->integer('sort_order')->nullable();
             $table->timestamps();
 
-            $table->unique(['fertilizer_type_id', 'country']);
-            $table->foreign('fertilizer_type_id')->references('id')->on('fertilizer_types')->cascadeOnUpdate();
+            $table->unique(['fertilizer_type', 'country']);
+            $table->foreign('fertilizer_type')->references('type')->on('fertilizer_types')->cascadeOnUpdate();
         });
-
-        $types = DB::table('fertilizer_types')->pluck('id', 'type');
-        $typeIds = [];
-        foreach ($types as $type => $id) {
-            $typeIds[strtolower($type)] = $id;
-        }
 
         $taken = [];
 
         foreach (DB::table('fertilizers')->orderBy('id')->get() as $row) {
-            $typeId = $typeIds[strtolower((string) $row->type)];
-            $pair = $typeId . '|' . strtolower((string) $row->country);
+            $pair = strtolower((string) $row->type) . '|' . strtolower((string) $row->country);
 
             // one row per type and country; the data has no repeats today
             if (isset($taken[$pair])) {
@@ -59,7 +53,7 @@ return new class extends Migration {
 
             DB::table('country_fertilizers')->insert([
                 'id' => $row->id,
-                'fertilizer_type_id' => $typeId,
+                'fertilizer_type' => DB::table('fertilizer_types')->where('type', $row->type)->value('type'),
                 'country' => $row->country,
                 'use_case' => $row->use_case ?? 'ALL',
                 'cis' => (int) $row->cis,

@@ -75,11 +75,12 @@ All three live in the database, so they are managed there: a new unit or item is
 ### 3.7 Fertilisers normalised (done 2026-11-10)
 `fertilizers` repeated a fertiliser's type, label, name and bag weight for every country that sells it (UREA and DAP four times each). It is now two tables and a view:
 
-- **`fertilizer_types`**: each fertiliser once (type code, label, name, bag weight). 23 rows from the 38. A new fertiliser is a row here.
-- **`country_fertilizers`**: which type is sold in which country and how the app uses it (use case, CIS, CIM, available, sort order). One row per type and country, enforced. Row ids are the old `fertilizers` ids, so ids held by apps and option lists stay valid.
+- **`fertilizer_types`**: each fertiliser once (type code as the primary key, label, name, bag weight). 23 rows from the 38. The type code is a natural key: the fertiliser key, the admin form and the API already use it, and it cascades if renamed. A new fertiliser is a row here.
+- **`country_fertilizers`**: which type is sold in which country and how the app uses it (use case, CIS, CIM, available, sort order), keyed by `fertilizer_type` (a foreign key to the type code). One row per type and country, enforced. Row ids are the old `fertilizers` ids, so ids held by apps and option lists stay valid.
 - **`fertilizers`** is a view over both with the old name and columns, so the API, recommendation service and the price views are unchanged. `fertilizer_key` is computed (type, underscore, country), so it can no longer disagree with them. The old table is kept as `fertilizers_legacy`.
 - Writes go through `FertilizerRepo` to the two tables. The admin form picks the fertiliser from a list (its old "Type" list, STRAIGHT/COMPOUND/ORGANIC, did not match the stored types), picks the country, and shows the computed key and bag weight read-only. The API write endpoints take the type code, country and the country's use; name, label, weight and key are no longer accepted. Changing a fertiliser's name or weight is one change that applies to every country.
-- Verified: the view equals the old table on every column of all 38 rows, before and after a rollback and re-run.
+- **`default_prices.fertilizer_type`** (a foreign key to `fertilizer_types.type`) replaces the stored `fertilizer_key`: with the row's country it gives the key, so the database refuses a catalogue price for a fertiliser that does not exist, follows a rename, and refuses to delete a type that still has prices. In the price form, choosing the item (urea) picks the fertiliser whose label matches.
+- Verified: the view equals the old table on every column of all 38 rows, and the option lists, fertilisers and cassava list were identical before a full rollback of the 28 migrations and after re-running them.
 
 ## 4. Order of work
 

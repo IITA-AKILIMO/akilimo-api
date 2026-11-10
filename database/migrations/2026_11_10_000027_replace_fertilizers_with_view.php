@@ -41,7 +41,7 @@ SELECT cf.id AS id,
        cf.created_at AS created_at,
        cf.updated_at AS updated_at
 FROM country_fertilizers cf
-JOIN fertilizer_types t ON t.id = cf.fertilizer_type_id
+JOIN fertilizer_types t ON t.type = cf.fertilizer_type
 SQL);
     }
 

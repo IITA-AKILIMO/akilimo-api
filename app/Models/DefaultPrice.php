@@ -41,7 +41,7 @@ class DefaultPrice extends BaseDefaultPrice
         'country',
         'region',
         'item',
-        'fertilizer_key',
+        'fertilizer_type',
         'price',
         'subsidised_price',
         'unit',
