@@ -187,7 +187,26 @@ export interface ReferenceResource {
     description: string
     warning: string | null
     createUrl: string | null
+    /** The table drives the app's price lists, so a change can be previewed before it is saved */
+    canPreview: boolean
     fields: ReferenceField[]
+}
+
+/** What a change would do to one of the app's price lists (SettingsPreviewService) */
+export interface PreviewList {
+    key: string
+    title: string
+    total: number
+    changed: number
+    added: number
+    removed: number
+    truncated: boolean
+    rows: { label: string; before: string | null; after: string | null }[]
+}
+
+export interface PreviewResult {
+    changed: number
+    lists: PreviewList[]
 }
 
 /** A row of such a table, with the key columns that address it */

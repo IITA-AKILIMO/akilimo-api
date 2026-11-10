@@ -110,6 +110,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::get('reference/{slug}', [ReferenceDataController::class, 'index'])->name('reference.index');
         Route::get('reference/{slug}/create', [ReferenceDataController::class, 'create'])->name('reference.create');
         Route::post('reference/{slug}', [ReferenceDataController::class, 'store'])->name('reference.store');
+        Route::post('reference/{slug}/preview', [ReferenceDataController::class, 'preview'])->name('reference.preview');
         Route::get('reference/{slug}/edit', [ReferenceDataController::class, 'edit'])->name('reference.edit');
         Route::put('reference/{slug}', [ReferenceDataController::class, 'update'])->name('reference.update');
         Route::delete('reference/{slug}', [ReferenceDataController::class, 'destroy'])->name('reference.destroy');

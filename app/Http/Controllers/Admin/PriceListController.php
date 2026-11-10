@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Support\PriceLists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -21,50 +22,13 @@ use Inertia\Response;
  */
 class PriceListController extends AdminController
 {
-    /** @var array<string, array{title: string, table: string, country: string, order: list<string>, columns: array<string, string>, raw?: array<string, string>}> */
-    private const LISTS = [
-        'fertilizer' => [
-            'title' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'country' => 'country',
-            'order' => ['fertilizer_key', 'sort_order'],
-            'columns' => ['country' => 'Country', 'fertilizer_key' => 'Fertilizer key', 'price_per_bag' => 'Price per bag', 'sort_order' => 'Order', 'desc' => 'Choice'],
-        ],
-        'cassava' => [
-            'title' => 'Cassava prices', 'table' => 'cassava_prices', 'country' => 'country',
-            'order' => ['min_local_price'],
-            'columns' => ['country' => 'Country', 'min_local_price' => 'From', 'max_local_price' => 'To', 'average' => 'Average sent'],
-            'raw' => ['average' => '(min_local_price + max_local_price) / 2'],
-        ],
-        'maize' => [
-            'title' => 'Maize prices', 'table' => 'maize_prices', 'country' => 'country',
-            'order' => ['produce_type', 'min_local_price'],
-            'columns' => ['country' => 'Country', 'produce_type' => 'Produce', 'min_local_price' => 'From', 'max_local_price' => 'To', 'average' => 'Average sent'],
-            'raw' => ['average' => '(min_local_price + max_local_price) / 2'],
-        ],
-        'potato' => [
-            'title' => 'Sweet potato prices', 'table' => 'potato_prices', 'country' => 'country',
-            'order' => ['min_local_price'],
-            'columns' => ['country' => 'Country', 'min_local_price' => 'From', 'max_local_price' => 'To', 'average' => 'Average sent'],
-            'raw' => ['average' => '(min_local_price + max_local_price) / 2'],
-        ],
-        'investment' => [
-            'title' => 'Investment amounts', 'table' => 'investment_amount', 'country' => 'country',
-            'order' => ['sort_order'],
-            'columns' => ['country' => 'Country', 'investment_amount' => 'Amount', 'area_unit' => 'Per', 'sort_order' => 'Order'],
-        ],
-        'operations' => [
-            'title' => 'Operation costs', 'table' => 'operation_costs', 'country' => 'country_code',
-            'order' => ['operation_name', 'operation_type', 'min_cost'],
-            'columns' => ['country_code' => 'Country', 'operation_name' => 'Operation', 'operation_type' => 'Type', 'min_cost' => 'From', 'max_cost' => 'To'],
-        ],
-    ];
-
     private const LIMIT = 1000;
 
     public function index(Request $request): Response
     {
         $list = (string) $request->get('list', 'fertilizer');
-        $def = self::LISTS[$list] ?? self::LISTS['fertilizer'];
-        $list = isset(self::LISTS[$list]) ? $list : 'fertilizer';
+        $list = isset(PriceLists::LISTS[$list]) ? $list : 'fertilizer';
+        $def = PriceLists::LISTS[$list];
         $country = strtoupper(trim((string) $request->get('country', '')));
 
         $query = DB::table($def['table']);
@@ -87,7 +51,7 @@ class PriceListController extends AdminController
         $total = (clone $query)->count();
 
         return Inertia::render('PriceLists/Index', [
-            'lists' => collect(self::LISTS)->map(fn ($d, $key) => ['key' => $key, 'title' => $d['title']])->values(),
+            'lists' => collect(PriceLists::LISTS)->map(fn ($d, $key) => ['key' => $key, 'title' => $d['title']])->values(),
             'list' => $list,
             'country' => $country,
             'title' => $def['title'],

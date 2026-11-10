@@ -79,6 +79,7 @@ final class ReferenceTables
                 'description' => 'The steps around the reference price that the app offers, e.g. -30, -10, +10, +30 %. For range lists (cassava, maize, sweet potato) each band is the step plus or minus half the band width.',
                 'warning' => 'Changing a step changes the price choices the app shows in every country at once.',
                 'table' => 'price_choice_steps',
+                'previews' => ['fertilizer', 'cassava', 'maize', 'potato', 'operations'],
                 'order' => ['step_order'],
                 'fields' => [
                     self::number('step_order', 'Order', ['required', 'integer', 'min:1', 'max:20'], key: true, help: '1 is the lowest choice'),
@@ -91,6 +92,7 @@ final class ReferenceTables
                 'description' => 'What the offered prices are rounded to, per currency (100 for NGN, TZS, RWF, BIF; 5 for GHS). A currency without a row is not rounded.',
                 'warning' => 'Changing a step changes the price choices the app shows for that currency at once.',
                 'table' => 'price_choice_rounding',
+                'previews' => ['fertilizer', 'cassava', 'maize', 'potato', 'operations'],
                 'order' => ['currency'],
                 'fields' => [
                     self::select('currency', 'Currency', ['required', 'string', 'size:3'], key: true, from: ['table' => 'currencies', 'value' => 'currency_code', 'label' => 'currency_name']),
@@ -102,6 +104,7 @@ final class ReferenceTables
                 'description' => 'Items whose offered prices are not shown as the catalogue holds them: a quantity to multiply by (maize grain is per kg, shown per 50 kg) and a rounding of their own (a price per cob is too small for the currency step).',
                 'warning' => 'Changing a row changes the price choices for that item in every country at once.',
                 'table' => 'price_choice_units',
+                'previews' => ['fertilizer', 'cassava', 'maize', 'potato', 'operations'],
                 'order' => ['item'],
                 'fields' => [
                     self::select('item', 'Item', ['required', 'string'], key: true, from: ['table' => 'price_items', 'value' => 'item']),
@@ -114,6 +117,7 @@ final class ReferenceTables
                 'description' => 'The investment amounts the app offers are these multiples of the country\'s reference amount per acre (1, 2, 3, 4, 6).',
                 'warning' => 'Changing a multiple changes the investment amounts in every country at once.',
                 'table' => 'price_choice_multiples',
+                'previews' => ['investment'],
                 'order' => ['step_order'],
                 'fields' => [
                     self::number('step_order', 'Order', ['required', 'integer', 'min:1', 'max:20'], key: true),
@@ -125,6 +129,7 @@ final class ReferenceTables
                 'description' => 'The catalogue labour price each operation cost list is built around, e.g. tillage by tractor follows tractor_ploughing. An operation without a row has no cost list.',
                 'warning' => 'Changing a row changes the operation costs for that operation in every country at once.',
                 'table' => 'price_choice_operations',
+                'previews' => ['operations'],
                 'order' => ['operation_name', 'operation_type'],
                 'fields' => [
                     self::text('operation_name', 'Operation', ['required', 'string', 'max:100'], key: true, help: 'e.g. tillage, ridging, weeding'),

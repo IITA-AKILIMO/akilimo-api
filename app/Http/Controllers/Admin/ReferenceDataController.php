@@ -8,8 +8,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Service\SettingsPreviewService;
 use App\Support\ReferenceTables;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -78,18 +80,34 @@ class ReferenceDataController extends AdminController
         abort_if(isset($def['create_url']), 404);
 
         $data = $request->validate($this->rules($def, includeKeys: true));
-
-        $keys = collect($this->keyNames($def))->mapWithKeys(fn ($k) => [$k => $data[$k]])->all();
-
-        if (DB::table($def['table'])->where($keys)->exists()) {
-            throw ValidationException::withMessages([
-                $this->keyNames($def)[0] => 'A row with this ' . implode(' and ', $this->keyNames($def)) . ' already exists.',
-            ]);
-        }
+        $this->assertKeyFree($def, $data);
 
         DB::table($def['table'])->insert($data + $this->timestamps($def, creating: true));
 
         return redirect()->route('admin.reference.index', $slug)->with('success', 'Added.');
+    }
+
+    /**
+     * What saving this form would do to the app's price lists, without saving it.
+     * Takes the same input as the form and answers with the lists' before and after.
+     */
+    public function preview(Request $request, string $slug, SettingsPreviewService $preview): JsonResponse
+    {
+        $def = $this->definition($slug);
+        abort_if(empty($def['previews']), 404);
+
+        if ($request->query('key') !== null) {
+            $key = $this->keyFromRequest($def, $request);
+            $this->row($def, $key);
+            $data = $request->validate($this->rules($def, includeKeys: false));
+            $change = fn () => DB::table($def['table'])->where($key)->update($data + $this->timestamps($def, creating: false));
+        } else {
+            $data = $request->validate($this->rules($def, includeKeys: true));
+            $this->assertKeyFree($def, $data);
+            $change = fn () => DB::table($def['table'])->insert($data + $this->timestamps($def, creating: true));
+        }
+
+        return response()->json($preview->compare($def['previews'], $change));
     }
 
     public function edit(Request $request, string $slug): Response
@@ -146,6 +164,23 @@ class ReferenceDataController extends AdminController
     private function definition(string $slug): array
     {
         return ReferenceTables::find($slug) ?? abort(404);
+    }
+
+    /**
+     * A new row must not repeat the key of an existing one.
+     *
+     * @param array<string, mixed> $def
+     * @param array<string, mixed> $data
+     */
+    private function assertKeyFree(array $def, array $data): void
+    {
+        $keys = collect($this->keyNames($def))->mapWithKeys(fn ($k) => [$k => $data[$k]])->all();
+
+        if (DB::table($def['table'])->where($keys)->exists()) {
+            throw ValidationException::withMessages([
+                $this->keyNames($def)[0] => 'A row with this ' . implode(' and ', $this->keyNames($def)) . ' already exists.',
+            ]);
+        }
     }
 
     /**
@@ -240,6 +275,7 @@ class ReferenceDataController extends AdminController
             'description' => $def['description'],
             'warning' => $def['warning'] ?? null,
             'createUrl' => $def['create_url'] ?? null,
+            'canPreview' => ! empty($def['previews']),
             'fields' => collect($def['fields'])->map(fn ($f) => [
                 'name' => $f['name'],
                 'label' => $f['label'],

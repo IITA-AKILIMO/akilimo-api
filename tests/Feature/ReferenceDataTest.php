@@ -150,6 +150,97 @@ it('changes the app price lists when a rule is edited', function () {
     expect((float) $before)->toBe(14000.0)->and((float) $after)->toBe(16000.0);
 });
 
+function previewCatalogue(): void
+{
+    DB::table('countries')->insert(['code' => 'NG', 'name' => 'Nigeria', 'active' => true, 'default_price_basis' => 'open_market']);
+    DB::table('default_prices')->insert([
+        ['country' => 'NG', 'item' => 'cassUP', 'price' => 10000, 'unit' => 'per_tonne', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
+        ['country' => 'NG', 'item' => 'maize_grain', 'price' => 230, 'unit' => 'per_kg', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
+        ['country' => 'NG', 'item' => 'investment_amount', 'price' => 10000, 'unit' => 'per_acre', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
+    ]);
+}
+
+it('previews what a changed step would do, and saves nothing', function () {
+    previewCatalogue();
+    $steps = fn () => DB::table('price_choice_steps')->orderBy('step_order')->pluck('change_pct')->map(fn ($v) => (float) $v)->all();
+    $maxBefore = DB::table('cassava_prices')->max('max_local_price');
+
+    $response = $this->actingAs(referenceAdmin())
+        ->postJson('/admin/reference/price-choice-steps/preview?' . refKey(['step_order' => 4]), ['change_pct' => 50, 'band_half_pct' => 10])
+        ->assertOk();
+
+    $cassava = collect($response->json('lists'))->firstWhere('key', 'cassava');
+
+    expect($response->json('changed'))->toBeGreaterThan(0)
+        ->and($cassava['changed'])->toBe(1)
+        ->and($cassava['rows'][0]['label'])->toBe('NG band 4')
+        ->and($cassava['rows'][0]['before'])->toBe('12,000 – 14,000')
+        ->and($cassava['rows'][0]['after'])->toBe('14,000 – 16,000')
+        ->and($steps())->toBe([-30.0, -10.0, 10.0, 30.0])                       // nothing was saved
+        ->and(DB::table('cassava_prices')->max('max_local_price'))->toBe($maxBefore);
+});
+
+it('previews a new multiple as new investment rows', function () {
+    previewCatalogue();
+
+    $response = $this->actingAs(referenceAdmin())
+        ->postJson('/admin/reference/price-choice-multiples/preview', ['step_order' => 6, 'multiple' => 10])
+        ->assertOk();
+
+    $investment = collect($response->json('lists'))->firstWhere('key', 'investment');
+
+    expect($investment['added'])->toBe(1)
+        ->and($investment['rows'][0]['before'])->toBeNull()
+        ->and($investment['rows'][0]['after'])->toBe('100,000')
+        ->and(DB::table('price_choice_multiples')->count())->toBe(5);
+});
+
+it('previews a changed unit quantity on the maize list only', function () {
+    previewCatalogue();
+
+    $response = $this->actingAs(referenceAdmin())
+        ->postJson('/admin/reference/price-choice-units/preview?' . refKey(['item' => 'maize_grain']), ['quantity' => 100, 'rounding' => null])
+        ->assertOk();
+
+    $changed = collect($response->json('lists'))->filter(fn ($l) => $l['changed'] > 0)->pluck('key')->all();
+
+    expect($changed)->toBe(['maize'])
+        ->and((int) DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(50);
+});
+
+it('says when a change would alter nothing', function () {
+    previewCatalogue();
+
+    $this->actingAs(referenceAdmin())
+        ->postJson('/admin/reference/price-choice-steps/preview?' . refKey(['step_order' => 4]), ['change_pct' => 30, 'band_half_pct' => 10])
+        ->assertOk()
+        ->assertJsonPath('changed', 0);
+});
+
+it('refuses to preview values that would not save, or a table with no price effect', function () {
+    $admin = referenceAdmin();
+
+    $this->actingAs($admin)->postJson('/admin/reference/price-choice-steps/preview?' . refKey(['step_order' => 4]), ['change_pct' => 'lots', 'band_half_pct' => 10])
+        ->assertStatus(422)->assertJsonValidationErrors('change_pct');
+
+    $this->actingAs($admin)->postJson('/admin/reference/price-choice-multiples/preview', ['step_order' => 1, 'multiple' => 3])
+        ->assertStatus(422)->assertJsonValidationErrors('step_order');
+
+    $this->actingAs($admin)->postJson('/admin/reference/price-units/preview', ['value' => 'per_box', 'label' => 'Box', 'sort_order' => 1])
+        ->assertNotFound();
+});
+
+it('keeps the preview to admins and tells the form which tables can preview', function () {
+    $this->actingAs(referenceAdmin(EnumUserRole::Partner))->postJson('/admin/reference/price-choice-steps/preview?' . refKey(['step_order' => 4]), ['change_pct' => 50, 'band_half_pct' => 10])
+        ->assertRedirect();
+
+    $this->actingAs(referenceAdmin())->get('/admin/reference/price-choice-rounding/create')
+        ->assertInertia(fn (Assert $page) => $page->where('resource.canPreview', true));
+
+    $this->actingAs(referenceAdmin())->get('/admin/reference/price-units/create')
+        ->assertInertia(fn (Assert $page) => $page->where('resource.canPreview', false));
+});
+
 it('edits a fertilizer type but never its code, and adds only through the new-fertilizer form', function () {
     $admin = referenceAdmin();
     FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50]);
