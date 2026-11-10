@@ -15,6 +15,13 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
     /**
+     * fertilizer_prices, cassava_prices and potato_prices are database views, and
+     * migrate:fresh leaves views behind unless asked to drop them, which makes the
+     * next run's schema load fail with "table already exists".
+     */
+    protected bool $dropViews = true;
+
+    /**
      * Create a test user with a wildcard bearer token and apply it to all
      * subsequent requests in this test. Call in beforeEach() or at the start
      * of any test that hits a protected route.

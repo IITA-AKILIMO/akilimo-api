@@ -41,7 +41,10 @@ return [
         'maize_freshCob' => 'per_cob',
     ],
 
-    // Phase 3: the choices generated for the mobile app (decision D3).
+    // Phase 3: the price choices the mobile app shows (decision D3). The database
+    // computes them live from the catalogue (the fertilizer_prices, cassava_prices
+    // and potato_prices views); these values only seed its price_choice_steps and
+    // price_choice_rounding tables. Change the tables afterwards, not this file.
     'choice_steps' => [-0.30, -0.10, 0.10, 0.30],
 
     'rounding' => [

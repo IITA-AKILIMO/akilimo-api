@@ -303,20 +303,32 @@ class ApiRequestStatsRepo extends BaseRepo
      */
     protected function getDataFreshness(): array
     {
+        // The app's price lists (fertiliser, cassava, maize, potato, investment, operation costs) are
+        // database views over the catalogue, so each is as fresh as the catalogue prices behind it and
+        // is edited on the default prices page. 'source' narrows the catalogue to the rows that feed it.
+        $catalogue = fn (callable $where) => fn () => $where(DB::table('default_prices')->where('status', 'active')->whereNull('region'));
         $lists = [
-            ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/fertilizer-prices'],
-            ['label' => 'Cassava prices', 'table' => 'cassava_prices', 'href' => '/admin/cassava-prices'],
-            ['label' => 'Maize prices', 'table' => 'maize_prices', 'href' => '/admin/maize-prices'],
-            ['label' => 'Potato prices', 'table' => 'potato_prices', 'href' => '/admin/potato-prices'],
+            ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/default-prices',
+                'source' => $catalogue(fn ($q) => $q->where('unit', 'per_bag')->whereNotNull('fertilizer_key'))],
+            ['label' => 'Cassava prices', 'table' => 'cassava_prices', 'href' => '/admin/default-prices',
+                'source' => $catalogue(fn ($q) => $q->where('item', 'cassUP'))],
+            ['label' => 'Maize prices', 'table' => 'maize_prices', 'href' => '/admin/default-prices',
+                'source' => $catalogue(fn ($q) => $q->whereIn('item', ['maize_grain', 'maize_freshCob']))],
+            ['label' => 'Potato prices', 'table' => 'potato_prices', 'href' => '/admin/default-prices',
+                'source' => $catalogue(fn ($q) => $q->where('item', 'sweetPotato_tuber'))],
             ['label' => 'Starch prices', 'table' => 'starch_prices', 'href' => '/admin/starch-prices'],
             ['label' => 'Default prices', 'table' => 'default_prices', 'href' => '/admin/default-prices'],
-            ['label' => 'Operation costs', 'table' => 'operation_costs', 'href' => '/admin/operation-costs'],
+            ['label' => 'Investment amounts', 'table' => 'investment_amount', 'href' => '/admin/default-prices',
+                'source' => $catalogue(fn ($q) => $q->where('item', 'investment_amount'))],
+            ['label' => 'Operation costs', 'table' => 'operation_costs', 'href' => '/admin/default-prices',
+                'source' => $catalogue(fn ($q) => $q->whereIn('item', DB::table('price_choice_operations')->select('item')))],
         ];
 
         $prices = collect($lists)
-            ->filter(fn ($l) => Schema::hasTable($l['table']))
+            // hasTable() does not see views, and most of these lists are views
+            ->filter(fn ($l) => Schema::hasTable($l['table']) || Schema::hasView($l['table']))
             ->map(function ($l) {
-                $row = DB::table($l['table'])
+                $row = (isset($l['source']) ? $l['source']() : DB::table($l['table']))
                     ->selectRaw('COUNT(*) as n, MAX(updated_at) as updated, MAX(created_at) as created')
                     ->first();
                 $last = $row->updated ?? $row->created;
