@@ -1,8 +1,12 @@
 import { router } from '@inertiajs/react'
 import { useState } from 'react'
 import CountrySelect from '../../components/CountrySelect'
+import CurrencySelect from '../../components/CurrencySelect'
 import FormField from '../../components/FormField'
+import ItemSelect from '../../components/ItemSelect'
+import UnitSelect from '../../components/UnitSelect'
 import AdminLayout from '../../layouts/AdminLayout'
+import type { PriceLookups } from '../../types'
 
 interface PriceRow {
     item: string
@@ -13,7 +17,7 @@ interface PriceRow {
 
 const emptyRow = (): PriceRow => ({ item: '', price: '', unit: '', currency: '' })
 
-export default function DefaultPricesBatchCreate() {
+export default function DefaultPricesBatchCreate({ currencies, units, items, currencyByCountry }: PriceLookups) {
     const [country, setCountry] = useState('')
     const [rows, setRows] = useState<PriceRow[]>([emptyRow()])
     const [processing, setProcessing] = useState(false)
@@ -21,6 +25,18 @@ export default function DefaultPricesBatchCreate() {
 
     function updateRow(index: number, field: keyof PriceRow, value: string) {
         setRows((prev) => prev.map((r, i) => i === index ? { ...r, [field]: value } : r))
+    }
+
+    // Choosing an item fills in its unit, and the country's currency fills the rows that have none
+    function changeItem(index: number, item: string) {
+        const unit = items.find((i) => i.item === item)?.unit ?? ''
+        setRows((prev) => prev.map((r, i) => i === index ? { ...r, item, unit: unit || r.unit } : r))
+    }
+
+    function changeCountry(code: string) {
+        setCountry(code)
+        const currency = currencyByCountry[code]
+        if (currency) setRows((prev) => prev.map((r) => ({ ...r, currency: r.currency || currency })))
     }
 
     function addRow() { setRows((prev) => [...prev, emptyRow()]) }
@@ -53,7 +69,7 @@ export default function DefaultPricesBatchCreate() {
                                 <FormField label="Country" required error={errors.country}>
                                     <CountrySelect
                                         value={country}
-                                        onChange={setCountry}
+                                        onChange={changeCountry}
                                         error={errors.country}
                                         required
                                     />
@@ -78,14 +94,14 @@ export default function DefaultPricesBatchCreate() {
                                         <tr key={i}>
                                             <td className="text-muted text-center">{i + 1}</td>
                                             <td>
-                                                <input
-                                                    type="text" maxLength={50}
-                                                    className={`form-control form-control-sm ${errors[`rows.${i}.item`] ? 'is-invalid' : ''}`}
+                                                <ItemSelect
+                                                    small required
                                                     value={row.item}
-                                                    onChange={(e) => updateRow(i, 'item', e.target.value)}
-                                                    required placeholder="e.g. Cassava"
+                                                    onChange={(v) => changeItem(i, v)}
+                                                    items={items}
+                                                    error={errors[`rows.${i}.item`]}
                                                 />
-                                                {errors[`rows.${i}.item`] && <div className="invalid-feedback">{errors[`rows.${i}.item`]}</div>}
+                                                {errors[`rows.${i}.item`] && <div className="invalid-feedback d-block">{errors[`rows.${i}.item`]}</div>}
                                             </td>
                                             <td>
                                                 <input
@@ -97,21 +113,21 @@ export default function DefaultPricesBatchCreate() {
                                                 />
                                             </td>
                                             <td>
-                                                <input
-                                                    type="text" maxLength={15}
-                                                    className={`form-control form-control-sm ${errors[`rows.${i}.unit`] ? 'is-invalid' : ''}`}
+                                                <UnitSelect
+                                                    small required
                                                     value={row.unit}
-                                                    onChange={(e) => updateRow(i, 'unit', e.target.value)}
-                                                    required placeholder="e.g. kg"
+                                                    onChange={(v) => updateRow(i, 'unit', v)}
+                                                    units={units}
+                                                    error={errors[`rows.${i}.unit`]}
                                                 />
                                             </td>
                                             <td>
-                                                <input
-                                                    type="text" maxLength={3}
-                                                    className="form-control form-control-sm"
+                                                <CurrencySelect
+                                                    small
                                                     value={row.currency}
-                                                    onChange={(e) => updateRow(i, 'currency', e.target.value)}
-                                                    placeholder="USD"
+                                                    onChange={(v) => updateRow(i, 'currency', v)}
+                                                    currencies={currencies}
+                                                    error={errors[`rows.${i}.currency`]}
                                                 />
                                             </td>
                                             <td className="text-center">

@@ -63,6 +63,15 @@ Starch is priced by factory and class, so it keeps its own tables. Two small ali
 ### 3.5 Columns
 Drop the constant `min_usd`/`max_usd` from the range-list API responses once the mobile app confirms it does not read them (it does not, today). Keep the legacy columns on the views meanwhile so the response shape does not change.
 
+### 3.6 Currency, unit and item are picked, not typed (done 2026-11-10)
+The default price forms (create, edit, batch create, batch edit) offer lists, and the server accepts only what the lists hold:
+
+- **Currency** from the `currencies` table (one entry per code); choosing a country fills in its currency.
+- **Unit** from `price_units` (per bag, acre, tonne, kg, cob).
+- **Item** from `price_items`, each with the unit it is priced in; choosing an item fills in the unit. An item is saved with the list's spelling (`cassup` becomes `cassUP`).
+
+All three live in the database, so they are managed there: a new unit or item is a row in `price_units` or `price_items` (no admin screen yet). The config lists (`unit_by_item`, `units`) are gone. `price_items` was seeded with the labour, crop and investment items, every item already in the catalogue, and every fertiliser. Rows that fit no list (the stray `string` test row) are left out and cannot be edited through the forms until fixed.
+
 ## 4. Order of work
 
 1. **Done 2026-11-10.** Dropped `produce_prices` and `available_fertilizer` with their models and the `produce_prices` seeder (migrations `…000008`, `…000009`). `request_fertilizer` was left: it is empty locally but production use is unconfirmed.

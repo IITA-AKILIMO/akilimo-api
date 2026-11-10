@@ -1,9 +1,12 @@
 import { router } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import CountrySelect from '../../components/CountrySelect'
+import CurrencySelect from '../../components/CurrencySelect'
 import FormField from '../../components/FormField'
+import ItemSelect from '../../components/ItemSelect'
+import UnitSelect from '../../components/UnitSelect'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { DefaultPrice } from '../../types'
+import type { DefaultPrice, PriceLookups } from '../../types'
 
 interface EditableRow {
     id: number | null
@@ -13,7 +16,7 @@ interface EditableRow {
     currency: string
 }
 
-interface Props {
+interface Props extends PriceLookups {
     prices: DefaultPrice[]
     country: string | null
 }
@@ -30,7 +33,7 @@ function priceToRow(p: DefaultPrice): EditableRow {
     }
 }
 
-export default function DefaultPricesBatchEdit({ prices, country }: Props) {
+export default function DefaultPricesBatchEdit({ prices, country, currencies, units, items }: Props) {
     const [countryCode, setCountryCode] = useState(country ?? '')
     const [rows, setRows] = useState<EditableRow[]>(prices.length ? prices.map(priceToRow) : [emptyRow()])
     const [deletedIds, setDeletedIds] = useState<number[]>([])
@@ -50,6 +53,12 @@ export default function DefaultPricesBatchEdit({ prices, country }: Props) {
 
     function updateRow(index: number, field: keyof EditableRow, value: string) {
         setRows((prev) => prev.map((r, i) => i === index ? { ...r, [field]: value } : r))
+    }
+
+    // Choosing an item fills in its unit
+    function changeItem(index: number, item: string) {
+        const unit = items.find((i) => i.item === item)?.unit ?? ''
+        setRows((prev) => prev.map((r, i) => i === index ? { ...r, item, unit: unit || r.unit } : r))
     }
 
     function addRow() { setRows((prev) => [...prev, emptyRow()]) }
@@ -131,14 +140,14 @@ export default function DefaultPricesBatchEdit({ prices, country }: Props) {
                                                         <span className={`badge ${row.id === null ? 'bg-success' : 'bg-secondary'}`}>{i + 1}</span>
                                                     </td>
                                                     <td>
-                                                        <input
-                                                            type="text" maxLength={50}
-                                                            className={`form-control form-control-sm ${errors[`rows.${i}.item`] ? 'is-invalid' : ''}`}
+                                                        <ItemSelect
+                                                            small required
                                                             value={row.item}
-                                                            onChange={(e) => updateRow(i, 'item', e.target.value)}
-                                                            required
+                                                            onChange={(v) => changeItem(i, v)}
+                                                            items={items}
+                                                            error={errors[`rows.${i}.item`]}
                                                         />
-                                                        {errors[`rows.${i}.item`] && <div className="invalid-feedback">{errors[`rows.${i}.item`]}</div>}
+                                                        {errors[`rows.${i}.item`] && <div className="invalid-feedback d-block">{errors[`rows.${i}.item`]}</div>}
                                                     </td>
                                                     <td>
                                                         <input
@@ -150,20 +159,21 @@ export default function DefaultPricesBatchEdit({ prices, country }: Props) {
                                                         />
                                                     </td>
                                                     <td>
-                                                        <input
-                                                            type="text" maxLength={15}
-                                                            className={`form-control form-control-sm ${errors[`rows.${i}.unit`] ? 'is-invalid' : ''}`}
+                                                        <UnitSelect
+                                                            small required
                                                             value={row.unit}
-                                                            onChange={(e) => updateRow(i, 'unit', e.target.value)}
-                                                            required
+                                                            onChange={(v) => updateRow(i, 'unit', v)}
+                                                            units={units}
+                                                            error={errors[`rows.${i}.unit`]}
                                                         />
                                                     </td>
                                                     <td>
-                                                        <input
-                                                            type="text" maxLength={3}
-                                                            className="form-control form-control-sm"
+                                                        <CurrencySelect
+                                                            small
                                                             value={row.currency}
-                                                            onChange={(e) => updateRow(i, 'currency', e.target.value)}
+                                                            onChange={(v) => updateRow(i, 'currency', v)}
+                                                            currencies={currencies}
+                                                            error={errors[`rows.${i}.currency`]}
                                                         />
                                                     </td>
                                                     <td className="text-center">

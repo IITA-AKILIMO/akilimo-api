@@ -8,6 +8,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Service\PriceLookupService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -22,18 +23,21 @@ class DefaultPriceRequest extends FormRequest
     public function rules(): array
     {
         $required = $this->isMethod('POST') ? ['required'] : ['sometimes', 'required'];
+        $lookups = app(PriceLookupService::class);
 
         return [
             'country' => [...$required, 'string', 'size:2', 'uppercase'],
             'region' => ['nullable', 'string', 'max:50'],
-            'item' => [...$required, 'string', 'max:50'],
+            // Picked from price_items; a new item is added there first
+            'item' => [...$required, 'string', 'max:50', $lookups->itemRule()],
             // The fertiliser option list this price feeds (UREA_TZ); blank = matched by item name
             'fertilizer_key' => ['nullable', 'string', 'max:50', 'exists:fertilizers,fertilizer_key'],
             'price' => [...$required, 'numeric', 'min:0'],
             'subsidised_price' => ['nullable', 'numeric', 'min:0'],
-            'unit' => ['nullable', 'string', 'max:15'],
+            // Picked from lists in the form, so a typo cannot reach a price list
+            'unit' => ['nullable', 'string', $lookups->unitRule()],
             'bag_kg' => ['nullable', 'integer', 'min:1', 'max:1000'],
-            'currency' => ['nullable', 'string', 'size:3', 'uppercase'],
+            'currency' => ['nullable', 'string', 'size:3', 'uppercase', $lookups->currencyRule()],
             'min_price' => ['nullable', 'numeric', 'min:0'],
             'max_price' => ['nullable', 'numeric', 'min:0', 'gte:min_price'],
             'source' => ['nullable', 'string', 'max:255'],
@@ -66,6 +70,20 @@ class DefaultPriceRequest extends FormRequest
                 }
             }
         });
+    }
+
+    /**
+     * The item is saved as the list spells it (cassUP, not cassup).
+     */
+    public function validated($key = null, $default = null)
+    {
+        $data = parent::validated();
+
+        if (isset($data['item'])) {
+            $data['item'] = app(PriceLookupService::class)->canonicalItem($data['item']);
+        }
+
+        return $key === null ? $data : data_get($data, $key, $default);
     }
 
     protected function prepareForValidation(): void

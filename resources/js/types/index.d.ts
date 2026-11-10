@@ -167,6 +167,31 @@ export interface Translation {
     rw?: string
 }
 
+export interface PriceCurrency {
+    code: string
+    name: string
+}
+
+export interface PriceUnit {
+    value: string
+    label: string
+}
+
+export interface PriceItem {
+    item: string
+    /** The unit the item is priced in, so choosing the item fills in the unit */
+    unit: string
+}
+
+/** The lists the price forms choose from (PriceLookupService::forForms), all read from the database */
+export interface PriceLookups {
+    currencies: PriceCurrency[]
+    units: PriceUnit[]
+    items: PriceItem[]
+    /** The currency a country uses, so choosing the country fills in the currency */
+    currencyByCountry: Record<string, string>
+}
+
 export interface DefaultPrice {
     id: number
     country: string

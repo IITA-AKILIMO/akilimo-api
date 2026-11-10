@@ -14,6 +14,7 @@ use App\Models\DefaultPrice;
 use App\Models\User;
 use App\Repositories\DefaultPriceRepo;
 use App\Service\PriceCatalogueService;
+use App\Service\PriceLookupService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,7 @@ class DefaultPriceController extends AdminController
     public function __construct(
         protected DefaultPriceRepo $repo,
         protected PriceCatalogueService $catalogue,
+        protected PriceLookupService $lookups,
     ) {}
 
     public function index(Request $request): Response
@@ -78,6 +80,7 @@ class DefaultPriceController extends AdminController
             'statuses' => PriceStatus::values(),
             'confidenceLevels' => config('price_catalogue.confidence_levels'),
             'defaultBagKg' => config('price_catalogue.default_bag_kg'),
+            ...$this->lookups->forForms(),
         ]);
     }
 
@@ -113,6 +116,7 @@ class DefaultPriceController extends AdminController
             'statuses' => PriceStatus::values(),
             'confidenceLevels' => config('price_catalogue.confidence_levels'),
             'defaultBagKg' => config('price_catalogue.default_bag_kg'),
+            ...$this->lookups->forForms(),
         ]);
     }
 
@@ -161,7 +165,7 @@ class DefaultPriceController extends AdminController
 
     public function batchCreate(): Response
     {
-        return Inertia::render('DefaultPrices/BatchCreate');
+        return Inertia::render('DefaultPrices/BatchCreate', $this->lookups->forForms());
     }
 
     public function batchStore(Request $request): RedirectResponse
@@ -169,10 +173,10 @@ class DefaultPriceController extends AdminController
         $validated = $request->validate([
             'country' => ['required', 'string', 'size:2'],
             'rows' => ['required', 'array', 'min:1'],
-            'rows.*.item' => ['required', 'string', 'max:50'],
+            'rows.*.item' => ['required', 'string', 'max:50', $this->lookups->itemRule()],
             'rows.*.price' => ['required', 'numeric', 'min:0'],
-            'rows.*.unit' => ['nullable', 'string', 'max:15'],
-            'rows.*.currency' => ['nullable', 'string', 'size:3'],
+            'rows.*.unit' => ['nullable', 'string', $this->lookups->unitRule()],
+            'rows.*.currency' => ['nullable', 'string', 'size:3', $this->lookups->currencyRule()],
         ]);
 
         $actor = $this->actor($request);
@@ -181,6 +185,7 @@ class DefaultPriceController extends AdminController
             foreach ($validated['rows'] as $row) {
                 $this->catalogue->createDraft(array_merge($row, [
                     'country' => $validated['country'],
+                    'item' => $this->lookups->canonicalItem($row['item']),
                 ]), $actor);
             }
         });
@@ -208,6 +213,7 @@ class DefaultPriceController extends AdminController
         return Inertia::render('DefaultPrices/BatchEdit', [
             'prices' => $prices,
             'country' => $country ?: null,
+            ...$this->lookups->forForms(),
         ]);
     }
 
@@ -217,10 +223,10 @@ class DefaultPriceController extends AdminController
             'country' => ['required', 'string', 'size:2'],
             'rows' => ['required', 'array', 'min:1'],
             'rows.*.id' => ['nullable', 'integer'],
-            'rows.*.item' => ['required', 'string', 'max:50'],
+            'rows.*.item' => ['required', 'string', 'max:50', $this->lookups->itemRule()],
             'rows.*.price' => ['required', 'numeric', 'min:0'],
-            'rows.*.unit' => ['nullable', 'string', 'max:15'],
-            'rows.*.currency' => ['nullable', 'string', 'size:3'],
+            'rows.*.unit' => ['nullable', 'string', $this->lookups->unitRule()],
+            'rows.*.currency' => ['nullable', 'string', 'size:3', $this->lookups->currencyRule()],
             'deleted_ids' => ['sometimes', 'array'],
             'deleted_ids.*' => ['integer'],
         ]);
@@ -236,7 +242,7 @@ class DefaultPriceController extends AdminController
             foreach ($validated['rows'] as $row) {
                 $fields = [
                     'country' => $country,
-                    'item' => $row['item'],
+                    'item' => $this->lookups->canonicalItem($row['item']),
                     'price' => $row['price'],
                     'unit' => $row['unit'] ?? null,
                     'currency' => $row['currency'] ?? null,
