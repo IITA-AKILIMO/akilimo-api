@@ -8,6 +8,7 @@
 
 namespace App\Http\Resources;
 
+use App\Support\PriceMarker;
 use App\Models\PotatoPrice;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -40,6 +41,10 @@ class PotatoPriceResource extends JsonResource
             'average_price' => $avgPrice,
             /** Whether this is an exact price */
             'exact_price' => $avgPrice === -1.0,
+            /** The text to show for this choice: its price range, or "Exact price" for the row where the farmer types their own */
+            'label' => PriceMarker::labelForRange($model->min_local_price, $model->max_local_price),
+            /** Words for the exact-price row ("Exact price"); empty for an ordinary price band */
+            'description' => PriceMarker::describe($avgPrice) ?? '',
             /** Item tag identifier */
             'item_tag' => $tag,
             /** Minimum allowed price range */

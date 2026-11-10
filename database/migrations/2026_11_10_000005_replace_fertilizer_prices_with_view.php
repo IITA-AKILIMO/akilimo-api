@@ -65,7 +65,7 @@ FROM (
 ) x
 WHERE x.price > 0
 UNION ALL
-SELECT 1000000 + f.id * 10, f.country, f.fertilizer_key, 0, 0, 0, 1, 0, 'I dont know', f.updated_at, f.updated_at
+SELECT 1000000 + f.id * 10, f.country, f.fertilizer_key, 0, 0, 0, 1, 0, 'I don''t know', f.updated_at, f.updated_at
 FROM fertilizers f
 UNION ALL
 SELECT 1000000 + f.id * 10 + 5, f.country, f.fertilizer_key, -1, -1, -1, 1, 5, 'Exact price', f.updated_at, f.updated_at

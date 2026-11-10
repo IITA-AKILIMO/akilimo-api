@@ -8,6 +8,7 @@
 
 namespace App\Http\Resources;
 
+use App\Support\PriceMarker;
 use App\Models\Currency;
 use App\Models\InvestmentAmount;
 use Illuminate\Http\Request;
@@ -50,6 +51,12 @@ class InvestmentAmountResource extends JsonResource
             'currency' => $currencyResource,
             /** Whether this is an exact amount */
             'exact_amount' => $model->investment_amount === 0.0,
+            /** The text to show for this choice: the amount with the currency, or "Exact amount" for the row where the farmer types their own */
+            'label' => (float) $model->investment_amount === 0.0
+                ? PriceMarker::EXACT_AMOUNT
+                : PriceMarker::labelForPrice($model->investment_amount, $this->currency?->currency_symbol ?: $this->currency?->currency_code),
+            /** Words for the row where the farmer types their own amount ("Exact amount"); empty for an offered amount */
+            'description' => (float) $model->investment_amount === 0.0 ? PriceMarker::EXACT_AMOUNT : '',
             /** Item tag identifier */
             'item_tag' => $tag,
             /** Whether the record is active */

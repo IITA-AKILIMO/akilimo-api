@@ -10,7 +10,9 @@ namespace App\Http\Resources;
 
 use App\Models\Currency;
 use App\Models\FertilizerPrice;
+use App\Support\PriceMarker;
 use App\Utils\CurrencyConversion;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -35,12 +37,15 @@ class FertilizerPriceResource extends JsonResource
         $conv = new CurrencyConversion;
         $currencyResource = $this->currency ? CurrencyResource::make($this->currency) : null;
 
-        $priceRange = $conv->convertPriceToLocalCurrency(
+        // "I don't know" and "Exact price" are shown as words, not as a price (0 TSh, -1 TSh)
+        $marker = PriceMarker::describe($fertilizerPrice->price_per_bag);
+
+        $priceRange = $marker ?? $conv->convertPriceToLocalCurrency(
             minUsd: $fertilizerPrice->price_per_bag,
             maxUsd: $fertilizerPrice->price_per_bag,
             currencyRate: 1,
-            // Same step the generated options are rounded to, so the label matches the price sent
-            nearestValue: (float) (config('price_catalogue.rounding.' . strtoupper((string) $this->currency?->currency_code)) ?? 1000),
+            // Same step the generated options are rounded to (price_choice_rounding), so the label matches the price sent
+            nearestValue: (float) (DB::table('price_choice_rounding')->where('currency', strtoupper((string) $this->currency?->currency_code))->value('step') ?? 1000),
             currency: $this->currency
         );
 
@@ -69,8 +74,10 @@ class FertilizerPriceResource extends JsonResource
             'max_allowed_price' => $this->maxBand?->max_price,
             /** Price per bag */
             'price_per_bag' => $fertilizerPrice->price_per_bag,
-            /** Converted price range */
+            /** Converted price range; the words "I don't know" or "Exact price" for those two rows */
             'price_range' => $priceRange,
+            /** The text to show for this choice (same as price_range), which the client maps back to the value it sends */
+            'label' => $priceRange,
             /** Whether the price is active */
             'active' => $fertilizerPrice->price_active,
             /** Description or notes */

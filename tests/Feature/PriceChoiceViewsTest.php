@@ -98,6 +98,34 @@ it('shows the farmer prices, never percentages, in any list the app reads', func
     expect(DB::table('fertilizer_prices')->where('price_per_bag', '>', 0)->pluck('desc')->unique()->values()->all())->toBe(['']);
 });
 
+it('labels every choice in words the client shows, and the zero and negative rows as text', function () {
+    viewCountry('TZ');
+    viewFertilizer('TZ', 'urea', 'UREA_TZ');
+    DB::table('currencies')->insert(['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh']);
+    viewPrice();
+    viewPrice(['item' => 'cassUP', 'fertilizer_type' => null, 'unit' => 'per_tonne', 'price' => 180000]);
+    viewPrice(['item' => 'investment_amount', 'fertilizer_type' => null, 'unit' => 'per_acre', 'price' => 57550]);
+
+    $fertilizer = collect($this->getJson('/api/v1/fertilizer-prices/country/TZ?per_page=100')->json('data'))->sortBy('sort_order')->values();
+    $cassava = collect($this->getJson('/api/v1/cassava-prices/country/TZ')->json('data'))->sortBy('min_local_price')->values();
+    $investment = collect($this->getJson('/api/v1/investment-amounts/country/TZ')->json('data'))->sortBy('sort_order')->values();
+
+    // fertiliser: "I don't know" (price 0), four prices, "Exact price" (negative)
+    expect($fertilizer->pluck('label')->all())->toBe(["I don't know", '35,000 TSh', '45,000 TSh', '55,000 TSh', '65,000 TSh', 'Exact price'])
+        ->and($fertilizer->first()['price_range'])->toBe("I don't know")
+        ->and($fertilizer->first()['description'])->toBe("I don't know")
+        ->and($fertilizer->last()['description'])->toBe('Exact price');
+
+    // ranges: the exact-price row is words, the bands are ranges with the currency
+    expect($cassava->pluck('label')->all())->toBe(['Exact price', '108,000 – 144,000 TSh', '144,000 – 180,000 TSh', '180,000 – 216,000 TSh', '216,000 – 252,000 TSh'])
+        ->and($cassava->first()['description'])->toBe('Exact price')
+        ->and($cassava->last()['description'])->toBe('');
+
+    // investment: the 0 row is where the farmer types their own amount
+    expect($investment->first()['label'])->toBe('Exact amount')
+        ->and($investment->pluck('label')->all())->toContain('57,550 TSh', '345,300 TSh');
+});
+
 it('rounds to the currency step and does not round an unlisted currency', function () {
     viewCountry('GH');
     viewCountry('XX');

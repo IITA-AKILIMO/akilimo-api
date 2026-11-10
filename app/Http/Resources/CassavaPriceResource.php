@@ -11,6 +11,7 @@ namespace App\Http\Resources;
 use App\Data\MinMaxPriceDto;
 use App\Models\CassavaPrice;
 use App\Models\Currency;
+use App\Support\PriceMarker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -58,6 +59,10 @@ class CassavaPriceResource extends JsonResource
             'average_price' => $avgPrice,
             /** Whether this is an exact price */
             'exact_price' => $avgPrice === -1.0,
+            /** The text to show for this choice: its price range with the currency, or "Exact price" for the row where the farmer types their own */
+            'label' => PriceMarker::labelForRange($cassavaPrice->min_local_price, $cassavaPrice->max_local_price, $this->currency?->currency_symbol ?: $this->currency?->currency_code),
+            /** Words for the exact-price row ("Exact price"); empty for an ordinary price band */
+            'description' => PriceMarker::describe($avgPrice) ?? '',
             /** Item tag identifier */
             'item_tag' => $tag,
             /** Minimum allowed price band */
