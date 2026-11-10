@@ -29,13 +29,16 @@ class DefaultPricesSeeder extends Seeder
         $csv = Reader::from(database_path('seeders/data/default_prices.csv'), 'r');
         $csv->setHeaderOffset(0);
 
+        $units = DB::table('price_items')->pluck('unit', 'item')->all();
+
         $batch = [];
         $batchSize = 1000;
 
         foreach ($csv as $record) {
             $country = $record['Country'];
             $item = $record['Item'];
-            $unit = config('price_catalogue.unit_by_item.' . $item) ?? 'per_bag';
+            // The unit the item is priced in (price_items); anything unlisted is fertiliser, per bag
+            $unit = $units[$item] ?? 'per_bag';
             $bagKg = $unit === 'per_bag'
                 ? ($country === 'BI' && in_array($item, self::BURUNDI_25KG, true) ? 25 : config('price_catalogue.default_bag_kg'))
                 : null;

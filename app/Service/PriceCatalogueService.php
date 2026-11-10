@@ -198,7 +198,8 @@ class PriceCatalogueService
 
         $unit = $data['unit'] ?? null;
         if ($unit === null || $unit === '') {
-            $unit = config('price_catalogue.unit_by_item.' . $item) ?? 'per_bag';
+            // The unit the item is priced in (price_items); anything unlisted is fertiliser, per bag
+            $unit = DB::table('price_items')->where('item', $item)->value('unit') ?? 'per_bag';
         }
         $data['unit'] = $unit;
 
