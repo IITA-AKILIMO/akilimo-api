@@ -4,61 +4,50 @@ import FormField from '../../components/FormField'
 import ResourceForm from '../../components/ResourceForm'
 import CountrySelect from '../../components/CountrySelect'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { Fertilizer } from '../../types'
+import type { Fertilizer, FertilizerTypeOption } from '../../types'
 
-interface Props { item: Fertilizer }
+interface Props { item: Fertilizer; types: FertilizerTypeOption[] }
 
-export default function FertilizersEdit({ item }: Props) {
+export default function FertilizersEdit({ item, types }: Props) {
     const { data, setData, put, processing, errors } = useForm({
-        name: item.name, type: item.type, fertilizer_key: item.fertilizer_key,
-        fertilizer_label: item.fertilizer_label ?? '', weight: String(item.weight),
-        country: item.country, sort_order: String(item.sort_order ?? ''),
+        type: item.type, country: item.country, sort_order: String(item.sort_order ?? ''),
         use_case: item.use_case, cis: item.cis, cim: item.cim, available: item.available,
     })
+
+    const selected = types.find((t) => t.type === data.type)
+    // The key is the type and the country; it is computed, never typed
+    const key = data.type && data.country ? `${data.type}_${data.country}` : ''
 
     function handleSubmit(e: FormEvent) { e.preventDefault(); put(`/admin/fertilizers/${item.id}`) }
 
     return (
         <AdminLayout title="Edit Fertilizer">
             <div className="mx-auto" style={{ maxWidth: 640 }}>
-                <ResourceForm title={`Edit: ${item.name}`} onSubmit={handleSubmit} processing={processing} onCancel={() => window.history.back()}>
+                <ResourceForm title={`Edit: ${item.name} (${item.country})`} onSubmit={handleSubmit} processing={processing} onCancel={() => window.history.back()}>
                     <div className="row g-3">
                         <div className="col-md-6">
-                            <FormField label="Name" required error={errors.name}>
-                                <input type="text" className={`form-control ${errors.name ? 'is-invalid' : ''}`} value={data.name} onChange={e => setData('name', e.target.value)} />
-                            </FormField>
-                        </div>
-                        <div className="col-md-6">
-                            <FormField label="Type" required error={errors.type}>
+                            <FormField label="Fertilizer" required error={errors.type}>
                                 <select className={`form-select ${errors.type ? 'is-invalid' : ''}`} value={data.type} onChange={e => setData('type', e.target.value)}>
-                                    <option value="">Select type</option>
-                                    <option value="STRAIGHT">STRAIGHT</option>
-                                    <option value="COMPOUND">COMPOUND</option>
-                                    <option value="ORGANIC">ORGANIC</option>
+                                    {types.map((t) => <option key={t.type} value={t.type}>{t.name}</option>)}
                                 </select>
                             </FormField>
                         </div>
                         <div className="col-md-6">
-                            <FormField label="Fertilizer Key" required error={errors.fertilizer_key}>
-                                <input type="text" className={`form-control ${errors.fertilizer_key ? 'is-invalid' : ''}`} value={data.fertilizer_key} onChange={e => setData('fertilizer_key', e.target.value)} />
-                            </FormField>
-                        </div>
-                        <div className="col-md-6">
-                            <FormField label="Fertilizer Label" error={errors.fertilizer_label}>
-                                <input type="text" className="form-control" value={data.fertilizer_label} onChange={e => setData('fertilizer_label', e.target.value)} />
-                            </FormField>
-                        </div>
-                        <div className="col-md-4">
                             <FormField label="Country" required error={errors.country}>
                                 <CountrySelect value={data.country} onChange={(v) => setData('country', v)} error={errors.country} required />
                             </FormField>
                         </div>
-                        <div className="col-md-4">
-                            <FormField label="Weight (kg)" required error={errors.weight}>
-                                <input type="number" min={1} className={`form-control ${errors.weight ? 'is-invalid' : ''}`} value={data.weight} onChange={e => setData('weight', e.target.value)} />
+                        <div className="col-md-6">
+                            <FormField label="Fertilizer key">
+                                <input type="text" className="form-control" value={key} readOnly />
                             </FormField>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
+                            <FormField label="Bag weight (kg)">
+                                <input type="text" className="form-control" value={selected ? String(selected.weight) : String(item.weight)} readOnly />
+                            </FormField>
+                        </div>
+                        <div className="col-md-3">
                             <FormField label="Sort Order" error={errors.sort_order}>
                                 <input type="number" min={0} className="form-control" value={data.sort_order} onChange={e => setData('sort_order', e.target.value)} />
                             </FormField>

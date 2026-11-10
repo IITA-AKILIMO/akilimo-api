@@ -72,6 +72,15 @@ The default price forms (create, edit, batch create, batch edit) offer lists, an
 
 All three live in the database, so they are managed there: a new unit or item is a row in `price_units` or `price_items` (no admin screen yet). The config lists (`unit_by_item`, `units`) are gone. `price_items` was seeded with the labour, crop and investment items, every item already in the catalogue, and every fertiliser. Rows that fit no list (the stray `string` test row) are left out and cannot be edited through the forms until fixed.
 
+### 3.7 Fertilisers normalised (done 2026-11-10)
+`fertilizers` repeated a fertiliser's type, label, name and bag weight for every country that sells it (UREA and DAP four times each). It is now two tables and a view:
+
+- **`fertilizer_types`**: each fertiliser once (type code, label, name, bag weight). 23 rows from the 38. A new fertiliser is a row here.
+- **`country_fertilizers`**: which type is sold in which country and how the app uses it (use case, CIS, CIM, available, sort order). One row per type and country, enforced. Row ids are the old `fertilizers` ids, so ids held by apps and option lists stay valid.
+- **`fertilizers`** is a view over both with the old name and columns, so the API, recommendation service and the price views are unchanged. `fertilizer_key` is computed (type, underscore, country), so it can no longer disagree with them. The old table is kept as `fertilizers_legacy`.
+- Writes go through `FertilizerRepo` to the two tables. The admin form picks the fertiliser from a list (its old "Type" list, STRAIGHT/COMPOUND/ORGANIC, did not match the stored types), picks the country, and shows the computed key and bag weight read-only. The API write endpoints take the type code, country and the country's use; name, label, weight and key are no longer accepted. Changing a fertiliser's name or weight is one change that applies to every country.
+- Verified: the view equals the old table on every column of all 38 rows, before and after a rollback and re-run.
+
 ## 4. Order of work
 
 1. **Done 2026-11-10.** Dropped `produce_prices` and `available_fertilizer` with their models and the `produce_prices` seeder (migrations `…000008`, `…000009`). `request_fertilizer` was left: it is empty locally but production use is unconfirmed.

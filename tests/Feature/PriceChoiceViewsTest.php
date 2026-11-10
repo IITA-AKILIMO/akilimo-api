@@ -20,20 +20,25 @@ function viewCountry(string $code, string $basis = 'open_market'): void
     ]);
 }
 
+/**
+ * Sell a fertiliser in a country. The key is the type and the country (UREA_TZ),
+ * so the type is the key without its country suffix.
+ */
 function viewFertilizer(string $country, string $label, string $key): int
 {
-    return DB::table('fertilizers')->insertGetId([
-        'fertilizer_label' => $label,
-        'name' => $label,
-        'type' => strtoupper($label),
-        'fertilizer_key' => $key,
-        'weight' => 50,
+    $type = preg_replace('/_' . preg_quote($country, '/') . '$/', '', $key);
+
+    $typeId = DB::table('fertilizer_types')->where('type', $type)->value('id')
+        ?? DB::table('fertilizer_types')->insertGetId(['type' => $type, 'label' => $label, 'name' => $label, 'weight' => 50]);
+
+    return DB::table('country_fertilizers')->insertGetId([
+        'fertilizer_type_id' => $typeId,
         'country' => $country,
-        'sort_order' => 1,
         'use_case' => 'FR',
         'cis' => 1,
         'cim' => 1,
         'available' => 1,
+        'sort_order' => 1,
     ]);
 }
 

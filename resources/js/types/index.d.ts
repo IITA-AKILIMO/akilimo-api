@@ -167,6 +167,13 @@ export interface Translation {
     rw?: string
 }
 
+/** A fertilizer a country can sell (fertilizer_types), picked in the fertilizer forms */
+export interface FertilizerTypeOption {
+    type: string
+    name: string
+    weight: number
+}
+
 export interface PriceCurrency {
     code: string
     name: string

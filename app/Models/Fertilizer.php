@@ -10,4 +10,10 @@ namespace App\Models;
 
 use App\Models\Base\Fertilizer as BaseFertilizer;
 
+/**
+ * Read-only: `fertilizers` is a database view over fertilizer_types (the
+ * fertiliser: type, label, name, bag weight) and country_fertilizers (where it is
+ * sold and how it is used), with fertilizer_key computed from the type and the
+ * country. Write through FertilizerRepo, which updates those two tables.
+ */
 class Fertilizer extends BaseFertilizer {}

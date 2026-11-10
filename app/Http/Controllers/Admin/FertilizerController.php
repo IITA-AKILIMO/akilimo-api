@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\FertilizerRequest;
+use App\Models\FertilizerType;
 use App\Repositories\FertilizerRepo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -57,7 +58,7 @@ class FertilizerController extends AdminController
 
     public function create(): Response
     {
-        return Inertia::render('Fertilizers/Create');
+        return Inertia::render('Fertilizers/Create', ['types' => $this->types()]);
     }
 
     public function store(FertilizerRequest $request): RedirectResponse
@@ -72,7 +73,7 @@ class FertilizerController extends AdminController
     {
         $item = $this->repo->findOrFail($id);
 
-        return Inertia::render('Fertilizers/Edit', ['item' => $item->toArray()]);
+        return Inertia::render('Fertilizers/Edit', ['item' => $item->toArray(), 'types' => $this->types()]);
     }
 
     public function update(FertilizerRequest $request, int $id): RedirectResponse
@@ -88,6 +89,19 @@ class FertilizerController extends AdminController
         $this->repo->delete($id);
 
         return redirect()->route('admin.fertilizers.index')
-            ->with('success', 'Fertilizer deleted.');
+            ->with('success', 'Fertilizer removed from the country.');
+    }
+
+    /**
+     * The fertilisers a country can sell, from fertilizer_types: picked in the form
+     * instead of typed. A new fertiliser is a row in that table.
+     *
+     * @return list<array{type: string, name: string, weight: int}>
+     */
+    private function types(): array
+    {
+        return FertilizerType::query()->orderBy('name')->get(['type', 'name', 'weight'])
+            ->map(fn (FertilizerType $t) => ['type' => $t->type, 'name' => $t->name, 'weight' => $t->weight])
+            ->all();
     }
 }
