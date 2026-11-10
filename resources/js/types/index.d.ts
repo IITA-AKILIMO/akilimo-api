@@ -167,6 +167,12 @@ export interface Translation {
     rw?: string
 }
 
+/** What a fertilizer is offered for (fertilizer_use_cases), picked in the fertilizer forms */
+export interface FertilizerUseCase {
+    value: string
+    label: string
+}
+
 /** A fertilizer a country can sell (fertilizer_types), picked in the fertilizer forms */
 export interface FertilizerTypeOption {
     type: string

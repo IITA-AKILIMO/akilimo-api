@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DefaultPriceController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\FertilizerController;
+use App\Http\Controllers\Admin\FertilizerTypeController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\StarchFactoryController;
 use App\Http\Controllers\Admin\StarchPriceController;
@@ -101,6 +102,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::resource('fertilizers', FertilizerController::class)
             ->except(['show'])
             ->parameters(['fertilizers' => 'id']);
+
+        // A new fertilizer (its type code is generated from the name)
+        Route::get('fertilizer-types/create', [FertilizerTypeController::class, 'create'])->name('fertilizer-types.create');
+        Route::post('fertilizer-types', [FertilizerTypeController::class, 'store'])->name('fertilizer-types.store');
 
         // Starch prices — batch routes must come before the resource to avoid {id} capture
         Route::get('starch-prices/batch-create', [StarchPriceController::class, 'batchCreate'])->name('starch-prices.batch-create');

@@ -13,6 +13,7 @@ use App\Models\FertilizerType;
 use App\Repositories\FertilizerRepo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -58,7 +59,7 @@ class FertilizerController extends AdminController
 
     public function create(): Response
     {
-        return Inertia::render('Fertilizers/Create', ['types' => $this->types()]);
+        return Inertia::render('Fertilizers/Create', ['types' => $this->types(), 'useCases' => $this->useCases()]);
     }
 
     public function store(FertilizerRequest $request): RedirectResponse
@@ -73,7 +74,7 @@ class FertilizerController extends AdminController
     {
         $item = $this->repo->findOrFail($id);
 
-        return Inertia::render('Fertilizers/Edit', ['item' => $item->toArray(), 'types' => $this->types()]);
+        return Inertia::render('Fertilizers/Edit', ['item' => $item->toArray(), 'types' => $this->types(), 'useCases' => $this->useCases()]);
     }
 
     public function update(FertilizerRequest $request, int $id): RedirectResponse
@@ -90,6 +91,18 @@ class FertilizerController extends AdminController
 
         return redirect()->route('admin.fertilizers.index')
             ->with('success', 'Fertilizer removed from the country.');
+    }
+
+    /**
+     * What a fertiliser is offered for, from fertilizer_use_cases.
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    private function useCases(): array
+    {
+        return DB::table('fertilizer_use_cases')->orderBy('sort_order')->get(['value', 'label'])
+            ->map(fn ($u) => ['value' => (string) $u->value, 'label' => (string) $u->label])
+            ->all();
     }
 
     /**

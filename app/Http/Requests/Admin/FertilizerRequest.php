@@ -33,7 +33,8 @@ class FertilizerRequest extends FormRequest
             'type' => [...$required, 'string', Rule::exists('fertilizer_types', 'type')],
             'country' => [...$required, 'string', 'size:2'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'use_case' => [...$required, 'string', 'max:50'],
+            // Picked from fertilizer_use_cases
+            'use_case' => [...$required, 'string', Rule::exists('fertilizer_use_cases', 'value')],
             'cis' => ['boolean'],
             'cim' => ['boolean'],
             'available' => ['boolean'],
@@ -50,6 +51,10 @@ class FertilizerRequest extends FormRequest
 
         if (isset($data['type'])) {
             $data['type'] = (string) (DB::table('fertilizer_types')->where('type', $data['type'])->value('type') ?? $data['type']);
+        }
+
+        if (isset($data['use_case'])) {
+            $data['use_case'] = (string) (DB::table('fertilizer_use_cases')->where('value', $data['use_case'])->value('value') ?? $data['use_case']);
         }
 
         return $key === null ? $data : data_get($data, $key, $default);

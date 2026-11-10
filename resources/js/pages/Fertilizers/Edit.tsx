@@ -4,11 +4,11 @@ import FormField from '../../components/FormField'
 import ResourceForm from '../../components/ResourceForm'
 import CountrySelect from '../../components/CountrySelect'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { Fertilizer, FertilizerTypeOption } from '../../types'
+import type { Fertilizer, FertilizerTypeOption, FertilizerUseCase } from '../../types'
 
-interface Props { item: Fertilizer; types: FertilizerTypeOption[] }
+interface Props { item: Fertilizer; types: FertilizerTypeOption[]; useCases: FertilizerUseCase[] }
 
-export default function FertilizersEdit({ item, types }: Props) {
+export default function FertilizersEdit({ item, types, useCases }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         type: item.type, country: item.country, sort_order: String(item.sort_order ?? ''),
         use_case: item.use_case, cis: item.cis, cim: item.cim, available: item.available,
@@ -54,7 +54,10 @@ export default function FertilizersEdit({ item, types }: Props) {
                         </div>
                         <div className="col-md-6">
                             <FormField label="Use Case" required error={errors.use_case}>
-                                <input type="text" className={`form-control ${errors.use_case ? 'is-invalid' : ''}`} value={data.use_case} onChange={e => setData('use_case', e.target.value)} />
+                                <select className={`form-select ${errors.use_case ? 'is-invalid' : ''}`} value={data.use_case} onChange={e => setData('use_case', e.target.value)}>
+                                    {!useCases.some((u) => u.value === data.use_case) && <option value={data.use_case}>{data.use_case} (not in list)</option>}
+                                    {useCases.map((u) => <option key={u.value} value={u.value}>{u.value} — {u.label}</option>)}
+                                </select>
                             </FormField>
                         </div>
                         <div className="col-12">

@@ -1,14 +1,14 @@
-import { useForm } from '@inertiajs/react'
+import { Link, useForm } from '@inertiajs/react'
 import type { FormEvent } from 'react'
 import FormField from '../../components/FormField'
 import ResourceForm from '../../components/ResourceForm'
 import CountrySelect from '../../components/CountrySelect'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { FertilizerTypeOption } from '../../types'
+import type { FertilizerTypeOption, FertilizerUseCase } from '../../types'
 
-interface Props { types: FertilizerTypeOption[] }
+interface Props { types: FertilizerTypeOption[]; useCases: FertilizerUseCase[] }
 
-export default function FertilizersCreate({ types }: Props) {
+export default function FertilizersCreate({ types, useCases }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         type: '', country: '', sort_order: '', use_case: '',
         cis: false, cim: false, available: true,
@@ -26,7 +26,8 @@ export default function FertilizersCreate({ types }: Props) {
                 <ResourceForm title="Sell a fertilizer in a country" onSubmit={handleSubmit} processing={processing} onCancel={() => window.history.back()}>
                     <p className="text-body-secondary small">
                         Pick the fertilizer and the country. Its name and bag weight come from the fertilizer, and its key is
-                        worked out from the fertilizer and the country. A fertilizer that is not in the list is added to the fertilizer types first.
+                        worked out from the fertilizer and the country. Not in the list?{' '}
+                        <Link href="/admin/fertilizer-types/create">Add a new fertilizer</Link>.
                     </p>
                     <div className="row g-3">
                         <div className="col-md-6">
@@ -59,7 +60,10 @@ export default function FertilizersCreate({ types }: Props) {
                         </div>
                         <div className="col-md-6">
                             <FormField label="Use Case" required error={errors.use_case}>
-                                <input type="text" className={`form-control ${errors.use_case ? 'is-invalid' : ''}`} value={data.use_case} onChange={e => setData('use_case', e.target.value)} />
+                                <select className={`form-select ${errors.use_case ? 'is-invalid' : ''}`} value={data.use_case} onChange={e => setData('use_case', e.target.value)}>
+                                    <option value="">Select use case</option>
+                                    {useCases.map((u) => <option key={u.value} value={u.value}>{u.value} — {u.label}</option>)}
+                                </select>
                             </FormField>
                         </div>
                         <div className="col-12">
