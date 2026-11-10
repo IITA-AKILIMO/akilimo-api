@@ -1,71 +1,83 @@
 import { Link, router } from '@inertiajs/react'
-import CountrySelect from '../../components/CountrySelect'
+import DataTable, { type Column } from '../../components/DataTable'
+import TableFilters, { type FilterDef } from '../../components/TableFilters'
 import AdminLayout from '../../layouts/AdminLayout'
+import type { Paginated } from '../../types'
+
+type Filters = Record<string, string>
 
 interface Props {
     lists: { key: string; title: string }[]
-    list: string
-    country: string
+    filters: Filters
     title: string
+    searchPlaceholder: string | null
+    hasMarkers: boolean
     columns: { key: string; label: string }[]
-    rows: Record<string, string | number | null>[]
-    total: number
-    limit: number
+    items: Paginated<Record<string, string | number | null>>
 }
 
-export default function PriceListsIndex({ lists, list, country, title, columns, rows, total, limit }: Props) {
-    function go(next: { list?: string; country?: string }) {
-        router.get('/admin/price-lists', { list, country, ...next }, { preserveState: true })
+export default function PriceListsIndex({ lists, filters, title, searchPlaceholder, hasMarkers, columns, items }: Props) {
+    // What the farmer is shown comes first; the values behind it follow
+    const tableColumns: Column[] = [
+        { key: 'label', label: 'Shown to the farmer', render: (v) => <span className="fw-medium">{String(v ?? '')}</span> },
+        ...columns.map((c) => ({ key: c.key, label: c.label })),
+    ]
+
+    // Which list is shown is a choice of page, not a filter: the other filters apply to it
+    const defs: FilterDef[] = [{ type: 'country', key: 'country' }]
+    if (searchPlaceholder) defs.unshift({ type: 'search', key: 'search', placeholder: searchPlaceholder })
+    if (hasMarkers) {
+        defs.push({
+            type: 'select', key: 'kind', label: 'Rows',
+            options: [{ value: 'choices', label: 'Price choices' }, { value: 'markers', label: 'Words only (I don’t know, exact)' }],
+        })
+    }
+
+    function handlePageChange(page: number) {
+        router.get('/admin/price-lists', { ...filters, page }, { preserveState: true })
+    }
+
+    function showList(list: string) {
+        // The country carries over; a search or row filter belongs to one list
+        router.get('/admin/price-lists', { list, country: filters.country || undefined }, { preserveState: false })
     }
 
     return (
         <AdminLayout title="App price lists">
             <p className="text-body-secondary" style={{ maxWidth: 760 }}>
-                What the mobile app is given, worked out from the catalogue. These lists cannot be edited: change a price on{' '}
-                <Link href="/admin/default-prices">Default prices</Link> or a rule on <Link href="/admin/reference">Price settings</Link> and they follow at once.
+                What the mobile app is given, worked out from the catalogue. The first column is the text a client shows for each
+                choice; it maps the farmer&apos;s pick back to the value behind it and sends that to the API. These lists cannot be
+                edited: change a price on <Link href="/admin/default-prices">Default prices</Link> or a rule on{' '}
+                <Link href="/admin/reference">Price settings</Link> and they follow at once.
             </p>
 
-            <div className="d-flex flex-wrap gap-3 align-items-end mb-3">
-                <div>
-                    <label className="form-label small mb-1">List</label>
-                    <select className="form-select" value={list} onChange={(e) => go({ list: e.target.value })}>
-                        {lists.map((l) => <option key={l.key} value={l.key}>{l.title}</option>)}
-                    </select>
-                </div>
-                <div style={{ minWidth: 220 }}>
-                    <label className="form-label small mb-1">Country</label>
-                    <div className="d-flex gap-2">
-                        <div className="flex-grow-1"><CountrySelect value={country} onChange={(c) => go({ country: c })} /></div>
-                        {country && <button className="btn btn-outline-secondary" onClick={() => go({ country: '' })}>All</button>}
-                    </div>
-                </div>
-                <div className="text-body-secondary small ms-auto">
-                    {total} row{total === 1 ? '' : 's'}{total > limit ? ` (showing the first ${limit})` : ''}
-                </div>
-            </div>
+            <ul className="nav nav-pills gap-1 mb-3" aria-label="Price lists">
+                {lists.map((l) => (
+                    <li className="nav-item" key={l.key}>
+                        <button
+                            type="button"
+                            className={`nav-link py-1 px-3${filters.list === l.key ? ' active' : ''}`}
+                            aria-current={filters.list === l.key ? 'page' : undefined}
+                            onClick={() => showList(l.key)}
+                        >
+                            {l.title}
+                        </button>
+                    </li>
+                ))}
+            </ul>
 
-            <div className="card border-0 shadow-sm">
-                <div className="table-responsive">
-                    <table className="table table-sm table-hover align-middle mb-0">
-                        <caption className="visually-hidden">{title}</caption>
-                        <thead className="table-light">
-                            <tr>{columns.map((c) => <th key={c.key}>{c.label}</th>)}</tr>
-                        </thead>
-                        <tbody>
-                            {rows.length === 0 && (
-                                <tr><td colSpan={columns.length} className="text-center text-body-secondary py-4">
-                                    Nothing here: no active catalogue price feeds this list{country ? ' in this country' : ''}.
-                                </td></tr>
-                            )}
-                            {rows.map((row, i) => (
-                                <tr key={i}>
-                                    {columns.map((c) => <td key={c.key}>{row[c.key] === null || row[c.key] === undefined ? '' : String(row[c.key])}</td>)}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <TableFilters url="/admin/price-lists" filters={filters} total={items.meta.total} defs={defs} />
+
+            <DataTable
+                columns={tableColumns}
+                data={items.data}
+                pagination={items.meta}
+                links={items.links}
+                sortBy=""
+                onSort={() => {}}
+                onPageChange={handlePageChange}
+            />
+            <span className="visually-hidden">{title}</span>
         </AdminLayout>
     )
 }

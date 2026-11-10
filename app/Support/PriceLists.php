@@ -54,6 +54,51 @@ final class PriceLists
     ];
 
     /**
+     * Text columns a list can be searched by.
+     *
+     * @var array<string, list<string>>
+     */
+    public const SEARCH = [
+        'fertilizer' => ['fertilizer_key'],
+        'maize' => ['produce_type'],
+        'operations' => ['operation_name', 'operation_type'],
+    ];
+
+    /**
+     * What makes a row one of the two the client shows in words rather than as a
+     * price ("I don't know", "Exact price"), as a SQL condition. Lists without such
+     * a row are not here.
+     *
+     * @var array<string, string>
+     */
+    public const MARKER = [
+        'fertilizer' => 'price_per_bag <= 0',
+        'cassava' => 'min_local_price < 0',
+        'maize' => 'min_local_price < 0',
+        'potato' => 'min_local_price < 0',
+        'investment' => 'investment_amount = 0',
+    ];
+
+    /** Lists whose API responses carry the currency symbol in their labels. */
+    private const WITH_CURRENCY = ['fertilizer', 'cassava', 'investment'];
+
+    /**
+     * The text the API gives a client to show for a row (its `label`), so an admin
+     * sees exactly what the farmer is offered.
+     */
+    public static function label(string $list, object $row, ?string $symbol): string
+    {
+        $symbol = in_array($list, self::WITH_CURRENCY, true) ? $symbol : null;
+
+        return match ($list) {
+            'fertilizer' => PriceMarker::labelForPrice($row->price_per_bag, $symbol),
+            'cassava', 'potato', 'maize' => PriceMarker::labelForRange($row->min_local_price, $row->max_local_price, $symbol),
+            'investment' => (float) $row->investment_amount === 0.0 ? PriceMarker::EXACT_AMOUNT : PriceMarker::labelForPrice($row->investment_amount, $symbol),
+            'operations' => PriceMarker::labelForRange($row->min_cost, $row->max_cost),
+        };
+    }
+
+    /**
      * A row in words and the value it holds, for a before-and-after preview.
      * The id of a row is stable across a change of rule, so the two sides match.
      *

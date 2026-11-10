@@ -1,14 +1,18 @@
 import { Link, router } from '@inertiajs/react'
 import { useState } from 'react'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import DataTable, { type Column } from '../../components/DataTable'
 import { PreviewPanel, requestPreview } from '../../components/PricePreview'
 import type { PreviewOutcome } from '../../components/PricePreview'
+import TableFilters, { type FilterDef } from '../../components/TableFilters'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { ReferenceResource, ReferenceRow } from '../../types'
+import type { Paginated, ReferenceResource, ReferenceRow } from '../../types'
 
 interface Props {
     resource: ReferenceResource
-    rows: ReferenceRow[]
+    filters: Record<string, string>
+    selectFilters: { key: string; label: string; options: { value: string; label: string }[] }[]
+    items: Paginated<ReferenceRow>
 }
 
 /** ?key[column]=value for the row's key columns, as the server reads it */
@@ -16,13 +20,30 @@ export function keyQuery(key: Record<string, unknown>): string {
     return Object.entries(key).map(([k, v]) => `key[${encodeURIComponent(k)}]=${encodeURIComponent(String(v))}`).join('&')
 }
 
-export default function ReferenceIndex({ resource, rows }: Props) {
+export default function ReferenceIndex({ resource, filters, selectFilters, items }: Props) {
     const [deleting, setDeleting] = useState<ReferenceRow | null>(null)
     const [processing, setProcessing] = useState(false)
     // For a table that drives the app's price lists: what removing the row would do to them
     const [outcome, setOutcome] = useState<PreviewOutcome | null>(null)
     const [loadingPreview, setLoadingPreview] = useState(false)
     const base = `/admin/reference/${resource.slug}`
+
+    const columns: Column[] = resource.fields.map((f) => ({
+        key: f.name,
+        label: f.label,
+        render: (v) => (v === null || v === undefined ? '' : String(v)),
+    }))
+
+    const defs: FilterDef[] = [
+        { type: 'search', key: 'search', placeholder: `Search ${resource.title.toLowerCase()}…` },
+        ...selectFilters
+            .filter((s) => s.options.length > 1)
+            .map((s): FilterDef => ({ type: 'select', key: s.key, label: s.label, options: s.options })),
+    ]
+
+    function handlePageChange(page: number) {
+        router.get(base, { ...filters, page }, { preserveState: true })
+    }
 
     async function startDelete(row: ReferenceRow) {
         setDeleting(row)
@@ -63,34 +84,23 @@ export default function ReferenceIndex({ resource, rows }: Props) {
                 <Link href={resource.createUrl ?? `${base}/create`} className="btn btn-success btn-sm text-nowrap">+ New</Link>
             </div>
 
-            <div className="card border-0 shadow-sm">
-                <div className="table-responsive">
-                    <table className="table table-hover align-middle mb-0">
-                        <thead className="table-light">
-                            <tr>
-                                {resource.fields.map((f) => <th key={f.name}>{f.label}</th>)}
-                                <th style={{ width: 150 }}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows.length === 0 && (
-                                <tr><td colSpan={resource.fields.length + 1} className="text-center text-body-secondary py-4">Nothing here yet.</td></tr>
-                            )}
-                            {rows.map((row) => (
-                                <tr key={keyQuery(row._key)}>
-                                    {resource.fields.map((f) => <td key={f.name}>{row[f.name] === null || row[f.name] === undefined ? '' : String(row[f.name])}</td>)}
-                                    <td className="text-end">
-                                        <div className="d-flex gap-1 justify-content-end">
-                                            <Link href={`${base}/edit?${keyQuery(row._key)}`} className="btn btn-outline-secondary btn-sm">Edit</Link>
-                                            <button className="btn btn-outline-danger btn-sm" onClick={() => startDelete(row)}>Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <TableFilters url={base} filters={filters} total={items.meta.total} defs={defs} />
+
+            <DataTable
+                columns={columns}
+                data={items.data}
+                pagination={items.meta}
+                links={items.links}
+                sortBy=""
+                onSort={() => {}}
+                onPageChange={handlePageChange}
+                actions={(row) => (
+                    <div className="d-flex gap-1 justify-content-end">
+                        <Link href={`${base}/edit?${keyQuery((row as ReferenceRow)._key)}`} className="btn btn-outline-secondary btn-sm">Edit</Link>
+                        <button className="btn btn-outline-danger btn-sm" onClick={() => startDelete(row as ReferenceRow)}>Delete</button>
+                    </div>
+                )}
+            />
 
             <ConfirmDialog
                 open={!!deleting}

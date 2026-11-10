@@ -1,8 +1,10 @@
 import { router, useForm } from '@inertiajs/react'
 import { useState, type FormEvent } from 'react'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import Pagination from '../../components/Pagination'
 import TableFilters from '../../components/TableFilters'
 import AdminLayout from '../../layouts/AdminLayout'
+import type { PaginationLinks, PaginationMeta } from '../../types'
 
 type Field = 'phone' | 'name' | 'device'
 type MatchType = 'exact' | 'starts_with' | 'contains' | 'regex'
@@ -19,6 +21,7 @@ interface Rule {
 
 interface Props {
     rules: Rule[]
+    pagination: { meta: PaginationMeta; links: PaginationLinks }
     fields: Record<Field, string>
     matchTypes: Record<MatchType, string>
     totals: { requests: number; excluded: number }
@@ -37,7 +40,7 @@ const HINTS: Record<Field, string> = {
     device: 'The device ID the app sends with each request, ignoring case.',
 }
 
-export default function TrafficExclusionsIndex({ rules, fields, matchTypes, totals, filters }: Props) {
+export default function TrafficExclusionsIndex({ rules, pagination, fields, matchTypes, totals, filters }: Props) {
     const filtered = Object.values(filters).some((v) => v !== '')
     const form = useForm<{ field: Field; match_type: MatchType; value: string; note: string }>({
         field: 'phone',
@@ -158,7 +161,7 @@ export default function TrafficExclusionsIndex({ rules, fields, matchTypes, tota
                 </div>
             </div>
 
-            <TableFilters url="/admin/traffic-exclusions" filters={filters} total={rules.length} defs={[
+            <TableFilters url="/admin/traffic-exclusions" filters={filters} total={pagination.meta.total} defs={[
                 { type: 'search', key: 'search', placeholder: 'Search value or note…' },
                 { type: 'select', key: 'field', label: 'Checks', options: Object.entries(fields).map(([value, label]) => ({ value, label })) },
                 { type: 'active', key: 'active' },
@@ -224,6 +227,15 @@ export default function TrafficExclusionsIndex({ rules, fields, matchTypes, tota
                 ) : (
                     <div className="card-body text-center text-muted py-4">
                         {filtered ? 'No rule matches these filters.' : 'No rules: every request counts as real traffic.'}
+                    </div>
+                )}
+                {pagination.meta.last_page > 1 && (
+                    <div className="card-footer bg-white">
+                        <Pagination
+                            meta={pagination.meta}
+                            links={pagination.links}
+                            onPageChange={(page) => router.get('/admin/traffic-exclusions', { ...filters, page }, { preserveState: true, preserveScroll: true })}
+                        />
                     </div>
                 )}
             </div>

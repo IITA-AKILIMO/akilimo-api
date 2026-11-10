@@ -52,9 +52,52 @@ it('shows the rows of a table with the key that addresses each', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('Reference/Index')
             ->where('resource.slug', 'price-units')
-            ->has('rows', 5)
-            ->where('rows.0.value', 'per_bag')
-            ->where('rows.0._key.value', 'per_bag'));
+            ->has('items.data', 5)
+            ->where('items.meta.total', 5)
+            ->where('items.data.0.value', 'per_bag')
+            ->where('items.data.0._key.value', 'per_bag'));
+});
+
+it('pages a long table and keeps the filters in the page links', function () {
+    for ($i = 1; $i <= 24; $i++) {
+        DB::table('price_items')->insert(['item' => sprintf('extra_%02d', $i), 'unit' => 'per_kg']);
+    }
+    $admin = referenceAdmin();
+
+    $this->actingAs($admin)->get('/admin/reference/price-items?per_page=10')
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('items.data', 10)
+            ->where('items.meta.last_page', fn ($n) => $n >= 4)
+            ->where('items.meta.per_page', 10));
+
+    $second = $this->actingAs($admin)->get('/admin/reference/price-items?per_page=10&page=2&unit=per_kg')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('items.meta.current_page', 2)
+            ->where('items.meta.total', 25)                      // the 24 added and maize_grain, which is per kg too
+            ->where('items.links.next', fn ($url) => str_contains((string) $url, 'unit=per_kg')));
+
+    // the page size is held to a sensible range
+    $this->actingAs($admin)->get('/admin/reference/price-items?per_page=100000')
+        ->assertInertia(fn (Assert $page) => $page->where('items.meta.per_page', 100));
+});
+
+it('searches a table and filters it by a choice, offering only values it holds', function () {
+    DB::table('price_items')->insert([['item' => 'herbicide_a', 'unit' => 'per_kg'], ['item' => 'herbicide_b', 'unit' => 'per_kg']]);
+    $admin = referenceAdmin();
+
+    $this->actingAs($admin)->get('/admin/reference/price-items?search=herbicide')
+        ->assertInertia(fn (Assert $page) => $page->where('items.meta.total', 2)->where('filters.search', 'herbicide'));
+
+    $this->actingAs($admin)->get('/admin/reference/price-items?unit=per_kg')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('items.meta.total', fn ($n) => $n >= 3)
+            ->where('items.data.0.unit', 'per_kg')
+            ->where('selectFilters.0.key', 'unit')
+            ->where('selectFilters.0.options', fn ($options) => collect($options)->pluck('value')->contains('per_kg')
+                && ! collect($options)->pluck('value')->contains('per_litre')));
+
+    $this->actingAs($admin)->get('/admin/reference/price-items?search=zzzz-nothing')
+        ->assertInertia(fn (Assert $page) => $page->where('items.meta.total', 0)->has('items.data', 0));
 });
 
 it('answers 404 for a table that is not a settings table', function () {
@@ -105,7 +148,7 @@ it('works with a table whose key is two columns', function () {
     $key = ['operation_name' => 'tillage', 'operation_type' => 'tractor'];
 
     $this->actingAs($admin)->get('/admin/reference/price-choice-operations')
-        ->assertInertia(fn (Assert $page) => $page->has('rows', 5));
+        ->assertInertia(fn (Assert $page) => $page->has('items.data', 5));
 
     $this->actingAs($admin)->put('/admin/reference/price-choice-operations?' . refKey($key), ['item' => 'tractor_harrowing'])->assertRedirect();
 

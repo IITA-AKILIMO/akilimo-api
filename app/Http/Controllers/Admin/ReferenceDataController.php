@@ -40,26 +40,62 @@ class ReferenceDataController extends AdminController
         return Inertia::render('Reference/Hub', ['tables' => $tables]);
     }
 
-    public function index(string $slug): Response
+    public function index(Request $request, string $slug): Response
     {
         $def = $this->definition($slug);
         $keys = $this->keyNames($def);
 
+        $textColumns = collect($def['fields'])->whereIn('type', ['text', 'select'])->pluck('name')->all();
+        $selects = collect($def['fields'])->where('type', 'select')->pluck('name')->all();
+
+        $values = $this->filterValues($request, ['search', ...$selects]);
+
         $query = DB::table($def['table']);
+
+        if ($values['search'] !== '' && $textColumns !== []) {
+            $term = '%' . addcslashes($values['search'], '%_\\') . '%';
+            $query->where(function ($q) use ($textColumns, $term) {
+                foreach ($textColumns as $column) {
+                    $q->orWhere($column, 'like', $term);
+                }
+            });
+        }
+
+        foreach ($selects as $name) {
+            if ($values[$name] !== '') {
+                $query->where($name, $values[$name]);
+            }
+        }
+
         foreach ($def['order'] as $column) {
             $query->orderBy($column);
         }
 
-        $rows = $query->get()->map(function ($row) use ($def, $keys) {
-            $values = [];
-            foreach ($def['fields'] as $field) {
-                $values[$field['name']] = $row->{$field['name']};
-            }
+        $paginator = $query->paginate((int) min(100, max(10, (int) $request->get('per_page', 20))))->withQueryString();
 
-            return $values + ['_key' => collect($keys)->mapWithKeys(fn ($k) => [$k => $row->{$k}])->all()];
-        });
+        return Inertia::render('Reference/Index', [
+            'resource' => $this->present($def),
+            'filters' => $values,
+            // A filter offers the values the table actually holds
+            'selectFilters' => collect($selects)->map(function (string $name) use ($def) {
+                $field = collect($def['fields'])->firstWhere('name', $name);
 
-        return Inertia::render('Reference/Index', ['resource' => $this->present($def), 'rows' => $rows]);
+                return [
+                    'key' => $name,
+                    'label' => $field['label'],
+                    'options' => DB::table($def['table'])->whereNotNull($name)->distinct()->orderBy($name)->pluck($name)
+                        ->map(fn ($v) => ['value' => (string) $v, 'label' => (string) $v])->all(),
+                ];
+            })->values()->all(),
+            'items' => $this->paginateShape($paginator, function ($row) use ($def, $keys) {
+                $values = [];
+                foreach ($def['fields'] as $field) {
+                    $values[$field['name']] = $row->{$field['name']};
+                }
+
+                return $values + ['_key' => collect($keys)->mapWithKeys(fn ($k) => [$k => $row->{$k}])->all()];
+            }),
+        ]);
     }
 
     public function create(string $slug): Response
