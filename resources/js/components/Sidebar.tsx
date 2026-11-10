@@ -64,6 +64,8 @@ interface NavItem {
     roles: UserRole[]
     /** Label shown to partners instead, when it differs. */
     partnerLabel?: string
+    /** A submenu: shown under the item while the user is anywhere in its area. */
+    children?: { label: string; href: string }[]
 }
 
 interface NavSection {
@@ -99,7 +101,21 @@ export const navigation: NavSection[] = [
             { label: 'Starch prices', href: '/admin/starch-prices', icon: 'beaker', roles: ADMIN },
             { label: 'Default prices', href: '/admin/default-prices', icon: 'dollar', roles: ADMIN },
             { label: 'App price lists', href: '/admin/price-lists', icon: 'tag', roles: ADMIN },
-            { label: 'Price settings', href: '/admin/reference', icon: 'scale', roles: ADMIN },
+            {
+                label: 'Price settings', href: '/admin/reference', icon: 'scale', roles: ADMIN,
+                children: [
+                    { label: 'Fertilizer types', href: '/admin/reference/fertilizer-types' },
+                    { label: '+ New fertilizer', href: '/admin/fertilizer-types/create' },
+                    { label: 'Price units', href: '/admin/reference/price-units' },
+                    { label: 'Price items', href: '/admin/reference/price-items' },
+                    { label: 'Fertilizer use cases', href: '/admin/reference/fertilizer-use-cases' },
+                    { label: 'Choice steps', href: '/admin/reference/price-choice-steps' },
+                    { label: 'Rounding', href: '/admin/reference/price-choice-rounding' },
+                    { label: 'Item units', href: '/admin/reference/price-choice-units' },
+                    { label: 'Investment multiples', href: '/admin/reference/price-choice-multiples' },
+                    { label: 'Operation cost items', href: '/admin/reference/price-choice-operations' },
+                ],
+            },
         ],
     },
     {
@@ -121,11 +137,16 @@ export function isActive(currentPath: string, href: string): boolean {
     return currentPath === href || currentPath.startsWith(href + '/')
 }
 
+/** The submenu entry the current page is on, if the item has one. */
+function activeChild(item: NavItem, currentPath: string) {
+    return item.children?.find((c) => isActive(currentPath, c.href))
+}
+
 /** The section and item the current page belongs to, for the header eyebrow. */
 export function findActive(currentPath: string): { section: string; label: string } | null {
     for (const section of navigation) {
-        const item = section.items.find((i) => isActive(currentPath, i.href))
-        if (item) return { section: section.heading, label: item.label }
+        const item = section.items.find((i) => isActive(currentPath, i.href) || activeChild(i, currentPath))
+        if (item) return { section: section.heading, label: activeChild(item, currentPath)?.label ?? item.label }
     }
     return null
 }
@@ -161,7 +182,8 @@ export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
                 items: s.items
                     .filter((i) => role !== undefined && i.roles.includes(role))
                     .map((i) => ({ ...i, label: role === 'partner' && i.partnerLabel ? i.partnerLabel : i.label }))
-                    .filter((i) => !q || i.label.toLowerCase().includes(q) || s.heading.toLowerCase().includes(q)),
+                    .filter((i) => !q || i.label.toLowerCase().includes(q) || s.heading.toLowerCase().includes(q)
+                        || (i.children ?? []).some((c) => c.label.toLowerCase().includes(q))),
             }))
             .filter((s) => s.items.length > 0)
     }, [role, filter])
@@ -283,7 +305,11 @@ export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
                                 >
                                 <ul className="nav nav-pills flex-column gap-1" aria-labelledby={headingId}>
                                     {section.items.map((item) => {
-                                        const active = isActive(currentPath, item.href)
+                                        // An item with a submenu is highlighted only on its own page; on a
+                                        // submenu page the submenu entry is highlighted instead
+                                        const inArea = isActive(currentPath, item.href) || !!activeChild(item, currentPath)
+                                        const active = item.children ? currentPath === item.href : isActive(currentPath, item.href)
+                                        const showChildren = !!item.children && (inArea || filtering)
                                         return (
                                             <li key={item.href} className="nav-item">
                                                 <Link
@@ -295,6 +321,24 @@ export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
                                                     <Icon paths={ICONS[item.icon]} />
                                                     <span className="nav-label text-truncate">{item.label}</span>
                                                 </Link>
+                                                {showChildren && (
+                                                    <ul className="nav-sub list-unstyled" aria-label={`${item.label} pages`}>
+                                                        {item.children!.map((child) => {
+                                                            const childActive = isActive(currentPath, child.href)
+                                                            return (
+                                                                <li key={child.href}>
+                                                                    <Link
+                                                                        href={child.href}
+                                                                        className={`nav-sublink${childActive ? ' active' : ''}`}
+                                                                        aria-current={childActive ? 'page' : undefined}
+                                                                    >
+                                                                        {child.label}
+                                                                    </Link>
+                                                                </li>
+                                                            )
+                                                        })}
+                                                    </ul>
+                                                )}
                                             </li>
                                         )
                                     })}

@@ -47,8 +47,16 @@ export default function FertilizersIndex({items, filters, useCases}: Props) {
 
     return (
         <AdminLayout title="Fertilizers">
-            <div className="d-flex align-items-center justify-content-end mb-3">
-                <Link href="/admin/fertilizers/create" className="btn btn-success btn-sm">+ New</Link>
+            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <p className="text-body-secondary small mb-0" style={{maxWidth: 560}}>
+                    Each row is a fertilizer sold in one country. A fertilizer that is not in the lists yet is added first;
+                    then choose the countries that sell it.
+                </p>
+                <div className="d-flex gap-2">
+                    <Link href="/admin/reference/fertilizer-types" className="btn btn-outline-secondary btn-sm">Fertilizer types</Link>
+                    <Link href="/admin/fertilizer-types/create" className="btn btn-outline-success btn-sm">+ New fertilizer</Link>
+                    <Link href="/admin/fertilizers/create" className="btn btn-success btn-sm">+ Sell in a country</Link>
+                </div>
             </div>
 
             <TableFilters url="/admin/fertilizers" filters={filters} total={items.meta.total} defs={[
@@ -81,8 +89,8 @@ export default function FertilizersIndex({items, filters, useCases}: Props) {
                                </button>
                            </div>
                        )}/>
-            <ConfirmDialog open={!!deleting} title="Delete fertilizer"
-                           message={`Delete "${deleting?.name}"? This cannot be undone.`}
+            <ConfirmDialog open={!!deleting} title="Stop selling fertilizer"
+                           message={`Stop selling "${deleting?.name}" in ${deleting?.country}? The fertilizer itself stays in the list.`}
                            onConfirm={handleDelete} onCancel={() => setDeleting(null)} processing={processing}/>
         </AdminLayout>
     )
