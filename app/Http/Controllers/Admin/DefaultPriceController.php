@@ -266,6 +266,7 @@ class DefaultPriceController extends AdminController
             'country' => $item->country,
             'region' => $item->region,
             'item' => $item->item,
+            'fertilizer_key' => $item->fertilizer_key,
             'price' => $item->price,
             'subsidised_price' => $item->subsidised_price,
             'unit' => $item->unit,

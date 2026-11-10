@@ -96,14 +96,8 @@ export const navigation: NavSection[] = [
     {
         heading: 'Prices and costs',
         items: [
-            { label: 'Fertilizer prices', href: '/admin/fertilizer-prices', icon: 'tag', roles: ADMIN },
-            { label: 'Cassava prices', href: '/admin/cassava-prices', icon: 'cassava', roles: ADMIN },
-            { label: 'Maize prices', href: '/admin/maize-prices', icon: 'maize', roles: ADMIN },
-            { label: 'Potato prices', href: '/admin/potato-prices', icon: 'potato', roles: ADMIN },
             { label: 'Starch prices', href: '/admin/starch-prices', icon: 'beaker', roles: ADMIN },
             { label: 'Default prices', href: '/admin/default-prices', icon: 'dollar', roles: ADMIN },
-            { label: 'Operation costs', href: '/admin/operation-costs', icon: 'wrench', roles: ADMIN },
-            { label: 'Investment amounts', href: '/admin/investment-amounts', icon: 'trending', roles: ADMIN },
         ],
     },
     {

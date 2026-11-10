@@ -9,7 +9,6 @@
 use App\Enums\EnumUserRole;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
-use App\Http\Controllers\Admin\CassavaPriceController;
 use App\Http\Controllers\Admin\CassavaUnitController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CropController;
@@ -18,11 +17,6 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DefaultPriceController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\FertilizerController;
-use App\Http\Controllers\Admin\FertilizerPriceController;
-use App\Http\Controllers\Admin\InvestmentAmountController;
-use App\Http\Controllers\Admin\MaizePriceController;
-use App\Http\Controllers\Admin\OperationCostController;
-use App\Http\Controllers\Admin\PotatoPriceController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\StarchFactoryController;
 use App\Http\Controllers\Admin\StarchPriceController;
@@ -108,29 +102,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
             ->except(['show'])
             ->parameters(['fertilizers' => 'id']);
 
-        // Fertilizer prices — batch routes before resource
-        Route::get('fertilizer-prices/batch-create', [FertilizerPriceController::class, 'batchCreate'])->name('fertilizer-prices.batch-create');
-        Route::post('fertilizer-prices/batch', [FertilizerPriceController::class, 'batchStore'])->name('fertilizer-prices.batch-store');
-        Route::get('fertilizer-prices/batch-edit', [FertilizerPriceController::class, 'batchEdit'])->name('fertilizer-prices.batch-edit');
-        Route::put('fertilizer-prices/batch', [FertilizerPriceController::class, 'batchUpdate'])->name('fertilizer-prices.batch-update');
-
-        Route::resource('fertilizer-prices', FertilizerPriceController::class)
-            ->except(['show'])
-            ->parameters(['fertilizer-prices' => 'id']);
-
-        // Commodity prices
-        Route::resource('maize-prices', MaizePriceController::class)
-            ->except(['show'])
-            ->parameters(['maize-prices' => 'id']);
-
-        Route::resource('cassava-prices', CassavaPriceController::class)
-            ->except(['show'])
-            ->parameters(['cassava-prices' => 'id']);
-
-        Route::resource('potato-prices', PotatoPriceController::class)
-            ->except(['show'])
-            ->parameters(['potato-prices' => 'id']);
-
         // Starch prices — batch routes must come before the resource to avoid {id} capture
         Route::get('starch-prices/batch-create', [StarchPriceController::class, 'batchCreate'])->name('starch-prices.batch-create');
         Route::post('starch-prices/batch', [StarchPriceController::class, 'batchStore'])->name('starch-prices.batch-store');
@@ -158,20 +129,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::resource('starch-factories', StarchFactoryController::class)
             ->except(['show'])
             ->parameters(['starch-factories' => 'id']);
-
-        Route::resource('investment-amounts', InvestmentAmountController::class)
-            ->except(['show'])
-            ->parameters(['investment-amounts' => 'id']);
-
-        // Operation costs — batch routes before resource
-        Route::get('operation-costs/batch-create', [OperationCostController::class, 'batchCreate'])->name('operation-costs.batch-create');
-        Route::post('operation-costs/batch', [OperationCostController::class, 'batchStore'])->name('operation-costs.batch-store');
-        Route::get('operation-costs/batch-edit', [OperationCostController::class, 'batchEdit'])->name('operation-costs.batch-edit');
-        Route::put('operation-costs/batch', [OperationCostController::class, 'batchUpdate'])->name('operation-costs.batch-update');
-
-        Route::resource('operation-costs', OperationCostController::class)
-            ->except(['show'])
-            ->parameters(['operation-costs' => 'id']);
 
         Route::resource('crops', CropController::class)
             ->except(['show'])

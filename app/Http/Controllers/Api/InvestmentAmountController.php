@@ -9,14 +9,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\InvestmentAmountRequest;
 use App\Http\Resources\Collections\InvestmentAmountResourceCollection;
-use App\Http\Resources\InvestmentAmountResource;
 use App\Repositories\InvestmentRepo;
 use App\Traits\HasPaginationParams;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InvestmentAmountController extends Controller
@@ -63,36 +60,6 @@ class InvestmentAmountController extends Controller
         ];
 
         return $this->getPaginatedPrices($request, $filters);
-    }
-
-    public function store(InvestmentAmountRequest $request): JsonResponse
-    {
-        $amount = $this->repo->create($request->validated());
-
-        /**
-         * @status 201
-         */
-        return response()->json([
-            'data' => new InvestmentAmountResource($amount),
-            'message' => 'Investment amount created.',
-        ], 201);
-    }
-
-    public function update(InvestmentAmountRequest $request, int $id): JsonResponse
-    {
-        $amount = $this->repo->update($id, $request->validated());
-
-        return response()->json([
-            'data' => new InvestmentAmountResource($amount),
-            'message' => 'Investment amount updated.',
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $this->repo->delete($id);
-
-        return response()->json(null, 204);
     }
 
     private function getPaginatedPrices(Request $request, array $filters = []): InvestmentAmountResourceCollection

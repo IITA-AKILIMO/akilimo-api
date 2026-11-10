@@ -46,6 +46,7 @@ export default function DefaultPricesEdit({ item, history, currentUserId, confid
         source_date: item.source_date ?? '',
         confidence: item.confidence ?? '',
         effective_from: item.effective_from ?? '',
+        fertilizer_key: item.fertilizer_key ?? '',
     })
 
     const status = (item.status ?? 'draft') as PriceStatus
@@ -100,6 +101,7 @@ export default function DefaultPricesEdit({ item, history, currentUserId, confid
 
                         <div className="col-md-4"><FormField label="Unit" required error={errors.unit}><input type="text" maxLength={15} className={`form-control ${errors.unit ? 'is-invalid' : ''}`} value={data.unit} onChange={e => changeUnit(e.target.value)} /></FormField></div>
                         <div className="col-md-4"><FormField label="Bag size (kg)" error={errors.bag_kg}><input type="number" min={1} max={1000} className="form-control" value={data.bag_kg} onChange={e => setData('bag_kg', e.target.value)} disabled={data.unit !== 'per_bag'} /></FormField></div>
+                        <div className="col-md-4"><FormField label="Fertiliser key" error={errors.fertilizer_key}><input type="text" maxLength={50} className="form-control" value={data.fertilizer_key} onChange={e => setData('fertilizer_key', e.target.value.toUpperCase())} placeholder="e.g. UREA_TZ" disabled={data.unit !== 'per_bag'} /></FormField></div>
                         <div className="col-md-4"><FormField label="Effective from" error={errors.effective_from}><input type="date" className="form-control" value={data.effective_from} onChange={e => setData('effective_from', e.target.value)} /></FormField></div>
 
                         <div className="col-md-4"><FormField label="Min allowed price" error={errors.min_price}><input type="number" min={0} step="0.01" className="form-control" value={data.min_price} onChange={e => setData('min_price', e.target.value)} /></FormField></div>

@@ -9,14 +9,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\CassavaPriceRequest;
-use App\Http\Resources\CassavaPriceResource;
 use App\Http\Resources\Collections\CassavaPriceResourceCollection;
 use App\Repositories\CassavaPriceRepo;
 use App\Traits\HasPaginationParams;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CassavaPricesController extends Controller
@@ -80,35 +77,5 @@ class CassavaPricesController extends Controller
         );
 
         return CassavaPriceResourceCollection::make($cassavaPrices, $this->repo);
-    }
-
-    public function store(CassavaPriceRequest $request): JsonResponse
-    {
-        $price = $this->repo->create($request->validated());
-
-        /**
-         * @status 201
-         */
-        return response()->json([
-            'data' => new CassavaPriceResource(resource: $price),
-            'message' => 'Cassava price created.',
-        ], 201);
-    }
-
-    public function update(CassavaPriceRequest $request, int $id): JsonResponse
-    {
-        $price = $this->repo->update($id, $request->validated());
-
-        return response()->json([
-            'data' => new CassavaPriceResource(resource: $price),
-            'message' => 'Cassava price updated.',
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $this->repo->delete($id);
-
-        return response()->json(null, 204);
     }
 }

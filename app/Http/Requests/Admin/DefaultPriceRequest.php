@@ -27,6 +27,8 @@ class DefaultPriceRequest extends FormRequest
             'country' => [...$required, 'string', 'size:2', 'uppercase'],
             'region' => ['nullable', 'string', 'max:50'],
             'item' => [...$required, 'string', 'max:50'],
+            // The fertiliser option list this price feeds (UREA_TZ); blank = matched by item name
+            'fertilizer_key' => ['nullable', 'string', 'max:50', 'exists:fertilizers,fertilizer_key'],
             'price' => [...$required, 'numeric', 'min:0'],
             'subsidised_price' => ['nullable', 'numeric', 'min:0'],
             'unit' => ['nullable', 'string', 'max:15'],

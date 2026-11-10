@@ -39,7 +39,8 @@ class FertilizerPriceResource extends JsonResource
             minUsd: $fertilizerPrice->price_per_bag,
             maxUsd: $fertilizerPrice->price_per_bag,
             currencyRate: 1,
-            nearestValue: 1000.0,
+            // Same step the generated options are rounded to, so the label matches the price sent
+            nearestValue: (float) (config('price_catalogue.rounding.' . strtoupper((string) $this->currency?->currency_code)) ?? 1000),
             currency: $this->currency
         );
 

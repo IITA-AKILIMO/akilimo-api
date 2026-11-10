@@ -172,6 +172,7 @@ export interface DefaultPrice {
     country: string
     region?: string | null
     item: string
+    fertilizer_key?: string | null
     price: number
     subsidised_price?: number | null
     unit: string

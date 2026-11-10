@@ -164,10 +164,6 @@ Route::middleware(['throttle:read', 'auth.token:translations:read'])->group(func
 
 // ── Partner — price submissions (requires prices:write) ───────────────────────
 Route::middleware(['throttle:write', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {
-    Route::post('/prices/maize', [MaizePricesController::class, 'store']);
-    Route::post('/prices/cassava', [CassavaPricesController::class, 'store']);
-    Route::post('/prices/potato', [PotatoPricesController::class, 'store']);
-    Route::post('/prices/fertilizer', [FertilizerPriceController::class, 'store']);
 });
 
 // ── API key self-management ───────────────────────────────────────────────────
@@ -186,14 +182,8 @@ Route::middleware(['throttle:mcp-verify', 'auth.token:mcp:verify-keys'])->prefix
 // ── Admin — lookup data CRUD (requires write)─────────────────────────────────
 Route::middleware(['throttle:admin-write', 'auth.token:write'])->prefix('v1/admin')->group(function () {
     Route::apiResource('fertilizers', FertilizerController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('fertilizer-prices', FertilizerPriceController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('maize-prices', MaizePricesController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('cassava-prices', CassavaPricesController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('potato-prices', PotatoPricesController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('starch-prices', StarchPricesController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('starch-factories', StarchFactoryController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('investment-amounts', InvestmentAmountController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('operation-costs', OperationCostController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('currencies', CurrencyController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('cassava-units', CassavaUnitsController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('translations', TranslationController::class)->only(['store', 'update', 'destroy']);

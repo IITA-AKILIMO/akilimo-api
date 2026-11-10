@@ -9,14 +9,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\PotatoPriceRequest;
 use App\Http\Resources\Collections\PotatoPriceResourceCollection;
-use App\Http\Resources\PotatoPriceResource;
 use App\Repositories\PotatoPriceRepo;
 use App\Traits\HasPaginationParams;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PotatoPricesController extends Controller
@@ -73,35 +70,5 @@ class PotatoPricesController extends Controller
                 filters: ['country' => strtoupper(trim($countryCode))],
             )
         );
-    }
-
-    public function store(PotatoPriceRequest $request): JsonResponse
-    {
-        $price = $this->repo->create($request->validated());
-
-        /**
-         * @status 201
-         */
-        return response()->json([
-            'data' => new PotatoPriceResource($price),
-            'message' => 'Potato price created.',
-        ], 201);
-    }
-
-    public function update(PotatoPriceRequest $request, int $id): JsonResponse
-    {
-        $price = $this->repo->update($id, $request->validated());
-
-        return response()->json([
-            'data' => new PotatoPriceResource($price),
-            'message' => 'Potato price updated.',
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $this->repo->delete($id);
-
-        return response()->json(null, 204);
     }
 }
