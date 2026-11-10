@@ -44,7 +44,7 @@ SELECT x.id * 10 + x.step_order AS id,
        x.price AS price_per_bag,
        1 AS price_active,
        x.step_order AS sort_order,
-       CONCAT(CAST(x.change_pct AS SIGNED), '%') AS `desc`,
+       '' AS `desc`,
        x.updated_at AS created_at,
        x.updated_at AS updated_at
 FROM (

@@ -90,6 +90,9 @@ All three live in the database, so they are managed there: a new unit or item is
 - **Navigation:** Price settings has a submenu in the sidebar (fertilizer types, new fertilizer, and each settings table); the Fertilizers page has buttons for a new fertilizer, the fertilizer types and selling one in a country.
 - **App price lists** (`/admin/price-lists`): a read-only view of what the app is given (fertilizer, cassava, maize, sweet potato, investment, operation costs), with a country filter and the average the app sends. It replaces the manual screens that were removed.
 
+### 3.9 Choices show prices, not percentages
+The steps (-30, -10, +10, +30 %) are a rule the admin sets; the app is given prices only. The fertiliser options carry an empty `desc`, as the hand-made ones did, so no description reaches the farmer, and no other list has a text field that could. A test checks that no list response contains a percentage.
+
 ## 4. Order of work
 
 1. **Done 2026-11-10.** Dropped `produce_prices` and `available_fertilizer` with their models and the `produce_prices` seeder (migrations `…000008`, `…000009`). `request_fertilizer` was left: it is empty locally but production use is unconfirmed.

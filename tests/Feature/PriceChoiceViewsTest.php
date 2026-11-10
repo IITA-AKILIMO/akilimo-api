@@ -75,6 +75,29 @@ it('serves four rounded options at -30, -10, +10 and +30 percent', function () {
     expect(viewOptions('UREA_TZ'))->toBe([35000.0, 45000.0, 55000.0, 65000.0]);
 });
 
+it('shows the farmer prices, never percentages, in any list the app reads', function () {
+    viewCountry('TZ');
+    viewFertilizer('TZ', 'urea', 'UREA_TZ');
+    DB::table('currencies')->insert(['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh']);
+    viewPrice();
+    foreach ([
+        ['cassUP', 'per_tonne', 180000], ['maize_grain', 'per_kg', 230], ['maize_freshCob', 'per_cob', 50],
+        ['sweetPotato_tuber', 'per_tonne', 120000], ['investment_amount', 'per_acre', 57550], ['manual_ploughing', 'per_acre', 175000],
+    ] as [$item, $unit, $price]) {
+        viewPrice(['item' => $item, 'fertilizer_type' => null, 'unit' => $unit, 'price' => $price]);
+    }
+
+    foreach (['fertilizer-prices', 'cassava-prices', 'maize-prices', 'potato-prices', 'investment-amounts', 'operation-costs'] as $list) {
+        $body = $this->getJson("/api/v1/{$list}/country/TZ?per_page=100");
+
+        $body->assertOk();
+        expect(str_contains($body->getContent(), '%'))->toBeFalse("{$list} shows a percentage");
+    }
+
+    // the fertiliser choices carry no description; only the two markers are labelled, as before
+    expect(DB::table('fertilizer_prices')->where('price_per_bag', '>', 0)->pluck('desc')->unique()->values()->all())->toBe(['']);
+});
+
 it('rounds to the currency step and does not round an unlisted currency', function () {
     viewCountry('GH');
     viewCountry('XX');

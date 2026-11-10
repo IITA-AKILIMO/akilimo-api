@@ -21,7 +21,7 @@ final class PriceLists
         'fertilizer' => [
             'title' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'country' => 'country',
             'order' => ['fertilizer_key', 'sort_order'],
-            'columns' => ['country' => 'Country', 'fertilizer_key' => 'Fertilizer key', 'price_per_bag' => 'Price per bag', 'sort_order' => 'Order', 'desc' => 'Choice'],
+            'columns' => ['country' => 'Country', 'fertilizer_key' => 'Fertilizer key', 'price_per_bag' => 'Price per bag', 'sort_order' => 'Order'],
         ],
         'cassava' => [
             'title' => 'Cassava prices', 'table' => 'cassava_prices', 'country' => 'country',
