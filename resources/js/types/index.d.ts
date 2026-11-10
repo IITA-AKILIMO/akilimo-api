@@ -167,6 +167,32 @@ export interface Translation {
     rw?: string
 }
 
+/** A field of a reference or settings table, as the generic Price settings screens describe it */
+export interface ReferenceField {
+    name: string
+    label: string
+    type: 'text' | 'number' | 'select'
+    /** Part of the row's key: read-only once the row exists */
+    key: boolean
+    required: boolean
+    help: string | null
+    step: string | null
+    default: number | null
+}
+
+/** One reference or settings table (ReferenceTables), without its validation rules */
+export interface ReferenceResource {
+    slug: string
+    title: string
+    description: string
+    warning: string | null
+    createUrl: string | null
+    fields: ReferenceField[]
+}
+
+/** A row of such a table, with the key columns that address it */
+export type ReferenceRow = Record<string, string | number | null | Record<string, string>> & { _key: Record<string, string> }
+
 /** What a fertilizer is offered for (fertilizer_use_cases), picked in the fertilizer forms */
 export interface FertilizerUseCase {
     value: string

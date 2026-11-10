@@ -98,6 +98,8 @@ export const navigation: NavSection[] = [
         items: [
             { label: 'Starch prices', href: '/admin/starch-prices', icon: 'beaker', roles: ADMIN },
             { label: 'Default prices', href: '/admin/default-prices', icon: 'dollar', roles: ADMIN },
+            { label: 'App price lists', href: '/admin/price-lists', icon: 'tag', roles: ADMIN },
+            { label: 'Price settings', href: '/admin/reference', icon: 'scale', roles: ADMIN },
         ],
     },
     {

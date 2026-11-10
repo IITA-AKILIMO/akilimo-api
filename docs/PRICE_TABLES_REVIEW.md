@@ -70,7 +70,7 @@ The default price forms (create, edit, batch create, batch edit) offer lists, an
 - **Unit** from `price_units` (per bag, acre, tonne, kg, cob).
 - **Item** from `price_items`, each with the unit it is priced in; choosing an item fills in the unit. An item is saved with the list's spelling (`cassup` becomes `cassUP`).
 
-All three live in the database, so they are managed there: a new unit or item is a row in `price_units` or `price_items` (no admin screen yet). The config lists (`unit_by_item`, `units`) are gone. `price_items` was seeded with the labour, crop and investment items, every item already in the catalogue, and every fertiliser. Rows that fit no list (the stray `string` test row) are left out and cannot be edited through the forms until fixed.
+All three live in the database, so they are managed there: a new unit or item is a row in `price_units` or `price_items` (managed on the Price settings screens). The config lists (`unit_by_item`, `units`) are gone. `price_items` was seeded with the labour, crop and investment items, every item already in the catalogue, and every fertiliser. Rows that fit no list (the stray `string` test row) are left out and cannot be edited through the forms until fixed.
 
 ### 3.7 Fertilisers normalised (done 2026-11-10)
 `fertilizers` repeated a fertiliser's type, label, name and bag weight for every country that sells it (UREA and DAP four times each). It is now two tables and a view:
@@ -83,6 +83,10 @@ All three live in the database, so they are managed there: a new unit or item is
 - **Use case is a list too:** `fertilizer_use_cases` (FR, CIM, CIS, ALL), a foreign key from `country_fertilizers.use_case`, picked in the form. The labels (FR fertilizer recommendation, CIM cassava and maize intercrop, CIS cassava and sweet potato intercrop) are descriptions to confirm with the owner; edit them in the table.
 - **New fertilizer form** (`/admin/fertilizer-types/create`): name and bag weight; the type code is worked out from the name (NPK 20:10:10 becomes NPK_20_10_10, with a number added if taken), the catalogue label defaults from the name, and the label is added to `price_items` (per bag) so a price can be set for it. The code cannot be changed afterwards.
 - Verified: the view equals the old table on every column of all 38 rows, and the option lists, fertilisers and cassava list were identical before a full rollback of the 28 migrations and after re-running them.
+
+### 3.8 Screens for the new tables (done 2026-11-10)
+- **Price settings** (`/admin/reference`): one set of screens, driven by `App\Support\ReferenceTables`, for the small tables the price forms and views read: price units, price items, fertilizer use cases, fertilizer types (edit and delete; a new fertilizer goes through its own form), price choice steps, rounding, units, investment multiples and operation cost items. A row's key is read-only once it exists; a row still used elsewhere cannot be deleted (the screen says so); the settings tables carry a warning that a change moves the app's lists in every country at once. Adding a table is one entry in the registry.
+- **App price lists** (`/admin/price-lists`): a read-only view of what the app is given (fertilizer, cassava, maize, sweet potato, investment, operation costs), with a country filter and the average the app sends. It replaces the manual screens that were removed.
 
 ## 4. Order of work
 

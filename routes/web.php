@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\DefaultPriceController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\FertilizerController;
 use App\Http\Controllers\Admin\FertilizerTypeController;
+use App\Http\Controllers\Admin\PriceListController;
+use App\Http\Controllers\Admin\ReferenceDataController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\StarchFactoryController;
 use App\Http\Controllers\Admin\StarchPriceController;
@@ -102,6 +104,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::resource('fertilizers', FertilizerController::class)
             ->except(['show'])
             ->parameters(['fertilizers' => 'id']);
+
+        // Reference data and price settings: the lists the price forms choose from and the rules the app's lists use
+        Route::get('reference', [ReferenceDataController::class, 'hub'])->name('reference.hub');
+        Route::get('reference/{slug}', [ReferenceDataController::class, 'index'])->name('reference.index');
+        Route::get('reference/{slug}/create', [ReferenceDataController::class, 'create'])->name('reference.create');
+        Route::post('reference/{slug}', [ReferenceDataController::class, 'store'])->name('reference.store');
+        Route::get('reference/{slug}/edit', [ReferenceDataController::class, 'edit'])->name('reference.edit');
+        Route::put('reference/{slug}', [ReferenceDataController::class, 'update'])->name('reference.update');
+        Route::delete('reference/{slug}', [ReferenceDataController::class, 'destroy'])->name('reference.destroy');
+
+        // What the app's price lists contain right now (read-only)
+        Route::get('price-lists', [PriceListController::class, 'index'])->name('price-lists.index');
 
         // A new fertilizer (its type code is generated from the name)
         Route::get('fertilizer-types/create', [FertilizerTypeController::class, 'create'])->name('fertilizer-types.create');
