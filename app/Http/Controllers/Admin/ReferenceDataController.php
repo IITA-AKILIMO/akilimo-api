@@ -96,6 +96,18 @@ class ReferenceDataController extends AdminController
         $def = $this->definition($slug);
         abort_if(empty($def['previews']), 404);
 
+        if ($request->boolean('delete')) {
+            // What removing the row would do; a row that others still use cannot be removed
+            $key = $this->keyFromRequest($def, $request);
+            $this->row($def, $key);
+
+            try {
+                return response()->json($preview->compare($def['previews'], fn () => DB::table($def['table'])->where($key)->delete()));
+            } catch (QueryException) {
+                return response()->json(['blocked' => true, 'message' => 'This row is still used by other data, so it cannot be deleted.']);
+            }
+        }
+
         if ($request->query('key') !== null) {
             $key = $this->keyFromRequest($def, $request);
             $this->row($def, $key);

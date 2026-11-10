@@ -1,6 +1,8 @@
 import { Link, router } from '@inertiajs/react'
 import { useState } from 'react'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import { PreviewPanel, requestPreview } from '../../components/PricePreview'
+import type { PreviewOutcome } from '../../components/PricePreview'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { ReferenceResource, ReferenceRow } from '../../types'
 
@@ -17,15 +19,38 @@ export function keyQuery(key: Record<string, unknown>): string {
 export default function ReferenceIndex({ resource, rows }: Props) {
     const [deleting, setDeleting] = useState<ReferenceRow | null>(null)
     const [processing, setProcessing] = useState(false)
+    // For a table that drives the app's price lists: what removing the row would do to them
+    const [outcome, setOutcome] = useState<PreviewOutcome | null>(null)
+    const [loadingPreview, setLoadingPreview] = useState(false)
     const base = `/admin/reference/${resource.slug}`
+
+    async function startDelete(row: ReferenceRow) {
+        setDeleting(row)
+        setOutcome(null)
+
+        if (!resource.canPreview) return
+
+        setLoadingPreview(true)
+        setOutcome(await requestPreview(`${base}/preview?delete=1&${keyQuery(row._key)}`))
+        setLoadingPreview(false)
+    }
+
+    function cancelDelete() {
+        setDeleting(null)
+        setOutcome(null)
+        setLoadingPreview(false)
+    }
 
     function handleDelete() {
         if (!deleting) return
         setProcessing(true)
         router.delete(`${base}?${keyQuery(deleting._key)}`, {
-            onFinish: () => { setProcessing(false); setDeleting(null) },
+            onFinish: () => { setProcessing(false); cancelDelete() },
         })
     }
+
+    const name = deleting ? Object.values(deleting._key).join(' / ') : ''
+    const blocked = outcome?.kind === 'blocked'
 
     return (
         <AdminLayout title={resource.title}>
@@ -57,7 +82,7 @@ export default function ReferenceIndex({ resource, rows }: Props) {
                                     <td className="text-end">
                                         <div className="d-flex gap-1 justify-content-end">
                                             <Link href={`${base}/edit?${keyQuery(row._key)}`} className="btn btn-outline-secondary btn-sm">Edit</Link>
-                                            <button className="btn btn-outline-danger btn-sm" onClick={() => setDeleting(row)}>Delete</button>
+                                            <button className="btn btn-outline-danger btn-sm" onClick={() => startDelete(row)}>Delete</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -69,10 +94,23 @@ export default function ReferenceIndex({ resource, rows }: Props) {
 
             <ConfirmDialog
                 open={!!deleting}
+                wide={resource.canPreview}
                 title={`Delete from ${resource.title.toLowerCase()}`}
-                message={`Delete "${deleting ? Object.values(deleting._key).join(' / ') : ''}"? This cannot be undone. A row that other data still uses cannot be deleted.`}
+                message={
+                    <>
+                        <div>Delete &ldquo;{name}&rdquo;? This cannot be undone. A row that other data still uses cannot be deleted.</div>
+                        {resource.canPreview && loadingPreview && (
+                            <div className="small mt-3"><span className="spinner-border spinner-border-sm me-2" />Working out what this would change…</div>
+                        )}
+                        {outcome?.kind === 'ok' && <PreviewPanel result={outcome.result} verb="remove or change" />}
+                        {outcome && outcome.kind !== 'ok' && (
+                            <div className={`alert ${blocked ? 'alert-danger' : 'alert-warning'} small mt-3 mb-0`} role="alert">{outcome.message}</div>
+                        )}
+                    </>
+                }
+                confirmDisabled={loadingPreview || blocked}
                 onConfirm={handleDelete}
-                onCancel={() => setDeleting(null)}
+                onCancel={cancelDelete}
                 processing={processing}
             />
         </AdminLayout>

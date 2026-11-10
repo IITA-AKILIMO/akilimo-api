@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import FormField from '../../components/FormField'
+import { PreviewPanel, requestPreview } from '../../components/PricePreview'
 import ResourceForm from '../../components/ResourceForm'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { PreviewResult, ReferenceField, ReferenceResource } from '../../types'
@@ -22,12 +23,6 @@ function initial(resource: ReferenceResource, row: Props['row']): Record<string,
         values[f.name] = current === null || current === undefined ? '' : String(current)
     }
     return values
-}
-
-/** Laravel's CSRF token for a plain fetch: the XSRF-TOKEN cookie, sent back as a header */
-function xsrfToken(): string {
-    const match = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/)
-    return match ? decodeURIComponent(match[1]) : ''
 }
 
 export default function ReferenceForm({ resource, row, rowKey, options }: Props) {
@@ -52,33 +47,13 @@ export default function ReferenceForm({ resource, row, rowKey, options }: Props)
         setPreviewing(true)
         setPreview(null)
         setPreviewError(null)
-        try {
-            const response = await fetch(`${base}/preview${editing ? `?${keyQuery(rowKey ?? {})}` : ''}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-XSRF-TOKEN': xsrfToken(),
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify(data),
-            })
-            const body = await response.json()
 
-            if (response.status === 422) {
-                const first = Object.values((body.errors ?? {}) as Record<string, string[]>)[0]?.[0]
-                setPreviewError(first ?? 'Some values are not valid yet.')
-            } else if (!response.ok) {
-                setPreviewError('The preview could not be worked out.')
-            } else {
-                setPreview(body as PreviewResult)
-            }
-        } catch {
-            setPreviewError('The preview could not be worked out.')
-        } finally {
-            setPreviewing(false)
-        }
+        const outcome = await requestPreview(`${base}/preview${editing ? `?${keyQuery(rowKey ?? {})}` : ''}`, data)
+
+        if (outcome.kind === 'ok') setPreview(outcome.result)
+        else setPreviewError(outcome.message)
+
+        setPreviewing(false)
     }
 
     function control(f: ReferenceField) {
@@ -142,50 +117,5 @@ export default function ReferenceForm({ resource, row, rowKey, options }: Props)
                 </ResourceForm>
             </div>
         </AdminLayout>
-    )
-}
-
-function PreviewPanel({ result }: { result: PreviewResult }) {
-    if (result.changed === 0) {
-        return <div className="alert alert-secondary small mt-3 mb-0" role="status">No value in any price list would change.</div>
-    }
-
-    return (
-        <div className="mt-3" role="status" aria-live="polite">
-            <p className="fw-semibold mb-2">
-                This would change {result.changed} value{result.changed === 1 ? '' : 's'} in the app&apos;s price lists.
-            </p>
-            {result.lists.filter((l) => l.changed + l.added + l.removed > 0).map((list) => (
-                <div key={list.key} className="mb-3">
-                    <div className="d-flex align-items-baseline justify-content-between">
-                        <h6 className="mb-1">{list.title}</h6>
-                        <span className="small text-body-secondary">
-                            {[
-                                list.changed ? `${list.changed} changed` : '',
-                                list.added ? `${list.added} new` : '',
-                                list.removed ? `${list.removed} removed` : '',
-                            ].filter(Boolean).join(', ')} of {list.total}
-                        </span>
-                    </div>
-                    <div className="table-responsive">
-                        <table className="table table-sm align-middle mb-0">
-                            <thead className="table-light">
-                                <tr><th>Row</th><th className="text-end">Now</th><th className="text-end">After</th></tr>
-                            </thead>
-                            <tbody>
-                                {list.rows.map((r, i) => (
-                                    <tr key={i}>
-                                        <td>{r.label}</td>
-                                        <td className="text-end text-body-secondary">{r.before ?? '—'}</td>
-                                        <td className="text-end fw-semibold">{r.after ?? 'removed'}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    {list.truncated && <div className="small text-body-secondary mt-1">Showing the first {list.rows.length} changes.</div>}
-                </div>
-            ))}
-        </div>
     )
 }

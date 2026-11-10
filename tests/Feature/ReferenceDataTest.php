@@ -180,6 +180,44 @@ it('previews what a changed step would do, and saves nothing', function () {
         ->and(DB::table('cassava_prices')->max('max_local_price'))->toBe($maxBefore);
 });
 
+it('previews what deleting a row would remove, and deletes nothing', function () {
+    previewCatalogue();
+    $before = DB::table('cassava_prices')->count();
+
+    $response = $this->actingAs(referenceAdmin())
+        ->postJson('/admin/reference/price-choice-steps/preview?delete=1&' . refKey(['step_order' => 4]))
+        ->assertOk();
+
+    $cassava = collect($response->json('lists'))->firstWhere('key', 'cassava');
+
+    expect($cassava['removed'])->toBe(1)
+        ->and($cassava['rows'][0]['label'])->toBe('NG band 4')
+        ->and($cassava['rows'][0]['before'])->toBe('12,000 – 14,000')
+        ->and($cassava['rows'][0]['after'])->toBeNull()
+        ->and(DB::table('price_choice_steps')->count())->toBe(4)                 // nothing was deleted
+        ->and(DB::table('cassava_prices')->count())->toBe($before);
+});
+
+it('previews deleting an investment multiple and a unit', function () {
+    previewCatalogue();
+    $admin = referenceAdmin();
+
+    $multiple = $this->actingAs($admin)->postJson('/admin/reference/price-choice-multiples/preview?delete=1&' . refKey(['step_order' => 5]))->assertOk();
+    $units = $this->actingAs($admin)->postJson('/admin/reference/price-choice-units/preview?delete=1&' . refKey(['item' => 'maize_grain']))->assertOk();
+
+    expect(collect($multiple->json('lists'))->firstWhere('key', 'investment')['removed'])->toBe(1)
+        ->and(collect($units->json('lists'))->firstWhere('key', 'maize')['changed'])->toBeGreaterThan(0)
+        ->and(DB::table('price_choice_multiples')->count())->toBe(5)
+        ->and(DB::table('price_choice_units')->where('item', 'maize_grain')->exists())->toBeTrue();
+});
+
+it('refuses to preview deleting a row that does not exist, or in a table with no price effect', function () {
+    $admin = referenceAdmin();
+
+    $this->actingAs($admin)->postJson('/admin/reference/price-choice-steps/preview?delete=1&' . refKey(['step_order' => 99]))->assertNotFound();
+    $this->actingAs($admin)->postJson('/admin/reference/price-units/preview?delete=1&' . refKey(['value' => 'per_bag']))->assertNotFound();
+});
+
 it('previews a new multiple as new investment rows', function () {
     previewCatalogue();
 
