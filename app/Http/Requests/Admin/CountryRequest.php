@@ -26,6 +26,8 @@ class CountryRequest extends FormRequest
         return [
             'code' => [...$required, 'string', 'size:2', 'uppercase'],
             'name' => [...$required, 'string', 'max:100'],
+            // The currency its prices are in, picked from the currencies list
+            'currency_code' => ['nullable', 'string', 'size:3', Rule::exists('currencies', 'currency_code')],
             'active' => ['boolean'],
             'default_price_basis' => ['sometimes', 'required', Rule::in(PriceBasis::values())],
             'sort_order' => ['nullable', 'integer', 'min:0'],

@@ -181,3 +181,18 @@ function plumberSuccessResponse(): array
         ],
     ];
 }
+
+/**
+ * Make a currency exist with the given details. A fresh database already holds the currencies (a migration
+ * loads them), so a test sets the row it needs instead of inserting a second one.
+ *
+ * @param array<int|string, mixed> $rows one currency, or a list of them
+ */
+function seedCurrencies(array $rows): void
+{
+    $rows = isset($rows['currency_code']) ? [$rows] : $rows;
+
+    foreach ($rows as $row) {
+        \Illuminate\Support\Facades\DB::table('currencies')->updateOrInsert(['currency_code' => $row['currency_code']], $row);
+    }
+}

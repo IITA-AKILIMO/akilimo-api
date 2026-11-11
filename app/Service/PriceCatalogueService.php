@@ -250,9 +250,8 @@ class PriceCatalogueService
         }
 
         if (($data['currency'] ?? null) === null || ($data['currency'] ?? '') === '') {
-            $data['currency'] = DB::table('currencies')
-                ->where('country_code', $country)
-                ->value('currency_code');
+            $data['currency'] = DB::table('countries')->where('code', $country)->value('currency_code')
+                ?? DB::table('currencies')->where('country_code', $country)->value('currency_code');
         }
 
         return $data;

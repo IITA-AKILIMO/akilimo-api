@@ -40,12 +40,16 @@ function lookupPrice(array $overrides = []): array
 }
 
 beforeEach(function () {
-    DB::table('currencies')->insert([
+    seedCurrencies([
         ['country_code' => 'NG', 'country' => 'Nigeria', 'currency_name' => 'Nigerian naira', 'currency_code' => 'NGN', 'currency_symbol' => '₦'],
         ['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh'],
-        // a second country on the same currency: the list offers it once
-        ['country_code' => 'ZZ', 'country' => 'Zedland', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh'],
+        // a currency is one row; countries that share it each name it in countries.currency_code
     ]);
+
+    // a price needs a country that exists
+    foreach (['NG' => 'Nigeria', 'TZ' => 'Tanzania'] as $code => $name) {
+        DB::table('countries')->insert(['code' => $code, 'name' => $name, 'active' => true, 'default_price_basis' => 'open_market']);
+    }
 });
 
 it('reads the lists from the database', function () {

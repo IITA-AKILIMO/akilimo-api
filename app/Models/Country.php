@@ -22,6 +22,7 @@ class Country extends BaseCountry
     protected $fillable = [
         'code',
         'name',
+        'currency_code',
         'active',
         'default_price_basis',
         'sort_order',

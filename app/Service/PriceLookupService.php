@@ -105,7 +105,10 @@ class PriceLookupService
      */
     public function currencyByCountry(): array
     {
-        return Currency::query()
+        // A country names its own currency (countries.currency_code); older rows that only link a currency to a country still count
+        $own = DB::table('countries')->whereNotNull('currency_code')->pluck('currency_code', 'code')->map(fn ($c) => (string) $c)->all();
+
+        return $own + Currency::query()
             ->whereNotNull('country_code')
             ->whereNotNull('currency_code')
             ->orderBy('id')

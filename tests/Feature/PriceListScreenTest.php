@@ -26,7 +26,7 @@ function listCatalogue(): void
 {
     foreach (['NG' => 'NGN', 'TZ' => 'TZS'] as $code => $currency) {
         DB::table('countries')->insert(['code' => $code, 'name' => $code, 'active' => true, 'default_price_basis' => 'open_market']);
-        DB::table('currencies')->insert(['country_code' => $code, 'country' => $code, 'currency_name' => $currency, 'currency_code' => $currency, 'currency_symbol' => $currency === 'NGN' ? '₦' : 'TSh']);
+        seedCurrencies(['country_code' => $code, 'country' => $code, 'currency_name' => $currency, 'currency_code' => $currency, 'currency_symbol' => $currency === 'NGN' ? '₦' : 'TSh']);
     }
 
     DB::table('default_prices')->insert([

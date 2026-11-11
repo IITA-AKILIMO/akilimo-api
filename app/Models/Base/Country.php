@@ -75,6 +75,7 @@ class Country extends BaseModel
     protected $fillable = [
         'code',
         'name',
+        'currency_code',
         'active',
         'default_price_basis',
         'sort_order',

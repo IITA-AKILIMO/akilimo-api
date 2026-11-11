@@ -195,7 +195,7 @@ it('creates and activates a price through the admin, writing the audit trail', f
     // the country is picked from the countries table too
     catalogueCountry('NG');
     // currency is picked from the currencies table, so the one the form posts must exist
-    DB::table('currencies')->insert(['country_code' => 'NG', 'country' => 'Nigeria', 'currency_name' => 'Nigerian naira', 'currency_code' => 'NGN', 'currency_symbol' => '₦']);
+    seedCurrencies(['country_code' => 'NG', 'country' => 'Nigeria', 'currency_name' => 'Nigerian naira', 'currency_code' => 'NGN', 'currency_symbol' => '₦']);
 
     $this->actingAs($admin)->post('/admin/default-prices', [
         'country' => 'NG',

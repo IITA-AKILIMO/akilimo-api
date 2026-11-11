@@ -78,7 +78,7 @@ it('serves four rounded options at -30, -10, +10 and +30 percent', function () {
 it('shows the farmer prices, never percentages, in any list the app reads', function () {
     viewCountry('TZ');
     viewFertilizer('TZ', 'urea', 'UREA_TZ');
-    DB::table('currencies')->insert(['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh']);
+    seedCurrencies(['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh']);
     viewPrice();
     foreach ([
         ['cassUP', 'per_tonne', 180000], ['maize_grain', 'per_kg', 230], ['maize_freshCob', 'per_cob', 50],
@@ -101,7 +101,7 @@ it('shows the farmer prices, never percentages, in any list the app reads', func
 it('labels every choice in words the client shows, and the zero and negative rows as text', function () {
     viewCountry('TZ');
     viewFertilizer('TZ', 'urea', 'UREA_TZ');
-    DB::table('currencies')->insert(['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh']);
+    seedCurrencies(['country_code' => 'TZ', 'country' => 'Tanzania', 'currency_name' => 'Tanzanian shilling', 'currency_code' => 'TZS', 'currency_symbol' => 'TSh']);
     viewPrice();
     viewPrice(['item' => 'cassUP', 'fertilizer_type' => null, 'unit' => 'per_tonne', 'price' => 180000]);
     viewPrice(['item' => 'investment_amount', 'fertilizer_type' => null, 'unit' => 'per_acre', 'price' => 57550]);
@@ -325,7 +325,7 @@ it('serves the options through the public endpoints', function () {
     viewCountry('TZ');
     viewFertilizer('TZ', 'urea', 'UREA_TZ');
     viewPrice();
-    DB::table('currencies')->insert(['currency_code' => 'TZS', 'currency_symbol' => 'TSh', 'currency_name' => 'Tanzanian shilling', 'country_code' => 'TZ']);
+    seedCurrencies(['currency_code' => 'TZS', 'currency_symbol' => 'TSh', 'currency_name' => 'Tanzanian shilling', 'country_code' => 'TZ']);
 
     $response = $this->getJson('/api/v1/fertilizer-prices/country/TZ');
 

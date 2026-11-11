@@ -14,6 +14,7 @@ use App\Models\Country;
 use App\Repositories\CountryRepo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -39,6 +40,7 @@ class CountryController extends AdminController
                 'id' => $c->id,
                 'code' => $c->code,
                 'name' => $c->name,
+                'currency_code' => $c->currency_code,
                 'active' => (bool)$c->active,
                 'default_price_basis' => $c->default_price_basis?->value,
                 'sort_order' => $c->sort_order,
@@ -51,6 +53,7 @@ class CountryController extends AdminController
     {
         return Inertia::render('Countries/Create', [
             'basisOptions' => $this->basisOptions(),
+            'currencies' => $this->currencies(),
         ]);
     }
 
@@ -73,6 +76,7 @@ class CountryController extends AdminController
                 'default_price_basis' => $item->default_price_basis?->value ?? 'open_market',
             ],
             'basisOptions' => $this->basisOptions(),
+            'currencies' => $this->currencies(),
         ]);
     }
 
@@ -90,6 +94,18 @@ class CountryController extends AdminController
 
         return redirect()->route('admin.countries.index')
             ->with('success', 'Country deleted.');
+    }
+
+    /**
+     * The currencies a country can use, for the picker.
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    private function currencies(): array
+    {
+        return DB::table('currencies')->orderBy('currency_code')->get(['currency_code', 'currency_name'])
+            ->map(fn ($c) => ['value' => (string) $c->currency_code, 'label' => $c->currency_code . ' — ' . $c->currency_name])
+            ->all();
     }
 
     /**

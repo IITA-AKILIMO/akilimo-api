@@ -14,6 +14,7 @@ export interface User {
 }
 
 export interface Country {
+    currency_code?: string | null
     id: number
     code: string
     name: string
