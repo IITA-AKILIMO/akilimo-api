@@ -20,8 +20,6 @@ class FertilizerPriceResource extends JsonResource
 {
     public function __construct(
         $resource,
-        private readonly ?FertilizerPrice $minBand,
-        private readonly ?FertilizerPrice $maxBand,
         private readonly ?Currency $currency,
     ) {
         parent::__construct($resource);
@@ -64,14 +62,6 @@ class FertilizerPriceResource extends JsonResource
             'currency' => $currencyResource,
             /** Sort order for display */
             'sort_order' => $fertilizerPrice->sort_order,
-            /** Minimum local price */
-            'min_local_price' => $fertilizerPrice->min_price,
-            /** Maximum local price */
-            'max_local_price' => $fertilizerPrice->max_price,
-            /** Minimum allowed price range */
-            'min_allowed_price' => $this->minBand?->min_price,
-            /** Maximum allowed price range */
-            'max_allowed_price' => $this->maxBand?->max_price,
             /** Price per bag */
             'price_per_bag' => $fertilizerPrice->price_per_bag,
             /** Converted price range; the words "I don't know" or "Exact price" for those two rows */

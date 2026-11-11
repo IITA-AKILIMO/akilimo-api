@@ -41,7 +41,6 @@ class MaizePricesController extends Controller
 
         return MaizePriceResourceCollection::make(
             $this->repo->paginateWithSort(perPage: $perPage, orderBy: $orderBy, direction: $sort),
-            $this->repo,
         );
     }
 
@@ -70,7 +69,6 @@ class MaizePricesController extends Controller
                 direction: $sort,
                 filters: ['country' => strtoupper(trim($countryCode))],
             ),
-            $this->repo,
         );
     }
 }

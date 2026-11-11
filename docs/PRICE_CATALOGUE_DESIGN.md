@@ -140,3 +140,5 @@ Country-team input is entered later through the admin UI, so none of it blocks p
 - **Prices:** country teams enter and update them as drafts in the admin price screens; activation follows D4. The review drafts in `docs/data/` are imported as the starting drafts.
 - **Reviewers per country:** assigned in the admin user screens. Until someone is assigned, any admin can review.
 - **The subsidy question's wording:** stored as a translation key served by `GET /v1/translations`, so it can be edited in the admin and translated without an app release.
+
+> **Update (2026-11-11):** the price list responses no longer include min_local_price, max_local_price, min_allowed_price or max_allowed_price. Clients show label and send the choice's value; nothing enforced a range.

@@ -33,10 +33,6 @@ class PotatoPriceResource extends JsonResource
             'id' => $model->id,
             /** ISO 3166-1 alpha-2 country code */
             'country_code' => $model->country,
-            /** Minimum local price */
-            'min_local_price' => $model->min_local_price,
-            /** Maximum local price */
-            'max_local_price' => $model->max_local_price,
             /** Average price */
             'average_price' => $avgPrice,
             /** Whether this is an exact price */
@@ -47,10 +43,6 @@ class PotatoPriceResource extends JsonResource
             'description' => PriceMarker::describe($avgPrice) ?? '',
             /** Item tag identifier */
             'item_tag' => $tag,
-            /** Minimum allowed price range */
-            'min_allowed_price' => $model->min_price,
-            /** Maximum allowed price range */
-            'max_allowed_price' => $model->max_price,
             /** Whether the price is active */
             'active' => $model->price_active,
             /** Sort order for display */

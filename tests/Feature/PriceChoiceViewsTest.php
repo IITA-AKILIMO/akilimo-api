@@ -107,7 +107,7 @@ it('labels every choice in words the client shows, and the zero and negative row
     viewPrice(['item' => 'investment_amount', 'fertilizer_type' => null, 'unit' => 'per_acre', 'price' => 57550]);
 
     $fertilizer = collect($this->getJson('/api/v1/fertilizer-prices/country/TZ?per_page=100')->json('data'))->sortBy('sort_order')->values();
-    $cassava = collect($this->getJson('/api/v1/cassava-prices/country/TZ')->json('data'))->sortBy('min_local_price')->values();
+    $cassava = collect($this->getJson('/api/v1/cassava-prices/country/TZ')->json('data'))->sortBy('average_price')->values();
     $investment = collect($this->getJson('/api/v1/investment-amounts/country/TZ')->json('data'))->sortBy('sort_order')->values();
 
     // fertiliser: "I don't know" (price 0), four prices, "Exact price" (negative)

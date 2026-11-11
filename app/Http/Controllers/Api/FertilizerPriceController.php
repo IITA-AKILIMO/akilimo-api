@@ -91,6 +91,6 @@ class FertilizerPriceController extends Controller
             filters: $filters
         );
 
-        return FertilizerPriceResourceCollection::make($fertilizerPrices, $this->repo);
+        return FertilizerPriceResourceCollection::make($fertilizerPrices);
     }
 }
