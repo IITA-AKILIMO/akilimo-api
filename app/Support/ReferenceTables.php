@@ -50,6 +50,7 @@ final class ReferenceTables
                 ],
             ],
             'fertilizer-use-cases' => [
+                'area' => 'fertilizers',
                 'title' => 'Fertilizer use cases',
                 'description' => 'What a fertilizer is offered for in a country (FR, CIM, CIS, ALL). Picked in the fertilizer form.',
                 'table' => 'fertilizer_use_cases',
@@ -61,6 +62,7 @@ final class ReferenceTables
                 ],
             ],
             'fertilizer-categories' => [
+                'area' => 'fertilizers',
                 'title' => 'Fertilizer categories',
                 'description' => 'The kinds of fertilizer (straight, compound, other). Picked when a fertilizer is added and shown in the API.',
                 'table' => 'fertilizer_categories',
@@ -72,6 +74,7 @@ final class ReferenceTables
                 ],
             ],
             'fertilizer-types' => [
+                'area' => 'fertilizers',
                 'title' => 'Fertilizer types',
                 'description' => 'Each fertilizer once: its code, catalogue label, name and usual bag weight. The code is worked out from the name when a fertilizer is added and cannot be changed.',
                 'table' => 'fertilizer_types',
@@ -87,6 +90,7 @@ final class ReferenceTables
                 ],
             ],
             'maize-units' => [
+                'area' => 'units',
                 'title' => 'Maize units',
                 'description' => 'The units maize grain is sold in, offered to the farmer as the unit of sale (the standard bag in Nigeria is 100 kg). The maize price list is per tonne; a client shows the price for the chosen unit as average x weight / 1000. Local measures (mudu, derica) have no fixed weight and are not listed.',
                 'table' => 'maize_units',

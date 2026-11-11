@@ -33,9 +33,11 @@ it('lists every settings table on the hub', function () {
     $this->actingAs(referenceAdmin())->get('/admin/reference')
         ->assertInertia(fn (Assert $page) => $page
             ->component('Reference/Hub')
-            ->has('tables', count(ReferenceTables::all()))
+            ->has('tables', count(array_filter(ReferenceTables::all(), fn (array $d) => ! isset($d['area']))))
             ->where('tables.0.slug', 'price-units')
-            ->where('tables.0.rows', 5));
+            ->where('tables.0.rows', 5)
+            // fertilizer and unit lists are tabs under Catalogue, not cards here
+            ->where('tables', fn ($tables) => collect($tables)->pluck('slug')->intersect(['fertilizer-types', 'fertilizer-categories', 'fertilizer-use-cases', 'maize-units'])->isEmpty()));
 });
 
 it('keeps the settings screens to admins', function () {

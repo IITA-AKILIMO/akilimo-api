@@ -30,7 +30,8 @@ class ReferenceDataController extends AdminController
 {
     public function hub(): Response
     {
-        $tables = collect(ReferenceTables::all())->map(fn (array $def, string $slug) => [
+        // Lists that sit under Catalogue (fertilizers, units of sale) are reached from there, as tabs
+        $tables = collect(ReferenceTables::all())->reject(fn (array $def) => isset($def['area']))->map(fn (array $def, string $slug) => [
             'slug' => $slug,
             'title' => $def['title'],
             'description' => $def['description'],

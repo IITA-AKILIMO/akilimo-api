@@ -2,6 +2,7 @@ import { router, usePage } from '@inertiajs/react'
 import Offcanvas from 'bootstrap/js/dist/offcanvas'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import FlashBanner from '../components/FlashBanner'
+import SectionTabs from '../components/SectionTabs'
 import Sidebar, { findActive } from '../components/Sidebar'
 import ThemeSwitcher from '../components/ThemeSwitcher'
 
@@ -123,6 +124,7 @@ export default function AdminLayout({ title, children }: AdminLayoutProps) {
                 <FlashBanner />
 
                 <main id="admin-main" tabIndex={-1} className="admin-main flex-grow-1 overflow-auto p-3 p-md-4">
+                    <SectionTabs currentPath={currentPath} />
                     {children}
                 </main>
             </div>
