@@ -108,6 +108,19 @@ class RecommendationService
 
         $computedFertilizers = $this->mapFertilizersToExternalFormat($availableFertilizers, $fertilizerMap);
 
+        // Fertilizer and intercropping advice choose among fertilizers. An empty catalogue for the country
+        // (fertilizers view without rows) would make the compute service fail with a bare 500, so stop here and say why.
+        if ($computedFertilizers === [] && ($computeRequest->recommendations->fertilizerRec || $computeRequest->interCropping->isRecommended())) {
+            \Log::error('No fertilizers are configured for the requested country', [
+                'country' => $computeRequest->farmInformation->countryCode,
+            ]);
+
+            throw RecommendationException::serviceUnavailable(
+                "No fertilizers are configured for {$computeRequest->farmInformation->countryCode}",
+                ['error' => 'No fertilizers configured', 'country' => $computeRequest->farmInformation->countryCode],
+            );
+        }
+
         $akilimoComputeData = AkilimoComputeData::from(
             $computeRequest->toArray(),
             $userInfo,
