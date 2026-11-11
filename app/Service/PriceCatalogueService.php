@@ -11,7 +11,7 @@ namespace App\Service;
 use App\Enums\EnumUserRole;
 use App\Enums\PriceStatus;
 use App\Models\Country;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\DefaultPriceHistory;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -31,11 +31,11 @@ class PriceCatalogueService
     /**
      * Create a row as a draft.
      */
-    public function createDraft(array $data, ?User $actor = null): DefaultPrice
+    public function createDraft(array $data, ?User $actor = null): PriceCatalogue
     {
         $data = $this->withDefaults($data);
 
-        $exists = DefaultPrice::query()
+        $exists = PriceCatalogue::query()
             ->where('country', $data['country'])
             ->where('item', $data['item'])
             ->exists();
@@ -50,7 +50,7 @@ class PriceCatalogueService
         $data['updated_by'] = $actor?->id;
         $data['submitted_by'] = null;
 
-        $price = DefaultPrice::create($data);
+        $price = PriceCatalogue::create($data);
 
         $this->record($price, 'created', $actor, null, $this->snapshot($price));
 
@@ -61,14 +61,14 @@ class PriceCatalogueService
      * Update a row and put it back into draft. The previous values are kept in
      * the history so the ±30 % test and the audit trail still work.
      */
-    public function saveDraft(DefaultPrice $price, array $data, ?User $actor = null): DefaultPrice
+    public function saveDraft(PriceCatalogue $price, array $data, ?User $actor = null): PriceCatalogue
     {
         $data = $this->withDefaults($data + [
             'country' => $price->country,
             'item' => $price->item,
         ]);
 
-        $movedTo = DefaultPrice::query()
+        $movedTo = PriceCatalogue::query()
             ->where('country', $data['country'])
             ->where('item', $data['item'])
             ->whereKeyNot($price->getKey())
@@ -101,7 +101,7 @@ class PriceCatalogueService
      * Activate a draft, or hold it for a second admin when it moves the price
      * by more than the configured threshold.
      */
-    public function activate(DefaultPrice $price, User $actor, ?string $note = null): DefaultPrice
+    public function activate(PriceCatalogue $price, User $actor, ?string $note = null): PriceCatalogue
     {
         if ($price->status === PriceStatus::Active) {
             return $price;
@@ -142,7 +142,7 @@ class PriceCatalogueService
      * out of the fertilizer list) until someone activates it again. The values
      * are kept; the engine removes the price at its next full sync.
      */
-    public function deactivate(DefaultPrice $price, User $actor, ?string $note = null): DefaultPrice
+    public function deactivate(PriceCatalogue $price, User $actor, ?string $note = null): PriceCatalogue
     {
         if ($price->status === PriceStatus::Draft) {
             return $price;
@@ -167,7 +167,7 @@ class PriceCatalogueService
      * outlive the price; their link to it is cleared by the foreign key). Used by
      * the admin screen and the API, so a removal is always on the record.
      */
-    public function delete(DefaultPrice $price, ?User $actor = null, ?string $note = null): void
+    public function delete(PriceCatalogue $price, ?User $actor = null, ?string $note = null): void
     {
         DB::transaction(function () use ($price, $actor, $note) {
             $this->record($price, 'deleted', $actor, $this->snapshot($price), null, $note);
@@ -179,7 +179,7 @@ class PriceCatalogueService
      * Confirm a change that needed a second review. The confirming admin must
      * not be the one who submitted it.
      */
-    public function confirm(DefaultPrice $price, User $actor, ?string $note = null): DefaultPrice
+    public function confirm(PriceCatalogue $price, User $actor, ?string $note = null): PriceCatalogue
     {
         if ($price->status !== PriceStatus::PendingSecondReview) {
             throw ValidationException::withMessages([
@@ -261,7 +261,7 @@ class PriceCatalogueService
      * The most recent snapshot of this row while it was active, used to test
      * the size of a change.
      */
-    public function previousActiveSnapshot(DefaultPrice $price): ?array
+    public function previousActiveSnapshot(PriceCatalogue $price): ?array
     {
         foreach ($price->history()->latest('id')->get() as $entry) {
             foreach ([$entry->new_values, $entry->old_values] as $snapshot) {
@@ -297,7 +297,7 @@ class PriceCatalogueService
     /**
      * A stable, JSON-friendly view of a row for the history table.
      */
-    public function snapshot(DefaultPrice $price): array
+    public function snapshot(PriceCatalogue $price): array
     {
         return [
             'country' => $price->country,
@@ -319,7 +319,7 @@ class PriceCatalogueService
     }
 
     public function record(
-        DefaultPrice $price,
+        PriceCatalogue $price,
         string $action,
         ?User $actor = null,
         ?array $oldValues = null,
@@ -339,7 +339,7 @@ class PriceCatalogueService
         ]);
     }
 
-    private function markActive(DefaultPrice $price, User $actor): void
+    private function markActive(PriceCatalogue $price, User $actor): void
     {
         $price->status = PriceStatus::Active;
         $price->submitted_by = null;

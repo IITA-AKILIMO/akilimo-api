@@ -9,7 +9,7 @@ AKILIMO prices live in three places that are maintained separately and drift apa
 | Where | What | Read by |
 |---|---|---|
 | API "choice list" tables: `fertilizer_prices`, `cassava_prices`, `maize_prices`, `potato_prices`, `operation_costs`, `investment_amount` | Hand-made rows of price options per country, e.g. TZ urea: 85,174 / 105,892 / 119,704 / 135,818, plus a `0` row ("I don't know") and a negative row ("Exact price"). `min_allowed_price`/`max_allowed_price` are the min and max of those rows | Mobile app picker. It reads fertilizer, cassava, maize and investment prices, but not potato prices or operation costs, and it never uses the allowed range (see [§5](#5-mobile-app-later-at-the-app-teams-pace)) |
-| API `default_prices`, `starch_prices` | One value per country and item; starch prices by class | Recommendations engine, via `refresh_prices.R` → SQLite (`R/akilimo_db.R`); used e.g. to fill missing fertiliser costs (`R/fertilizers.R`) |
+| API `price_catalogue`, `starch_prices` | One value per country and item; starch prices by class | Recommendations engine, via `refresh_prices.R` → SQLite (`R/akilimo_db.R`); used e.g. to fill missing fertiliser costs (`R/fertilizers.R`) |
 | Hardcoded in the engine (`R/AkilimoMain.R`) | Labour defaults (`default_lmo_costs`, NG and TZ only), maize 50/cob and 230/kg, sweet potato 120,000 and 384,000/t | Engine only |
 
 Consequences seen in the November 2026 price review ([docs/data/price-review-2026-11.md](data/price-review-2026-11.md)):
@@ -29,7 +29,7 @@ Non-goals: live market feeds; regional prices now (the schema leaves room for th
 
 ### 1. Price catalogue (API)
 
-Extend `default_prices` rather than add a new table, so the engine's existing sync keeps working while it is migrated. One row per `(country, item)`:
+Extend `price_catalogue` rather than add a new table, so the engine's existing sync keeps working while it is migrated. One row per `(country, item)`:
 
 | Column | Notes |
 |---|---|
@@ -80,7 +80,7 @@ Generation runs when a catalogue row is activated or changed, either as a job or
 
 ### 4. Recommendations engine
 
-- `refresh_prices.R` reads `/v1/prices` (paginated, with `updated_since`) into the SQLite `default_prices` table, keeping unit, bag size, currency and range.
+- `refresh_prices.R` reads `/v1/prices` (paginated, with `updated_since`) into the SQLite `price_catalogue` table, keeping unit, bag size, currency and range.
 - The hardcoded defaults in `R/AkilimoMain.R` (labour, maize, sweet potato) become lookups in that table. A hardcoded value is used only if the table has no row, and that is logged at WARN.
 - **Which price:** a new optional request field, `subsidisedFertilizer` (boolean), says whether the farmer gets subsidised fertiliser. If absent, the country's `default_price_basis` applies. Fertiliser costs the farmer typed always win over catalogue prices (D1).
 - **Out-of-range prices are accepted and logged** (D6). The engine computes with the farmer's price, logs a WARN, and adds a note to the response naming the expected range. It never rejects or clamps the price.

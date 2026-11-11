@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DefaultPriceResource;
 use App\Models\Country;
-use App\Repositories\DefaultPriceRepo;
+use App\Repositories\PriceCatalogueRepo;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
 
 class PriceController extends Controller
 {
-    public function __construct(protected DefaultPriceRepo $repo) {}
+    public function __construct(protected PriceCatalogueRepo $repo) {}
 
     /**
      * List catalogue prices

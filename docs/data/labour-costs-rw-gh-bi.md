@@ -8,7 +8,7 @@ Draft rows: [`labour_costs_candidates.csv`](labour_costs_candidates.csv) (defaul
 
 ## Units
 
-The compute service treats these costs as **per acre, in local currency**; it converts them to per hectare (`default_lmo_costs` in `R/AkilimoMain.R`). The API's `default_prices` rows for these items are labelled `per_bag`, which is wrong for labour. See the open issues below.
+The compute service treats these costs as **per acre, in local currency**; it converts them to per hectare (`default_lmo_costs` in `R/AkilimoMain.R`). The API's `price_catalogue` rows for these items are labelled `per_bag`, which is wrong for labour. See the open issues below.
 
 ## Method
 
@@ -52,10 +52,10 @@ Land preparation (ploughing + ridging, ~45 person-days/ha) sits between the FAO 
 
 ## Open issues found along the way
 
-1. **The compute service doesn't read these prices from the API.** Defaults are hardcoded in `R/AkilimoMain.R` (`default_lmo_costs`, NG and TZ only). Adding rows to `default_prices` alone won't change PP advice.
+1. **The compute service doesn't read these prices from the API.** Defaults are hardcoded in `R/AkilimoMain.R` (`default_lmo_costs`, NG and TZ only). Adding rows to `price_catalogue` alone won't change PP advice.
 2. **Tanzania defaults disagree:**
 
-   | Item | `R/AkilimoMain.R` (TZS/acre) | API `default_prices` (TZS) |
+   | Item | `R/AkilimoMain.R` (TZS/acre) | API `price_catalogue` (TZS) |
    |---|---|---|
    | weeding1 | 60,000 | 600,000 |
    | weeding2 | 45,000 | 450,000 |
@@ -69,4 +69,4 @@ Land preparation (ploughing + ridging, ~45 person-days/ha) sits between the FAO 
 ## Before using these
 
 1. Have the IITA RW, GH and BI teams confirm the daily wages and person-days, or replace them with local rates.
-2. Then add them to the compute service's `default_lmo_costs`, or make it read them from the price service, and to the API's `default_prices`.
+2. Then add them to the compute service's `default_lmo_costs`, or make it read them from the price service, and to the API's `price_catalogue`.

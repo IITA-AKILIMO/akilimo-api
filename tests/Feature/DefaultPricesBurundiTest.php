@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 function insertDefaultPrice(string $country, string $item, float $price): void
 {
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         'country' => $country,
         'item' => $item,
         'price' => $price,
@@ -31,8 +31,8 @@ it('moves legacy BU default prices to BI with their prices unchanged', function 
     runBuToBiMigration();
     runBuToBiMigration(); // idempotent
 
-    expect(DB::table('default_prices')->where('country', 'BU')->count())->toBe(0)
-        ->and(DB::table('default_prices')->where('country', 'BI')->whereIn('item', ['cassUP', 'FOMIIMBURA'])->pluck('price', 'item')->all())
+    expect(DB::table('price_catalogue')->where('country', 'BU')->count())->toBe(0)
+        ->and(DB::table('price_catalogue')->where('country', 'BI')->whereIn('item', ['cassUP', 'FOMIIMBURA'])->pluck('price', 'item')->all())
         ->toEqual(['cassUP' => 700000, 'FOMIIMBURA' => 85390]);
 });
 
@@ -42,7 +42,7 @@ it('keeps an existing BI row and drops its BU duplicate', function () {
 
     runBuToBiMigration();
 
-    expect(DB::table('default_prices')->where('item', 'cassUP')->pluck('price', 'country')->all())
+    expect(DB::table('price_catalogue')->where('item', 'cassUP')->pluck('price', 'country')->all())
         ->toEqual(['BI' => 650000]);
 });
 

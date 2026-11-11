@@ -8,6 +8,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * The legacy default-prices CSV filed Burundi under "BU" instead of its ISO code "BI", so
@@ -19,15 +20,24 @@ return new class extends Migration {
     public function up(): void
     {
         DB::transaction(function () {
-            $existing = DB::table('default_prices')->where('country', 'BI')->pluck('item')->all();
+            $existing = DB::table($this->catalogue())->where('country', 'BI')->pluck('item')->all();
 
-            DB::table('default_prices')->where('country', 'BU')->whereIn('item', $existing)->delete();
-            DB::table('default_prices')->where('country', 'BU')->update(['country' => 'BI', 'updated_at' => now()]);
+            DB::table($this->catalogue())->where('country', 'BU')->whereIn('item', $existing)->delete();
+            DB::table($this->catalogue())->where('country', 'BU')->update(['country' => 'BI', 'updated_at' => now()]);
         });
     }
 
     public function down(): void
     {
         // Not reversible: "BU" was never a valid country code, and moved rows cannot be told apart from real "BI" rows
+    }
+
+    /**
+     * The table was renamed to price_catalogue by a later migration; this one runs before that on a new
+     * database (default_prices) and may be run again after it.
+     */
+    private function catalogue(): string
+    {
+        return Schema::hasTable('price_catalogue') ? 'price_catalogue' : 'default_prices';
     }
 };

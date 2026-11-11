@@ -8,6 +8,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Default and starch prices were seeded without a currency (Ghana's carried "GHC", the cedi code retired in
@@ -24,7 +25,7 @@ return new class extends Migration {
     {
         DB::transaction(function () {
             foreach (self::CURRENCIES as $country => $currency) {
-                DB::table('default_prices')
+                DB::table($this->catalogue())
                     ->where('country', $country)
                     ->where(fn ($q) => $q->whereNull('currency')->orWhereIn('currency', ['', 'GHC']))
                     ->update(['currency' => $currency]);
@@ -40,5 +41,14 @@ return new class extends Migration {
     public function down(): void
     {
         // Not reversed: the rows had no currency (or an obsolete one) before
+    }
+
+    /**
+     * The table was renamed to price_catalogue by a later migration; this one runs before that on a new
+     * database (default_prices) and may be run again after it.
+     */
+    private function catalogue(): string
+    {
+        return Schema::hasTable('price_catalogue') ? 'price_catalogue' : 'default_prices';
     }
 };

@@ -55,7 +55,7 @@ class DefaultPricesSeeder extends Seeder
             ];
 
             if (count($batch) >= $batchSize) {
-                DB::table('default_prices')->upsert(
+                DB::table('price_catalogue')->upsert(
                     $batch,
                     ['country', 'item'],
                     ['currency', 'price', 'unit', 'bag_kg', 'updated_at']
@@ -65,7 +65,7 @@ class DefaultPricesSeeder extends Seeder
         }
 
         if (!empty($batch)) {
-            DB::table('default_prices')->upsert(
+            DB::table('price_catalogue')->upsert(
                 $batch,
                 ['country', 'item'],
                 ['currency', 'price', 'unit', 'bag_kg', 'updated_at']

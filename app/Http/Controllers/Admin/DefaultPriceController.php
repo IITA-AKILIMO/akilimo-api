@@ -10,9 +10,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\PriceStatus;
 use App\Http\Requests\Admin\DefaultPriceRequest;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\User;
-use App\Repositories\DefaultPriceRepo;
+use App\Repositories\PriceCatalogueRepo;
 use App\Service\PriceCatalogueService;
 use App\Service\PriceLookupService;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +24,7 @@ use Inertia\Response;
 class DefaultPriceController extends AdminController
 {
     public function __construct(
-        protected DefaultPriceRepo $repo,
+        protected PriceCatalogueRepo $repo,
         protected PriceCatalogueService $catalogue,
         protected PriceLookupService $lookups,
     ) {}
@@ -59,7 +59,7 @@ class DefaultPriceController extends AdminController
             'filters' => $values,
             'categories' => DB::table('price_categories')->orderBy('sort_order')->get(['value', 'label'])
                 ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all(),
-            'items' => $this->paginateShape($paginator, fn (DefaultPrice $f) => [
+            'items' => $this->paginateShape($paginator, fn (PriceCatalogue $f) => [
                 'id' => $f->id,
                 'country' => $f->country,
                 'region' => $f->region,
@@ -104,7 +104,7 @@ class DefaultPriceController extends AdminController
 
     public function edit(int $id): Response
     {
-        /** @var DefaultPrice $item */
+        /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
 
         return Inertia::render('DefaultPrices/Edit', [
@@ -132,7 +132,7 @@ class DefaultPriceController extends AdminController
 
     public function update(DefaultPriceRequest $request, int $id): RedirectResponse
     {
-        /** @var DefaultPrice $item */
+        /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
         $this->catalogue->saveDraft($item, $request->validated(), $this->actor($request));
 
@@ -142,7 +142,7 @@ class DefaultPriceController extends AdminController
 
     public function destroy(Request $request, int $id): RedirectResponse
     {
-        /** @var DefaultPrice $item */
+        /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
         $this->catalogue->delete($item, $this->actor($request));
 
@@ -152,7 +152,7 @@ class DefaultPriceController extends AdminController
 
     public function activate(Request $request, int $id): RedirectResponse
     {
-        /** @var DefaultPrice $item */
+        /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
         $item = $this->catalogue->activate($item, $this->actor($request));
 
@@ -166,7 +166,7 @@ class DefaultPriceController extends AdminController
 
     public function deactivate(Request $request, int $id): RedirectResponse
     {
-        /** @var DefaultPrice $item */
+        /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
         $this->catalogue->deactivate($item, $this->actor($request), $request->input('note'));
 
@@ -175,7 +175,7 @@ class DefaultPriceController extends AdminController
 
     public function confirm(Request $request, int $id): RedirectResponse
     {
-        /** @var DefaultPrice $item */
+        /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
         $this->catalogue->confirm($item, $this->actor($request));
 
@@ -220,7 +220,7 @@ class DefaultPriceController extends AdminController
         $country = $request->get('country', '');
 
         $prices = $country
-            ? $this->repo->forCountry($country)->map(fn (DefaultPrice $p) => [
+            ? $this->repo->forCountry($country)->map(fn (PriceCatalogue $p) => [
                 'id' => $p->id,
                 'country' => $p->country,
                 'item' => $p->item,
@@ -270,7 +270,7 @@ class DefaultPriceController extends AdminController
                 ];
 
                 if (!empty($row['id'])) {
-                    /** @var DefaultPrice $item */
+                    /** @var PriceCatalogue $item */
                     $item = $this->repo->findOrFail($row['id']);
                     $this->catalogue->saveDraft($item, $fields, $actor);
                 } else {
@@ -286,7 +286,7 @@ class DefaultPriceController extends AdminController
     /**
      * The shape the Edit page consumes.
      */
-    private function present(DefaultPrice $item): array
+    private function present(PriceCatalogue $item): array
     {
         return [
             'id' => $item->id,

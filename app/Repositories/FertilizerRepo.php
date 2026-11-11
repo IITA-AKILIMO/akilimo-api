@@ -55,12 +55,12 @@ class FertilizerRepo extends BaseRepo
         return function ($query): void {
             $query->whereExists(function ($price) {
                 $price->selectRaw('1')
-                    ->from('default_prices')
-                    ->whereColumn('default_prices.country', 'fertilizers.country')
-                    ->where('default_prices.status', 'active')
+                    ->from('price_catalogue')
+                    ->whereColumn('price_catalogue.country', 'fertilizers.country')
+                    ->where('price_catalogue.status', 'active')
                     ->where(function ($match) {
-                        $match->whereColumn('default_prices.fertilizer_type', 'fertilizers.type')
-                            ->orWhereColumn('default_prices.item', 'fertilizers.fertilizer_label');
+                        $match->whereColumn('price_catalogue.fertilizer_type', 'fertilizers.type')
+                            ->orWhereColumn('price_catalogue.item', 'fertilizers.fertilizer_label');
                     });
             });
         };

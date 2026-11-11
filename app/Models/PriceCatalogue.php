@@ -10,7 +10,7 @@ namespace App\Models;
 
 use App\Enums\PriceBasis;
 use App\Enums\PriceStatus;
-use App\Models\Base\DefaultPrice as BaseDefaultPrice;
+use App\Models\Base\PriceCatalogue as BasePriceCatalogue;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $updated_by
  * @property int|null $submitted_by
  */
-class DefaultPrice extends BaseDefaultPrice
+class PriceCatalogue extends BasePriceCatalogue
 {
     public $incrementing = true;
 
@@ -81,7 +81,8 @@ class DefaultPrice extends BaseDefaultPrice
 
     public function history(): HasMany
     {
-        return $this->hasMany(DefaultPriceHistory::class);
+        // The history table kept its name and its default_price_id column when this table was renamed
+        return $this->hasMany(DefaultPriceHistory::class, 'default_price_id');
     }
 
     public function isActive(): bool

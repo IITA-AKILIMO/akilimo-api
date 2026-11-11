@@ -6,7 +6,7 @@
 
 | Table | Rows | Role | Who writes it | Verdict |
 |-------|-----:|------|---------------|---------|
-| `default_prices` | 67 | **The catalogue.** One row per country and item: price, subsidised price, unit, bag size, currency, range, status, source, `fertilizer_key` | Admin (review workflow), seeders | Keep: the single source of truth |
+| `price_catalogue` | 67 | **The catalogue.** One row per country and item: price, subsidised price, unit, bag size, currency, range, status, source, `fertilizer_key` | Admin (review workflow), seeders | Keep: the single source of truth |
 | `default_price_history` | 1 | Audit trail of catalogue changes | `PriceCatalogueService` | Keep |
 | `fertilizer_prices` | 180 | App fertiliser options | **View** over the catalogue | Done |
 | `cassava_prices` | 25 | App cassava price bands | **View** over the `cassUP` price | Done |
@@ -35,7 +35,7 @@
 ## 3. Target model
 
 ```
-default_prices  ──(reviewed prices: fertiliser, crops, labour, investment)──►  source of truth
+price_catalogue  ──(reviewed prices: fertiliser, crops, labour, investment)──►  source of truth
 price_choice_steps / price_choice_rounding  ──(rules)──►  views the app reads
         fertilizer_prices   cassava_prices   potato_prices   maize_prices   investment_amount   operation_costs
 ```
@@ -58,7 +58,7 @@ Original questions:
 - **Investment amounts.** Add a catalogue item `investment_amount` per country (the reference amount per acre) and derive the list as multiples of it. TZ today is 57,550 × 1, 2, 3, 4, 6, which suggests a rule of that kind; the owner confirms the multiples.
 
 ### 3.4 Starch
-Starch is priced by factory and class, so it keeps its own tables. Two small alignments: take its currency from the catalogue convention (it already has a `currency` column), and give factories an `active` flag as they have. No further merge: forcing it into `default_prices` would need a factory and class dimension the catalogue does not have.
+Starch is priced by factory and class, so it keeps its own tables. Two small alignments: take its currency from the catalogue convention (it already has a `currency` column), and give factories an `active` flag as they have. No further merge: forcing it into `price_catalogue` would need a factory and class dimension the catalogue does not have.
 
 ### 3.5 Columns
 Drop the constant `min_usd`/`max_usd` from the range-list API responses once the mobile app confirms it does not read them (it does not, today). Keep the legacy columns on the views meanwhile so the response shape does not change.
@@ -79,7 +79,7 @@ All three live in the database, so they are managed there: a new unit or item is
 - **`country_fertilizers`**: which type is sold in which country and how the app uses it (use case, CIS, CIM, available, sort order), keyed by `fertilizer_type` (a foreign key to the type code). One row per type and country, enforced. Row ids are the old `fertilizers` ids, so ids held by apps and option lists stay valid.
 - **`fertilizers`** is a view over both with the old name and columns, so the API, recommendation service and the price views are unchanged. `fertilizer_key` is computed (type, underscore, country), so it can no longer disagree with them. The old table is kept as `fertilizers_legacy`.
 - Writes go through `FertilizerRepo` to the two tables. The admin form picks the fertiliser from a list (its old "Type" list, STRAIGHT/COMPOUND/ORGANIC, did not match the stored types), picks the country, and shows the computed key and bag weight read-only. The API write endpoints take the type code, country and the country's use; name, label, weight and key are no longer accepted. Changing a fertiliser's name or weight is one change that applies to every country.
-- **`default_prices.fertilizer_type`** (a foreign key to `fertilizer_types.type`) replaces the stored `fertilizer_key`: with the row's country it gives the key, so the database refuses a catalogue price for a fertiliser that does not exist, follows a rename, and refuses to delete a type that still has prices. In the price form, choosing the item (urea) picks the fertiliser whose label matches.
+- **`price_catalogue.fertilizer_type`** (a foreign key to `fertilizer_types.type`) replaces the stored `fertilizer_key`: with the row's country it gives the key, so the database refuses a catalogue price for a fertiliser that does not exist, follows a rename, and refuses to delete a type that still has prices. In the price form, choosing the item (urea) picks the fertiliser whose label matches.
 - **Use case is a list too:** `fertilizer_use_cases` (FR, CIM, CIS, ALL), a foreign key from `country_fertilizers.use_case`, picked in the form. The labels (FR fertilizer recommendation, CIM cassava and maize intercrop, CIS cassava and sweet potato intercrop) are descriptions to confirm with the owner; edit them in the table.
 - **Category is a list as well:** `fertilizer_categories` (STRAIGHT one nutrient, COMPOUND several, OTHER), a foreign key from `fertilizer_types.category` and shown as `category` in the fertilizers view, the API and the admin list. Backfilled from the type code (UREA, TSP, SSP, MOP, CAN straight; DAP, MAP, NPK blends, Nafaka Plus and YaraMila Unik compound; the rest OTHER). The assignment and labels are for the owner to confirm; classify a fertilizer in Catalogue > Fertilizers > Fertilizer types.
 - **New fertilizer form** (`/admin/fertilizer-types/create`): name and bag weight; the type code is worked out from the name (NPK 20:10:10 becomes NPK_20_10_10, with a number added if taken), the catalogue label defaults from the name, and the label is added to `price_items` (per bag) so a price can be set for it. The code cannot be changed afterwards.

@@ -140,7 +140,7 @@ it('shows the category in the fertilizers view and the API', function () {
     $type = FertilizerType::create(['type' => 'DAP', 'label' => 'DAP', 'name' => 'DAP', 'weight' => 50, 'category' => 'COMPOUND']);
     CountryFertilizer::create(['fertilizer_type' => $type->type, 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
 
-    DB::table('default_prices')->insert(['country' => 'NG', 'item' => 'DAP', 'fertilizer_type' => 'DAP', 'price' => 9000, 'unit' => 'per_bag', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()]);
+    DB::table('price_catalogue')->insert(['country' => 'NG', 'item' => 'DAP', 'fertilizer_type' => 'DAP', 'price' => 9000, 'unit' => 'per_bag', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()]);
 
     expect(DB::table('fertilizers')->where('type', 'DAP')->value('category'))->toBe('COMPOUND');
 
@@ -195,7 +195,7 @@ it('lists only the fertilizers that have an active price in their country', func
         CountryFertilizer::create(['fertilizer_type' => $type->type, 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
     }
 
-    $price = fn (string $item, string $type, string $status) => DB::table('default_prices')->insert([
+    $price = fn (string $item, string $type, string $status) => DB::table('price_catalogue')->insert([
         'country' => 'NG', 'item' => $item, 'fertilizer_type' => $type, 'price' => 9000, 'unit' => 'per_bag',
         'currency' => 'NGN', 'status' => $status, 'created_at' => now(), 'updated_at' => now(),
     ]);
@@ -211,6 +211,6 @@ it('lists only the fertilizers that have an active price in their country', func
     expect(DB::table('fertilizers')->where('country', 'NG')->count())->toBe(3);
 
     // Activating the price lists the fertilizer
-    DB::table('default_prices')->where('item', 'TSP')->update(['status' => 'active']);
+    DB::table('price_catalogue')->where('item', 'TSP')->update(['status' => 'active']);
     $this->getJson('/api/v1/fertilizers/country/NG')->assertJsonCount(2, 'data');
 });

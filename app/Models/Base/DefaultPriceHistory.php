@@ -9,7 +9,7 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $old_values
  * @property string|null $region
  * @property Carbon|null $updated_at
- * @property DefaultPrice|null $defaultPrice
+ * @property PriceCatalogue|null $priceCatalogue
  * @property User|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultPriceHistory newModelQuery()
@@ -71,9 +71,9 @@ class DefaultPriceHistory extends BaseModel
         'note',
     ];
 
-    public function defaultPrice(): BelongsTo
+    public function priceCatalogue(): BelongsTo
     {
-        return $this->belongsTo(DefaultPrice::class);
+        return $this->belongsTo(PriceCatalogue::class, 'default_price_id');
     }
 
     public function user(): BelongsTo

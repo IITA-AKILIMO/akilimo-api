@@ -29,7 +29,7 @@ function listCatalogue(): void
         seedCurrencies(['country_code' => $code, 'country' => $code, 'currency_name' => $currency, 'currency_code' => $currency, 'currency_symbol' => $currency === 'NGN' ? '₦' : 'TSh']);
     }
 
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         ['country' => 'NG', 'item' => 'cassUP', 'price' => 12000, 'unit' => 'per_tonne', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
         ['country' => 'TZ', 'item' => 'cassUP', 'price' => 180000, 'unit' => 'per_tonne', 'currency' => 'TZS', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
     ]);
@@ -55,7 +55,7 @@ it('labels the zero and negative rows as words in the fertilizer and investment 
     listCatalogue();
     DB::table('fertilizer_types')->insert(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50]);
     DB::table('country_fertilizers')->insert(['fertilizer_type' => 'UREA', 'country' => 'NG', 'use_case' => 'FR', 'created_at' => now(), 'updated_at' => now()]);
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         ['country' => 'NG', 'item' => 'urea', 'fertilizer_type' => 'UREA', 'price' => 10000, 'unit' => 'per_bag', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
         ['country' => 'NG', 'item' => 'investment_amount', 'fertilizer_type' => null, 'price' => 10000, 'unit' => 'per_acre', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
     ]);
@@ -102,7 +102,7 @@ it('searches the lists that have a name to search by, and pages them', function 
     DB::table('country_fertilizers')->insert(['fertilizer_type' => 'MOP', 'country' => 'NG', 'use_case' => 'FR', 'created_at' => now(), 'updated_at' => now()]);
     // UREA and DAP have an active price; MOP has none, so it is not in the list at all
     foreach (['UREA' => 'urea', 'DAP' => 'DAP'] as $type => $item) {
-        DB::table('default_prices')->insert([
+        DB::table('price_catalogue')->insert([
             'country' => 'NG', 'item' => $item, 'fertilizer_type' => $type, 'price' => 40000, 'unit' => 'per_bag', 'currency' => 'NGN',
             'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
         ]);

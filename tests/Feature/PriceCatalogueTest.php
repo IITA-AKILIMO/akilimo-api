@@ -8,7 +8,7 @@
 
 use App\Enums\EnumUserRole;
 use App\Enums\PriceStatus;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\DefaultPriceHistory;
 use App\Models\User;
 use App\Service\PriceCatalogueService;
@@ -38,7 +38,7 @@ function catalogueCountry(string $code = 'NG', string $basis = 'open_market'): i
     ]);
 }
 
-function catalogueDraft(array $overrides = []): DefaultPrice
+function catalogueDraft(array $overrides = []): PriceCatalogue
 {
     return app(PriceCatalogueService::class)->createDraft(array_merge([
         'country' => 'NG',
@@ -56,10 +56,10 @@ function catalogueDraft(array $overrides = []): DefaultPrice
 it('seeds the real units and bag sizes', function () {
     $this->seed(DefaultPricesSeeder::class);
 
-    expect(DB::table('default_prices')->where('country', 'BI')->where('item', 'FOMIIMBURA')->value('bag_kg'))->toBe(25)
-        ->and(DB::table('default_prices')->where('country', 'NG')->where('item', 'urea')->value('bag_kg'))->toBe(50)
-        ->and(DB::table('default_prices')->where('country', 'TZ')->where('item', 'cassUP')->value('unit'))->toBe('per_tonne')
-        ->and(DB::table('default_prices')->where('country', 'NG')->where('item', 'manual_ploughing')->value('unit'))->toBe('per_acre');
+    expect(DB::table('price_catalogue')->where('country', 'BI')->where('item', 'FOMIIMBURA')->value('bag_kg'))->toBe(25)
+        ->and(DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('bag_kg'))->toBe(50)
+        ->and(DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'cassUP')->value('unit'))->toBe('per_tonne')
+        ->and(DB::table('price_catalogue')->where('country', 'NG')->where('item', 'manual_ploughing')->value('unit'))->toBe('per_acre');
 });
 
 it('serves only active, national and effective prices, with the country basis', function () {
@@ -73,7 +73,7 @@ it('serves only active, national and effective prices, with the country basis', 
         ['item' => 'NPK171717', 'status' => 'active', 'region' => 'north', 'effective_from' => null],
     ];
 
-    DB::table('default_prices')->insert(array_map(fn (array $row) => [
+    DB::table('price_catalogue')->insert(array_map(fn (array $row) => [
         ...$row,
         'country' => 'NG',
         'price' => 30000,
@@ -102,7 +102,7 @@ it('returns only rows changed after updated_since', function () {
     catalogueCountry('NG');
     $now = now();
 
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         ['country' => 'NG', 'item' => 'urea', 'price' => 30000, 'unit' => 'per_bag', 'bag_kg' => 50, 'currency' => 'NGN', 'status' => 'active', 'created_at' => $now->copy()->subDays(2), 'updated_at' => $now->copy()->subDays(2)],
         ['country' => 'NG', 'item' => 'DAP', 'price' => 40000, 'unit' => 'per_bag', 'bag_kg' => 50, 'currency' => 'NGN', 'status' => 'active', 'created_at' => $now, 'updated_at' => $now],
     ]);
@@ -116,7 +116,7 @@ it('returns only rows changed after updated_since', function () {
 it('keeps drafts out of the legacy default-prices endpoint', function () {
     catalogueCountry('NG');
     catalogueDraft();
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         'country' => 'NG', 'item' => 'DAP', 'price' => 40000, 'unit' => 'per_bag', 'bag_kg' => 50,
         'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
     ]);
@@ -209,7 +209,7 @@ it('creates and activates a price through the admin, writing the audit trail', f
         'confidence' => 'high',
     ])->assertRedirect('/admin/default-prices');
 
-    $price = DefaultPrice::where('country', 'NG')->where('item', 'urea')->firstOrFail();
+    $price = PriceCatalogue::where('country', 'NG')->where('item', 'urea')->firstOrFail();
     expect($price->status)->toBe(PriceStatus::Draft)
         ->and($price->history()->count())->toBe(1);
 
@@ -293,7 +293,7 @@ it('gives every price a category from its item and filters Default prices by it'
     DB::table('price_items')->updateOrInsert(['item' => 'weeding1'], ['unit' => 'per_acre', 'category' => 'LABOUR']);
 
     foreach ([['urea', 'per_bag'], ['cassUP', 'per_tonne'], ['weeding1', 'per_acre']] as [$item, $unit]) {
-        DB::table('default_prices')->insert([
+        DB::table('price_catalogue')->insert([
             'country' => 'NG', 'item' => $item, 'price' => 100, 'unit' => $unit, 'currency' => 'NGN',
             'status' => 'draft', 'created_at' => now(), 'updated_at' => now(),
         ]);
@@ -333,7 +333,7 @@ it('keeps a deleted price in the history, from the admin and from the API', func
 
     $this->actingAs($admin)->delete("/admin/default-prices/{$id}")->assertRedirect();
 
-    expect(DefaultPrice::find($id))->toBeNull();
+    expect(PriceCatalogue::find($id))->toBeNull();
     $entry = DefaultPriceHistory::where('country', $price->country)->where('item', $price->item)->where('action', 'deleted')->first();
     expect($entry)->not->toBeNull()
         ->and($entry->default_price_id)->toBeNull()
@@ -348,4 +348,14 @@ it('refuses a price for a country that does not exist', function () {
     $this->actingAs($admin)->post('/admin/default-prices', [
         'country' => 'ST', 'item' => 'urea', 'price' => 100, 'unit' => 'per_bag', 'currency' => 'NGN',
     ])->assertSessionHasErrors('country');
+});
+
+
+it('has a model named for its table, with the history linked through default_price_id', function () {
+    $price = catalogueDraft();
+
+    expect((new \App\Models\PriceCatalogue())->getTable())->toBe('price_catalogue')
+        ->and($price)->toBeInstanceOf(\App\Models\PriceCatalogue::class)
+        ->and($price->history()->count())->toBe(1)
+        ->and($price->history->first()->priceCatalogue->is($price))->toBeTrue();
 });

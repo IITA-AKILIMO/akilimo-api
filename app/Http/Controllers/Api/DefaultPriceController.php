@@ -13,9 +13,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\DefaultPriceRequest;
 use App\Http\Resources\Collections\DefaultPriceResourceCollection;
 use App\Http\Resources\DefaultPriceResource;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\User;
-use App\Repositories\DefaultPriceRepo;
+use App\Repositories\PriceCatalogueRepo;
 use App\Service\PriceCatalogueService;
 use App\Traits\HasPaginationParams;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -27,7 +27,7 @@ class DefaultPriceController extends Controller
     use HasPaginationParams;
 
     public function __construct(
-        protected DefaultPriceRepo $repo,
+        protected PriceCatalogueRepo $repo,
         protected PriceCatalogueService $catalogue,
     ) {}
 
@@ -84,7 +84,7 @@ class DefaultPriceController extends Controller
 
     public function update(DefaultPriceRequest $request, int $id): JsonResponse
     {
-        /** @var DefaultPrice $price */
+        /** @var PriceCatalogue $price */
         $price = $this->repo->findOrFail($id);
         $actor = $request->user();
         $price = $this->catalogue->saveDraft($price, $request->validated(), $actor instanceof User ? $actor : null);
@@ -97,7 +97,7 @@ class DefaultPriceController extends Controller
 
     public function destroy(Request $request, int $id): JsonResponse
     {
-        /** @var DefaultPrice $price */
+        /** @var PriceCatalogue $price */
         $price = $this->repo->findOrFail($id);
         $actor = $request->user();
         $this->catalogue->delete($price, $actor instanceof User ? $actor : null);

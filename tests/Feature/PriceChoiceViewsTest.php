@@ -45,7 +45,7 @@ function viewFertilizer(string $country, string $label, string $key): int
 
 function viewPrice(array $overrides = []): int
 {
-    return DB::table('default_prices')->insertGetId(array_merge([
+    return DB::table('price_catalogue')->insertGetId(array_merge([
         'country' => 'TZ',
         'item' => 'urea',
         'fertilizer_type' => 'UREA',
@@ -184,7 +184,7 @@ it('gives a priced fertiliser the "I dont know" and "Exact price" rows, and an u
         ->and(DB::table('fertilizer_prices')->where('fertilizer_key', 'NAFAKAPLUS_TZ')->count())->toBe(0);
 
     // A draft price does not count: only an active one lists the fertiliser
-    DB::table('default_prices')->where('item', 'urea')->update(['status' => 'draft']);
+    DB::table('price_catalogue')->where('item', 'urea')->update(['status' => 'draft']);
     expect(DB::table('fertilizer_prices')->where('fertilizer_key', 'UREA_TZ')->count())->toBe(0);
 });
 
@@ -194,7 +194,7 @@ it('keeps a row id when its price changes and follows the price immediately', fu
     $id = viewPrice();
 
     $before = DB::table('fertilizer_prices')->where('fertilizer_key', 'UREA_TZ')->where('sort_order', 2)->first();
-    DB::table('default_prices')->where('id', $id)->update(['price' => 60000]);
+    DB::table('price_catalogue')->where('id', $id)->update(['price' => 60000]);
     $after = DB::table('fertilizer_prices')->where('fertilizer_key', 'UREA_TZ')->where('sort_order', 2)->first();
 
     expect($after->id)->toBe($before->id)

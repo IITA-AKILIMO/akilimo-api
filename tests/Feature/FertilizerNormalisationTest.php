@@ -56,7 +56,7 @@ it('stores a fertiliser once and the countries that sell it separately', functio
 it('uses the type code as the key and follows a rename', function () {
     $urea = fertilizerType();
     $row = soldIn($urea, 'TZ');
-    $priceId = DB::table('default_prices')->insertGetId([
+    $priceId = DB::table('price_catalogue')->insertGetId([
         'country' => 'TZ', 'item' => 'urea', 'fertilizer_type' => 'UREA', 'price' => 50000, 'unit' => 'per_bag',
         'currency' => 'TZS', 'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
     ]);
@@ -66,19 +66,19 @@ it('uses the type code as the key and follows a rename', function () {
     expect(FertilizerType::find('UREA_46')->name)->toBe('Urea')
         ->and(CountryFertilizer::find($row->id)->fertilizer_type)->toBe('UREA_46')
         ->and(Fertilizer::find($row->id)->fertilizer_key)->toBe('UREA_46_TZ')
-        ->and(DB::table('default_prices')->where('id', $priceId)->value('fertilizer_type'))->toBe('UREA_46');
+        ->and(DB::table('price_catalogue')->where('id', $priceId)->value('fertilizer_type'))->toBe('UREA_46');
 });
 
 it('refuses a catalogue price for a fertiliser that does not exist, or removing one that has prices', function () {
     $urea = fertilizerType();
     soldIn($urea, 'TZ');
 
-    expect(fn () => DB::table('default_prices')->insert([
+    expect(fn () => DB::table('price_catalogue')->insert([
         'country' => 'TZ', 'item' => 'mystery', 'fertilizer_type' => 'NOPE', 'price' => 1, 'unit' => 'per_bag',
         'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
     ]))->toThrow(Illuminate\Database\QueryException::class);
 
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         'country' => 'TZ', 'item' => 'urea', 'fertilizer_type' => 'UREA', 'price' => 50000, 'unit' => 'per_bag',
         'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
     ]);

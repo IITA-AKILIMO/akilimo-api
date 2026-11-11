@@ -180,7 +180,7 @@ it('deletes an unused row and explains when a row is still in use', function () 
 
 it('changes the app price lists when a rule is edited', function () {
     DB::table('countries')->insert(['code' => 'NG', 'name' => 'Nigeria', 'active' => true, 'default_price_basis' => 'open_market']);
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         'country' => 'NG', 'item' => 'cassUP', 'price' => 10000, 'unit' => 'per_tonne', 'currency' => 'NGN',
         'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
     ]);
@@ -198,7 +198,7 @@ it('changes the app price lists when a rule is edited', function () {
 function previewCatalogue(): void
 {
     DB::table('countries')->insert(['code' => 'NG', 'name' => 'Nigeria', 'active' => true, 'default_price_basis' => 'open_market']);
-    DB::table('default_prices')->insert([
+    DB::table('price_catalogue')->insert([
         ['country' => 'NG', 'item' => 'cassUP', 'price' => 10000, 'unit' => 'per_tonne', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
         ['country' => 'NG', 'item' => 'maize_grain', 'price' => 230, 'unit' => 'per_kg', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],
         ['country' => 'NG', 'item' => 'investment_amount', 'price' => 10000, 'unit' => 'per_acre', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()],

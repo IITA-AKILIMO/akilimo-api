@@ -7,7 +7,7 @@
  */
 
 use App\Enums\EnumUserRole;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\User;
 use App\Service\PriceLookupService;
 use Illuminate\Support\Facades\DB;
@@ -87,7 +87,7 @@ it('gives the price forms the lists', function () {
 it('accepts a price whose unit, item and currency are in the lists', function () {
     $this->actingAs(lookupAdmin())->post('/admin/default-prices', lookupPrice())->assertRedirect('/admin/default-prices');
 
-    expect(DefaultPrice::where('country', 'NG')->where('item', 'urea')->exists())->toBeTrue();
+    expect(PriceCatalogue::where('country', 'NG')->where('item', 'urea')->exists())->toBeTrue();
 });
 
 it('refuses a unit, item or currency that is not in the lists', function () {
@@ -97,14 +97,14 @@ it('refuses a unit, item or currency that is not in the lists', function () {
     $this->actingAs($admin)->post('/admin/default-prices', lookupPrice(['item' => 'cass UP']))->assertSessionHasErrors('item');
     $this->actingAs($admin)->post('/admin/default-prices', lookupPrice(['currency' => 'XXX']))->assertSessionHasErrors('currency');
 
-    expect(DefaultPrice::where('country', 'NG')->where('item', 'urea')->exists())->toBeFalse();
+    expect(PriceCatalogue::where('country', 'NG')->where('item', 'urea')->exists())->toBeFalse();
 });
 
 it('saves an item as the list spells it, whatever case was posted', function () {
     $this->actingAs(lookupAdmin())->post('/admin/default-prices', lookupPrice(['item' => 'cassup', 'unit' => 'per_tonne']))
         ->assertRedirect('/admin/default-prices');
 
-    expect(DB::table('default_prices')->where('country', 'NG')->value('item'))->toBe('cassUP');
+    expect(DB::table('price_catalogue')->where('country', 'NG')->value('item'))->toBe('cassUP');
 });
 
 it('applies the same lists to the batch forms', function () {
@@ -116,7 +116,7 @@ it('applies the same lists to the batch forms', function () {
         ],
     ])->assertSessionHasErrors(['rows.1.unit', 'rows.1.currency']);
 
-    expect(DefaultPrice::where('country', 'NG')->count())->toBe(0);
+    expect(PriceCatalogue::where('country', 'NG')->count())->toBe(0);
 });
 
 it('takes the default unit for an item from the database', function () {
@@ -135,4 +135,35 @@ it('takes the default unit for an item from the database', function () {
     );
 
     expect($other->unit)->toBe('per_kg');
+});
+
+
+it('gives every country its own currency and defaults a price to it', function () {
+    seedCurrencies(['country_code' => null, 'country' => null, 'currency_name' => 'West African CFA franc', 'currency_code' => 'XOF', 'currency_symbol' => 'CFA']);
+    DB::table('countries')->insert(['code' => 'SN', 'name' => 'Senegal', 'currency_code' => 'XOF', 'active' => true, 'default_price_basis' => 'open_market']);
+    DB::table('countries')->insert(['code' => 'BJ', 'name' => 'Benin', 'currency_code' => 'XOF', 'active' => true, 'default_price_basis' => 'open_market']);
+
+    $byCountry = app(PriceLookupService::class)->currencyByCountry();
+
+    // two countries share one currency, and each still has it
+    expect($byCountry['SN'])->toBe('XOF')->and($byCountry['BJ'])->toBe('XOF');
+
+    // a price saved without a currency takes its country's
+    $price = app(\App\Service\PriceCatalogueService::class)->createDraft(['country' => 'SN', 'item' => 'urea', 'price' => 100], null);
+    expect($price->currency)->toBe('XOF');
+});
+
+it('picks a country currency from the currencies list in the admin', function () {
+    $admin = lookupAdmin();
+
+    $this->actingAs($admin)->get('/admin/countries/create')
+        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page->has('currencies', DB::table('currencies')->count()));
+
+    $this->actingAs($admin)->post('/admin/countries', ['code' => 'KE', 'name' => 'Kenya', 'currency_code' => 'NOPE', 'default_price_basis' => 'open_market'])
+        ->assertSessionHasErrors('currency_code');
+
+    $this->actingAs($admin)->post('/admin/countries', ['code' => 'KE', 'name' => 'Kenya', 'currency_code' => 'TZS', 'default_price_basis' => 'open_market', 'active' => true])
+        ->assertSessionHasNoErrors();
+
+    expect(DB::table('countries')->where('code', 'KE')->value('currency_code'))->toBe('TZS');
 });

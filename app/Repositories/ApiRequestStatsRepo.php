@@ -306,7 +306,7 @@ class ApiRequestStatsRepo extends BaseRepo
         // The app's price lists (fertiliser, cassava, maize, potato, investment, operation costs) are
         // database views over the catalogue, so each is as fresh as the catalogue prices behind it and
         // is edited on the default prices page. 'source' narrows the catalogue to the rows that feed it.
-        $catalogue = fn (callable $where) => fn () => $where(DB::table('default_prices')->where('status', 'active')->whereNull('region'));
+        $catalogue = fn (callable $where) => fn () => $where(DB::table('price_catalogue')->where('status', 'active')->whereNull('region'));
         $lists = [
             ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/default-prices',
                 'source' => $catalogue(fn ($q) => $q->where('unit', 'per_bag')->whereNotNull('fertilizer_type'))],
@@ -317,7 +317,7 @@ class ApiRequestStatsRepo extends BaseRepo
             ['label' => 'Potato prices', 'table' => 'potato_prices', 'href' => '/admin/default-prices',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'sweetPotato_tuber'))],
             ['label' => 'Starch prices', 'table' => 'starch_prices', 'href' => '/admin/starch-prices'],
-            ['label' => 'Default prices', 'table' => 'default_prices', 'href' => '/admin/default-prices'],
+            ['label' => 'Default prices', 'table' => 'price_catalogue', 'href' => '/admin/default-prices'],
             ['label' => 'Investment amounts', 'table' => 'investment_amount', 'href' => '/admin/default-prices',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'investment_amount'))],
             ['label' => 'Operation costs', 'table' => 'operation_costs', 'href' => '/admin/default-prices',

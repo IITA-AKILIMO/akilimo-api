@@ -11,7 +11,7 @@ namespace App\Models\Base;
 use App\Core\Models\BaseUser;
 use App\Models\ApiKey;
 use App\Models\CountryReviewer;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use App\Models\DefaultPriceHistory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,7 +36,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property Collection|ApiKey[] $apiKeys
  * @property Collection|CountryReviewer[] $countryReviewers
  * @property Collection|DefaultPriceHistory[] $defaultPriceHistories
- * @property Collection|DefaultPrice[] $defaultPrices
+ * @property Collection|PriceCatalogue[] $defaultPrices
  * @property-read int|null $api_keys_count
  * @property-read int|null $country_reviewers_count
  * @property-read int|null $default_price_histories_count
@@ -102,6 +102,6 @@ class User extends BaseUser
 
     public function defaultPrices(): HasMany
     {
-        return $this->hasMany(DefaultPrice::class, 'updated_by');
+        return $this->hasMany(PriceCatalogue::class, 'updated_by');
     }
 }

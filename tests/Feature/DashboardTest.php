@@ -132,7 +132,7 @@ it('averages feedback satisfaction over real 1 to 5 answers only', function () {
 it('flags price lists that have not been updated recently', function () {
     // The app's price lists are views over the catalogue, so they are empty when the catalogue is
     DB::table('default_price_history')->delete();
-    DB::table('default_prices')->delete();
+    DB::table('price_catalogue')->delete();
 
     $this->actingAs(dashboardUser(EnumUserRole::Admin))
         ->get('/admin')

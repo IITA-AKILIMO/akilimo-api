@@ -8,6 +8,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Tanzania's fertiliser default prices (per 50 kg bag) dated from about 2020. They are updated to the TFRA
@@ -44,12 +45,21 @@ return new class extends Migration {
     {
         DB::transaction(function () use ($from, $to) {
             foreach (self::PRICES as $item => $prices) {
-                DB::table('default_prices')
+                DB::table($this->catalogue())
                     ->where('country', 'TZ')
                     ->where('item', $item)
                     ->where('price', $prices[$from])
                     ->update(['price' => $prices[$to], 'updated_at' => now()]);
             }
         });
+    }
+
+    /**
+     * The table was renamed to price_catalogue by a later migration; this one runs before that on a new
+     * database (default_prices) and may be run again after it.
+     */
+    private function catalogue(): string
+    {
+        return Schema::hasTable('price_catalogue') ? 'price_catalogue' : 'default_prices';
     }
 };

@@ -9,19 +9,19 @@
 namespace App\Repositories;
 
 use App\Enums\PriceStatus;
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 
-class DefaultPriceRepo extends BaseRepo
+class PriceCatalogueRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return DefaultPrice::class;
+        return PriceCatalogue::class;
     }
 
     /**
-     * @return Collection<int, DefaultPrice>
+     * @return Collection<int, PriceCatalogue>
      */
     public function forCountry(string $country): Collection
     {
@@ -34,7 +34,7 @@ class DefaultPriceRepo extends BaseRepo
     /**
      * The rows GET /v1/prices serves: active, national and already effective.
      *
-     * @return Collection<int, DefaultPrice>
+     * @return Collection<int, PriceCatalogue>
      */
     public function activeForCountry(string $country, ?CarbonInterface $updatedSince = null): Collection
     {

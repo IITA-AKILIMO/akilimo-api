@@ -8,12 +8,12 @@
 
 namespace App\Http\Resources;
 
-use App\Models\DefaultPrice;
+use App\Models\PriceCatalogue;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin DefaultPrice
+ * @mixin PriceCatalogue
  */
 class DefaultPriceResource extends JsonResource
 {
