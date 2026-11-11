@@ -5,37 +5,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
-DROP TABLE IF EXISTS `DATABASECHANGELOG`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `DATABASECHANGELOG` (
-  `ID` varchar(255) NOT NULL,
-  `AUTHOR` varchar(255) NOT NULL,
-  `FILENAME` varchar(255) NOT NULL,
-  `DATEEXECUTED` datetime NOT NULL,
-  `ORDEREXECUTED` int(11) NOT NULL,
-  `EXECTYPE` varchar(10) NOT NULL,
-  `MD5SUM` varchar(35) DEFAULT NULL,
-  `DESCRIPTION` varchar(255) DEFAULT NULL,
-  `COMMENTS` varchar(255) DEFAULT NULL,
-  `TAG` varchar(255) DEFAULT NULL,
-  `LIQUIBASE` varchar(20) DEFAULT NULL,
-  `CONTEXTS` varchar(255) DEFAULT NULL,
-  `LABELS` varchar(255) DEFAULT NULL,
-  `DEPLOYMENT_ID` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `DATABASECHANGELOGLOCK`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `DATABASECHANGELOGLOCK` (
-  `ID` int(11) NOT NULL,
-  `LOCKED` bit(1) NOT NULL,
-  `LOCKGRANTED` datetime DEFAULT NULL,
-  `LOCKEDBY` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `api_keys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -54,7 +23,7 @@ CREATE TABLE `api_keys` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `api_keys_key_hash_unique` (`key_hash`),
   KEY `api_keys_user_id_is_active_index` (`user_id`,`is_active`),
-  CONSTRAINT `api_keys_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `api_keys_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `api_requests`;
@@ -67,17 +36,17 @@ CREATE TABLE `api_requests` (
   `country_code` varchar(5) GENERATED ALWAYS AS (json_unquote(json_extract(`plumber_request`,'$.country'))) STORED,
   `lat` decimal(10,6) GENERATED ALWAYS AS (json_unquote(json_extract(`plumber_request`,'$.lat'))) STORED,
   `lon` decimal(10,6) GENERATED ALWAYS AS (json_unquote(json_extract(`plumber_request`,'$.lon'))) STORED,
-  `full_names` varchar(255) GENERATED ALWAYS AS (json_unquote(json_extract(`droid_request`,'$.userInfo.userName'))) STORED,
-  `phone_number` varchar(50) GENERATED ALWAYS AS (json_unquote(json_extract(`droid_request`,'$.userInfo.mobileNumber'))) STORED,
-  `gender` varchar(50) GENERATED ALWAYS AS (json_unquote(json_extract(`droid_request`,'$.userInfo.gender'))) STORED,
+  `full_names` varchar(255) GENERATED ALWAYS AS (coalesce(json_unquote(json_extract(`droid_request`,'$.userInfo.userName')),nullif(trim(concat_ws(' ',json_unquote(json_extract(`droid_request`,'$.user_info.first_name')),json_unquote(json_extract(`droid_request`,'$.user_info.last_name')))),''))) STORED,
+  `phone_number` varchar(50) GENERATED ALWAYS AS (coalesce(json_unquote(json_extract(`droid_request`,'$.userInfo.mobileNumber')),nullif(json_unquote(json_extract(`droid_request`,'$.user_info.phone_number')),'null'))) STORED,
+  `gender` varchar(50) GENERATED ALWAYS AS (coalesce(json_unquote(json_extract(`droid_request`,'$.userInfo.gender')),json_unquote(json_extract(`droid_request`,'$.user_info.gender')))) STORED,
   `fr` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.FR')) using utf8mb4) = 'true') STORED,
   `ic` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.IC')) using utf8mb4) = 'true') STORED,
   `pp` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.PP')) using utf8mb4) = 'true') STORED,
   `sph` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.SPH')) using utf8mb4) = 'true') STORED,
   `spp` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.SPP')) using utf8mb4) = 'true') STORED,
-  `excluded` tinyint(1) GENERATED ALWAYS AS (case when `phone_number` like '254%' or `phone_number` like '49%' then 1 when `full_names` like '%KREYE%' or `full_names` like '%C K%' then 1 else 0 end) STORED,
+  `excluded` tinyint(1) NOT NULL DEFAULT 0,
   `use_case` varchar(10) GENERATED ALWAYS AS (case when `fr` = 1 then 'FR' when `pp` = 1 then 'PP' when `ic` = 1 then 'IC' when `spp` = 1 or `sph` = 1 then 'SPHS' else 'NA' end) STORED,
-  `gender_code` varchar(2) GENERATED ALWAYS AS (case when `gender` in ('Male','Mwanaume') then 'M' when `gender` in ('Female','Mwanamke') then 'F' else 'NA' end) STORED,
+  `gender_code` varchar(2) GENERATED ALWAYS AS (case when `gender` in ('Male','Mwanaume','M') then 'M' when `gender` in ('Female','Mwanamke','F') then 'F' else 'NA' end) STORED,
   `droid_request` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`droid_request`)),
   `plumber_request` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`plumber_request`)),
   `request_started_at` timestamp NULL DEFAULT NULL,
@@ -240,6 +209,44 @@ CREATE TABLE `countries` (
   SPATIAL KEY `idx_country_boundary` (`boundary`),
   KEY `countries_name_index` (`name`),
   KEY `countries_active_index` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `coverage_areas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coverage_areas` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `country_code` varchar(2) NOT NULL,
+  `geojson` longtext NOT NULL,
+  `n_cells` int(10) unsigned DEFAULT NULL,
+  `min_lon` double NOT NULL,
+  `min_lat` double NOT NULL,
+  `max_lon` double NOT NULL,
+  `max_lat` double NOT NULL,
+  `checksum` char(64) NOT NULL,
+  `fetched_at` timestamp NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `coverage_areas_country_code_unique` (`country_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `crops`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `crops` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `crop_key` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `advice_available` tinyint(1) NOT NULL DEFAULT 0,
+  `countries` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`countries`)),
+  `sort_order` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `crops_crop_key_unique` (`crop_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `currencies`;
@@ -409,6 +416,43 @@ CREATE TABLE `migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `monitored_scheduled_task_log_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `monitored_scheduled_task_log_items` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `monitored_scheduled_task_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_scheduled_task_id` (`monitored_scheduled_task_id`),
+  CONSTRAINT `fk_scheduled_task_id` FOREIGN KEY (`monitored_scheduled_task_id`) REFERENCES `monitored_scheduled_tasks` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `monitored_scheduled_tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `monitored_scheduled_tasks` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `cron_expression` varchar(255) NOT NULL,
+  `timezone` varchar(255) DEFAULT NULL,
+  `ping_url` varchar(255) DEFAULT NULL,
+  `last_started_at` datetime DEFAULT NULL,
+  `last_finished_at` datetime DEFAULT NULL,
+  `last_failed_at` datetime DEFAULT NULL,
+  `last_skipped_at` datetime DEFAULT NULL,
+  `registered_on_oh_dear_at` datetime DEFAULT NULL,
+  `last_pinged_at` datetime DEFAULT NULL,
+  `grace_time_in_minutes` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `operation_costs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -553,6 +597,21 @@ CREATE TABLE `starch_prices` (
   CONSTRAINT `starch_prices_starch_factory_id_foreign` FOREIGN KEY (`starch_factory_id`) REFERENCES `starch_factories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `traffic_exclusions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `traffic_exclusions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `field` varchar(20) NOT NULL,
+  `match_type` varchar(20) NOT NULL,
+  `value` varchar(191) NOT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `translations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -593,6 +652,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `role` enum('admin','partner','user') NOT NULL DEFAULT 'user',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
@@ -602,20 +662,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_username_unique` (`username`),
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `users_old`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users_old` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(150) NOT NULL,
-  `enabled` bit(1) NOT NULL DEFAULT b'0',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `username` (`username`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `yield_request`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -706,5 +752,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2026_04_09_120
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (51,'2026_04_09_120812_drop_legacy_app_report_procedures',49);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (52,'2026_04_09_121704_drop_unused_triggers_for_app_report',50);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (53,'2026_04_09_122400_drop_stats_view_add_computed_columns',51);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (54,'2026_05_06_000001_add_role_to_users_table',52);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (55,'2026_05_06_120100_drop_stale_tables',53);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (56,'2026_05_07_064836_alter_api_keys_user_id_column',54);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (57,'2026_05_07_064837_add_user_id_fk_to_api_keys',55);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (58,'2026_05_07_085600_rename_playground_role_to_user_in_users_table',56);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (59,'2026_06_08_115318_create_schedule_monitor_tables',57);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (60,'2026_10_28_000001_create_coverage_areas_table',58);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (61,'2026_10_29_000001_create_crops_table',59);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (62,'2026_11_02_000001_create_traffic_exclusions_table',60);
 COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
