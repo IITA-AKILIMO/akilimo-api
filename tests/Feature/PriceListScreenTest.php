@@ -98,17 +98,29 @@ it('searches the lists that have a name to search by, and pages them', function 
     foreach (['UREA', 'DAP'] as $type) {
         DB::table('country_fertilizers')->insert(['fertilizer_type' => $type, 'country' => 'NG', 'use_case' => 'FR', 'created_at' => now(), 'updated_at' => now()]);
     }
+    DB::table('fertilizer_types')->insert(['type' => 'MOP', 'label' => 'MOP', 'name' => 'MOP', 'weight' => 50]);
+    DB::table('country_fertilizers')->insert(['fertilizer_type' => 'MOP', 'country' => 'NG', 'use_case' => 'FR', 'created_at' => now(), 'updated_at' => now()]);
+    // UREA and DAP have an active price; MOP has none, so it is not in the list at all
+    foreach (['UREA' => 'urea', 'DAP' => 'DAP'] as $type => $item) {
+        DB::table('default_prices')->insert([
+            'country' => 'NG', 'item' => $item, 'fertilizer_type' => $type, 'price' => 40000, 'unit' => 'per_bag', 'currency' => 'NGN',
+            'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+    }
     $admin = listAdmin();
 
-    // each fertilizer has "I don't know", "Exact price" (no catalogue price, so no choices)
+    // a priced fertilizer has its choices and the "I don't know" and "Exact price" rows
     $this->actingAs($admin)->get('/admin/price-lists?list=fertilizer&search=dap')
         ->assertInertia(fn (Assert $page) => $page
             ->where('searchPlaceholder', fn ($p) => str_contains((string) $p, 'fertilizer key'))
-            ->where('items.meta.total', 2)
-            ->where('items.data.0.fertilizer_key', 'DAP_NG'));
+            ->where('items.meta.total', fn ($total) => $total >= 3)
+            ->where('items.data', fn ($rows) => collect($rows)->every(fn ($r) => $r['fertilizer_key'] === 'DAP_NG')));
+
+    $this->actingAs($admin)->get('/admin/price-lists?list=fertilizer&search=mop')
+        ->assertInertia(fn (Assert $page) => $page->where('items.meta.total', 0));
 
     $this->actingAs($admin)->get('/admin/price-lists?list=fertilizer&per_page=10')
-        ->assertInertia(fn (Assert $page) => $page->where('items.meta.total', 4)->where('items.meta.per_page', 10));
+        ->assertInertia(fn (Assert $page) => $page->where('items.meta.total', fn ($total) => $total >= 6)->where('items.meta.per_page', 10));
 
     // a list with no text to search has no search box
     $this->actingAs($admin)->get('/admin/price-lists?list=cassava')

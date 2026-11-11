@@ -166,7 +166,7 @@ it('serves only active, national, effective prices that have a fertiliser key', 
     expect($withOptions)->toBe(['SSP_TZ']);
 });
 
-it('gives every fertiliser the "I dont know" and "Exact price" rows', function () {
+it('gives a priced fertiliser the "I dont know" and "Exact price" rows, and an unpriced one nothing', function () {
     viewCountry('TZ');
     viewFertilizer('TZ', 'urea', 'UREA_TZ');
     viewFertilizer('TZ', 'NafakaPlus', 'NAFAKAPLUS_TZ'); // no catalogue price at all
@@ -174,12 +174,18 @@ it('gives every fertiliser the "I dont know" and "Exact price" rows', function (
 
     $markers = DB::table('fertilizer_prices')->where('price_per_bag', '<=', 0)->orderBy('fertilizer_key')->orderBy('sort_order')->get();
 
-    expect($markers->pluck('fertilizer_key')->all())->toBe(['NAFAKAPLUS_TZ', 'NAFAKAPLUS_TZ', 'UREA_TZ', 'UREA_TZ'])
-        ->and($markers->pluck('sort_order')->map(fn ($s) => (int) $s)->all())->toBe([0, 5, 0, 5])
+    // Only a fertiliser with an active price is listed; the two markers alone would leave the farmer nothing to choose
+    expect($markers->pluck('fertilizer_key')->all())->toBe(['UREA_TZ', 'UREA_TZ'])
+        ->and($markers->pluck('sort_order')->map(fn ($s) => (int) $s)->all())->toBe([0, 5])
         ->and((float) $markers->first()->price_per_bag)->toBe(0.0)
         ->and((float) $markers->get(1)->price_per_bag)->toBeLessThan(0.0);
 
-    expect(viewOptions('NAFAKAPLUS_TZ'))->toBe([]);
+    expect(viewOptions('NAFAKAPLUS_TZ'))->toBe([])
+        ->and(DB::table('fertilizer_prices')->where('fertilizer_key', 'NAFAKAPLUS_TZ')->count())->toBe(0);
+
+    // A draft price does not count: only an active one lists the fertiliser
+    DB::table('default_prices')->where('item', 'urea')->update(['status' => 'draft']);
+    expect(DB::table('fertilizer_prices')->where('fertilizer_key', 'UREA_TZ')->count())->toBe(0);
 });
 
 it('keeps a row id when its price changes and follows the price immediately', function () {
