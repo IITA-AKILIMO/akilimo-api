@@ -151,3 +151,34 @@ it('does not let a category that fertilisers use be removed', function () {
 
     expect(fn () => DB::table('fertilizer_categories')->where('value', 'STRAIGHT')->delete())->toThrow(QueryException::class);
 });
+
+
+it('edits a fertiliser itself: name, weight and category, but never the code or label', function () {
+    $admin = typeAdmin();
+    FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50, 'category' => 'OTHER']);
+    CountryFertilizer::create(['fertilizer_type' => 'UREA', 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
+
+    $this->actingAs($admin)->get('/admin/fertilizer-types/UREA/edit')
+        ->assertInertia(fn (Assert $page) => $page->component('FertilizerTypes/Edit')->where('item.type', 'UREA')->where('countries', ['NG'])->has('categories', 3));
+
+    $this->actingAs($admin)->put('/admin/fertilizer-types/UREA', ['name' => 'Urea 46%', 'weight' => 25, 'category' => 'STRAIGHT', 'type' => 'HACK', 'label' => 'hack'])
+        ->assertSessionHasNoErrors();
+
+    $type = FertilizerType::find('UREA');
+    expect($type->name)->toBe('Urea 46%')->and($type->weight)->toBe(25)->and($type->category)->toBe('STRAIGHT')->and($type->label)->toBe('urea');
+
+    $this->actingAs($admin)->put('/admin/fertilizer-types/UREA', ['name' => 'Urea', 'weight' => 25, 'category' => 'MAGIC'])->assertSessionHasErrors('category');
+});
+
+it('saves the category picked on the country form on the fertiliser', function () {
+    $admin = typeAdmin();
+    FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50, 'category' => 'OTHER']);
+    $row = CountryFertilizer::create(['fertilizer_type' => 'UREA', 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
+
+    $this->actingAs($admin)->get("/admin/fertilizers/{$row->id}/edit")
+        ->assertInertia(fn (Assert $page) => $page->has('categories', 3)->where('item.category', 'OTHER'));
+
+    $this->actingAs($admin)->put("/admin/fertilizers/{$row->id}", ['category' => 'STRAIGHT'])->assertSessionHasNoErrors();
+
+    expect(FertilizerType::find('UREA')->category)->toBe('STRAIGHT');
+});

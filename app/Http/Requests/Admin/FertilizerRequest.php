@@ -35,6 +35,8 @@ class FertilizerRequest extends FormRequest
             'sort_order' => ['nullable', 'integer', 'min:0'],
             // Picked from fertilizer_use_cases
             'use_case' => [...$required, 'string', Rule::exists('fertilizer_use_cases', 'value')],
+            // The fertiliser's own category (shared by every country that sells it), picked from fertilizer_categories
+            'category' => ['sometimes', 'string', Rule::exists('fertilizer_categories', 'value')],
             'cis' => ['boolean'],
             'cim' => ['boolean'],
             'available' => ['boolean'],

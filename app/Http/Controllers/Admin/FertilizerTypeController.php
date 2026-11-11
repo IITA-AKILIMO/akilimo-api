@@ -9,6 +9,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\FertilizerTypeRequest;
+use App\Http\Requests\Admin\FertilizerTypeUpdateRequest;
+use App\Models\FertilizerType;
 use App\Service\FertilizerTypeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -25,10 +27,36 @@ class FertilizerTypeController extends AdminController
 
     public function create(): Response
     {
-        return Inertia::render('FertilizerTypes/Create', [
-            'categories' => DB::table('fertilizer_categories')->orderBy('sort_order')->get(['value', 'label'])
-                ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all(),
+        return Inertia::render('FertilizerTypes/Create', ['categories' => $this->categories()]);
+    }
+
+    public function edit(string $type): Response
+    {
+        $item = FertilizerType::findOrFail($type);
+
+        return Inertia::render('FertilizerTypes/Edit', [
+            'item' => $item->only(['type', 'label', 'name', 'weight', 'category']),
+            'categories' => $this->categories(),
+            'countries' => DB::table('country_fertilizers')->where('fertilizer_type', $item->type)->orderBy('country')->pluck('country')->all(),
         ]);
+    }
+
+    public function update(FertilizerTypeUpdateRequest $request, string $type): RedirectResponse
+    {
+        $item = FertilizerType::findOrFail($type);
+        $item->update($request->validated());
+
+        return redirect()->route('admin.fertilizers.index')
+            ->with('success', "{$item->name} updated for every country that sells it.");
+    }
+
+    /**
+     * @return list<array{value: string, label: string}>
+     */
+    private function categories(): array
+    {
+        return DB::table('fertilizer_categories')->orderBy('sort_order')->get(['value', 'label'])
+            ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all();
     }
 
     public function store(FertilizerTypeRequest $request): RedirectResponse

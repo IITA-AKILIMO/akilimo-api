@@ -60,7 +60,7 @@ class FertilizerController extends AdminController
 
     public function create(): Response
     {
-        return Inertia::render('Fertilizers/Create', ['types' => $this->types(), 'useCases' => $this->useCases()]);
+        return Inertia::render('Fertilizers/Create', ['types' => $this->types(), 'useCases' => $this->useCases(), 'categories' => $this->categories()]);
     }
 
     public function store(FertilizerRequest $request): RedirectResponse
@@ -75,7 +75,7 @@ class FertilizerController extends AdminController
     {
         $item = $this->repo->findOrFail($id);
 
-        return Inertia::render('Fertilizers/Edit', ['item' => $item->toArray(), 'types' => $this->types(), 'useCases' => $this->useCases()]);
+        return Inertia::render('Fertilizers/Edit', ['item' => $item->toArray(), 'types' => $this->types(), 'useCases' => $this->useCases(), 'categories' => $this->categories()]);
     }
 
     public function update(FertilizerRequest $request, int $id): RedirectResponse
@@ -107,6 +107,17 @@ class FertilizerController extends AdminController
     }
 
     /**
+     * The kinds of fertiliser, from fertilizer_categories.
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    private function categories(): array
+    {
+        return DB::table('fertilizer_categories')->orderBy('sort_order')->get(['value', 'label'])
+            ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all();
+    }
+
+    /**
      * The fertilisers a country can sell, from fertilizer_types: picked in the form
      * instead of typed. A new fertiliser is a row in that table.
      *
@@ -114,8 +125,8 @@ class FertilizerController extends AdminController
      */
     private function types(): array
     {
-        return FertilizerType::query()->orderBy('name')->get(['type', 'name', 'weight'])
-            ->map(fn (FertilizerType $t) => ['type' => $t->type, 'name' => $t->name, 'weight' => $t->weight])
+        return FertilizerType::query()->orderBy('name')->get(['type', 'name', 'weight', 'category'])
+            ->map(fn (FertilizerType $t) => ['type' => $t->type, 'name' => $t->name, 'weight' => $t->weight, 'category' => $t->category])
             ->all();
     }
 }

@@ -6,15 +6,19 @@ import CountrySelect from '../../components/CountrySelect'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { FertilizerTypeOption, FertilizerUseCase } from '../../types'
 
-interface Props { types: FertilizerTypeOption[]; useCases: FertilizerUseCase[] }
+interface Props { types: FertilizerTypeOption[]; useCases: FertilizerUseCase[]; categories: { value: string; label: string }[] }
 
-export default function FertilizersCreate({ types, useCases }: Props) {
+export default function FertilizersCreate({ types, useCases, categories }: Props) {
     const { data, setData, post, processing, errors } = useForm({
-        type: '', country: '', sort_order: '', use_case: '',
+        type: '', country: '', sort_order: '', use_case: '', category: 'OTHER',
         cis: false, cim: false, available: true,
     })
 
     const selected = types.find((t) => t.type === data.type)
+
+    function pickType(type: string) {
+        setData((d) => ({ ...d, type, category: types.find((t) => t.type === type)?.category ?? d.category }))
+    }
     // The key is the type and the country; it is computed, never typed
     const key = data.type && data.country ? `${data.type}_${data.country}` : ''
 
@@ -32,7 +36,7 @@ export default function FertilizersCreate({ types, useCases }: Props) {
                     <div className="row g-3">
                         <div className="col-md-6">
                             <FormField label="Fertilizer" required error={errors.type}>
-                                <select className={`form-select ${errors.type ? 'is-invalid' : ''}`} value={data.type} onChange={e => setData('type', e.target.value)}>
+                                <select className={`form-select ${errors.type ? 'is-invalid' : ''}`} value={data.type} onChange={e => pickType(e.target.value)}>
                                     <option value="">Select fertilizer</option>
                                     {types.map((t) => <option key={t.type} value={t.type}>{t.name}</option>)}
                                 </select>
@@ -56,6 +60,14 @@ export default function FertilizersCreate({ types, useCases }: Props) {
                         <div className="col-md-3">
                             <FormField label="Sort Order" error={errors.sort_order}>
                                 <input type="number" min={0} className="form-control" value={data.sort_order} onChange={e => setData('sort_order', e.target.value)} />
+                            </FormField>
+                        </div>
+                        <div className="col-md-6">
+                            <FormField label="Category" required error={errors.category}>
+                                <select className={`form-select ${errors.category ? 'is-invalid' : ''}`} value={data.category} onChange={e => setData('category', e.target.value)}>
+                                    {categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                </select>
+                                <div className="form-text">Applies to the fertilizer in every country.</div>
                             </FormField>
                         </div>
                         <div className="col-md-6">

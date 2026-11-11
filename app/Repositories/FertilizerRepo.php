@@ -10,6 +10,7 @@ namespace App\Repositories;
 
 use App\Models\CountryFertilizer;
 use App\Models\Fertilizer;
+use App\Models\FertilizerType;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +51,7 @@ class FertilizerRepo extends BaseRepo
     {
         return DB::transaction(function () use ($data) {
             $row = CountryFertilizer::create($this->columns($data) + ['fertilizer_type' => $data['type']]);
+            $this->setCategory($row->fertilizer_type, $data);
 
             return $this->findOrFail($row->id);
         });
@@ -66,6 +68,7 @@ class FertilizerRepo extends BaseRepo
             }
 
             $row->update($columns);
+            $this->setCategory($row->fertilizer_type, $data);
 
             return $this->findOrFail($row->id);
         });
@@ -77,6 +80,16 @@ class FertilizerRepo extends BaseRepo
     public function delete(int|string $id): bool
     {
         return (bool) CountryFertilizer::findOrFail($id)->delete();
+    }
+
+    /**
+     * The category belongs to the fertiliser, so it is saved on the type and applies in every country.
+     */
+    private function setCategory(string $type, array $data): void
+    {
+        if (isset($data['category'])) {
+            FertilizerType::query()->where('type', $type)->update(['category' => $data['category']]);
+        }
     }
 
     /**

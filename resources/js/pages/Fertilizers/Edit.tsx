@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react'
+import { Link, useForm } from '@inertiajs/react'
 import type { FormEvent } from 'react'
 import FormField from '../../components/FormField'
 import ResourceForm from '../../components/ResourceForm'
@@ -6,15 +6,19 @@ import CountrySelect from '../../components/CountrySelect'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { Fertilizer, FertilizerTypeOption, FertilizerUseCase } from '../../types'
 
-interface Props { item: Fertilizer; types: FertilizerTypeOption[]; useCases: FertilizerUseCase[] }
+interface Props { item: Fertilizer; types: FertilizerTypeOption[]; useCases: FertilizerUseCase[]; categories: { value: string; label: string }[] }
 
-export default function FertilizersEdit({ item, types, useCases }: Props) {
+export default function FertilizersEdit({ item, types, useCases, categories }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         type: item.type, country: item.country, sort_order: String(item.sort_order ?? ''),
-        use_case: item.use_case, cis: item.cis, cim: item.cim, available: item.available,
+        use_case: item.use_case, category: item.category ?? 'OTHER', cis: item.cis, cim: item.cim, available: item.available,
     })
 
     const selected = types.find((t) => t.type === data.type)
+
+    function pickType(type: string) {
+        setData((d) => ({ ...d, type, category: types.find((t) => t.type === type)?.category ?? d.category }))
+    }
     // The key is the type and the country; it is computed, never typed
     const key = data.type && data.country ? `${data.type}_${data.country}` : ''
 
@@ -24,10 +28,14 @@ export default function FertilizersEdit({ item, types, useCases }: Props) {
         <AdminLayout title="Edit Fertilizer">
             <div className="mx-auto" style={{ maxWidth: 640 }}>
                 <ResourceForm title={`Edit: ${item.name} (${item.country})`} onSubmit={handleSubmit} processing={processing} onCancel={() => window.history.back()}>
+                    <p className="text-body-secondary small">
+                        This is how {item.country} sells the fertilizer. Its name, bag weight and category are the same in every country:{' '}
+                        <Link href={`/admin/fertilizer-types/${encodeURIComponent(item.type)}/edit`}>change the fertilizer itself</Link>.
+                    </p>
                     <div className="row g-3">
                         <div className="col-md-6">
                             <FormField label="Fertilizer" required error={errors.type}>
-                                <select className={`form-select ${errors.type ? 'is-invalid' : ''}`} value={data.type} onChange={e => setData('type', e.target.value)}>
+                                <select className={`form-select ${errors.type ? 'is-invalid' : ''}`} value={data.type} onChange={e => pickType(e.target.value)}>
                                     {types.map((t) => <option key={t.type} value={t.type}>{t.name}</option>)}
                                 </select>
                             </FormField>
@@ -40,6 +48,14 @@ export default function FertilizersEdit({ item, types, useCases }: Props) {
                         <div className="col-md-6">
                             <FormField label="Fertilizer key">
                                 <input type="text" className="form-control" value={key} readOnly />
+                            </FormField>
+                        </div>
+                        <div className="col-md-6">
+                            <FormField label="Category" required error={errors.category}>
+                                <select className={`form-select ${errors.category ? 'is-invalid' : ''}`} value={data.category} onChange={e => setData('category', e.target.value)}>
+                                    {categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                </select>
+                                <div className="form-text">Applies to the fertilizer in every country.</div>
                             </FormField>
                         </div>
                         <div className="col-md-3">

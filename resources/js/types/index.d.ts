@@ -29,6 +29,7 @@ export interface Fertilizer {
     type: string
     fertilizer_key: string
     fertilizer_label?: string
+    category?: string
     country: string
     weight: number
     use_case: string
@@ -223,6 +224,7 @@ export interface FertilizerTypeOption {
     type: string
     name: string
     weight: number
+    category?: string
 }
 
 export interface PriceCurrency {

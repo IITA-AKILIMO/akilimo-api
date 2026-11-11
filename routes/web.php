@@ -121,6 +121,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         // A new fertilizer (its type code is generated from the name)
         Route::get('fertilizer-types/create', [FertilizerTypeController::class, 'create'])->name('fertilizer-types.create');
         Route::post('fertilizer-types', [FertilizerTypeController::class, 'store'])->name('fertilizer-types.store');
+        // Change a fertilizer's own details (name, bag weight, category) for every country at once
+        Route::get('fertilizer-types/{type}/edit', [FertilizerTypeController::class, 'edit'])->name('fertilizer-types.edit');
+        Route::put('fertilizer-types/{type}', [FertilizerTypeController::class, 'update'])->name('fertilizer-types.update');
 
         // Starch prices — batch routes must come before the resource to avoid {id} capture
         Route::get('starch-prices/batch-create', [StarchPriceController::class, 'batchCreate'])->name('starch-prices.batch-create');
