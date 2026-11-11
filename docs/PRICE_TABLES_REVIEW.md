@@ -7,7 +7,7 @@
 | Table | Rows | Role | Who writes it | Verdict |
 |-------|-----:|------|---------------|---------|
 | `price_catalogue` | 67 | **The catalogue.** One row per country and item: price, subsidised price, unit, bag size, currency, range, status, source, `fertilizer_key` | Admin (review workflow), seeders | Keep: the single source of truth |
-| `default_price_history` | 1 | Audit trail of catalogue changes | `PriceCatalogueService` | Keep |
+| `price_catalogue_history` | 1 | Audit trail of catalogue changes | `PriceCatalogueService` | Keep |
 | `fertilizer_prices` | 180 | App fertiliser options | **View** over the catalogue | Done |
 | `cassava_prices` | 25 | App cassava price bands | **View** over the `cassUP` price | Done |
 | `potato_prices` | 5 | App sweet-potato price bands | **View** over `sweetPotato_tuber` | Done |
@@ -64,7 +64,7 @@ Starch is priced by factory and class, so it keeps its own tables. Two small ali
 Drop the constant `min_usd`/`max_usd` from the range-list API responses once the mobile app confirms it does not read them (it does not, today). Keep the legacy columns on the views meanwhile so the response shape does not change.
 
 ### 3.6 Currency, unit and item are picked, not typed (done 2026-11-10)
-The default price forms (create, edit, batch create, batch edit) offer lists, and the server accepts only what the lists hold:
+The Price catalogue forms (create, edit, batch create, batch edit) offer lists, and the server accepts only what the lists hold:
 
 - **Currency** from the `currencies` table (one entry per code); choosing a country fills in its currency.
 - **Unit** from `price_units` (per bag, acre, tonne, kg, cob).
