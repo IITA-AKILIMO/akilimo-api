@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ApiKeyController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CassavaPricesController;
 use App\Http\Controllers\Api\CassavaUnitsController;
+use App\Http\Controllers\Api\MaizeUnitsController;
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CoverageController;
 use App\Http\Controllers\Api\CropController;
@@ -98,6 +99,10 @@ Route::middleware('throttle:read')->group(function () {
 
     Route::prefix('v1/cassava-units')->group(function () {
         Route::get('/', [CassavaUnitsController::class, 'index']);
+    });
+
+    Route::prefix('v1/maize-units')->group(function () {
+        Route::get('/', [MaizeUnitsController::class, 'index']);
     });
 
     Route::prefix('v1/cassava-prices')->group(function () {

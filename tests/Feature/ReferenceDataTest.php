@@ -286,7 +286,7 @@ it('previews a changed unit quantity on the maize list only', function () {
     $changed = collect($response->json('lists'))->filter(fn ($l) => $l['changed'] > 0)->pluck('key')->all();
 
     expect($changed)->toBe(['maize'])
-        ->and((int) DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(50);
+        ->and((int) DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(1000);   // unchanged: per tonne
 });
 
 it('says when a change would alter nothing', function () {

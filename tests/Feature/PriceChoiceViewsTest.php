@@ -256,7 +256,7 @@ it('serves sweet potato bands only for countries with a sweetPotato_tuber price'
         ->and(DB::table('potato_prices')->where('country', 'NG')->count())->toBe(0);
 });
 
-it('serves maize grain per 50 kg and fresh cob per cob, each with its exact-price row', function () {
+it('serves maize grain per tonne and fresh cob per cob, each with its exact-price row', function () {
     viewCountry('NG');
     viewPrice(['country' => 'NG', 'item' => 'maize_grain', 'fertilizer_type' => null, 'unit' => 'per_kg', 'currency' => 'NGN', 'price' => 230]);
     viewPrice(['country' => 'NG', 'item' => 'maize_freshCob', 'fertilizer_type' => null, 'unit' => 'per_cob', 'currency' => 'NGN', 'price' => 50]);
@@ -264,9 +264,10 @@ it('serves maize grain per 50 kg and fresh cob per cob, each with its exact-pric
     $grain = DB::table('maize_prices')->where('produce_type', 'grain')->where('min_local_price', '>', 0)->orderBy('min_local_price')->get();
     $cob = DB::table('maize_prices')->where('produce_type', 'cob')->where('min_local_price', '>', 0)->orderBy('min_local_price')->get();
 
-    // 230 per kg shown per 50 kg is 11,500, rounded to 100 naira
+    // 230 per kg is 230,000 per tonne, the unit of every produce list (the app converts to the
+    // farmer's unit of sale as average x weight / 1000), rounded to 100 naira
     expect($grain->map(fn ($r) => [(float) $r->min_local_price, (float) $r->max_local_price])->all())->toBe([
-        [6900.0, 9200.0], [9200.0, 11500.0], [11500.0, 13800.0], [13800.0, 16100.0],
+        [138000.0, 184000.0], [184000.0, 230000.0], [230000.0, 276000.0], [276000.0, 322000.0],
     ]);
 
     // 50 per cob keeps its own rounding of 5, which the naira step of 100 would round to zero

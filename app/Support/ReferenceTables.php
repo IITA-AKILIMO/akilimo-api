@@ -74,6 +74,21 @@ final class ReferenceTables
                     self::number('weight', 'Bag weight (kg)', ['required', 'integer', 'min:1', 'max:1000']),
                 ],
             ],
+            'maize-units' => [
+                'title' => 'Maize units',
+                'description' => 'The units maize grain is sold in, offered to the farmer as the unit of sale (the standard bag in Nigeria is 100 kg). The maize price list is per tonne; a client shows the price for the chosen unit as average x weight / 1000. Local measures (mudu, derica) have no fixed weight and are not listed.',
+                'table' => 'maize_units',
+                'order' => ['sort_order', 'unit_weight'],
+                'timestamps' => true,
+                'fields' => [
+                    self::text('label', 'Label', ['required', 'string', 'max:50', 'regex:/^[A-Z0-9_]+$/'], key: true, help: 'The name of the unit of sale in the app, e.g. HUNDRED_KG'),
+                    self::number('unit_weight', 'Weight (kg)', ['required', 'numeric', 'gt:0', 'max:100000'], step: '0.01'),
+                    self::text('description', 'Description', ['nullable', 'string', 'max:500']),
+                    self::number('sort_order', 'Order', ['required', 'integer', 'min:0'], default: 0),
+                    self::number('is_default', 'Preselected (1 yes, 0 no)', ['required', 'integer', 'in:0,1'], default: 0, help: 'One unit should be preselected'),
+                    self::number('is_active', 'Offered (1 yes, 0 no)', ['required', 'integer', 'in:0,1'], default: 1),
+                ],
+            ],
             'price-choice-steps' => [
                 'title' => 'Price choice steps',
                 'description' => 'The steps around the reference price that the app offers, e.g. -30, -10, +10, +30 %. For range lists (cassava, maize, sweet potato) each band is the step plus or minus half the band width.',

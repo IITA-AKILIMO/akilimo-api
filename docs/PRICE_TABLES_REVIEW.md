@@ -102,6 +102,17 @@ A client (the mobile app or any other) shows a label for each choice, then maps 
 
 The wording lives in `App\Support\PriceMarker`; the fertiliser marker text is also in the `fertilizer_prices` view. The fertiliser label rounding now reads `price_choice_rounding` (it still read config). The admin **App price lists** screen shows the label as its first column ("Shown to the farmer"), so an admin sees exactly what is offered, and the maize, sweet potato and operation-cost labels carry no currency symbol because their API responses do not either.
 
+### 3.11 Maize grain units, researched (2026-11-11)
+**Correction:** section 3.3 and migration `000013` showed maize grain "per 50 kg", an assumption the owner asked to have researched. It was wrong. The app converts a list price to the farmer's unit of sale as `average x unit weight / 1000` (`MathHelper.computeUnitPrice`), and the cassava list is per tonne, so every produce list is **per tonne**. Migration `2026_11_11_000002` sets `price_choice_units.quantity` for `maize_grain` to 1,000 (230 per kg in the catalogue is 230,000 per tonne), and the maize grain bands now sit around that.
+
+**What the research found (Nigeria, the only country with maize prices):**
+- Wholesale and market prices are quoted per **100 kg bag**: FEWS NET Nigeria price bulletins (grain prices per 100 kg bag), market reports from Gombe (100 kg bag of maize 53,000 NGN) and Kaduna and Niger State.
+- Exchange and retail quotes are **per kg** (AFEX spot price per kg, converted by the same source to 100 kg and tonne figures).
+- Bulk and industrial sales and trade are per **tonne**.
+- Retail local measures (mudu, kongo, derica, paint bucket) are common, but have **no fixed weight**: sources disagree by an order of magnitude (a mudu is 0.17 to 2 kg), depend on the region and on how the seller fills the container, and most figures are for rice. They are not stored. The IITA handbook *Local weights and measures in Nigeria: a handbook of conversion factors* (Kormawa and Ogundapo, 2004) is the authoritative source if the owner wants them added; its tables were not available to this research.
+
+**What was stored:** table `maize_units` (migration `2026_11_11_000001`), the same idea as `cassava_units`, with the labels of the app's own units of sale: `ONE_KG` (1), `FIFTY_KG` (50), `HUNDRED_KG` (100, the default), `THOUSAND_KG` (1,000), each with a description. `GET /v1/maize-units` lists the active ones, and the units are managed on the Price settings screens. The app's maize screen offers exactly these four for grain, so nothing changes for it. It currently does not use the maize price bands at all: the farmer picks a unit and types the price.
+
 ## 4. Order of work
 
 1. **Done 2026-11-10.** Dropped `produce_prices` and `available_fertilizer` with their models and the `produce_prices` seeder (migrations `…000008`, `…000009`). `request_fertilizer` was left: it is empty locally but production use is unconfirmed.
