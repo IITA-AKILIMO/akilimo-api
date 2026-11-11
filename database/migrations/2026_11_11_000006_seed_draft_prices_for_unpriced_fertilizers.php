@@ -65,6 +65,11 @@ return new class extends Migration {
     public function up(): void
     {
         foreach (self::ROWS as $row) {
+            // A fresh database has no fertilizers yet (they come from earlier data), and the price needs its fertilizer
+            if (! DB::table('fertilizer_types')->where('type', $row['fertilizer_type'])->exists()) {
+                continue;
+            }
+
             if (DB::table('default_prices')->where('country', $row['country'])->where('item', $row['item'])->exists()) {
                 continue;
             }
