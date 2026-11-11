@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $label
  * @property string $name
  * @property int $weight
+ * @property string $category STRAIGHT, COMPOUND or OTHER (fertilizer_categories)
  */
 class FertilizerType extends BaseModel
 {
@@ -41,6 +42,7 @@ class FertilizerType extends BaseModel
         'label',
         'name',
         'weight',
+        'category',
     ];
 
     /**

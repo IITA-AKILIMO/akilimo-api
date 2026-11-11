@@ -17,6 +17,7 @@ use Carbon\Carbon;
  * @property bool|null $available
  * @property bool $cim
  * @property bool $cis
+ * @property string $category
  * @property string $country
  * @property Carbon|null $created_at
  * @property string|null $fertilizer_key

@@ -44,6 +44,7 @@ class FertilizerController extends AdminController
                 'id' => $f->id,
                 'name' => $f->name,
                 'type' => $f->type,
+                'category' => $f->category,
                 'fertilizer_key' => $f->fertilizer_key,
                 'fertilizer_label' => $f->fertilizer_label,
                 'country' => $f->country,

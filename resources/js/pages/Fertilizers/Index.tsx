@@ -21,6 +21,7 @@ export default function FertilizersIndex({items, filters, useCases}: Props) {
 
     const columns: Column[] = [
         {key: 'name', label: 'Name', sortable: false},
+        {key: 'category', label: 'Category', sortable: false},
         {key: 'fertilizer_key', label: 'Key', sortable: false},
         {key: 'type', label: 'Type', sortable: false},
         {key: 'country', label: 'Country', sortable: false},

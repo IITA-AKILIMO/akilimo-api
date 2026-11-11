@@ -32,6 +32,8 @@ class FertilizerResource extends JsonResource
             'name' => $fertilizer->name,
             /** Fertilizer type (e.g. STRAIGHT, COMPOUND) */
             'type' => $fertilizer->type,
+            /** Kind of fertilizer: STRAIGHT (one nutrient), COMPOUND (several) or OTHER */
+            'category' => $fertilizer->category,
             /** Stable identifier key for the fertilizer */
             'fertilizer_key' => $fertilizer->fertilizer_key,
             /** Default bag weight in kg */

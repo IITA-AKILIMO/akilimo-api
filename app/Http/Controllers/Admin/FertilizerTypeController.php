@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\FertilizerTypeRequest;
 use App\Service\FertilizerTypeService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,7 +25,10 @@ class FertilizerTypeController extends AdminController
 
     public function create(): Response
     {
-        return Inertia::render('FertilizerTypes/Create');
+        return Inertia::render('FertilizerTypes/Create', [
+            'categories' => DB::table('fertilizer_categories')->orderBy('sort_order')->get(['value', 'label'])
+                ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all(),
+        ]);
     }
 
     public function store(FertilizerTypeRequest $request): RedirectResponse

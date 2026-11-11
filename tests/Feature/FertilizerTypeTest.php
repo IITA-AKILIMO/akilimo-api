@@ -117,3 +117,37 @@ it('makes the database refuse a use case that is not in the list', function () {
     expect(fn () => CountryFertilizer::create(['fertilizer_type' => 'UREA', 'country' => 'TZ', 'use_case' => 'MAIZE']))
         ->toThrow(QueryException::class);
 });
+
+
+it('classifies a fertiliser by category, defaulting to OTHER, and refuses an unknown category', function () {
+    $admin = typeAdmin();
+
+    $this->actingAs($admin)->get('/admin/fertilizer-types/create')
+        ->assertInertia(fn (Assert $page) => $page->has('categories', 3)->where('categories.0.value', 'STRAIGHT'));
+
+    $this->actingAs($admin)->post('/admin/fertilizer-types', ['name' => 'Urea 46%', 'weight' => 50, 'category' => 'STRAIGHT'])
+        ->assertSessionHasNoErrors();
+    $this->actingAs($admin)->post('/admin/fertilizer-types', ['name' => 'Lime', 'weight' => 50])
+        ->assertSessionHasNoErrors();
+    $this->actingAs($admin)->post('/admin/fertilizer-types', ['name' => 'Mystery', 'weight' => 50, 'category' => 'MAGIC'])
+        ->assertSessionHasErrors('category');
+
+    expect(FertilizerType::find('UREA_46')->category)->toBe('STRAIGHT')
+        ->and(FertilizerType::find('LIME')->category)->toBe('OTHER');
+});
+
+it('shows the category in the fertilizers view and the API', function () {
+    $type = FertilizerType::create(['type' => 'DAP', 'label' => 'DAP', 'name' => 'DAP', 'weight' => 50, 'category' => 'COMPOUND']);
+    CountryFertilizer::create(['fertilizer_type' => $type->type, 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
+
+    expect(DB::table('fertilizers')->where('type', 'DAP')->value('category'))->toBe('COMPOUND');
+
+    $this->getJson('/api/v1/fertilizers/country/NG')->assertOk()
+        ->assertJsonPath('data.0.category', 'COMPOUND');
+});
+
+it('does not let a category that fertilisers use be removed', function () {
+    FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50, 'category' => 'STRAIGHT']);
+
+    expect(fn () => DB::table('fertilizer_categories')->where('value', 'STRAIGHT')->delete())->toThrow(QueryException::class);
+});

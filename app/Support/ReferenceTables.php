@@ -60,6 +60,17 @@ final class ReferenceTables
                     self::number('sort_order', 'Order', ['required', 'integer', 'min:0'], default: 0),
                 ],
             ],
+            'fertilizer-categories' => [
+                'title' => 'Fertilizer categories',
+                'description' => 'The kinds of fertilizer (straight, compound, other). Picked when a fertilizer is added and shown in the API.',
+                'table' => 'fertilizer_categories',
+                'order' => ['sort_order', 'value'],
+                'fields' => [
+                    self::text('value', 'Value', ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9_]+$/'], key: true),
+                    self::text('label', 'Label', ['required', 'string', 'max:100']),
+                    self::number('sort_order', 'Order', ['required', 'integer', 'min:0'], default: 0),
+                ],
+            ],
             'fertilizer-types' => [
                 'title' => 'Fertilizer types',
                 'description' => 'Each fertilizer once: its code, catalogue label, name and usual bag weight. The code is worked out from the name when a fertilizer is added and cannot be changed.',
@@ -72,6 +83,7 @@ final class ReferenceTables
                     self::text('name', 'Name', ['required', 'string', 'max:255']),
                     self::text('label', 'Catalogue label', ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9_+]+$/'], help: 'How the catalogue and the engine name it, e.g. NPK201010'),
                     self::number('weight', 'Bag weight (kg)', ['required', 'integer', 'min:1', 'max:1000']),
+                    self::select('category', 'Category', ['required', 'string'], from: ['table' => 'fertilizer_categories', 'value' => 'value', 'label' => 'label']),
                 ],
             ],
             'maize-units' => [

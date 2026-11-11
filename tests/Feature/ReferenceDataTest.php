@@ -331,7 +331,7 @@ it('edits a fertilizer type but never its code, and adds only through the new-fe
 
     $this->actingAs($admin)->get('/admin/reference/fertilizer-types/create')->assertNotFound();
 
-    $this->actingAs($admin)->put('/admin/reference/fertilizer-types?' . refKey(['type' => 'UREA']), ['name' => 'Urea 46%', 'label' => 'urea', 'weight' => 25])
+    $this->actingAs($admin)->put('/admin/reference/fertilizer-types?' . refKey(['type' => 'UREA']), ['name' => 'Urea 46%', 'label' => 'urea', 'weight' => 25, 'category' => 'STRAIGHT'])
         ->assertRedirect();
 
     expect(FertilizerType::find('UREA')->name)->toBe('Urea 46%')

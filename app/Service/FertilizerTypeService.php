@@ -56,7 +56,7 @@ class FertilizerTypeService
     }
 
     /**
-     * @param array{name: string, weight?: int|null, label?: string|null} $data
+     * @param array{name: string, weight?: int|null, label?: string|null, category?: string|null} $data
      */
     public function create(array $data): FertilizerType
     {
@@ -69,6 +69,7 @@ class FertilizerTypeService
                 'label' => $label,
                 'name' => $name,
                 'weight' => $data['weight'] ?? 50,
+                'category' => $data['category'] ?? 'OTHER',
             ]);
 
             // A catalogue price needs its item in price_items (the database matches names without regard to case)

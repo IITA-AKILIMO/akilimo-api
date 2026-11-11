@@ -29,6 +29,7 @@ class FertilizerTypeRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'weight' => ['required', 'integer', 'min:1', 'max:1000'],
+            'category' => ['nullable', 'string', Rule::exists('fertilizer_categories', 'value')],
             'label' => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9_+]+$/', Rule::unique('fertilizer_types', 'label')],
         ];
     }

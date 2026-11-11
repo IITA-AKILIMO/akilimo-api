@@ -16,8 +16,8 @@ function previewLabel(name: string): string {
     return name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '')
 }
 
-export default function FertilizerTypesCreate() {
-    const { data, setData, post, processing, errors } = useForm({ name: '', weight: '50', label: '' })
+export default function FertilizerTypesCreate({ categories }: { categories: { value: string; label: string }[] }) {
+    const { data, setData, post, processing, errors } = useForm({ name: '', weight: '50', label: '', category: 'OTHER' })
 
     function handleSubmit(e: FormEvent) { e.preventDefault(); post('/admin/fertilizer-types') }
 
@@ -40,6 +40,13 @@ export default function FertilizerTypesCreate() {
                         <div className="col-md-4">
                             <FormField label="Bag weight (kg)" required error={errors.weight}>
                                 <input type="number" min={1} max={1000} className={`form-control ${errors.weight ? 'is-invalid' : ''}`} value={data.weight} onChange={e => setData('weight', e.target.value)} />
+                            </FormField>
+                        </div>
+                        <div className="col-md-12">
+                            <FormField label="Category" error={errors.category}>
+                                <select className={`form-select ${errors.category ? 'is-invalid' : ''}`} value={data.category} onChange={e => setData('category', e.target.value)}>
+                                    {categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                </select>
                             </FormField>
                         </div>
                         <div className="col-md-6">
