@@ -15,6 +15,7 @@ use App\Service\PriceCatalogueService;
 use Database\Seeders\DefaultPricesSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Inertia\Testing\AssertableInertia as Assert;
 
 function catalogueAdmin(): User
 {
@@ -279,4 +280,45 @@ it('keeps price deactivation to admins who may review the country', function () 
 
     $this->actingAs($partner)->post("/admin/default-prices/{$price->id}/deactivate")->assertRedirect();
     expect($price->fresh()->status)->toBe(PriceStatus::Active);
+});
+
+
+it('gives every price a category from its item and filters Default prices by it', function () {
+    $admin = catalogueAdmin();
+
+    DB::table('price_items')->updateOrInsert(['item' => 'urea'], ['unit' => 'per_bag', 'category' => 'FERTILIZER']);
+    DB::table('price_items')->updateOrInsert(['item' => 'cassUP'], ['unit' => 'per_tonne', 'category' => 'PRODUCE']);
+    DB::table('price_items')->updateOrInsert(['item' => 'weeding1'], ['unit' => 'per_acre', 'category' => 'LABOUR']);
+
+    foreach ([['urea', 'per_bag'], ['cassUP', 'per_tonne'], ['weeding1', 'per_acre']] as [$item, $unit]) {
+        DB::table('default_prices')->insert([
+            'country' => 'NG', 'item' => $item, 'price' => 100, 'unit' => $unit, 'currency' => 'NGN',
+            'status' => 'draft', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+    }
+
+    $this->actingAs($admin)->get('/admin/default-prices?per_page=100')
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('categories', DB::table('price_categories')->count())
+            ->where('items.data', function ($rows) {
+                $byItem = collect($rows)->pluck('category', 'item');
+
+                return $byItem['urea'] === 'FERTILIZER' && $byItem['cassUP'] === 'PRODUCE' && $byItem['weeding1'] === 'LABOUR';
+            }));
+
+    $this->actingAs($admin)->get('/admin/default-prices?category=LABOUR&per_page=100')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('filters.category', 'LABOUR')
+            ->where('items.data', fn ($rows) => collect($rows)->isNotEmpty()
+                && collect($rows)->every(fn ($r) => $r['category'] === 'LABOUR')
+                && collect($rows)->pluck('item')->contains('weeding1')));
+});
+
+it('classifies a new fertilizer as a fertilizer price item, and any other new item as OTHER', function () {
+    app(\App\Service\FertilizerTypeService::class)->create(['name' => 'Nafaka Super', 'weight' => 50]);
+
+    expect(DB::table('price_items')->where('item', 'NafakaSuper')->value('category'))->toBe('FERTILIZER');
+
+    DB::table('price_items')->insert(['item' => 'herbicide', 'unit' => 'per_kg']);
+    expect(DB::table('price_items')->where('item', 'herbicide')->value('category'))->toBe('OTHER');
 });

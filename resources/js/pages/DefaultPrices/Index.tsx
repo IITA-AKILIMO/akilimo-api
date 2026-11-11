@@ -9,6 +9,7 @@ import type {DefaultPrice, Paginated, PriceStatus} from '../../types'
 type Filters = Record<string, string>
 
 interface Props {
+    categories: { value: string; label: string }[]
     items: Paginated<DefaultPrice>;
     filters: Filters
     currentUserId?: number | null
@@ -30,13 +31,14 @@ function StatusBadge({status}: { status: PriceStatus }) {
     return <span className={`badge ${STATUS_STYLES[status] ?? 'bg-secondary'}`}>{STATUS_LABELS[status] ?? status}</span>
 }
 
-export default function DefaultPricesIndex({items, filters, currentUserId}: Props) {
+export default function DefaultPricesIndex({items, filters, currentUserId, categories}: Props) {
     const [deleting, setDeleting] = useState<DefaultPrice | null>(null)
     const [deactivating, setDeactivating] = useState<DefaultPrice | null>(null)
     const [processing, setProcessing] = useState(false)
     const columns: Column[] = [
         {key: 'country', label: 'Country'},
         {key: 'item', label: 'Item'},
+        {key: 'category', label: 'Category', render: (v) => categories.find((c) => c.value === v)?.label ?? String(v ?? '')},
         {key: 'price', label: 'Price'},
         {key: 'unit', label: 'Unit'},
         {key: 'status', label: 'Status', render: (v) => <StatusBadge status={v as PriceStatus}/>},
@@ -91,6 +93,7 @@ export default function DefaultPricesIndex({items, filters, currentUserId}: Prop
             <TableFilters url="/admin/default-prices" filters={filters} total={items.meta.total} defs={[
                 {type: 'search', key: 'search', placeholder: 'Search item, unit, currency or source…'},
                 {type: 'country', key: 'country'},
+                {type: 'select', key: 'category', label: 'Category', options: categories.map((c) => ({value: c.value, label: c.label}))},
                 {
                     type: 'select', key: 'status', label: 'Status', options: [
                         {value: 'active', label: 'Active'},

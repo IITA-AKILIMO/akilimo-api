@@ -255,6 +255,7 @@ export interface PriceLookups {
 }
 
 export interface DefaultPrice {
+    category?: string
     id: number
     country: string
     region?: string | null

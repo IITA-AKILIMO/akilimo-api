@@ -74,7 +74,7 @@ class FertilizerTypeService
 
             // A catalogue price needs its item in price_items (the database matches names without regard to case)
             if (! DB::table('price_items')->where('item', $label)->exists()) {
-                DB::table('price_items')->insert(['item' => $label, 'unit' => 'per_bag']);
+                DB::table('price_items')->insert(['item' => $label, 'unit' => 'per_bag', 'category' => 'FERTILIZER']);
             }
 
             return $type;

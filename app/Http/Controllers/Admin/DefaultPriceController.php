@@ -31,7 +31,7 @@ class DefaultPriceController extends AdminController
 
     public function index(Request $request): Response
     {
-        $values = $this->filterValues($request, ['search', 'country', 'status']);
+        $values = $this->filterValues($request, ['search', 'country', 'status', 'category']);
         if ($values['status'] !== '' && !in_array($values['status'], PriceStatus::values(), true)) {
             $values['status'] = '';
         }
@@ -46,15 +46,25 @@ class DefaultPriceController extends AdminController
             ],
             search: $values['search'],
             searchColumns: ['item', 'unit', 'currency', 'source'],
+            // A price's category is its item's (price_items.category)
+            scope: $values['category'] === '' ? null : function ($query) use ($values): void {
+                $query->whereIn('item', DB::table('price_items')->where('category', $values['category'])->select('item'));
+            },
         );
+
+        // The database matches item names without regard to case, so the lookup does too
+        $categoryOf = DB::table('price_items')->pluck('category', 'item')->mapWithKeys(fn ($c, $i) => [strtolower((string) $i) => (string) $c]);
 
         return Inertia::render('DefaultPrices/Index', [
             'filters' => $values,
+            'categories' => DB::table('price_categories')->orderBy('sort_order')->get(['value', 'label'])
+                ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all(),
             'items' => $this->paginateShape($paginator, fn (DefaultPrice $f) => [
                 'id' => $f->id,
                 'country' => $f->country,
                 'region' => $f->region,
                 'item' => $f->item,
+                'category' => $categoryOf[strtolower((string) $f->item)] ?? 'OTHER',
                 'price' => $f->price,
                 'subsidised_price' => $f->subsidised_price,
                 'unit' => $f->unit,

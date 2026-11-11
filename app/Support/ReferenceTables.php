@@ -47,6 +47,19 @@ final class ReferenceTables
                 'fields' => [
                     self::text('item', 'Item', ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9_+]+$/'], key: true, help: 'Letters, digits, underscores, e.g. cassUP'),
                     self::select('unit', 'Unit', ['required', 'string'], from: ['table' => 'price_units', 'value' => 'value', 'label' => 'label']),
+                    // Optional when adding: a new item is OTHER until classified
+                    self::select('category', 'Category', ['nullable', 'string'], from: ['table' => 'price_categories', 'value' => 'value', 'label' => 'label']),
+                ],
+            ],
+            'price-categories' => [
+                'title' => 'Price categories',
+                'description' => 'The kinds of thing a price can be for (fertilizers, produce, labour, machinery, investment, other). Each price item belongs to one, and Default prices can be filtered by it.',
+                'table' => 'price_categories',
+                'order' => ['sort_order', 'value'],
+                'fields' => [
+                    self::text('value', 'Value', ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9_]+$/'], key: true),
+                    self::text('label', 'Label', ['required', 'string', 'max:100']),
+                    self::number('sort_order', 'Order', ['required', 'integer', 'min:0'], default: 0),
                 ],
             ],
             'fertilizer-use-cases' => [
