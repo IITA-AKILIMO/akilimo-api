@@ -163,6 +163,19 @@ class PriceCatalogueService
     }
 
     /**
+     * Delete a price, keeping its last values in the history (the history rows
+     * outlive the price; their link to it is cleared by the foreign key). Used by
+     * the admin screen and the API, so a removal is always on the record.
+     */
+    public function delete(DefaultPrice $price, ?User $actor = null, ?string $note = null): void
+    {
+        DB::transaction(function () use ($price, $actor, $note) {
+            $this->record($price, 'deleted', $actor, $this->snapshot($price), null, $note);
+            $price->delete();
+        });
+    }
+
+    /**
      * Confirm a change that needed a second review. The confirming admin must
      * not be the one who submitted it.
      */

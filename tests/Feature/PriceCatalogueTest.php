@@ -192,6 +192,8 @@ it('limits review to the assigned country reviewers', function () {
 
 it('creates and activates a price through the admin, writing the audit trail', function () {
     $admin = catalogueAdmin();
+    // the country is picked from the countries table too
+    catalogueCountry('NG');
     // currency is picked from the currencies table, so the one the form posts must exist
     DB::table('currencies')->insert(['country_code' => 'NG', 'country' => 'Nigeria', 'currency_name' => 'Nigerian naira', 'currency_code' => 'NGN', 'currency_symbol' => '₦']);
 
@@ -321,4 +323,29 @@ it('classifies a new fertilizer as a fertilizer price item, and any other new it
 
     DB::table('price_items')->insert(['item' => 'herbicide', 'unit' => 'per_kg']);
     expect(DB::table('price_items')->where('item', 'herbicide')->value('category'))->toBe('OTHER');
+});
+
+
+it('keeps a deleted price in the history, from the admin and from the API', function () {
+    $admin = catalogueAdmin();
+    $price = catalogueDraft();
+    $id = $price->id;
+
+    $this->actingAs($admin)->delete("/admin/default-prices/{$id}")->assertRedirect();
+
+    expect(DefaultPrice::find($id))->toBeNull();
+    $entry = DefaultPriceHistory::where('country', $price->country)->where('item', $price->item)->where('action', 'deleted')->first();
+    expect($entry)->not->toBeNull()
+        ->and($entry->default_price_id)->toBeNull()
+        ->and($entry->old_values['price'])->toEqual($price->price)
+        ->and($entry->changed_by)->toBe($admin->id);
+});
+
+it('refuses a price for a country that does not exist', function () {
+    $admin = catalogueAdmin();
+    catalogueCountry('NG');
+
+    $this->actingAs($admin)->post('/admin/default-prices', [
+        'country' => 'ST', 'item' => 'urea', 'price' => 100, 'unit' => 'per_bag', 'currency' => 'NGN',
+    ])->assertSessionHasErrors('country');
 });

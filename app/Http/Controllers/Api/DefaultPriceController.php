@@ -95,9 +95,12 @@ class DefaultPriceController extends Controller
         ]);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
-        $this->repo->delete($id);
+        /** @var DefaultPrice $price */
+        $price = $this->repo->findOrFail($id);
+        $actor = $request->user();
+        $this->catalogue->delete($price, $actor instanceof User ? $actor : null);
 
         return response()->json(null, 204);
     }

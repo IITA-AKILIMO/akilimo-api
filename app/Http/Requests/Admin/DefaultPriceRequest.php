@@ -26,7 +26,7 @@ class DefaultPriceRequest extends FormRequest
         $lookups = app(PriceLookupService::class);
 
         return [
-            'country' => [...$required, 'string', 'size:2', 'uppercase'],
+            'country' => [...$required, 'string', 'size:2', 'uppercase', Rule::exists('countries', 'code')],
             'region' => ['nullable', 'string', 'max:50'],
             // Picked from price_items; a new item is added there first
             'item' => [...$required, 'string', 'max:50', $lookups->itemRule()],

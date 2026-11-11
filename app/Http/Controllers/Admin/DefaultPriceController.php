@@ -140,9 +140,11 @@ class DefaultPriceController extends AdminController
             ->with('success', 'Default price saved as a draft. Activate it when it has been reviewed.');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(Request $request, int $id): RedirectResponse
     {
-        $this->repo->delete($id);
+        /** @var DefaultPrice $item */
+        $item = $this->repo->findOrFail($id);
+        $this->catalogue->delete($item, $this->actor($request));
 
         return redirect()->route('admin.default-prices.index')
             ->with('success', 'Default price deleted.');
@@ -190,7 +192,7 @@ class DefaultPriceController extends AdminController
     public function batchStore(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'country' => ['required', 'string', 'size:2'],
+            'country' => ['required', 'string', 'size:2', 'exists:countries,code'],
             'rows' => ['required', 'array', 'min:1'],
             'rows.*.item' => ['required', 'string', 'max:50', $this->lookups->itemRule()],
             'rows.*.price' => ['required', 'numeric', 'min:0'],
