@@ -11,7 +11,10 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-beforeEach(fn () => $this->actingAsApiUser());
+beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->actingAsApiUser();
+});
 
 it('returns a recommendation on a successful Plumbr response', function () {
     Http::fake([

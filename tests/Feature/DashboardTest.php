@@ -14,7 +14,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia as Assert;
 
-beforeEach(fn () => $this->withoutVite());
+beforeEach(function () {
+    $this->withoutVite();
+    $this->seed(\Database\Seeders\TrafficExclusionSeeder::class);
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+});
 
 function dashboardUser(EnumUserRole $role): User
 {

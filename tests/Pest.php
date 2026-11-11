@@ -196,3 +196,23 @@ function seedCurrencies(array $rows): void
         \Illuminate\Support\Facades\DB::table('currencies')->updateOrInsert(['currency_code' => $row['currency_code']], $row);
     }
 }
+
+/**
+ * The cassava crop, which the crops migration used to insert. Crops are seeded now (CropsSeeder), so a test that
+ * needs cassava creates it, and only it, so the crops it lists are the ones it expects.
+ */
+function seedCassavaCrop(): void
+{
+    \Illuminate\Support\Facades\DB::table('crops')->insertOrIgnore([
+        'id' => 1,
+        'crop_key' => 'cassava',
+        'name' => 'Cassava',
+        'description' => 'Fertilizer, planting practices, planting and harvest dates, and intercropping advice',
+        'active' => true,
+        'advice_available' => true,
+        'countries' => null,
+        'sort_order' => 0,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+}

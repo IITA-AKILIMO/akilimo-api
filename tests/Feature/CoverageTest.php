@@ -11,6 +11,11 @@ use App\Service\CoverageService;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\Http;
 
+// The compute service needs a fertilizer catalogue for the country; migrations no longer seed one
+beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+});
+
 /** A small supported area around Ibadan (lon 3 to 5, lat 7 to 8) in the shape the compute service sends. */
 function coverageCollection(float $lonMax = 5.0): array
 {

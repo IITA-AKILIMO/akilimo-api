@@ -9,7 +9,10 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-beforeEach(fn () => Cache::flush());
+beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    Cache::flush();
+});
 
 it('sends the yield class with its decimals', function () {
     Http::fake(['*' => Http::response(plumberSuccessResponse(), 200)]);

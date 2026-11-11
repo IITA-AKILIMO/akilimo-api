@@ -281,6 +281,15 @@ abstract class BaseRepo implements Repository
             }
         }
 
-        return $query->orderBy($orderBy, $direction)->paginate($perPage);
+        $query->orderBy($orderBy, $direction);
+
+        // A sort column is rarely unique (sort_order), so the database may order ties differently from one
+        // page to the next and a row can then repeat or go missing across pages. The key settles ties.
+        $key = $this->model->getKeyName();
+        if ($orderBy !== $key) {
+            $query->orderBy($key, $direction);
+        }
+
+        return $query->paginate($perPage);
     }
 }

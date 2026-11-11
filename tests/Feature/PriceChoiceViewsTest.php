@@ -333,3 +333,22 @@ it('serves the options through the public endpoints', function () {
     expect(collect($response->json('data'))->where('price_per_bag', '>', 0)->pluck('price_per_bag')->map(fn ($p) => (float) $p)->sort()->values()->all())
         ->toBe([35000.0, 45000.0, 55000.0, 65000.0]);
 });
+
+it('pages through a list without repeating or dropping a row', function () {
+    viewCountry('TZ');
+    viewFertilizer('TZ', 'Urea', 'UREA_TZ');
+    viewFertilizer('TZ', 'DAP', 'DAP_TZ');
+    viewPrice();
+    viewPrice(['item' => 'dap', 'fertilizer_type' => 'DAP', 'price' => 60000]);
+
+    $ids = [];
+    $total = null;
+    foreach ([1, 2, 3, 4] as $page) {
+        $body = $this->getJson("/api/v1/fertilizer-prices?per_page=3&page={$page}");
+        $total = $body->json('meta.total');
+        $ids = array_merge($ids, collect($body->json('data'))->pluck('id')->all());
+    }
+
+    expect($ids)->toHaveCount($total)
+        ->and(array_unique($ids))->toHaveCount($total);
+});

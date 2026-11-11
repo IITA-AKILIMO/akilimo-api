@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\DB;
  */
 return new class extends Migration {
     private const FACTORIES = [
-        ['name' => 'AyensuStarch', 'label' => 'Ayensu Starch Company (ASCo)', 'country' => 'GH', 'price' => 900, 'currency' => 'GHS'],
-        ['name' => 'KinaziCassavaPlant', 'label' => 'Kinazi Cassava Plant (KCP)', 'country' => 'RW', 'price' => 330000, 'currency' => 'RWF'],
+        ['id' => 11, 'name' => 'AyensuStarch', 'label' => 'Ayensu Starch Company (ASCo)', 'country' => 'GH', 'price' => 900, 'currency' => 'GHS'],
+        ['id' => 12, 'name' => 'KinaziCassavaPlant', 'label' => 'Kinazi Cassava Plant (KCP)', 'country' => 'RW', 'price' => 330000, 'currency' => 'RWF'],
     ];
 
     /**
@@ -30,6 +30,8 @@ return new class extends Migration {
             foreach (self::FACTORIES as $f) {
                 $id = DB::table('starch_factories')->where('factory_name', $f['name'])->value('id')
                     ?? DB::table('starch_factories')->insertGetId([
+                        // fixed ids, so a new database gives them the same ids as an old one (the seeder gives the others 1 to 10)
+                        'id' => $f['id'],
                         'factory_name' => $f['name'],
                         'factory_label' => $f['label'],
                         'country' => $f['country'],

@@ -34,6 +34,7 @@ function reportPath(string $url): string
 }
 
 beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
     Storage::fake('local');
     Cache::flush();
     config(['app.url' => 'https://api.example.test']);

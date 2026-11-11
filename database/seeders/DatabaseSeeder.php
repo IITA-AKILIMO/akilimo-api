@@ -21,6 +21,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminUserSeeder::class);
         $this->call(CountriesSeeder::class);
+        $this->call(CountryCurrenciesSeeder::class);
+        // The lists the app and the price catalogue refer to, before the prices
+        $this->call(CropsSeeder::class);
+        $this->call(CassavaUnitsSeeder::class);
+        $this->call(FertilizerSeeder::class);
+        $this->call(TrafficExclusionSeeder::class);
         $this->call(StarchPricesSeeder::class);
         $this->call(TranslationsSeeder::class);
         $this->call(PriceCatalogueSeeder::class);

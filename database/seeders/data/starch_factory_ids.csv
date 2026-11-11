@@ -1,0 +1,13 @@
+id,factory_name,factory_label,country,factory_active,sort_order
+1,AlliedAtlanticDistilleries,"Allied Atlantic Distilleries",NG,1,0
+2,MatnaStarch,"Matna Starch",NG,1,0
+3,PsaltryMarketers,"Psaltry Marketers",NG,1,0
+4,PsaltryOutgrowers,"Psaltry Outgrowers",NG,1,0
+5,Greentech,Greentech,NG,1,0
+6,PremiumCassavaProducts,"Premium Cassava Products",NG,1,0
+7,FJS,FJS,TZ,1,0
+8,CSTC,CSTC,TZ,1,0
+9,DarCanton,"Dar Canton",TZ,1,0
+10,NA,NA,ALL,0,99999
+11,AyensuStarch,"Ayensu Starch Company (ASCo)",GH,0,0
+12,KinaziCassavaPlant,"Kinazi Cassava Plant (KCP)",RW,0,0

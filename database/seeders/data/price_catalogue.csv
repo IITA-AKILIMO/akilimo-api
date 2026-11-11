@@ -1,53 +1,73 @@
-Country,Item,Price,currency
-NG,urea,7500,NGN
-NG,MOP,13500,NGN
-NG,DAP,13250,NGN
-NG,NPK201010,7200,NGN
-NG,NPK151515,8500,NGN
-NG,TSP,13250,NGN
-NG,NPK171717,7800,NGN
-NG,CAN,7500,NGN
-NG,SSP,22364,NGN
-NG,NPK201216,8000,NGN
-NG,manual_ploughing,17000,NGN
-NG,manual_ridging,12000,NGN
-NG,tractor_ploughing,6000,NGN
-NG,tractor_ridging,6000,NGN
-NG,weeding1,30000,NGN
-NG,weeding2,30000,NGN
-NG,maize_freshCob,50,NGN
-NG,maize_grain,230,NGN
-NG,cassUP,12000,NGN
-TZ,urea,77100,TZS
-TZ,MOP,76000,TZS
-TZ,DAP,125500,TZS
-TZ,NPK201010,89200,TZS
-TZ,TSP,103100,TZS
-TZ,NPK171717,89200,TZS
-TZ,CAN,61000,TZS
-TZ,sweetPotato_tuber,120000,TZS
-TZ,sweetPotato_flour,384000,TZS
-TZ,manual_ploughing,175000,TZS
-TZ,manual_ridging,225000,TZS
-TZ,tractor_ploughing,150000,TZS
-TZ,tractor_ridging,100000,TZS
-TZ,weeding1,60000,TZS
-TZ,weeding2,45000,TZS
-TZ,cassUP,180000,TZS
-RW,urea,28200,RWF
-RW,MOP,27900,RWF
-RW,DAP,31650,RWF
-RW,NPK171717,35650,RWF
-RW,cassUP,75000,RWF
-GH,urea,142,GHS
-GH,NPK112221,160,GHS
-GH,NPK251010,150,GHS
-GH,NPK152020,156,GHS
-GH,NPK201010,146,GHS
-GH,NPK23105,146,GHS
-GH,NPK123017,160,GHS
-GH,cassUP,450,GHS
-BI,FOMIIMBURA,85390,BIF
-BI,FOMIBAGARA,77600,BIF
-BI,FOMITOTAHAZA,77600,BIF
-BI,cassUP,700000,BIF
+id,country,region,item,fertilizer_type,price,subsidised_price,unit,bag_kg,min_price,max_price,status,source,source_date,confidence,effective_from,currency
+1,NG,,urea,UREA,50000,,per_bag,50,,,draft,"IFDC Global Fertilizer Markets Today, 2 Jun 2026: Nigeria wholesale urea per 50 kg, May 2026",2026-06-02,medium,,NGN
+2,NG,,MOP,MOP,28000,,per_bag,50,,,draft,"Nigeria FG early procurement 2026 (Vanguard/NAN, 14 Jun 2026): MOP USD 400/t raw-material cost x about NGN 1,400/USD / 20 bags. Not a farm-gate price.",2026-06-14,low,,NGN
+3,NG,,DAP,DAP,54250,,per_bag,50,,,draft,"Nigeria FG early procurement 2026 (Vanguard/NAN, 14 Jun 2026): DAP USD 775/t raw-material cost x about NGN 1,400/USD / 20 bags. Not a farm-gate price.",2026-06-14,low,,NGN
+4,NG,,NPK201010,,48000,,per_bag,50,,,draft,"IFDC Global Fertilizer Markets Today, 2 Jun 2026: Nigeria wholesale NPK 20-10-10 per 50 kg",2026-06-02,medium,,NGN
+5,NG,,NPK151515,NPK_15_15_15,46900,,per_bag,50,,,draft,"Indorama ex-Kaduna price list, NPK 15-15-15 per 50 kg (undated page, read 2026-11-11)",,low,,NGN
+6,NG,,TSP,TSP,13250,,per_bag,50,,,active,,,,,NGN
+7,NG,,NPK171717,,7800,,per_bag,50,,,active,,,,,NGN
+8,NG,,CAN,CAN,39500,,per_bag,50,,,draft,"Farmsquare 2025 guide: CAN average 37,000 to 42,000 per 50 kg (2025, not 2026)",,low,,NGN
+9,NG,,SSP,SSP,22364,,per_bag,50,,,active,,,,,NGN
+10,NG,,NPK201216,NPK_20_12_16_MG_2,8000,,per_bag,50,,,active,,,,,NGN
+11,NG,,manual_ploughing,,17000,,per_acre,,,,active,,,,,NGN
+12,NG,,manual_ridging,,12000,,per_acre,,,,active,,,,,NGN
+13,NG,,tractor_ploughing,,6000,,per_acre,,,,active,,,,,NGN
+14,NG,,tractor_ridging,,6000,,per_acre,,,,active,,,,,NGN
+15,NG,,weeding1,,30000,,per_acre,,,,active,,,,,NGN
+16,NG,,weeding2,,30000,,per_acre,,,,active,,,,,NGN
+17,NG,,maize_freshCob,,50,,per_cob,,,,active,,,,,NGN
+18,NG,,maize_grain,,230,,per_kg,,,,active,,,,,NGN
+19,NG,,cassUP,,12000,,per_tonne,,,,active,,,,,NGN
+20,TZ,,urea,UREA,77100,,per_bag,50,,,active,,,,,TZS
+21,TZ,,MOP,MOP,76000,,per_bag,50,,,active,,,,,TZS
+22,TZ,,DAP,DAP,125500,,per_bag,50,,,active,,,,,TZS
+23,TZ,,NPK201010,,89200,,per_bag,50,,,active,,,,,TZS
+24,TZ,,TSP,,103100,,per_bag,50,,,active,,,,,TZS
+25,TZ,,NPK171717,NPK_17_17_17,89200,,per_bag,50,,,active,,,,,TZS
+26,TZ,,CAN,CAN,61000,,per_bag,50,,,active,,,,,TZS
+27,TZ,,sweetPotato_tuber,,120000,,per_tonne,,,,active,,,,,TZS
+28,TZ,,sweetPotato_flour,,384000,,per_tonne,,,,active,,,,,TZS
+29,TZ,,manual_ploughing,,175000,,per_acre,,,,active,,,,,TZS
+30,TZ,,manual_ridging,,225000,,per_acre,,,,active,,,,,TZS
+31,TZ,,tractor_ploughing,,150000,,per_acre,,,,active,,,,,TZS
+32,TZ,,tractor_ridging,,100000,,per_acre,,,,active,,,,,TZS
+33,TZ,,weeding1,,60000,,per_acre,,,,active,,,,,TZS
+34,TZ,,weeding2,,45000,,per_acre,,,,active,,,,,TZS
+35,TZ,,cassUP,,180000,,per_tonne,,,,active,,,,,TZS
+36,RW,,urea,UREA,28200,,per_bag,50,,,active,,,,,RWF
+37,RW,,MOP,MOP,27900,,per_bag,50,,,active,,,,,RWF
+38,RW,,DAP,DAP,31650,,per_bag,50,,,active,,,,,RWF
+39,RW,,NPK171717,,35650,,per_bag,50,,,active,,,,,RWF
+40,RW,,cassUP,,75000,,per_tonne,,,,active,,,,,RWF
+41,GH,,urea,UREA,142,,per_bag,50,,,active,,,,,GHS
+42,GH,,NPK112221,NPK_11_22_21,160,,per_bag,50,,,active,,,,,GHS
+43,GH,,NPK251010,NPK_25_10_10,150,,per_bag,50,,,active,,,,,GHS
+44,GH,,NPK152020,NPK_15_20_20,156,,per_bag,50,,,active,,,,,GHS
+45,GH,,NPK201010,NPK_20_10_10,146,,per_bag,50,,,active,,,,,GHS
+46,GH,,NPK23105,NPK_23_10_5,146,,per_bag,50,,,active,,,,,GHS
+47,GH,,NPK123017,NPK_12_30_17,160,,per_bag,50,,,active,,,,,GHS
+48,GH,,cassUP,,450,,per_tonne,,,,active,,,,,GHS
+49,BI,,FOMIIMBURA,FOM_II_MBUR,85390,,per_bag,25,,,active,,,,,BIF
+50,BI,,FOMIBAGARA,FOM_I_BAGARA,77600,,per_bag,25,,,active,,,,,BIF
+51,BI,,FOMITOTAHAZA,FOM_I_TOTA_HAZA,77600,,per_bag,25,,,active,,,,,BIF
+52,BI,,cassUP,,700000,,per_tonne,,,,active,,,,,BIF
+55,RW,,manual_ploughing,,20000,,per_acre,,,,draft,"Desk research 2026-11-08: 2,000 RWF/day x 10 person-days",2026-11-08,low,,RWF
+56,RW,,manual_ridging,,16000,,per_acre,,,,draft,"Desk research 2026-11-08: 2,000 RWF/day x 8 person-days",2026-11-08,low,,RWF
+57,RW,,weeding1,,16000,,per_acre,,,,draft,"Desk research 2026-11-08: 2,000 RWF/day x 8 person-days",2026-11-08,low,,RWF
+58,RW,,weeding2,,12000,,per_acre,,,,draft,"Desk research 2026-11-08: 2,000 RWF/day x 6 person-days",2026-11-08,low,,RWF
+59,BI,,manual_ploughing,,43000,,per_acre,,,,draft,"Desk research 2026-11-08: 4,300 BIF/day x 10 person-days",2026-11-08,low,,BIF
+60,BI,,manual_ridging,,34000,,per_acre,,,,draft,"Desk research 2026-11-08: 4,300 BIF/day x 8 person-days",2026-11-08,low,,BIF
+61,BI,,weeding1,,34000,,per_acre,,,,draft,"Desk research 2026-11-08: 4,300 BIF/day x 8 person-days",2026-11-08,low,,BIF
+62,BI,,weeding2,,26000,,per_acre,,,,draft,"Desk research 2026-11-08: 4,300 BIF/day x 6 person-days",2026-11-08,low,,BIF
+63,GH,,manual_ploughing,,550,,per_acre,,,,draft,Desk research 2026-11-08: 55 GHS/day x 10 person-days,2026-11-08,low,,GHS
+64,GH,,manual_ridging,,440,,per_acre,,,,draft,Desk research 2026-11-08: 55 GHS/day x 8 person-days,2026-11-08,low,,GHS
+65,GH,,weeding1,,440,,per_acre,,,,draft,Desk research 2026-11-08: 55 GHS/day x 8 person-days,2026-11-08,low,,GHS
+66,GH,,weeding2,,330,,per_acre,,,,draft,Desk research 2026-11-08: 55 GHS/day x 6 person-days,2026-11-08,low,,GHS
+67,GH,,tractor_ploughing,,250,,per_acre,,,,draft,"Desk research 2026-11-08: Reported tractor ploughing rate, 2023-2024",2026-11-08,medium,,GHS
+68,GH,,tractor_ridging,,250,,per_acre,,,,draft,Desk research 2026-11-08: Assumed equal to ploughing; one per-acre rate per operation,2026-11-08,low,,GHS
+69,BI,,investment_amount,,103330,,per_acre,,,,active,Backfilled from the investment_amount list: its smallest amount per acre,2026-11-11,low,,BIF
+70,GH,,investment_amount,,202.35,,per_acre,,,,active,Backfilled from the investment_amount list: its smallest amount per acre,2026-11-11,low,,GHS
+71,NG,,investment_amount,,10271,,per_acre,,,,active,Backfilled from the investment_amount list: its smallest amount per acre,2026-11-11,low,,NGN
+72,TZ,,investment_amount,,57550,,per_acre,,,,active,Backfilled from the investment_amount list: its smallest amount per acre,2026-11-11,low,,TZS
+73,NG,,NPK201226,NPK_20_12_26,44400,,per_bag,50,,,draft,"PROXY, no 20:12:26 listing found: Indorama ex-Kaduna price for NPK 20-10-10, 50 kg (web search 2026-11-11). Check with a supplier.",,low,,NGN
+74,BI,,DOLOMITE,DOLOMITE,19000,5000,per_bag,50,,,draft,"ABP Burundi, 2024A season preparations: two 25 kg bags 19,000 FBu, farmer pays 5,000 FBu (2023 subsidised sale). Check the current subsidy.",2023-09-15,low,,BIF
