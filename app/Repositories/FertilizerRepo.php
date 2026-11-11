@@ -43,6 +43,30 @@ class FertilizerRepo extends BaseRepo
     }
 
     /**
+     * A scope for paginateWithSort() that keeps only the fertilizers with an active
+     * price in their country, so a client is never offered one it cannot price. A
+     * price matches by the fertilizer type, or by the catalogue label for a price
+     * that is not linked to a type yet.
+     *
+     * @return \Closure(\Illuminate\Database\Eloquent\Builder<Fertilizer>): void
+     */
+    public function onlyWithActivePrice(): \Closure
+    {
+        return function ($query): void {
+            $query->whereExists(function ($price) {
+                $price->selectRaw('1')
+                    ->from('default_prices')
+                    ->whereColumn('default_prices.country', 'fertilizers.country')
+                    ->where('default_prices.status', 'active')
+                    ->where(function ($match) {
+                        $match->whereColumn('default_prices.fertilizer_type', 'fertilizers.type')
+                            ->orWhereColumn('default_prices.item', 'fertilizers.fertilizer_label');
+                    });
+            });
+        };
+    }
+
+    /**
      * Sell a fertiliser type in a country. $data holds a type code that exists
      * in fertilizer_types, the country, and the country's use_case, cis, cim,
      * available and sort_order.

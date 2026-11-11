@@ -152,6 +152,15 @@ class DefaultPriceController extends AdminController
         );
     }
 
+    public function deactivate(Request $request, int $id): RedirectResponse
+    {
+        /** @var DefaultPrice $item */
+        $item = $this->repo->findOrFail($id);
+        $this->catalogue->deactivate($item, $this->actor($request), $request->input('note'));
+
+        return redirect()->back()->with('success', 'Default price deactivated. It is no longer served until it is activated again.');
+    }
+
     public function confirm(Request $request, int $id): RedirectResponse
     {
         /** @var DefaultPrice $item */

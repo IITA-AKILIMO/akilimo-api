@@ -32,6 +32,7 @@ function StatusBadge({status}: { status: PriceStatus }) {
 
 export default function DefaultPricesIndex({items, filters, currentUserId}: Props) {
     const [deleting, setDeleting] = useState<DefaultPrice | null>(null)
+    const [deactivating, setDeactivating] = useState<DefaultPrice | null>(null)
     const [processing, setProcessing] = useState(false)
     const columns: Column[] = [
         {key: 'country', label: 'Country'},
@@ -61,6 +62,15 @@ export default function DefaultPricesIndex({items, filters, currentUserId}: Prop
 
     function handleActivate(row: DefaultPrice) {
         router.post(`/admin/default-prices/${row.id}/activate`, {}, {preserveScroll: true})
+    }
+
+    function handleDeactivate() {
+        if (!deactivating) return
+        setProcessing(true)
+        router.post(`/admin/default-prices/${deactivating.id}/deactivate`, {}, {
+            preserveScroll: true,
+            onFinish: () => { setProcessing(false); setDeactivating(null) },
+        })
     }
 
     function handleConfirm(row: DefaultPrice) {
@@ -104,6 +114,11 @@ export default function DefaultPricesIndex({items, filters, currentUserId}: Prop
                                            className="btn btn-outline-success btn-sm">Activate
                                    </button>
                                )}
+                               {price.status !== 'draft' && (
+                                   <button onClick={() => setDeactivating(price)}
+                                           className="btn btn-outline-warning btn-sm">Deactivate
+                                   </button>
+                               )}
                                {price.status === 'pending_second_review' && price.submitted_by !== currentUserId && (
                                    <button onClick={() => handleConfirm(price)}
                                            className="btn btn-outline-success btn-sm">Confirm
@@ -114,6 +129,9 @@ export default function DefaultPricesIndex({items, filters, currentUserId}: Prop
                                </button>
                            </div>)
                        }}/>
+            <ConfirmDialog open={!!deactivating} title="Deactivate price"
+                           message={`Stop serving the "${deactivating?.item}" price for ${deactivating?.country}? The app and the engine stop using it, and a fertilizer with no other active price leaves the fertilizer list. The price is kept as a draft and can be activated again.`}
+                           onConfirm={handleDeactivate} onCancel={() => setDeactivating(null)} processing={processing}/>
             <ConfirmDialog open={!!deleting} title="Delete default price"
                            message={`Delete "${deleting?.item}" for ${deleting?.country}? This cannot be undone.`}
                            onConfirm={handleDelete} onCancel={() => setDeleting(null)} processing={processing}/>

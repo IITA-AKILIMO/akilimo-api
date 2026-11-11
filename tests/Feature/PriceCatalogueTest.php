@@ -242,3 +242,41 @@ it('saves a country basis and assigns reviewers from the admin', function () {
 
     expect(DB::table('country_reviewers')->where('country', 'NG')->count())->toBe(1);
 });
+
+
+it('deactivates a price: it goes back to draft, is no longer served and is recorded', function () {
+    $admin = catalogueAdmin();
+    $price = catalogueDraft();
+
+    $this->actingAs($admin)->post("/admin/default-prices/{$price->id}/activate")->assertRedirect();
+    expect($price->fresh()->status)->toBe(PriceStatus::Active);
+
+    $this->actingAs($admin)->post("/admin/default-prices/{$price->id}/deactivate", ['note' => 'Price withdrawn'])
+        ->assertRedirect()->assertSessionHas('success');
+
+    $fresh = $price->fresh();
+    expect($fresh->status)->toBe(PriceStatus::Draft)
+        ->and($fresh->submitted_by)->toBeNull()
+        ->and($price->history()->pluck('action')->all())->toBe(['created', 'activated', 'deactivated']);
+
+    // Deactivating a draft changes nothing and adds no history
+    $this->actingAs($admin)->post("/admin/default-prices/{$price->id}/deactivate")->assertRedirect();
+    expect($price->history()->count())->toBe(3);
+
+    // It can be activated again
+    $this->actingAs($admin)->post("/admin/default-prices/{$price->id}/activate")->assertRedirect();
+    expect($price->fresh()->status)->toBe(PriceStatus::Active);
+});
+
+it('keeps price deactivation to admins who may review the country', function () {
+    $price = catalogueDraft();
+    $this->actingAs(catalogueAdmin())->post("/admin/default-prices/{$price->id}/activate");
+
+    $partner = User::create([
+        'name' => 'Partner', 'username' => 'partner_' . str()->random(8), 'email' => 'p_' . str()->random(8) . '@example.com',
+        'password' => bcrypt('password'), 'role' => EnumUserRole::Partner,
+    ]);
+
+    $this->actingAs($partner)->post("/admin/default-prices/{$price->id}/deactivate")->assertRedirect();
+    expect($price->fresh()->status)->toBe(PriceStatus::Active);
+});

@@ -140,6 +140,8 @@ it('shows the category in the fertilizers view and the API', function () {
     $type = FertilizerType::create(['type' => 'DAP', 'label' => 'DAP', 'name' => 'DAP', 'weight' => 50, 'category' => 'COMPOUND']);
     CountryFertilizer::create(['fertilizer_type' => $type->type, 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
 
+    DB::table('default_prices')->insert(['country' => 'NG', 'item' => 'DAP', 'fertilizer_type' => 'DAP', 'price' => 9000, 'unit' => 'per_bag', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()]);
+
     expect(DB::table('fertilizers')->where('type', 'DAP')->value('category'))->toBe('COMPOUND');
 
     $this->getJson('/api/v1/fertilizers/country/NG')->assertOk()
@@ -181,4 +183,34 @@ it('saves the category picked on the country form on the fertiliser', function (
     $this->actingAs($admin)->put("/admin/fertilizers/{$row->id}", ['category' => 'STRAIGHT'])->assertSessionHasNoErrors();
 
     expect(FertilizerType::find('UREA')->category)->toBe('STRAIGHT');
+});
+
+
+it('lists only the fertilizers that have an active price in their country', function () {
+    $priced = FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50, 'category' => 'STRAIGHT']);
+    $unpriced = FertilizerType::create(['type' => 'MOP', 'label' => 'MOP', 'name' => 'MOP', 'weight' => 50, 'category' => 'STRAIGHT']);
+    $draft = FertilizerType::create(['type' => 'TSP', 'label' => 'TSP', 'name' => 'TSP', 'weight' => 50, 'category' => 'STRAIGHT']);
+
+    foreach ([$priced, $unpriced, $draft] as $type) {
+        CountryFertilizer::create(['fertilizer_type' => $type->type, 'country' => 'NG', 'use_case' => 'FR', 'available' => true]);
+    }
+
+    $price = fn (string $item, string $type, string $status) => DB::table('default_prices')->insert([
+        'country' => 'NG', 'item' => $item, 'fertilizer_type' => $type, 'price' => 9000, 'unit' => 'per_bag',
+        'currency' => 'NGN', 'status' => $status, 'created_at' => now(), 'updated_at' => now(),
+    ]);
+    $price('urea', 'UREA', 'active');
+    $price('TSP', 'TSP', 'draft');
+
+    $this->getJson('/api/v1/fertilizers/country/NG')->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.type', 'UREA');
+    $this->getJson('/api/v1/fertilizers')->assertOk()->assertJsonCount(1, 'data');
+
+    // The admin list still shows every fertilizer, so one without a price can be found and fixed
+    expect(DB::table('fertilizers')->where('country', 'NG')->count())->toBe(3);
+
+    // Activating the price lists the fertilizer
+    DB::table('default_prices')->where('item', 'TSP')->update(['status' => 'active']);
+    $this->getJson('/api/v1/fertilizers/country/NG')->assertJsonCount(2, 'data');
 });

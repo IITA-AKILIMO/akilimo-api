@@ -136,6 +136,33 @@ class PriceCatalogueService
     }
 
     /**
+     * Take a price out of service: an active price, or one waiting for a second
+     * review, goes back to draft. A draft is never served to clients, so the
+     * item is no longer priced (and a fertilizer with no other active price drops
+     * out of the fertilizer list) until someone activates it again. The values
+     * are kept; the engine removes the price at its next full sync.
+     */
+    public function deactivate(DefaultPrice $price, User $actor, ?string $note = null): DefaultPrice
+    {
+        if ($price->status === PriceStatus::Draft) {
+            return $price;
+        }
+
+        $this->assertCanReview($actor, $price->country);
+
+        $old = $this->snapshot($price);
+
+        $price->status = PriceStatus::Draft;
+        $price->submitted_by = null;
+        $price->updated_by = $actor->id;
+        $price->save();
+
+        $this->record($price, 'deactivated', $actor, $old, $this->snapshot($price), $note);
+
+        return $price;
+    }
+
+    /**
      * Confirm a change that needed a second review. The confirming admin must
      * not be the one who submitted it.
      */

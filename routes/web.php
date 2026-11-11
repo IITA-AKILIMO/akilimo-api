@@ -142,6 +142,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::put('default-prices/batch', [DefaultPriceController::class, 'batchUpdate'])->name('default-prices.batch-update');
 
         Route::post('default-prices/{id}/activate', [DefaultPriceController::class, 'activate'])->name('default-prices.activate');
+        Route::post('default-prices/{id}/deactivate', [DefaultPriceController::class, 'deactivate'])->name('default-prices.deactivate');
         Route::post('default-prices/{id}/confirm', [DefaultPriceController::class, 'confirm'])->name('default-prices.confirm');
 
         Route::resource('default-prices', DefaultPriceController::class)
