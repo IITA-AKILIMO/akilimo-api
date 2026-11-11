@@ -12,9 +12,9 @@ use App\Models\Currency;
 use App\Models\FertilizerPrice;
 use App\Support\PriceMarker;
 use App\Utils\CurrencyConversion;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class FertilizerPriceResource extends JsonResource
 {
@@ -43,7 +43,7 @@ class FertilizerPriceResource extends JsonResource
             maxUsd: $fertilizerPrice->price_per_bag,
             currencyRate: 1,
             // Same step the generated options are rounded to (price_choice_rounding), so the label matches the price sent
-            nearestValue: (float) (DB::table('price_choice_rounding')->where('currency', strtoupper((string) $this->currency?->currency_code))->value('step') ?? 1000),
+            nearestValue: (float)(DB::table('price_choice_rounding')->where('currency', strtoupper((string)$this->currency?->currency_code))->value('step') ?? 1000),
             currency: $this->currency
         );
 
