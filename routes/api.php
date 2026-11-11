@@ -15,7 +15,7 @@ use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CoverageController;
 use App\Http\Controllers\Api\CropController;
 use App\Http\Controllers\Api\CurrencyController;
-use App\Http\Controllers\Api\DefaultPriceController;
+use App\Http\Controllers\Api\PriceCatalogueController;
 use App\Http\Controllers\Api\FertilizerController;
 use App\Http\Controllers\Api\FertilizerPriceController;
 use App\Http\Controllers\Api\InvestmentAmountController;
@@ -89,8 +89,8 @@ Route::middleware('throttle:read')->group(function () {
         Route::get('/', [StarchPricesController::class, 'index']);
     });
 
-    Route::prefix('v1/default-prices')->group(function () {
-        Route::get('/', [DefaultPriceController::class, 'index']);
+    Route::prefix('v1/price-catalogue')->group(function () {
+        Route::get('/', [PriceCatalogueController::class, 'index']);
     });
 
     Route::prefix('v1/prices')->group(function () {
@@ -192,7 +192,7 @@ Route::middleware(['throttle:admin-write', 'auth.token:write'])->prefix('v1/admi
     Route::apiResource('currencies', CurrencyController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('cassava-units', CassavaUnitsController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('translations', TranslationController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('default-prices', DefaultPriceController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('price-catalogue', PriceCatalogueController::class)->only(['store', 'update', 'destroy']);
 });
 
 // ── Admin — user management (requires admin) ──────────────────────────────────

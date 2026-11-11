@@ -12,7 +12,7 @@ use App\Core\Models\BaseUser;
 use App\Models\ApiKey;
 use App\Models\CountryReviewer;
 use App\Models\PriceCatalogue;
-use App\Models\DefaultPriceHistory;
+use App\Models\PriceCatalogueHistory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,12 +35,12 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string $username
  * @property Collection|ApiKey[] $apiKeys
  * @property Collection|CountryReviewer[] $countryReviewers
- * @property Collection|DefaultPriceHistory[] $defaultPriceHistories
- * @property Collection|PriceCatalogue[] $defaultPrices
+ * @property Collection|PriceCatalogueHistory[] $priceCatalogueHistories
+ * @property Collection|PriceCatalogue[] $priceCatalogueEntries
  * @property-read int|null $api_keys_count
  * @property-read int|null $country_reviewers_count
- * @property-read int|null $default_price_histories_count
- * @property-read int|null $default_prices_count
+ * @property-read int|null $price_catalogue_histories_count
+ * @property-read int|null $price_catalogue_entries_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
@@ -95,12 +95,12 @@ class User extends BaseUser
         return $this->hasMany(CountryReviewer::class);
     }
 
-    public function defaultPriceHistories(): HasMany
+    public function priceCatalogueHistories(): HasMany
     {
-        return $this->hasMany(DefaultPriceHistory::class, 'changed_by');
+        return $this->hasMany(PriceCatalogueHistory::class, 'changed_by');
     }
 
-    public function defaultPrices(): HasMany
+    public function priceCatalogueEntries(): HasMany
     {
         return $this->hasMany(PriceCatalogue::class, 'updated_by');
     }

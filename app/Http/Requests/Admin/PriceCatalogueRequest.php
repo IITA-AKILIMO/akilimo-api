@@ -13,7 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class DefaultPriceRequest extends FormRequest
+class PriceCatalogueRequest extends FormRequest
 {
     public function authorize(): bool
     {

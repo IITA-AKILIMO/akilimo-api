@@ -7,7 +7,7 @@
  */
 
 use App\Models\StarchFactory;
-use Database\Seeders\DefaultPricesSeeder;
+use Database\Seeders\PriceCatalogueSeeder;
 use Database\Seeders\StarchPricesSeeder;
 use Illuminate\Support\Facades\DB;
 
@@ -45,7 +45,7 @@ it('fills missing and obsolete currencies from the country, leaving prices and o
 });
 
 it('seeds every default and starch price with its country currency', function () {
-    $this->seed(DefaultPricesSeeder::class);
+    $this->seed(PriceCatalogueSeeder::class);
     $this->seed(StarchPricesSeeder::class);
 
     expect(DB::table('price_catalogue')->where(fn ($q) => $q->whereNull('currency')->orWhere('currency', ''))->count())->toBe(0)

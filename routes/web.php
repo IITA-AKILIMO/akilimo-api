@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CropController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\DefaultPriceController;
+use App\Http\Controllers\Admin\PriceCatalogueController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\FertilizerController;
 use App\Http\Controllers\Admin\FertilizerTypeController;
@@ -135,19 +135,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
             ->except(['show'])
             ->parameters(['starch-prices' => 'id']);
 
-        // Default prices — batch and workflow routes before resource
-        Route::get('default-prices/batch-create', [DefaultPriceController::class, 'batchCreate'])->name('default-prices.batch-create');
-        Route::post('default-prices/batch', [DefaultPriceController::class, 'batchStore'])->name('default-prices.batch-store');
-        Route::get('default-prices/batch-edit', [DefaultPriceController::class, 'batchEdit'])->name('default-prices.batch-edit');
-        Route::put('default-prices/batch', [DefaultPriceController::class, 'batchUpdate'])->name('default-prices.batch-update');
+        // Price catalogue: batch and workflow routes before the resource
+        Route::get('price-catalogue/batch-create', [PriceCatalogueController::class, 'batchCreate'])->name('price-catalogue.batch-create');
+        Route::post('price-catalogue/batch', [PriceCatalogueController::class, 'batchStore'])->name('price-catalogue.batch-store');
+        Route::get('price-catalogue/batch-edit', [PriceCatalogueController::class, 'batchEdit'])->name('price-catalogue.batch-edit');
+        Route::put('price-catalogue/batch', [PriceCatalogueController::class, 'batchUpdate'])->name('price-catalogue.batch-update');
 
-        Route::post('default-prices/{id}/activate', [DefaultPriceController::class, 'activate'])->name('default-prices.activate');
-        Route::post('default-prices/{id}/deactivate', [DefaultPriceController::class, 'deactivate'])->name('default-prices.deactivate');
-        Route::post('default-prices/{id}/confirm', [DefaultPriceController::class, 'confirm'])->name('default-prices.confirm');
+        Route::post('price-catalogue/{id}/activate', [PriceCatalogueController::class, 'activate'])->name('price-catalogue.activate');
+        Route::post('price-catalogue/{id}/deactivate', [PriceCatalogueController::class, 'deactivate'])->name('price-catalogue.deactivate');
+        Route::post('price-catalogue/{id}/confirm', [PriceCatalogueController::class, 'confirm'])->name('price-catalogue.confirm');
 
-        Route::resource('default-prices', DefaultPriceController::class)
+        Route::resource('price-catalogue', PriceCatalogueController::class)
             ->except(['show'])
-            ->parameters(['default-prices' => 'id']);
+            ->parameters(['price-catalogue' => 'id']);
 
         // Supporting data
         Route::resource('starch-factories', StarchFactoryController::class)

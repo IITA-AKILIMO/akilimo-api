@@ -8,16 +8,16 @@
 
 namespace App\Models;
 
-use App\Models\Base\DefaultPriceHistory as BaseDefaultPriceHistory;
+use App\Models\Base\PriceCatalogueHistory as BasePriceCatalogueHistory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Hand-written behaviour lives here, not in Base\DefaultPriceHistory, which the model generator overwrites.
+ * Hand-written behaviour lives here, not in Base\PriceCatalogueHistory, which the model generator overwrites.
  *
  * @property array<string, mixed>|null $old_values
  * @property array<string, mixed>|null $new_values
  */
-class DefaultPriceHistory extends BaseDefaultPriceHistory
+class PriceCatalogueHistory extends BasePriceCatalogueHistory
 {
     /** The price row before and after the change, stored as JSON */
     protected function casts(): array

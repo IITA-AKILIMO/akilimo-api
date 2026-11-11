@@ -10,7 +10,7 @@ export default function ReferenceHub({ tables }: Props) {
         <AdminLayout title="Price rules">
             <p className="text-body-secondary" style={{ maxWidth: 760 }}>
                 The rules the app&apos;s price lists are worked out with, and the lists the price forms choose from. Fertilizer lists are under Catalogue &gt; Fertilizers, and the units of sale under Catalogue &gt; Units of sale. Prices
-                themselves are set on <Link href="/admin/default-prices">Default prices</Link>; what the app is given is shown on{' '}
+                themselves are set on <Link href="/admin/price-catalogue">Price catalogue</Link>; what the app is given is shown on{' '}
                 <Link href="/admin/price-lists">App price lists</Link>.
             </p>
             <div className="row g-3">

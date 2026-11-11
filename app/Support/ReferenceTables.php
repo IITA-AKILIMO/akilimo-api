@@ -53,7 +53,7 @@ final class ReferenceTables
             ],
             'price-categories' => [
                 'title' => 'Price categories',
-                'description' => 'The kinds of thing a price can be for (fertilizers, produce, labour, machinery, investment, other). Each price item belongs to one, and Default prices can be filtered by it.',
+                'description' => 'The kinds of thing a price can be for (fertilizers, produce, labour, machinery, investment, other). Each price item belongs to one, and the Price catalogue can be filtered by it.',
                 'table' => 'price_categories',
                 'order' => ['sort_order', 'value'],
                 'fields' => [

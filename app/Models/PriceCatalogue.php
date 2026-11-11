@@ -81,8 +81,7 @@ class PriceCatalogue extends BasePriceCatalogue
 
     public function history(): HasMany
     {
-        // The history table kept its name and its default_price_id column when this table was renamed
-        return $this->hasMany(DefaultPriceHistory::class, 'default_price_id');
+        return $this->hasMany(PriceCatalogueHistory::class);
     }
 
     public function isActive(): bool

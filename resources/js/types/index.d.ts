@@ -255,7 +255,7 @@ export interface PriceLookups {
     fertilizerTypes: { type: string; name: string; label: string | null }[]
 }
 
-export interface DefaultPrice {
+export interface PriceCatalogue {
     category?: string
     id: number
     country: string
@@ -278,7 +278,7 @@ export interface DefaultPrice {
     updated_at?: string
 }
 
-export interface DefaultPriceHistory {
+export interface PriceCatalogueHistory {
     id: number
     action: string
     old_values?: Record<string, unknown> | null

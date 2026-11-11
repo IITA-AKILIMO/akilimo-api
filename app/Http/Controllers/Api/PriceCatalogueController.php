@@ -10,9 +10,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\PriceStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\DefaultPriceRequest;
-use App\Http\Resources\Collections\DefaultPriceResourceCollection;
-use App\Http\Resources\DefaultPriceResource;
+use App\Http\Requests\Admin\PriceCatalogueRequest;
+use App\Http\Resources\Collections\PriceCatalogueResourceCollection;
+use App\Http\Resources\PriceCatalogueResource;
 use App\Models\PriceCatalogue;
 use App\Models\User;
 use App\Repositories\PriceCatalogueRepo;
@@ -22,7 +22,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class DefaultPriceController extends Controller
+class PriceCatalogueController extends Controller
 {
     use HasPaginationParams;
 
@@ -32,9 +32,9 @@ class DefaultPriceController extends Controller
     ) {}
 
     /**
-     * List Default Prices
+     * List Price Catalogue
      *
-     * Retrieves a paginated list of default prices. Optionally filter by country.
+     * Retrieves a paginated list of the price catalogue. Optionally filter by country.
      *
      * @unauthenticated
      */
@@ -58,16 +58,16 @@ class DefaultPriceController extends Controller
             'status' => PriceStatus::Active->value,
         ];
 
-        $defaultPrices = $this->repo->paginateWithSort(
+        $entries = $this->repo->paginateWithSort(
             perPage: $perPage,
             orderBy: $orderBy,
             direction: $sort,
             filters: $filters);
 
-        return DefaultPriceResourceCollection::make($defaultPrices);
+        return PriceCatalogueResourceCollection::make($entries);
     }
 
-    public function store(DefaultPriceRequest $request): JsonResponse
+    public function store(PriceCatalogueRequest $request): JsonResponse
     {
         $actor = $request->user();
 
@@ -77,12 +77,12 @@ class DefaultPriceController extends Controller
          * @status 201
          */
         return response()->json([
-            'data' => new DefaultPriceResource($price),
-            'message' => 'Default price created as a draft.',
+            'data' => new PriceCatalogueResource($price),
+            'message' => 'Catalogue price created as a draft.',
         ], 201);
     }
 
-    public function update(DefaultPriceRequest $request, int $id): JsonResponse
+    public function update(PriceCatalogueRequest $request, int $id): JsonResponse
     {
         /** @var PriceCatalogue $price */
         $price = $this->repo->findOrFail($id);
@@ -90,8 +90,8 @@ class DefaultPriceController extends Controller
         $price = $this->catalogue->saveDraft($price, $request->validated(), $actor instanceof User ? $actor : null);
 
         return response()->json([
-            'data' => new DefaultPriceResource($price),
-            'message' => 'Default price updated as a draft.',
+            'data' => new PriceCatalogueResource($price),
+            'message' => 'Catalogue price updated as a draft.',
         ]);
     }
 

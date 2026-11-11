@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DefaultPriceResource;
+use App\Http\Resources\PriceCatalogueResource;
 use App\Models\Country;
 use App\Repositories\PriceCatalogueRepo;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -55,7 +55,7 @@ class PriceController extends Controller
             'country' => $code,
             'default_price_basis' => $country?->default_price_basis?->value
                 ?? config('price_catalogue.default_basis'),
-            'data' => DefaultPriceResource::collection($rows)->resolve($request),
+            'data' => PriceCatalogueResource::collection($rows)->resolve($request),
             'updated_at' => $rows->max('updated_at')?->toIso8601String(),
         ];
 

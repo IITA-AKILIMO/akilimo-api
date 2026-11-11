@@ -14,7 +14,7 @@ use League\Csv\Exception;
 use League\Csv\Reader;
 use League\Csv\UnavailableStream;
 
-class DefaultPricesSeeder extends Seeder
+class PriceCatalogueSeeder extends Seeder
 {
     /** Burundi FOMI is sold in real 25 kg bags, not 50 kg. */
     private const BURUNDI_25KG = ['FOMIIMBURA', 'FOMIBAGARA', 'FOMITOTAHAZA'];
@@ -26,7 +26,7 @@ class DefaultPricesSeeder extends Seeder
     public function run(): void
     {
         // Use fromPath instead of createFromPath
-        $csv = Reader::from(database_path('seeders/data/default_prices.csv'), 'r');
+        $csv = Reader::from(database_path('seeders/data/price_catalogue.csv'), 'r');
         $csv->setHeaderOffset(0);
 
         $units = DB::table('price_items')->pluck('unit', 'item')->all();

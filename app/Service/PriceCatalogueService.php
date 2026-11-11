@@ -12,7 +12,7 @@ use App\Enums\EnumUserRole;
 use App\Enums\PriceStatus;
 use App\Models\Country;
 use App\Models\PriceCatalogue;
-use App\Models\DefaultPriceHistory;
+use App\Models\PriceCatalogueHistory;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -325,9 +325,9 @@ class PriceCatalogueService
         ?array $oldValues = null,
         ?array $newValues = null,
         ?string $note = null,
-    ): DefaultPriceHistory {
-        return DefaultPriceHistory::create([
-            'default_price_id' => $price->id,
+    ): PriceCatalogueHistory {
+        return PriceCatalogueHistory::create([
+            'price_catalogue_id' => $price->id,
             'country' => $price->country,
             'item' => $price->item,
             'region' => $price->region,

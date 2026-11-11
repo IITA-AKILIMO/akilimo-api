@@ -6,7 +6,7 @@
  * For licence information, see the LICENCE file.
  */
 
-use Database\Seeders\DefaultPricesSeeder;
+use Database\Seeders\PriceCatalogueSeeder;
 use Illuminate\Support\Facades\DB;
 
 function tzFertilizerMigration(): object
@@ -32,7 +32,7 @@ it('updates TZ fertiliser defaults that still hold the old price, and keeps edit
 });
 
 it('seeds the TFRA September 2025 TZ fertiliser prices', function () {
-    $this->seed(DefaultPricesSeeder::class);
+    $this->seed(PriceCatalogueSeeder::class);
 
     $tz = DB::table('price_catalogue')->where('country', 'TZ')->pluck('price', 'item')->map(fn ($p) => (float)$p);
     expect($tz->only(['urea', 'CAN', 'DAP', 'MOP', 'NPK171717', 'NPK201010', 'TSP'])->all())->toEqual([

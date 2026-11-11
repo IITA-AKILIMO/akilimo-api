@@ -18,7 +18,7 @@ use Inertia\Response;
 /**
  * A read-only view of the price lists the mobile app reads, as the database
  * computes them from the catalogue. They are views, so they cannot be edited:
- * change a catalogue price (default prices) or a rule (price settings) and they
+ * change a catalogue price (the Price catalogue) or a rule (price settings) and they
  * follow. This screen shows what the app would be given, including the label a
  * client displays for each choice.
  */

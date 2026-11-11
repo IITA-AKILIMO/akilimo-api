@@ -8,7 +8,7 @@
 
 use Illuminate\Support\Facades\DB;
 
-function insertDefaultPrice(string $country, string $item, float $price): void
+function insertPriceCatalogue(string $country, string $item, float $price): void
 {
     DB::table('price_catalogue')->insert([
         'country' => $country,
@@ -25,8 +25,8 @@ function runBuToBiMigration(): void
 }
 
 it('moves legacy BU default prices to BI with their prices unchanged', function () {
-    insertDefaultPrice('BU', 'cassUP', 700000);
-    insertDefaultPrice('BU', 'FOMIIMBURA', 85390);
+    insertPriceCatalogue('BU', 'cassUP', 700000);
+    insertPriceCatalogue('BU', 'FOMIIMBURA', 85390);
 
     runBuToBiMigration();
     runBuToBiMigration(); // idempotent
@@ -37,8 +37,8 @@ it('moves legacy BU default prices to BI with their prices unchanged', function 
 });
 
 it('keeps an existing BI row and drops its BU duplicate', function () {
-    insertDefaultPrice('BI', 'cassUP', 650000);
-    insertDefaultPrice('BU', 'cassUP', 700000);
+    insertPriceCatalogue('BI', 'cassUP', 650000);
+    insertPriceCatalogue('BU', 'cassUP', 700000);
 
     runBuToBiMigration();
 
@@ -47,11 +47,11 @@ it('keeps an existing BI row and drops its BU duplicate', function () {
 });
 
 it('returns Burundi default prices for country=BI and the legacy BU alias', function (string $country) {
-    insertDefaultPrice('BI', 'cassUP', 700000);
-    insertDefaultPrice('BI', 'FOMIBAGARA', 77600);
-    insertDefaultPrice('NG', 'cassUP', 1000);
+    insertPriceCatalogue('BI', 'cassUP', 700000);
+    insertPriceCatalogue('BI', 'FOMIBAGARA', 77600);
+    insertPriceCatalogue('NG', 'cassUP', 1000);
 
-    $response = $this->getJson("/api/v1/default-prices?country={$country}")->assertOk();
+    $response = $this->getJson("/api/v1/price-catalogue?country={$country}")->assertOk();
 
     expect(collect($response->json('data'))->pluck('country')->unique()->values()->all())->toBe(['BI'])
         ->and($response->json('data'))->toHaveCount(2);

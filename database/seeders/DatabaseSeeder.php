@@ -23,6 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CountriesSeeder::class);
         $this->call(StarchPricesSeeder::class);
         $this->call(TranslationsSeeder::class);
-        $this->call(DefaultPricesSeeder::class);
+        $this->call(PriceCatalogueSeeder::class);
     }
 }

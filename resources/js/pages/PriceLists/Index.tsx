@@ -47,7 +47,7 @@ export default function PriceListsIndex({ lists, filters, title, searchPlacehold
             <p className="text-body-secondary" style={{ maxWidth: 760 }}>
                 What the mobile app is given, worked out from the catalogue. The first column is the text a client shows for each
                 choice; it maps the farmer&apos;s pick back to the value behind it and sends that to the API. These lists cannot be
-                edited: change a price on <Link href="/admin/default-prices">Default prices</Link> or a rule on{' '}
+                edited: change a price on <Link href="/admin/price-catalogue">Price catalogue</Link> or a rule on{' '}
                 <Link href="/admin/reference">Price settings</Link> and they follow at once.
             </p>
 

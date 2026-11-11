@@ -74,9 +74,9 @@ it('follows a unit or item added to the database', function () {
 });
 
 it('gives the price forms the lists', function () {
-    $this->actingAs(lookupAdmin())->get('/admin/default-prices/create')
+    $this->actingAs(lookupAdmin())->get('/admin/price-catalogue/create')
         ->assertInertia(fn (Assert $page) => $page
-            ->component('DefaultPrices/Create')
+            ->component('PriceCatalogue/Create')
             ->has('currencies')
             ->has('units', 5)
             ->has('items')
@@ -85,7 +85,7 @@ it('gives the price forms the lists', function () {
 });
 
 it('accepts a price whose unit, item and currency are in the lists', function () {
-    $this->actingAs(lookupAdmin())->post('/admin/default-prices', lookupPrice())->assertRedirect('/admin/default-prices');
+    $this->actingAs(lookupAdmin())->post('/admin/price-catalogue', lookupPrice())->assertRedirect('/admin/price-catalogue');
 
     expect(PriceCatalogue::where('country', 'NG')->where('item', 'urea')->exists())->toBeTrue();
 });
@@ -93,22 +93,22 @@ it('accepts a price whose unit, item and currency are in the lists', function ()
 it('refuses a unit, item or currency that is not in the lists', function () {
     $admin = lookupAdmin();
 
-    $this->actingAs($admin)->post('/admin/default-prices', lookupPrice(['unit' => 'per_kilo']))->assertSessionHasErrors('unit');
-    $this->actingAs($admin)->post('/admin/default-prices', lookupPrice(['item' => 'cass UP']))->assertSessionHasErrors('item');
-    $this->actingAs($admin)->post('/admin/default-prices', lookupPrice(['currency' => 'XXX']))->assertSessionHasErrors('currency');
+    $this->actingAs($admin)->post('/admin/price-catalogue', lookupPrice(['unit' => 'per_kilo']))->assertSessionHasErrors('unit');
+    $this->actingAs($admin)->post('/admin/price-catalogue', lookupPrice(['item' => 'cass UP']))->assertSessionHasErrors('item');
+    $this->actingAs($admin)->post('/admin/price-catalogue', lookupPrice(['currency' => 'XXX']))->assertSessionHasErrors('currency');
 
     expect(PriceCatalogue::where('country', 'NG')->where('item', 'urea')->exists())->toBeFalse();
 });
 
 it('saves an item as the list spells it, whatever case was posted', function () {
-    $this->actingAs(lookupAdmin())->post('/admin/default-prices', lookupPrice(['item' => 'cassup', 'unit' => 'per_tonne']))
-        ->assertRedirect('/admin/default-prices');
+    $this->actingAs(lookupAdmin())->post('/admin/price-catalogue', lookupPrice(['item' => 'cassup', 'unit' => 'per_tonne']))
+        ->assertRedirect('/admin/price-catalogue');
 
     expect(DB::table('price_catalogue')->where('country', 'NG')->value('item'))->toBe('cassUP');
 });
 
 it('applies the same lists to the batch forms', function () {
-    $this->actingAs(lookupAdmin())->post('/admin/default-prices/batch', [
+    $this->actingAs(lookupAdmin())->post('/admin/price-catalogue/batch', [
         'country' => 'NG',
         'rows' => [
             ['item' => 'urea', 'price' => 30000, 'unit' => 'per_bag', 'currency' => 'NGN'],

@@ -6,7 +6,7 @@ import FormField from '../../components/FormField'
 import ItemSelect from '../../components/ItemSelect'
 import UnitSelect from '../../components/UnitSelect'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { DefaultPrice, PriceLookups } from '../../types'
+import type { PriceCatalogue, PriceLookups } from '../../types'
 
 interface EditableRow {
     id: number | null
@@ -17,13 +17,13 @@ interface EditableRow {
 }
 
 interface Props extends PriceLookups {
-    prices: DefaultPrice[]
+    prices: PriceCatalogue[]
     country: string | null
 }
 
 const emptyRow = (): EditableRow => ({ id: null, item: '', price: '', unit: '', currency: '' })
 
-function priceToRow(p: DefaultPrice): EditableRow {
+function priceToRow(p: PriceCatalogue): EditableRow {
     return {
         id: p.id,
         item: p.item,
@@ -33,7 +33,7 @@ function priceToRow(p: DefaultPrice): EditableRow {
     }
 }
 
-export default function DefaultPricesBatchEdit({ prices, country, currencies, units, items }: Props) {
+export default function PriceCatalogueBatchEdit({ prices, country, currencies, units, items }: Props) {
     const [countryCode, setCountryCode] = useState(country ?? '')
     const [rows, setRows] = useState<EditableRow[]>(prices.length ? prices.map(priceToRow) : [emptyRow()])
     const [deletedIds, setDeletedIds] = useState<number[]>([])
@@ -48,7 +48,7 @@ export default function DefaultPricesBatchEdit({ prices, country, currencies, un
 
     function handleCountryChange(code: string) {
         setCountryCode(code)
-        if (code) router.get('/admin/default-prices/batch-edit', { country: code }, { preserveState: false })
+        if (code) router.get('/admin/price-catalogue/batch-edit', { country: code }, { preserveState: false })
     }
 
     function updateRow(index: number, field: keyof EditableRow, value: string) {
@@ -73,7 +73,7 @@ export default function DefaultPricesBatchEdit({ prices, country, currencies, un
         e.preventDefault()
         setErrors({})
         setProcessing(true)
-        router.put('/admin/default-prices/batch', {
+        router.put('/admin/price-catalogue/batch', {
             country: countryCode,
             rows,
             deleted_ids: deletedIds,
@@ -86,11 +86,11 @@ export default function DefaultPricesBatchEdit({ prices, country, currencies, un
     const hasCountry = !!countryCode
 
     return (
-        <AdminLayout title="Batch Edit Default Prices">
+        <AdminLayout title="Batch Edit Price Catalogue">
             <form onSubmit={handleSubmit}>
                 <div className="card border-0 shadow-sm mb-4">
                     <div className="card-header bg-white border-bottom py-3">
-                        <h5 className="mb-0 fw-semibold">Batch Edit Default Prices</h5>
+                        <h5 className="mb-0 fw-semibold">Batch Edit Price Catalogue</h5>
                     </div>
                     <div className="card-body">
                         <div className="row mb-4">
@@ -115,7 +115,7 @@ export default function DefaultPricesBatchEdit({ prices, country, currencies, un
 
                         {!hasCountry && (
                             <div className="text-center text-muted py-4 border rounded">
-                                Select a country above to load its default prices for editing.
+                                Select a country above to load its catalogue prices for editing.
                             </div>
                         )}
 

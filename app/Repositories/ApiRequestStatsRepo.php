@@ -305,22 +305,22 @@ class ApiRequestStatsRepo extends BaseRepo
     {
         // The app's price lists (fertiliser, cassava, maize, potato, investment, operation costs) are
         // database views over the catalogue, so each is as fresh as the catalogue prices behind it and
-        // is edited on the default prices page. 'source' narrows the catalogue to the rows that feed it.
+        // is edited on the Price catalogue page. 'source' narrows the catalogue to the rows that feed it.
         $catalogue = fn (callable $where) => fn () => $where(DB::table('price_catalogue')->where('status', 'active')->whereNull('region'));
         $lists = [
-            ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/default-prices',
+            ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('unit', 'per_bag')->whereNotNull('fertilizer_type'))],
-            ['label' => 'Cassava prices', 'table' => 'cassava_prices', 'href' => '/admin/default-prices',
+            ['label' => 'Cassava prices', 'table' => 'cassava_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'cassUP'))],
-            ['label' => 'Maize prices', 'table' => 'maize_prices', 'href' => '/admin/default-prices',
+            ['label' => 'Maize prices', 'table' => 'maize_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->whereIn('item', ['maize_grain', 'maize_freshCob']))],
-            ['label' => 'Potato prices', 'table' => 'potato_prices', 'href' => '/admin/default-prices',
+            ['label' => 'Potato prices', 'table' => 'potato_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'sweetPotato_tuber'))],
             ['label' => 'Starch prices', 'table' => 'starch_prices', 'href' => '/admin/starch-prices'],
-            ['label' => 'Default prices', 'table' => 'price_catalogue', 'href' => '/admin/default-prices'],
-            ['label' => 'Investment amounts', 'table' => 'investment_amount', 'href' => '/admin/default-prices',
+            ['label' => 'Price catalogue', 'table' => 'price_catalogue', 'href' => '/admin/price-catalogue'],
+            ['label' => 'Investment amounts', 'table' => 'investment_amount', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'investment_amount'))],
-            ['label' => 'Operation costs', 'table' => 'operation_costs', 'href' => '/admin/default-prices',
+            ['label' => 'Operation costs', 'table' => 'operation_costs', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->whereIn('item', DB::table('price_choice_operations')->select('item')))],
         ];
 

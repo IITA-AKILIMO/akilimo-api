@@ -17,7 +17,7 @@ interface PriceRow {
 
 const emptyRow = (): PriceRow => ({ item: '', price: '', unit: '', currency: '' })
 
-export default function DefaultPricesBatchCreate({ currencies, units, items, currencyByCountry }: PriceLookups) {
+export default function PriceCatalogueBatchCreate({ currencies, units, items, currencyByCountry }: PriceLookups) {
     const [country, setCountry] = useState('')
     const [rows, setRows] = useState<PriceRow[]>([emptyRow()])
     const [processing, setProcessing] = useState(false)
@@ -50,18 +50,18 @@ export default function DefaultPricesBatchCreate({ currencies, units, items, cur
         e.preventDefault()
         setErrors({})
         setProcessing(true)
-        router.post('/admin/default-prices/batch', { country, rows }, {
+        router.post('/admin/price-catalogue/batch', { country, rows }, {
             onError: (errs) => { setErrors(errs); setProcessing(false) },
             onFinish: () => setProcessing(false),
         })
     }
 
     return (
-        <AdminLayout title="Batch Add Default Prices">
+        <AdminLayout title="Batch Add to Price Catalogue">
             <form onSubmit={handleSubmit}>
                 <div className="card border-0 shadow-sm mb-4">
                     <div className="card-header bg-white border-bottom py-3">
-                        <h5 className="mb-0 fw-semibold">Batch Create Default Prices</h5>
+                        <h5 className="mb-0 fw-semibold">Batch Add to Price Catalogue</h5>
                     </div>
                     <div className="card-body">
                         <div className="row mb-4">

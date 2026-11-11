@@ -8,11 +8,11 @@
 
 namespace App\Http\Resources\Collections;
 
-use App\Http\Resources\DefaultPriceResource;
+use App\Http\Resources\PriceCatalogueResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class DefaultPriceResourceCollection extends ResourceCollection
+class PriceCatalogueResourceCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -21,6 +21,6 @@ class DefaultPriceResourceCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return DefaultPriceResource::collection($this->resource)->toArray($request);
+        return PriceCatalogueResource::collection($this->resource)->toArray($request);
     }
 }

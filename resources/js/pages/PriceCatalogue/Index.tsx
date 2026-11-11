@@ -4,13 +4,13 @@ import ConfirmDialog from '../../components/ConfirmDialog'
 import TableFilters from '../../components/TableFilters'
 import DataTable, {type Column} from '../../components/DataTable'
 import AdminLayout from '../../layouts/AdminLayout'
-import type {DefaultPrice, Paginated, PriceStatus} from '../../types'
+import type {PriceCatalogue, Paginated, PriceStatus} from '../../types'
 
 type Filters = Record<string, string>
 
 interface Props {
     categories: { value: string; label: string }[]
-    items: Paginated<DefaultPrice>;
+    items: Paginated<PriceCatalogue>;
     filters: Filters
     currentUserId?: number | null
 }
@@ -31,9 +31,9 @@ function StatusBadge({status}: { status: PriceStatus }) {
     return <span className={`badge ${STATUS_STYLES[status] ?? 'bg-secondary'}`}>{STATUS_LABELS[status] ?? status}</span>
 }
 
-export default function DefaultPricesIndex({items, filters, currentUserId, categories}: Props) {
-    const [deleting, setDeleting] = useState<DefaultPrice | null>(null)
-    const [deactivating, setDeactivating] = useState<DefaultPrice | null>(null)
+export default function PriceCatalogueIndex({items, filters, currentUserId, categories}: Props) {
+    const [deleting, setDeleting] = useState<PriceCatalogue | null>(null)
+    const [deactivating, setDeactivating] = useState<PriceCatalogue | null>(null)
     const [processing, setProcessing] = useState(false)
     const columns: Column[] = [
         {key: 'country', label: 'Country'},
@@ -48,13 +48,13 @@ export default function DefaultPricesIndex({items, filters, currentUserId, categ
     ]
 
     function handlePageChange(page: number) {
-        router.get('/admin/default-prices', {...filters, page}, {preserveState: true})
+        router.get('/admin/price-catalogue', {...filters, page}, {preserveState: true})
     }
 
     function handleDelete() {
         if (!deleting) return;
         setProcessing(true)
-        router.delete(`/admin/default-prices/${deleting.id}`, {
+        router.delete(`/admin/price-catalogue/${deleting.id}`, {
             onFinish: () => {
                 setProcessing(false);
                 setDeleting(null)
@@ -62,35 +62,35 @@ export default function DefaultPricesIndex({items, filters, currentUserId, categ
         })
     }
 
-    function handleActivate(row: DefaultPrice) {
-        router.post(`/admin/default-prices/${row.id}/activate`, {}, {preserveScroll: true})
+    function handleActivate(row: PriceCatalogue) {
+        router.post(`/admin/price-catalogue/${row.id}/activate`, {}, {preserveScroll: true})
     }
 
     function handleDeactivate() {
         if (!deactivating) return
         setProcessing(true)
-        router.post(`/admin/default-prices/${deactivating.id}/deactivate`, {}, {
+        router.post(`/admin/price-catalogue/${deactivating.id}/deactivate`, {}, {
             preserveScroll: true,
             onFinish: () => { setProcessing(false); setDeactivating(null) },
         })
     }
 
-    function handleConfirm(row: DefaultPrice) {
-        router.post(`/admin/default-prices/${row.id}/confirm`, {}, {preserveScroll: true})
+    function handleConfirm(row: PriceCatalogue) {
+        router.post(`/admin/price-catalogue/${row.id}/confirm`, {}, {preserveScroll: true})
     }
 
     return (
-        <AdminLayout title="Default Prices">
+        <AdminLayout title="Price Catalogue">
             <div className="d-flex align-items-center justify-content-end mb-3">
                 <div className="d-flex gap-2">
-                    <Link href="/admin/default-prices/batch-edit" className="btn btn-outline-secondary btn-sm">Batch
+                    <Link href="/admin/price-catalogue/batch-edit" className="btn btn-outline-secondary btn-sm">Batch
                         Edit</Link>
-                    <Link href="/admin/default-prices/batch-create" className="btn btn-outline-success btn-sm">Batch
+                    <Link href="/admin/price-catalogue/batch-create" className="btn btn-outline-success btn-sm">Batch
                         Add</Link>
-                    <Link href="/admin/default-prices/create" className="btn btn-success btn-sm">+ New</Link>
+                    <Link href="/admin/price-catalogue/create" className="btn btn-success btn-sm">+ New</Link>
                 </div>
             </div>
-            <TableFilters url="/admin/default-prices" filters={filters} total={items.meta.total} defs={[
+            <TableFilters url="/admin/price-catalogue" filters={filters} total={items.meta.total} defs={[
                 {type: 'search', key: 'search', placeholder: 'Search item, unit, currency or source…'},
                 {type: 'country', key: 'country'},
                 {type: 'select', key: 'category', label: 'Category', options: categories.map((c) => ({value: c.value, label: c.label}))},
@@ -102,13 +102,13 @@ export default function DefaultPricesIndex({items, filters, currentUserId, categ
                     ]
                 },
             ]}/>
-            <DataTable columns={columns} data={items.data as DefaultPrice[]} pagination={items.meta} links={items.links}
+            <DataTable columns={columns} data={items.data as PriceCatalogue[]} pagination={items.meta} links={items.links}
                        sortBy="" onSort={() => {
             }} onPageChange={handlePageChange}
                        actions={(row) => {
-                           const price = row as DefaultPrice
+                           const price = row as PriceCatalogue
                            return (<div className="d-flex gap-1 justify-content-end">
-                               <Link href={`/admin/default-prices/${price.id}/edit`}
+                               <Link href={`/admin/price-catalogue/${price.id}/edit`}
                                      className="btn btn-outline-secondary btn-sm">
                                    Edit
                                </Link>
@@ -135,7 +135,7 @@ export default function DefaultPricesIndex({items, filters, currentUserId, categ
             <ConfirmDialog open={!!deactivating} title="Deactivate price"
                            message={`Stop serving the "${deactivating?.item}" price for ${deactivating?.country}? The app and the engine stop using it, and a fertilizer with no other active price leaves the fertilizer list. The price is kept as a draft and can be activated again.`}
                            onConfirm={handleDeactivate} onCancel={() => setDeactivating(null)} processing={processing}/>
-            <ConfirmDialog open={!!deleting} title="Delete default price"
+            <ConfirmDialog open={!!deleting} title="Delete catalogue price"
                            message={`Delete "${deleting?.item}" for ${deleting?.country}? This cannot be undone.`}
                            onConfirm={handleDelete} onCancel={() => setDeleting(null)} processing={processing}/>
         </AdminLayout>

@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\PriceStatus;
-use App\Http\Requests\Admin\DefaultPriceRequest;
+use App\Http\Requests\Admin\PriceCatalogueRequest;
 use App\Models\PriceCatalogue;
 use App\Models\User;
 use App\Repositories\PriceCatalogueRepo;
@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DefaultPriceController extends AdminController
+class PriceCatalogueController extends AdminController
 {
     public function __construct(
         protected PriceCatalogueRepo $repo,
@@ -55,7 +55,7 @@ class DefaultPriceController extends AdminController
         // The database matches item names without regard to case, so the lookup does too
         $categoryOf = DB::table('price_items')->pluck('category', 'item')->mapWithKeys(fn ($c, $i) => [strtolower((string) $i) => (string) $c]);
 
-        return Inertia::render('DefaultPrices/Index', [
+        return Inertia::render('PriceCatalogue/Index', [
             'filters' => $values,
             'categories' => DB::table('price_categories')->orderBy('sort_order')->get(['value', 'label'])
                 ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all(),
@@ -86,7 +86,7 @@ class DefaultPriceController extends AdminController
 
     public function create(): Response
     {
-        return Inertia::render('DefaultPrices/Create', [
+        return Inertia::render('PriceCatalogue/Create', [
             'statuses' => PriceStatus::values(),
             'confidenceLevels' => config('price_catalogue.confidence_levels'),
             'defaultBagKg' => config('price_catalogue.default_bag_kg'),
@@ -94,12 +94,12 @@ class DefaultPriceController extends AdminController
         ]);
     }
 
-    public function store(DefaultPriceRequest $request): RedirectResponse
+    public function store(PriceCatalogueRequest $request): RedirectResponse
     {
         $this->catalogue->createDraft($request->validated(), $this->actor($request));
 
-        return redirect()->route('admin.default-prices.index')
-            ->with('success', 'Default price created as a draft. Activate it when it has been reviewed.');
+        return redirect()->route('admin.price-catalogue.index')
+            ->with('success', 'Catalogue price created as a draft. Activate it when it has been reviewed.');
     }
 
     public function edit(int $id): Response
@@ -107,7 +107,7 @@ class DefaultPriceController extends AdminController
         /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
 
-        return Inertia::render('DefaultPrices/Edit', [
+        return Inertia::render('PriceCatalogue/Edit', [
             'item' => $this->present($item),
             'history' => $item->history()
                 ->latest('id')
@@ -130,14 +130,14 @@ class DefaultPriceController extends AdminController
         ]);
     }
 
-    public function update(DefaultPriceRequest $request, int $id): RedirectResponse
+    public function update(PriceCatalogueRequest $request, int $id): RedirectResponse
     {
         /** @var PriceCatalogue $item */
         $item = $this->repo->findOrFail($id);
         $this->catalogue->saveDraft($item, $request->validated(), $this->actor($request));
 
-        return redirect()->route('admin.default-prices.index')
-            ->with('success', 'Default price saved as a draft. Activate it when it has been reviewed.');
+        return redirect()->route('admin.price-catalogue.index')
+            ->with('success', 'Catalogue price saved as a draft. Activate it when it has been reviewed.');
     }
 
     public function destroy(Request $request, int $id): RedirectResponse
@@ -146,8 +146,8 @@ class DefaultPriceController extends AdminController
         $item = $this->repo->findOrFail($id);
         $this->catalogue->delete($item, $this->actor($request));
 
-        return redirect()->route('admin.default-prices.index')
-            ->with('success', 'Default price deleted.');
+        return redirect()->route('admin.price-catalogue.index')
+            ->with('success', 'Catalogue price deleted.');
     }
 
     public function activate(Request $request, int $id): RedirectResponse
@@ -160,7 +160,7 @@ class DefaultPriceController extends AdminController
             'success',
             $item->status === PriceStatus::PendingSecondReview
                 ? 'Change is over 30%; a second admin must confirm it.'
-                : 'Default price activated.',
+                : 'Catalogue price activated.',
         );
     }
 
@@ -170,7 +170,7 @@ class DefaultPriceController extends AdminController
         $item = $this->repo->findOrFail($id);
         $this->catalogue->deactivate($item, $this->actor($request), $request->input('note'));
 
-        return redirect()->back()->with('success', 'Default price deactivated. It is no longer served until it is activated again.');
+        return redirect()->back()->with('success', 'Catalogue price deactivated. It is no longer served until it is activated again.');
     }
 
     public function confirm(Request $request, int $id): RedirectResponse
@@ -179,14 +179,14 @@ class DefaultPriceController extends AdminController
         $item = $this->repo->findOrFail($id);
         $this->catalogue->confirm($item, $this->actor($request));
 
-        return redirect()->back()->with('success', 'Default price confirmed and activated.');
+        return redirect()->back()->with('success', 'Catalogue price confirmed and activated.');
     }
 
     // ── Batch operations ───────────────────────────────────────────────────────
 
     public function batchCreate(): Response
     {
-        return Inertia::render('DefaultPrices/BatchCreate', $this->lookups->forForms());
+        return Inertia::render('PriceCatalogue/BatchCreate', $this->lookups->forForms());
     }
 
     public function batchStore(Request $request): RedirectResponse
@@ -211,8 +211,8 @@ class DefaultPriceController extends AdminController
             }
         });
 
-        return redirect()->route('admin.default-prices.index')
-            ->with('success', count($validated['rows']) . ' default price(s) created as drafts.');
+        return redirect()->route('admin.price-catalogue.index')
+            ->with('success', count($validated['rows']) . ' catalogue price(s) created as drafts.');
     }
 
     public function batchEdit(Request $request): Response
@@ -231,7 +231,7 @@ class DefaultPriceController extends AdminController
             ])->all()
             : [];
 
-        return Inertia::render('DefaultPrices/BatchEdit', [
+        return Inertia::render('PriceCatalogue/BatchEdit', [
             'prices' => $prices,
             'country' => $country ?: null,
             ...$this->lookups->forForms(),
@@ -279,8 +279,8 @@ class DefaultPriceController extends AdminController
             }
         });
 
-        return redirect()->route('admin.default-prices.index')
-            ->with('success', 'Default prices saved as drafts. Activate them when they have been reviewed.');
+        return redirect()->route('admin.price-catalogue.index')
+            ->with('success', 'Catalogue prices saved as drafts. Activate them when they have been reviewed.');
     }
 
     /**

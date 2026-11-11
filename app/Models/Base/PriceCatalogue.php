@@ -9,7 +9,7 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
-use App\Models\DefaultPriceHistory;
+use App\Models\PriceCatalogueHistory;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -39,9 +39,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $unit
  * @property Carbon|null $updated_at
  * @property int|null $updated_by
- * @property Collection|DefaultPriceHistory[] $defaultPriceHistories
+ * @property Collection|PriceCatalogueHistory[] $priceCatalogueHistories
  * @property User|null $user
- * @property-read int|null $default_price_histories_count
+ * @property-read int|null $price_catalogue_histories_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue newQuery()
@@ -105,9 +105,9 @@ class PriceCatalogue extends BaseModel
         'currency',
     ];
 
-    public function defaultPriceHistories(): HasMany
+    public function priceCatalogueHistories(): HasMany
     {
-        return $this->hasMany(DefaultPriceHistory::class);
+        return $this->hasMany(PriceCatalogueHistory::class);
     }
 
     public function user(): BelongsTo

@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Schema;
 /**
  * default_prices becomes price_catalogue: it holds the whole price catalogue (fertilizers, produce,
  * labour, machinery and the investment amount), not only "defaults". Rows, ids, keys, foreign keys
- * (default_price_history.default_price_id follows the rename) and history are unchanged.
+ * (the history table's key follows the rename) and history are unchanged.
  *
  * MariaDB does not rewrite a view when a table it reads is renamed, so every view that depends on the
  * table, directly or through another view (fertilizer_prices, price_bands, cassava_prices, ...), is taken
  * from its live definition, dropped, and created again against the new name. The same runs backwards on
- * rollback. The history table and the public API paths (/v1/default-prices) keep their names.
+ * rollback. The history table is renamed by the next migration.
  */
 return new class extends Migration {
     public function up(): void
