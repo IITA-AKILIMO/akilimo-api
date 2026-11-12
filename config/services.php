@@ -35,16 +35,17 @@ return [
     ],
 
     // Social sign-in for farmer accounts (laravel/socialite, token flow: the app sends the provider's access token).
-    // No secret is needed to read a profile from a token, so none is stored; redirect is only there because Socialite requires the key.
+    // The secret is optional: reading a profile from a token does not use it, so leave it empty unless a provider needs it.
+    // redirect is only there because Socialite requires the key.
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => null,
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => '/',
     ],
 
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
-        'client_secret' => null,
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect' => '/',
     ],
 
@@ -56,37 +57,37 @@ return [
 
     // 'github' => [
     //     'client_id' => env('GITHUB_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('GITHUB_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
     // 'gitlab' => [
     //     'client_id' => env('GITLAB_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('GITLAB_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
     // 'bitbucket' => [
     //     'client_id' => env('BITBUCKET_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('BITBUCKET_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
     // 'linkedin-openid' => [
     //     'client_id' => env('LINKEDIN_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
     // 'x' => [
     //     'client_id' => env('X_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('X_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
     // 'slack-openid' => [
     //     'client_id' => env('SLACK_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('SLACK_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
@@ -94,13 +95,13 @@ return [
     // and register the driver in a service provider (see https://socialiteproviders.com).
     // 'apple' => [
     //     'client_id' => env('APPLE_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('APPLE_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
     // 'microsoft' => [
     //     'client_id' => env('MICROSOFT_CLIENT_ID'),
-    //     'client_secret' => null,
+    //     'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
     //     'redirect' => '/',
     // ],
 
