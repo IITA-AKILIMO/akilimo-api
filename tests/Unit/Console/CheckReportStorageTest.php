@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 beforeEach(function () {
     config(['app.url' => 'https://api.example.test', 'akilimo-compute.reports.enabled' => true]);
@@ -184,4 +185,54 @@ it('has safe defaults on the S3 disk', function () {
         ->and($s3['region'])->not->toBeEmpty()
         ->and($s3['http']['connect_timeout'])->toBeLessThanOrEqual(10)
         ->and($s3['http']['timeout'])->toBeLessThanOrEqual(60);
+});
+
+it('keeps reports on the configured disk, else the default disk, never a public one', function () {
+    $resolve = fn (?string $configured, ?string $default) => RecommendationReportService::resolveDisk($configured, $default);
+
+    expect($resolve('s3', 'local'))->toBe('s3')              // AKILIMO_REPORTS_DISK wins
+        ->and($resolve(null, 's3'))->toBe('s3')              // else FILESYSTEM_DISK
+        ->and($resolve('', 's3'))->toBe('s3')                // an empty value counts as not set
+        ->and($resolve('  ', ' s3 '))->toBe('s3')
+        ->and($resolve(null, 'local'))->toBe('local')
+        ->and($resolve(null, null))->toBe('local')           // nothing set
+        ->and($resolve(null, ''))->toBe('local')
+        ->and($resolve(null, 'public'))->toBe('local')       // files on `public` are served to anyone
+        ->and($resolve('public', 'public'))->toBe('public'); // but a disk named for reports on purpose is respected
+});
+
+it('downloads from a store that answers the exists() request with 403', function () {
+    $id = (string)Str::uuid();
+    $store = Mockery::mock(FilesystemAdapter::class)->shouldIgnoreMissing();
+    $store->shouldReceive('files')->with("reports/{$id}")->andReturn(["reports/{$id}/fertilizer_advice.pdf", "reports/{$id}/notes.txt"]);
+    $store->shouldNotReceive('exists');                       // Alarik refuses HeadObject with 403
+    $store->shouldReceive('lastModified')->andThrow(new RuntimeException('403 Forbidden'));
+    $store->shouldReceive('download')->andReturn(new StreamedResponse(fn () => print ('PDF')));
+    Storage::set('no-head', $store);
+    config(['akilimo-compute.reports.disk' => 'no-head']);
+    $reports = app(RecommendationReportService::class);
+
+    expect($reports->download($id, 'fertilizer_advice.pdf'))->toBeInstanceOf(StreamedResponse::class)
+        ->and($reports->download($id, 'intercrop_advice.pdf'))->toBeNull()   // not in the folder
+        ->and($reports->download($id, 'notes.txt'))->toBeNull()             // not a PDF name
+        ->and($reports->download('not-a-uuid', 'fertilizer_advice.pdf'))->toBeNull()
+        ->and($reports->downloadName($id, 'fertilizer_advice.pdf'))
+        ->toBe('akilimo-fertilizer-advice-' . now()->toDateString() . '.pdf');   // no date from the store: today
+});
+
+it('finishes the check on a store that refuses exists()', function () {
+    Storage::fake('local');
+    $real = Storage::disk('local');
+    $noHead = Mockery::mock(FilesystemAdapter::class)->shouldIgnoreMissing();
+    foreach (['put', 'get', 'files', 'readStream', 'download', 'lastModified', 'deleteDirectory'] as $call) {
+        $noHead->shouldReceive($call)->andReturnUsing(fn (...$a) => $real->{$call}(...$a));
+    }
+    $noHead->shouldReceive('exists')->andThrow(new RuntimeException('403 Forbidden'));
+    Storage::set('no-head', $noHead);
+    config(['filesystems.disks.no-head' => ['driver' => 'local', 'root' => storage_path('framework/testing/no-head')]]);
+
+    $this->artisan('reports:check-storage', ['--disk' => 'no-head'])
+        ->expectsOutputToContain('Stream the download')
+        ->expectsOutputToContain('Report storage works')
+        ->assertSuccessful();
 });

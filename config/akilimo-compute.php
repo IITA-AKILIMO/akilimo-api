@@ -6,6 +6,8 @@
  * For licence information, see the LICENCE file.
  */
 
+use App\Service\RecommendationReportService;
+
 return [
 
     /*
@@ -78,8 +80,10 @@ return [
     */
     'reports' => [
         'enabled' => filter_var(env('AKILIMO_REPORTS_ENABLED', true), FILTER_VALIDATE_BOOL),
-        // Any filesystem disk: `local` (storage/app/private, needs a persistent volume) or an S3-compatible one
-        'disk' => env('AKILIMO_REPORTS_DISK', 'local'),
+        // Any filesystem disk. AKILIMO_REPORTS_DISK if set, otherwise the app's default disk (FILESYSTEM_DISK), so
+        // FILESYSTEM_DISK=s3 puts the reports on S3 too; `local` (storage/app/private) needs a persistent volume.
+        // A `public` default is never used for reports: they hold personal data (see resolveDisk()).
+        'disk' => RecommendationReportService::resolveDisk(env('AKILIMO_REPORTS_DISK'), env('FILESYSTEM_DISK')),
         'link_ttl_days' => (int)env('AKILIMO_REPORTS_LINK_TTL_DAYS', 7),
         // Empty or 0 = keep forever, like the recommendation history
         'keep_days' => (int)env('AKILIMO_REPORTS_KEEP_DAYS', 0),

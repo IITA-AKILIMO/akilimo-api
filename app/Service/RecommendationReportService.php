@@ -29,6 +29,23 @@ class RecommendationReportService
 {
     private const DIR = 'reports';
 
+    /**
+     * The disk the reports are kept on: the one named in AKILIMO_REPORTS_DISK, else the app's default disk
+     * (FILESYSTEM_DISK), else `local`. A `public` default is replaced by `local`: its files are served to anyone, and a
+     * report holds the farmer's name, masked phone number and farm location.
+     */
+    public static function resolveDisk(?string $configured, ?string $default): string
+    {
+        $configured = trim((string)$configured);
+        if ($configured !== '') {
+            return $configured;
+        }
+
+        $default = trim((string)$default);
+
+        return ($default === '' || $default === 'public') ? 'local' : $default;
+    }
+
     public function enabled(): bool
     {
         return (bool)config('akilimo-compute.reports.enabled', true);
@@ -121,7 +138,9 @@ class RecommendationReportService
     public function download(string $reportId, string $file): ?StreamedResponse
     {
         $name = $this->safeName($file);
-        if (!Str::isUuid($reportId) || $name === null || !$this->disk()->exists($this->path($reportId, $name))) {
+        // Looked up by listing the report's folder, not with exists(): some S3-compatible stores (Alarik) answer
+        // the HEAD request behind exists() with 403 even for a file they hold, which would make every download fail
+        if (!Str::isUuid($reportId) || $name === null || !in_array($name, $this->files($reportId), true)) {
             return null;
         }
 
@@ -142,9 +161,11 @@ class RecommendationReportService
             'sp_advice' => 'planting-dates-advice',
             default => Str::slug(pathinfo($file, PATHINFO_FILENAME)) ?: 'advice',
         };
-        $made = $this->disk()->exists($this->path($reportId, $file))
-            ? date('Y-m-d', $this->disk()->lastModified($this->path($reportId, $file)))
-            : now()->toDateString();
+        try {
+            $made = date('Y-m-d', $this->disk()->lastModified($this->path($reportId, $file)));
+        } catch (\Throwable) {
+            $made = now()->toDateString(); // no such file, or the store would not say: today
+        }
 
         return "akilimo-{$kind}-{$made}.pdf";
     }

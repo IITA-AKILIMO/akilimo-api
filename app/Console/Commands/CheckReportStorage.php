@@ -222,7 +222,8 @@ class CheckReportStorage extends Command
 
         try {
             $disk->deleteDirectory($folder);
-            $gone = !$disk->exists("{$folder}/raw.txt") && !$disk->exists("{$folder}/" . self::NAME);
+            // listed, not exists(): some S3-compatible stores answer exists()'s HEAD request with 403
+            $gone = $disk->files($folder) === [];
             if ($gone) {
                 $this->line('<info>OK</info>   Delete the test report');
             } else {
