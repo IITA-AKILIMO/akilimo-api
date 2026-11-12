@@ -56,9 +56,12 @@ class RecommendationService
             return $this->performComputation($droidRequest, $userId);
         });
 
-        // Always assign a fresh request_id — each HTTP call is a distinct trace event
-        // even when the computation result is served from cache.
-        $result['request_id'] = (string)Str::uuid();
+        // Anonymous calls always get a fresh request_id: each HTTP call is a distinct trace event even when the
+        // result is served from cache. A signed-in farmer keeps the id of their saved row, so the app can match its
+        // copy with GET /v1/account/history/{request_id} (a repeat of the same inputs is that same saved advice).
+        if ($userId === null) {
+            $result['request_id'] = (string)Str::uuid();
+        }
 
         // The cache is shared by everyone with the same farm inputs, but a PDF names the farmer:
         // a cached report is only handed out to the same person, never to someone else.

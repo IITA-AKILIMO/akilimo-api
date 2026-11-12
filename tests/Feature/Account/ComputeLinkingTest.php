@@ -97,3 +97,18 @@ it('keeps a farmer token without the compute ability anonymous', function () {
 
     expect(ApiRequest::whereNotNull('user_id')->count())->toBe(0);
 });
+
+it('answers a signed-in farmer with the request_id of the saved row, so the app can match it', function () {
+    $farmer = makeFarmer();
+    $token = farmerToken($farmer);
+
+    $first = $this->withToken($token)->postJson('/api/v1/recommendations/compute', validComputePayload())->assertOk();
+    $again = $this->withToken($token)->postJson('/api/v1/recommendations/compute', validComputePayload())->assertOk();
+
+    $row = ApiRequest::where('user_id', $farmer->id)->firstOrFail();
+
+    expect($first->json('request_id'))->toBe($row->request_id)
+        ->and($again->json('request_id'))->toBe($row->request_id); // the same inputs are the same saved advice
+
+    $this->withToken($token)->getJson("/api/v1/account/history/{$row->request_id}")->assertOk();
+});
