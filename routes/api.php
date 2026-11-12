@@ -6,23 +6,24 @@
  * For licence information, see the LICENCE file.
  */
 
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\ApiKeyController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CassavaPricesController;
 use App\Http\Controllers\Api\CassavaUnitsController;
-use App\Http\Controllers\Api\MaizeUnitsController;
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CoverageController;
 use App\Http\Controllers\Api\CropController;
 use App\Http\Controllers\Api\CurrencyController;
-use App\Http\Controllers\Api\PriceCatalogueController;
 use App\Http\Controllers\Api\FertilizerController;
 use App\Http\Controllers\Api\FertilizerPriceController;
 use App\Http\Controllers\Api\InvestmentAmountController;
 use App\Http\Controllers\Api\MaizePricesController;
+use App\Http\Controllers\Api\MaizeUnitsController;
 use App\Http\Controllers\Api\McpKeyController;
 use App\Http\Controllers\Api\OperationCostController;
 use App\Http\Controllers\Api\PotatoPricesController;
+use App\Http\Controllers\Api\PriceCatalogueController;
 use App\Http\Controllers\Api\PriceController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Api\StarchFactoryController;
@@ -42,6 +43,24 @@ Route::prefix('health')->group(function () {
 Route::middleware('throttle:auth')->prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth.token');
+});
+
+// ── Farmer accounts (optional; the app works without one) ────────────────────
+Route::middleware('throttle:sensitive')->prefix('v1/account')->group(function () {
+    Route::post('/register', [AccountController::class, 'register']);
+    Route::post('/email/verify', [AccountController::class, 'verifyEmail']);
+    Route::post('/password/forgot', [AccountController::class, 'forgotPassword']);
+    Route::post('/password/reset', [AccountController::class, 'resetPassword']);
+    Route::post('/email/resend', [AccountController::class, 'resendVerification'])->middleware(['auth.token', 'farmer']);
+});
+
+Route::middleware('throttle:auth')->prefix('v1/account')->group(function () {
+    Route::post('/login', [AccountController::class, 'login']);
+});
+
+Route::middleware(['throttle:write', 'auth.token', 'farmer'])->prefix('v1/account')->group(function () {
+    Route::post('/consent', [AccountController::class, 'consent']);
+    Route::post('/logout', [AccountController::class, 'logout']);
 });
 
 // ── Public reference data ─────────────────────────────────────────────────────
@@ -168,8 +187,7 @@ Route::middleware(['throttle:read', 'auth.token:translations:read'])->group(func
 });
 
 // ── Partner — price submissions (requires prices:write) ───────────────────────
-Route::middleware(['throttle:write', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {
-});
+Route::middleware(['throttle:write', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {});
 
 // ── API key self-management ───────────────────────────────────────────────────
 Route::middleware(['throttle:write', 'auth.token:api-keys:manage'])->prefix('v1/auth')->group(function () {
