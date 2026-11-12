@@ -71,6 +71,8 @@ Thin — validate input, call one service or repository, return a resource. No b
 | `AkilimoComputeService` | HTTP client wrapper for the external compute API. Reads all config (base URL, endpoint, timeout, retries) from `config/akilimo-compute.php` |
 | `AuthService` | Login (credential check + token mint), logout (token deletion) |
 | `RecommendationReportService` | Stores the PDF reports the compute service returns and makes their signed, expiring download links; `prune()` for `reports:prune` |
+| `FarmerAccountService` | Optional farmer accounts: sign-up, sign-in, consent, email and reset codes, claiming a phone's earlier advice, account deletion (see [FARMER_ACCOUNTS_API.md](./FARMER_ACCOUNTS_API.md)) |
+| `SocialSignInService` | Google and other providers through Laravel Socialite (access-token flow), linked in `user_identities` |
 | `ApiKeyService` | Issues API keys (`ak_` + 32 hex, SHA-256 stored) and checks users' MCP keys for the AKILIMO MCP server (`verifyMcpKey`, see [MCP_KEYS.md](./MCP_KEYS.md)) |
 
 ### Repositories (`app/Repositories/`)
@@ -109,6 +111,7 @@ Two mechanisms are accepted on every protected route, tried in order by `Authent
 - Stored as SHA-256 hash in `personal_access_tokens`
 - Issued by `POST /v1/auth/login`, revoked by `POST /v1/auth/logout`
 - TTL controlled by `AUTH_TOKEN_TTL_DAYS` (default 30 days)
+- Farmer accounts use the same table: a token named `farmer` that carries only `recommendations:compute` and `history:own`. Middleware `farmer`, `farmer.consented` and `farmer.optional` (on `compute`) tell it from staff tokens; see [FARMER_ACCOUNTS_API.md](./FARMER_ACCOUNTS_API.md)
 
 ### 2. API Key
 - Header: `X-Api-Key: ak_...`

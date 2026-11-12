@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 
+/** Production with MAIL_MAILER=log: the state before the hosted email service is set up. */
+function productionWithoutMailer(): void
+{
+    app()->detectEnvironment(fn () => 'production');
+    config(['mail.default' => 'log']);
+}
+
 function farmerPayload(array $override = []): array
 {
     return array_merge([
@@ -53,7 +60,6 @@ beforeEach(function () {
     RateLimiter::clear('sensitive|127.0.0.1');
     RateLimiter::clear('auth|127.0.0.1');
     Mail::fake();
-    config(['farmer-accounts.mail_enabled' => true]);
 });
 
 // ── Register ─────────────────────────────────────────────────────────────────
@@ -105,7 +111,7 @@ it('sends a confirmation code on sign-up when email is on', function () {
 });
 
 it('signs up without sending email while email is off', function () {
-    config(['farmer-accounts.mail_enabled' => false]);
+    productionWithoutMailer();
 
     $this->postJson('/api/v1/account/register', farmerPayload())->assertCreated();
 
@@ -252,7 +258,7 @@ it('resends a confirmation code to a signed-in farmer', function () {
 });
 
 it('says email is unavailable on resend while email is off', function () {
-    config(['farmer-accounts.mail_enabled' => false]);
+    productionWithoutMailer();
     $user = makeFarmer();
     $token = $this->postJson('/api/v1/account/login', ['email' => $user->email, 'password' => 'long-enough-1'])->json('token');
 
@@ -301,7 +307,7 @@ it('rejects a reset with a wrong code', function () {
 });
 
 it('sends no reset email while email is off but still answers the same', function () {
-    config(['farmer-accounts.mail_enabled' => false]);
+    productionWithoutMailer();
     $user = makeFarmer();
 
     $this->postJson('/api/v1/account/password/forgot', ['email' => $user->email])->assertOk();

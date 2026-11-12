@@ -16,6 +16,15 @@ before merging or deploying, and before telling the mobile app or partners.
 | Creating or changing a price through the API needs a country that exists in `countries`, not just any two letters. An unknown country is now a validation error. | Writers of the price API. | Use a listed country code. | `ab0bfa0` |
 | **The price catalogue API path is renamed**: `GET /api/v1/default-prices` is now `GET /api/v1/price-catalogue`, and the write endpoints `/api/v1/admin/default-prices` are now `/api/v1/admin/price-catalogue`. There is no alias: the old paths return 404. The response messages say "Catalogue price created/updated as a draft." | Any client that calls them (check the mobile app and any partner script). | Change the path. | this change |
 
+**Farmer accounts (additive, but read before deploying):** `POST /api/v1/recommendations/compute` stays open and unchanged for
+anonymous callers, but now passes through `farmer.optional`: a valid farmer token (and consent) saves the row with `user_id`, and
+that farmer's result is cached apart from the shared cache. Any other credentials are ignored. New endpoints are under `/api/v1/account`
+(see `docs/FARMER_ACCOUNTS_API.md`). Database: `users.password` may now be empty (a social-only account), `users.consent_at` and
+`consent_version`, a new table `user_identities`, and `api_requests.user_id` (nullable, `ON DELETE SET NULL`); three migrations
+`2026_11_12_000021` to `000023`. New dependency `laravel/socialite`; new config `config/farmer-accounts.php` and provider blocks in
+`config/services.php`. Social sign-in stays off until `FARMER_SOCIAL_PROVIDERS` and the client IDs are set, and verification and reset
+email stay off in production while `MAIL_MAILER` is `log`. Code that lists or exports `api_requests` must keep `user_id` out of any public export.
+
 **Data, not code:** six Nigerian prices (urea, NPK 20-10-10, NPK 15-15-15, CAN, DAP, MOP) were replaced by published
 figures and are **drafts** until a reviewer activates them, so those fertilizers are missing from the NG lists until
 then (`f7a7425`). Two more drafts were added (NG NPK 20:12:26, BI dolomite) (`cd4e26a`). Each carries its source and

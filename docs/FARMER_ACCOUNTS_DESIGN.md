@@ -1,6 +1,6 @@
 # Farmer accounts, Google sign-in and saved advice: design
 
-**IITA Internal Use.** Draft for the owner, 2026-11-12. The decisions in section 8 were made by the IITA senior analyst and are final. Built on this branch: see `docs/FARMER_ACCOUNTS_API.md` for what exists (social sign-in runs on Socialite with an access token, not on an ID token as sections 3.2 and 3.3 first proposed, and `users.google_id` became a `user_identities` table). Written from the mobile app side
+**IITA Internal Use.** Draft for the owner, 2026-11-12. The decisions in section 8 were made by the IITA senior analyst and are final. Built on branch `feat/price-catalogue-views`: `docs/FARMER_ACCOUNTS_API.md` is the reference for what exists, with the deviations from this draft (social sign-in runs on Socialite with an access token instead of an ID token, so sections 3.2 and 3.3 differ there; `users.google_id` became a `user_identities` table, so section 3.1 differs; history items carry `request_id`, not the row `id`). Written from the mobile app side
 (`akilimo-mobile`, branch `feat/ui-design-system`), which wants an optional account so a farmer can keep their advice
 and open it again later. The API does the work; the app follows.
 

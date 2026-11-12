@@ -121,11 +121,13 @@ class FarmerAccountService
             ->update(['user_id' => $user->id]);
     }
 
-    /** True when verification and reset emails may be sent (see config/farmer-accounts.php). */
+    /**
+     * True when verification and reset emails may be sent: with a real mailer (MAIL_MAILER is not "log"), or outside
+     * production. So production stays off until the hosted email service is configured.
+     */
     public function mailEnabled(): bool
     {
-        return config('farmer-accounts.mail_enabled')
-            ?? (config('mail.default') !== 'log' || !app()->isProduction());
+        return config('mail.default') !== 'log' || !app()->isProduction();
     }
 
     /** Send a fresh confirmation code. False when email is switched off. */
