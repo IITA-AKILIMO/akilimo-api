@@ -67,9 +67,12 @@ return [
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'bucket' => env('AWS_BUCKET'),
+            'bucket' => env('AWS_BUCKET', 'akilimo-rec'),
+            // Where the client connects. Alarik by default; set AWS_ENDPOINT= (empty) to use AWS itself.
+            'endpoint' => env('AWS_ENDPOINT', 'https://s3.munywele.co.ke'),
+            // Leave unset: the client then builds object addresses itself (endpoint/bucket/key with path-style).
+            // A value here replaces that, and one without the bucket would point at the wrong place.
             'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => filter_var(env('AWS_USE_PATH_STYLE_ENDPOINT', true), FILTER_VALIDATE_BOOL),
             'visibility' => env('AWS_VISIBILITY', 'private'),
             'throw' => true,
