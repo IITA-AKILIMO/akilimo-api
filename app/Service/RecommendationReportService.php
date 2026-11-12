@@ -55,7 +55,21 @@ class RecommendationReportService
                 continue;
             }
 
-            $this->disk()->put($this->path($reportId, $name), $bytes);
+            // A storage failure never holds back the recommendation: the S3 disk throws on errors, which is caught
+            // here and logged (the message only, never the PDF), and the file is left out of the result
+            try {
+                $this->disk()->put($this->path($reportId, $name), $bytes);
+            } catch (\Throwable $e) {
+                Log::error('Recommendation report could not be stored', [
+                    'report_id' => $reportId,
+                    'name' => $name,
+                    'disk' => config('akilimo-compute.reports.disk', 'local'),
+                    'error' => $e->getMessage(),
+                ]);
+
+                continue;
+            }
+
             $stored[] = $name;
         }
 
