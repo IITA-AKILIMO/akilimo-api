@@ -71,7 +71,7 @@ return [
     |--------------------------------------------------------------------------
     | The compute service makes a PDF report for every recommendation and sends
     | it back when asked (returnPdf). The API keeps it on a private disk, next
-    | to the recommendation history (reports/{request_id}/), and answers with a
+    | to the recommendation history (reports/{kind}-{request_id}.pdf), and answers with a
     | signed link that expires after `link_ttl_days`; a new link can be made at
     | any time, so saved history keeps working. Reports are kept as long as the
     | history unless `keep_days` is set (then `reports:prune` deletes older

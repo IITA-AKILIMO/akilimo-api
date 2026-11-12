@@ -109,12 +109,12 @@ it('fails when the test report cannot be deleted', function () {
     $stuck = Mockery::mock(FilesystemAdapter::class)->shouldIgnoreMissing();
     $stuck->shouldReceive('put')->andReturnUsing(fn (...$a) => $real->put(...$a));
     $stuck->shouldReceive('get')->andReturnUsing(fn (...$a) => $real->get(...$a));
-    $stuck->shouldReceive('exists')->andReturnUsing(fn (...$a) => $real->exists(...$a));
+    $stuck->shouldReceive('size')->andReturnUsing(fn (...$a) => $real->size(...$a));
     $stuck->shouldReceive('lastModified')->andReturnUsing(fn (...$a) => $real->lastModified(...$a));
     $stuck->shouldReceive('files')->andReturnUsing(fn (...$a) => $real->files(...$a));
     $stuck->shouldReceive('readStream')->andReturnUsing(fn (...$a) => $real->readStream(...$a));
     $stuck->shouldReceive('download')->andReturnUsing(fn (...$a) => $real->download(...$a));
-    $stuck->shouldReceive('deleteDirectory')->andThrow(new RuntimeException('Delete not allowed'));
+    $stuck->shouldReceive('delete')->andThrow(new RuntimeException('Delete not allowed'));
     Storage::set('stuck', $stuck);
     config(['filesystems.disks.stuck' => ['driver' => 'local', 'root' => storage_path('framework/testing/stuck')]]);
 
@@ -204,7 +204,9 @@ it('keeps reports on the configured disk, else the default disk, never a public 
 it('downloads from a store that answers the exists() request with 403', function () {
     $id = (string)Str::uuid();
     $store = Mockery::mock(FilesystemAdapter::class)->shouldIgnoreMissing();
-    $store->shouldReceive('files')->with("reports/{$id}")->andReturn(["reports/{$id}/fertilizer_advice.pdf", "reports/{$id}/notes.txt"]);
+    $store->shouldReceive('size')->with("reports/fertilizer_advice-{$id}.pdf")->andReturn(14);   // only this file is there
+    $store->shouldReceive('size')->andThrow(new RuntimeException('404 Not Found'));
+    $store->shouldReceive('files')->andReturn([]);
     $store->shouldNotReceive('exists');                       // Alarik refuses HeadObject with 403
     $store->shouldReceive('lastModified')->andThrow(new RuntimeException('403 Forbidden'));
     $store->shouldReceive('download')->andReturn(new StreamedResponse(fn () => print ('PDF')));
@@ -213,9 +215,10 @@ it('downloads from a store that answers the exists() request with 403', function
     $reports = app(RecommendationReportService::class);
 
     expect($reports->download($id, 'fertilizer_advice.pdf'))->toBeInstanceOf(StreamedResponse::class)
-        ->and($reports->download($id, 'intercrop_advice.pdf'))->toBeNull()   // not in the folder
+        ->and($reports->download($id, 'intercrop_advice.pdf'))->toBeNull()   // not stored
         ->and($reports->download($id, 'notes.txt'))->toBeNull()             // not a PDF name
         ->and($reports->download('not-a-uuid', 'fertilizer_advice.pdf'))->toBeNull()
+        ->and($reports->files($id))->toBe(['fertilizer_advice.pdf'])
         ->and($reports->downloadName($id, 'fertilizer_advice.pdf'))
         ->toBe('akilimo-fertilizer-advice-' . now()->toDateString() . '.pdf');   // no date from the store: today
 });
@@ -224,7 +227,7 @@ it('finishes the check on a store that refuses exists()', function () {
     Storage::fake('local');
     $real = Storage::disk('local');
     $noHead = Mockery::mock(FilesystemAdapter::class)->shouldIgnoreMissing();
-    foreach (['put', 'get', 'files', 'readStream', 'download', 'lastModified', 'deleteDirectory'] as $call) {
+    foreach (['put', 'get', 'size', 'files', 'readStream', 'download', 'lastModified', 'delete', 'deleteDirectory'] as $call) {
         $noHead->shouldReceive($call)->andReturnUsing(fn (...$a) => $real->{$call}(...$a));
     }
     $noHead->shouldReceive('exists')->andThrow(new RuntimeException('403 Forbidden'));

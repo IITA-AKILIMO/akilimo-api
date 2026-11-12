@@ -10,6 +10,8 @@ use App\Auth\TokenAbility;
 use App\Enums\EnumUserRole;
 use App\Models\ApiRequest;
 use App\Models\User;
+use App\Service\RecommendationReportService;
+use Database\Seeders\FertilizerSeeder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -34,10 +36,10 @@ function reportPath(string $url): string
 }
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->seed(FertilizerSeeder::class);
     Storage::fake('local');
     Cache::flush();
-    config(['app.url' => 'https://api.example.test']);
+    config(['app.url' => 'https://api.example.test', 'akilimo-compute.reports.disk' => 'local']);
 });
 
 it('asks the compute service for the PDF and answers with a signed link', function () {
@@ -131,7 +133,7 @@ it('keeps reports by default, like the recommendation history', function () {
     $this->travel(400)->days();
     $this->artisan('reports:prune')->assertSuccessful();
 
-    expect(Storage::disk('local')->directories('reports'))->toHaveCount(1);
+    expect(Storage::disk('local')->allFiles('reports'))->toHaveCount(1);
 });
 
 it('prunes reports older than keep_days when it is set', function () {
@@ -140,11 +142,11 @@ it('prunes reports older than keep_days when it is set', function () {
     $this->postJson('/api/v1/recommendations/compute', validComputePayload())->assertOk();
 
     $this->artisan('reports:prune')->assertSuccessful();
-    expect(Storage::disk('local')->directories('reports'))->toHaveCount(1);
+    expect(Storage::disk('local')->allFiles('reports'))->toHaveCount(1);
 
     $this->travel(31)->days();
     $this->artisan('reports:prune')->assertSuccessful();
-    expect(Storage::disk('local')->directories('reports'))->toHaveCount(0);
+    expect(Storage::disk('local')->allFiles('reports'))->toHaveCount(0);
 });
 
 it('files the report under the request_id of the logged computation', function () {
@@ -201,7 +203,7 @@ it('lets an admin make a request report again from its stored payload', function
         ->push(plumberResponseWithReport('fertilizer_advice.pdf', FAKE_PDF . "\n% again"), 200);
     $this->postJson('/api/v1/recommendations/compute', validComputePayload())->assertOk();
     $row = ApiRequest::latest('id')->first();
-    Storage::disk('local')->deleteDirectory('reports/' . $row->request_id);
+    app(RecommendationReportService::class)->forget($row->request_id);
 
     $admin = User::create(['name' => 'A', 'username' => 'adm_' . str()->random(5), 'email' => str()->random(6) . '@example.com', 'password' => bcrypt('x'), 'role' => EnumUserRole::Admin]);
 
@@ -209,7 +211,7 @@ it('lets an admin make a request report again from its stored payload', function
 
     Http::assertSent(fn ($request) => $request['returnPdf'] === true && $request['email'] === false
         && $request['requestId'] === $row->request_id && !array_key_exists('fertilizers', $request->data()));
-    expect(Storage::disk('local')->get('reports/' . $row->request_id . '/fertilizer_advice.pdf'))->toBe(FAKE_PDF . "\n% again");
+    expect(Storage::disk('local')->get('reports/fertilizer_advice-' . $row->request_id . '.pdf'))->toBe(FAKE_PDF . "\n% again");
 });
 
 it('does not let a partner make reports again', function () {

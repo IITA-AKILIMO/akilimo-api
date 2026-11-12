@@ -18,16 +18,24 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 /**
  * Keeps the PDF reports the compute service returns and hands out signed download links.
  *
- * Reports live on a private disk under reports/{report id}/{file}, where the report id is the request_id of the
- * computation in api_requests, and are kept as long as that history (`keep_days`, empty = forever). A link only
- * lasts `link_ttl_days`; a new one can be made at any time (GET /v1/recommendations/reports/{id}, the admin
- * request log), so an old link in someone's saved history is renewed rather than lost. Links are signed relative
- * to the site and put on APP_URL, so they work whether the API was called on its public address or internally
- * (the MCP server calls it at http://akilimo-api/api).
+ * Reports live on a private disk in one flat folder, one file per report: reports/{kind}-{report id}.pdf, e.g.
+ * reports/fertilizer_advice-123e4567-e89b-12d3-a456-426614174000.pdf. The report id is the request_id of the
+ * computation in api_requests, so a file can be traced to its request from its name alone. (Before this, reports
+ * were kept as reports/{report id}/{file}; those are still read, so old links keep working, and are never written.)
+ * They are kept as long as that history (`keep_days`, empty = forever). A link only lasts `link_ttl_days`; a new one
+ * can be made at any time (GET /v1/recommendations/reports/{id}, the admin request log), so an old link in someone's
+ * saved history is renewed rather than lost. Links are signed relative to the site and put on APP_URL, so they work
+ * whether the API was called on its public address or internally (the MCP server calls it at http://akilimo-api/api).
+ *
+ * The compute service makes four kinds of PDF, listed in FILES. A report is found by its name, so a new kind has to be
+ * added there (a report with another name is skipped, with a warning in the log).
  */
 class RecommendationReportService
 {
     private const DIR = 'reports';
+
+    /** The PDFs the compute service makes: the names it gives them, which are also the names in the download links */
+    public const FILES = ['fertilizer_advice.pdf', 'intercrop_advice.pdf', 'PP_advice.pdf', 'SP_advice.pdf'];
 
     /**
      * The disk the reports are kept on: the one named in AKILIMO_REPORTS_DISK, else the app's default disk
@@ -52,10 +60,10 @@ class RecommendationReportService
     }
 
     /**
-     * Save the reports of one computation. Entries that are not a valid PDF are skipped.
+     * Save the reports of one computation. Entries that are not a valid PDF, or not one of FILES, are skipped.
      *
      * @param array<int, array{name?: string, content_type?: string, content?: string}> $reports
-     * @return array<int, string> the stored file names
+     * @return array<int, string> the stored file names (as in FILES)
      */
     public function store(string $reportId, array $reports): array
     {
@@ -63,7 +71,7 @@ class RecommendationReportService
         $maxBytes = (int)config('akilimo-compute.reports.max_bytes', 10 * 1024 * 1024);
 
         foreach ($reports as $report) {
-            $name = $this->safeName((string)($report['name'] ?? ''));
+            $name = $this->knownName((string)($report['name'] ?? ''));
             $bytes = base64_decode((string)($report['content'] ?? ''), true);
 
             if ($name === null || $bytes === false || !str_starts_with($bytes, '%PDF') || strlen($bytes) > $maxBytes) {
@@ -94,13 +102,15 @@ class RecommendationReportService
     }
 
     /**
-     * Fresh download links of a stored report, or null when it has none (never made, or deleted).
+     * Fresh download links of a stored report, or null when it has none (never made, or deleted). Pass `$files`
+     * (what store() returned) when you have it: otherwise the store is asked for each kind of PDF in turn.
      *
+     * @param array<int, string>|null $files
      * @return array{id: string, expires_at: string, url: string, files: array<int, array{name: string, url: string}>}|null
      */
-    public function links(string $reportId): ?array
+    public function links(string $reportId, ?array $files = null): ?array
     {
-        $files = $this->files($reportId);
+        $files ??= $this->files($reportId);
         if ($files === []) {
             return null;
         }
@@ -119,32 +129,31 @@ class RecommendationReportService
         ];
     }
 
-    /** @return array<int, string> the PDF names stored for a report, oldest first */
+    /** @return array<int, string> the PDF names stored for a report, sorted */
     public function files(string $reportId): array
     {
         if (!Str::isUuid($reportId)) {
             return [];
         }
 
-        return collect($this->disk()->files(self::DIR . '/' . $reportId))
-            ->map(fn (string $path) => basename($path))
-            ->filter(fn (string $name) => $this->safeName($name) !== null)
-            ->sort()
-            ->values()
-            ->all();
+        $found = array_values(array_filter(self::FILES, fn (string $name) => $this->has($this->path($reportId, $name))));
+        if ($found === []) {
+            $found = $this->legacyNames($reportId);   // a report from before the flat layout
+        }
+        sort($found);
+
+        return $found;
     }
 
     /** The PDF as a download (streamed from whichever disk holds it), or null when there is no such file */
     public function download(string $reportId, string $file): ?StreamedResponse
     {
-        $name = $this->safeName($file);
-        // Looked up by listing the report's folder, not with exists(): some S3-compatible stores (Alarik) answer
-        // the HEAD request behind exists() with 403 even for a file they hold, which would make every download fail
-        if (!Str::isUuid($reportId) || $name === null || !in_array($name, $this->files($reportId), true)) {
+        $path = $this->locate($reportId, $file);
+        if ($path === null) {
             return null;
         }
 
-        return $this->disk()->download($this->path($reportId, $name), $this->downloadName($reportId, $name), [
+        return $this->disk()->download($path, $this->downloadName($reportId, $file, $path), [
             'Content-Type' => 'application/pdf',
             'Cache-Control' => 'private, no-store',
             'X-Robots-Tag' => 'noindex, nofollow',
@@ -152,7 +161,7 @@ class RecommendationReportService
     }
 
     /** A file name a farmer can recognise later: what the advice is and the day it was made, e.g. akilimo-fertilizer-advice-2026-11-05.pdf */
-    public function downloadName(string $reportId, string $file): string
+    public function downloadName(string $reportId, string $file, ?string $path = null): string
     {
         $kind = match (strtolower(pathinfo($file, PATHINFO_FILENAME))) {
             'fertilizer_advice' => 'fertilizer-advice',
@@ -162,12 +171,23 @@ class RecommendationReportService
             default => Str::slug(pathinfo($file, PATHINFO_FILENAME)) ?: 'advice',
         };
         try {
-            $made = date('Y-m-d', $this->disk()->lastModified($this->path($reportId, $file)));
+            $made = date('Y-m-d', $this->disk()->lastModified($path ?? $this->path($reportId, $file)));
         } catch (\Throwable) {
             $made = now()->toDateString(); // no such file, or the store would not say: today
         }
 
         return "akilimo-{$kind}-{$made}.pdf";
+    }
+
+    /** Delete every file of a report, in either layout */
+    public function forget(string $reportId): void
+    {
+        if (!Str::isUuid($reportId)) {
+            return;
+        }
+
+        $this->disk()->delete(array_map(fn (string $name) => $this->path($reportId, $name), self::FILES));
+        $this->disk()->deleteDirectory(self::DIR . '/' . $reportId);
     }
 
     /**
@@ -184,6 +204,22 @@ class RecommendationReportService
         $cutoff = now()->subDays($keepDays)->getTimestamp();
         $removed = 0;
 
+        // The flat layout: group the files by the report id in their name (only files named like this service's)
+        $byReport = [];
+        foreach ($this->disk()->files(self::DIR) as $path) {
+            if (preg_match('/^[A-Za-z_]+-([0-9a-fA-F-]{36})\.pdf$/', basename($path), $m) === 1) {
+                $byReport[$m[1]][] = $path;
+            }
+        }
+        foreach ($byReport as $paths) {
+            $newest = max(array_map(fn (string $path) => $this->disk()->lastModified($path), $paths));
+            if ($newest < $cutoff) {
+                $this->disk()->delete($paths);
+                $removed++;
+            }
+        }
+
+        // The old layout: one folder per report
         foreach ($this->disk()->directories(self::DIR) as $dir) {
             $files = $this->disk()->files($dir);
             $newest = array_reduce($files, fn (int $max, string $f) => max($max, $this->disk()->lastModified($f)), 0);
@@ -211,9 +247,67 @@ class RecommendationReportService
         return preg_match('/^[A-Za-z0-9_.-]{1,100}\.pdf$/', $name) === 1 ? $name : null;
     }
 
+    /** The name in FILES that this one is (the case does not matter: PP_advice.pdf, pp_advice.pdf), or null */
+    private function knownName(string $name): ?string
+    {
+        $name = $this->safeName($name);
+        if ($name === null) {
+            return null;
+        }
+        foreach (self::FILES as $known) {
+            if (strcasecmp($known, $name) === 0) {
+                return $known;
+            }
+        }
+
+        return null;
+    }
+
+    /** Where a report is kept: reports/{kind}-{report id}.pdf, the kind in lower case */
     private function path(string $reportId, string $file): string
     {
-        return self::DIR . '/' . $reportId . '/' . $file;
+        return self::DIR . '/' . strtolower(pathinfo($file, PATHINFO_FILENAME)) . '-' . $reportId . '.pdf';
+    }
+
+    /** Where reports used to be kept (one folder per report): read, never written */
+    private function legacyNames(string $reportId): array
+    {
+        return collect($this->disk()->files(self::DIR . '/' . $reportId))
+            ->map(fn (string $path) => basename($path))
+            ->filter(fn (string $name) => $this->safeName($name) !== null)
+            ->values()
+            ->all();
+    }
+
+    /** The path of a stored report file in whichever layout holds it, or null when it is not there */
+    private function locate(string $reportId, string $file): ?string
+    {
+        $name = $this->safeName($file);
+        if (!Str::isUuid($reportId) || $name === null) {
+            return null;
+        }
+
+        $known = $this->knownName($name);
+        if ($known !== null && $this->has($this->path($reportId, $known))) {
+            return $this->path($reportId, $known);
+        }
+
+        return in_array($name, $this->legacyNames($reportId), true) ? self::DIR . '/' . $reportId . '/' . $name : null;
+    }
+
+    /**
+     * Is there a file at this path? Asked with size() and not exists(): some S3-compatible stores (Alarik) answer the
+     * HEAD request behind exists() with 403 even for a file they hold, but allow the one behind size().
+     */
+    private function has(string $path): bool
+    {
+        try {
+            $this->disk()->size($path);
+
+            return true;
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function disk(): FilesystemAdapter

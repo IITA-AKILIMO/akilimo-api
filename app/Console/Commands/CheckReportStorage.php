@@ -31,7 +31,7 @@ class CheckReportStorage extends Command
 
     private const PDF = "%PDF-1.4\n% AKILIMO storage check\n%%EOF";
 
-    private const NAME = 'storage-check.pdf';
+    private const NAME = RecommendationReportService::FILES[0];
 
     private bool $failed = false;
 
@@ -51,19 +51,19 @@ class CheckReportStorage extends Command
 
         $disk = Storage::disk($name);
         $id = (string)Str::uuid();
-        $folder = "reports/{$id}";
+        $raw = "reports/_storage-check-{$id}.txt";   // beside the real reports, but not named like one
 
         try {
             // 1. The raw disk: shows the real error (bad keys, wrong endpoint, no such bucket) that store() only logs
-            $wrote = $this->step('Write a test file', function () use ($disk, $folder) {
-                $this->must($disk->put("{$folder}/raw.txt", 'akilimo storage check') !== false, 'the disk refused the write (it returned false without an error)');
+            $wrote = $this->step('Write a test file', function () use ($disk, $raw) {
+                $this->must($disk->put($raw, 'akilimo storage check') !== false, 'the disk refused the write (it returned false without an error)');
             });
             if ($wrote) {
-                $this->step('Read it back', function () use ($disk, $folder) {
-                    $this->must($disk->get("{$folder}/raw.txt") === 'akilimo storage check', 'the file read back differs from what was written');
+                $this->step('Read it back', function () use ($disk, $raw) {
+                    $this->must($disk->get($raw) === 'akilimo storage check', 'the file read back differs from what was written');
                 });
-                $this->step('Read its modification time (used for the download name)', function () use ($disk, $folder) {
-                    $this->must($disk->lastModified("{$folder}/raw.txt") > 0, 'no modification time');
+                $this->step('Read its modification time (used for the download name)', function () use ($disk, $raw) {
+                    $this->must($disk->lastModified($raw) > 0, 'no modification time');
                 });
             }
 
@@ -80,7 +80,11 @@ class CheckReportStorage extends Command
 
                 if ($stored) {
                     $this->step('Find it again (files)', function () use ($reports, $id) {
-                        $this->must($reports->files($id) === [self::NAME], 'the stored report is not listed');
+                        // Some stores (Alarik) cannot look a file up for the first moments after it was written: allow up to 3 s
+                        for ($try = 0; $try < 15 && $reports->files($id) !== [self::NAME]; $try++) {
+                            usleep(200000);
+                        }
+                        $this->must($reports->files($id) === [self::NAME], 'the stored report was not found, even after waiting 3 seconds');
                     });
                     $this->step('Make a signed download link', function () use ($reports, $id) {
                         $links = $reports->links($id);
@@ -100,8 +104,8 @@ class CheckReportStorage extends Command
 
             // 3. A private bucket must not answer without credentials: the PDFs hold personal data
             if ($wrote && config("filesystems.disks.{$name}.driver") === 's3') {
-                $this->step('Check the object is not readable without credentials', function () use ($disk, $folder) {
-                    $url = $disk->url("{$folder}/raw.txt");
+                $this->step('Check the object is not readable without credentials', function () use ($disk, $raw) {
+                    $url = $disk->url($raw);
                     try {
                         $status = Http::timeout(10)->withoutRedirecting()->get($url)->status();
                     } catch (Throwable $e) {
@@ -114,7 +118,7 @@ class CheckReportStorage extends Command
             }
         } finally {
             if ($wrote ?? false) {
-                $this->cleanUp($disk, $folder);
+                $this->cleanUp($disk, $reports, $raw, $id);
             }
         }
 
@@ -212,25 +216,31 @@ class CheckReportStorage extends Command
     }
 
     /** Remove the test report, unless --keep; a failed delete is itself a failed check. */
-    private function cleanUp($disk, string $folder): void
+    private function cleanUp($disk, RecommendationReportService $reports, string $raw, string $id): void
     {
         if ($this->option('keep')) {
-            $this->line("Test report kept at {$folder}/ on the disk.");
+            $this->line("Test files kept: {$raw} and the report {$id} (reports/*-{$id}.pdf) on the disk.");
 
             return;
         }
 
         try {
-            $disk->deleteDirectory($folder);
-            // listed, not exists(): some S3-compatible stores answer exists()'s HEAD request with 403
-            $gone = $disk->files($folder) === [];
-            if ($gone) {
+            $disk->delete($raw);
+            $reports->forget($id);
+            // looked up with size() and listing, not exists(): some S3-compatible stores answer its HEAD request with 403
+            $rawGone = true;
+            try {
+                $disk->size($raw);
+                $rawGone = false;
+            } catch (Throwable) {
+            }
+            if ($rawGone && $reports->files($id) === []) {
                 $this->line('<info>OK</info>   Delete the test report');
             } else {
-                $this->failure("Delete the test report: files are still there under {$folder}/ (remove them by hand).");
+                $this->failure("Delete the test report: files are still there ({$raw}, reports/*-{$id}.pdf): remove them by hand.");
             }
         } catch (Throwable $e) {
-            $this->failure('Delete the test report: ' . Str::limit(trim($e->getMessage()), 300) . " (remove {$folder}/ by hand)");
+            $this->failure('Delete the test report: ' . Str::limit(trim($e->getMessage()), 300) . " (remove {$raw} and reports/*-{$id}.pdf by hand)");
         }
     }
 }

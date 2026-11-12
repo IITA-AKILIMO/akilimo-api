@@ -62,7 +62,7 @@ class RecommendationService
         // a cached report is only handed out to the same person, never to someone else.
         $stored = Arr::pull($result, '_report');
         $result['report'] = $stored !== null && hash_equals($stored['owner'], $this->reportOwner($droidRequest))
-            ? $this->reportService()->links($stored['id'])
+            ? $this->reportService()->links($stored['id'], $stored['files'] ?? null)
             : null;
 
         return $result;
@@ -148,6 +148,7 @@ class RecommendationService
             return [
                 '_report' => $files === [] ? null : [
                     'id' => $requestUuid,
+                    'files' => $files,   // kept with the cached answer, so a later link needs no look-up in the store
                     'owner' => $this->reportOwner($droidRequest),
                 ],
                 'request_id' => $requestUuid,
@@ -340,11 +341,12 @@ class RecommendationService
         $payload = array_merge($payload, ['returnPdf' => true, 'email' => false, 'SMS' => false, 'requestId' => $requestId]);
 
         $reports = Arr::get($this->akilimoComputeService->computePayload($payload), 'reports');
-        if (!is_array($reports) || $reports === [] || $this->reportService()->store($requestId, $reports) === []) {
+        $files = is_array($reports) && $reports !== [] ? $this->reportService()->store($requestId, $reports) : [];
+        if ($files === []) {
             return null;
         }
 
-        return $this->reportService()->links($requestId);
+        return $this->reportService()->links($requestId, $files);
     }
 
     /**
