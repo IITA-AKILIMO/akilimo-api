@@ -14,16 +14,16 @@ use Carbon\Carbon;
 /**
  * Class FertilizerPrice
  *
- * @property string|null $country
+ * @property string $country
  * @property Carbon|null $created_at
- * @property string|null $desc
+ * @property string $desc
  * @property string|null $fertilizer_key
  * @property int $id
- * @property float $max_price
- * @property float $min_price
- * @property bool|null $price_active
- * @property float $price_per_bag
- * @property int $sort_order
+ * @property float|null $max_price
+ * @property float|null $min_price
+ * @property int $price_active
+ * @property float|null $price_per_bag
+ * @property float $sort_order
  * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FertilizerPrice newModelQuery()
@@ -47,22 +47,18 @@ class FertilizerPrice extends BaseModel
 {
     protected $table = 'fertilizer_prices';
 
+    public $incrementing = false;
+
     protected $casts = [
+        'id' => 'int',
         'min_price' => 'float',
         'max_price' => 'float',
         'price_per_bag' => 'float',
-        'price_active' => 'bool',
-        'sort_order' => 'int',
+        'price_active' => 'int',
+        'sort_order' => 'float',
     ];
 
-    protected $fillable = [
-        'country',
-        'fertilizer_key',
-        'min_price',
-        'max_price',
-        'price_per_bag',
-        'price_active',
-        'sort_order',
-        'desc',
+    public $guarded = [
+        '*',
     ];
 }

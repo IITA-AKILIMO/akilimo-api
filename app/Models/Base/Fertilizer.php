@@ -14,10 +14,10 @@ use Carbon\Carbon;
 /**
  * Class Fertilizer
  *
- * @property bool|null $available
+ * @property bool $available
+ * @property string $category
  * @property bool $cim
  * @property bool $cis
- * @property string $category
  * @property string $country
  * @property Carbon|null $created_at
  * @property string|null $fertilizer_key
@@ -34,6 +34,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer whereAvailable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer whereCim($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer whereCis($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Fertilizer whereCountry($value)
@@ -54,7 +55,10 @@ class Fertilizer extends BaseModel
 {
     protected $table = 'fertilizers';
 
+    public $incrementing = false;
+
     protected $casts = [
+        'id' => 'int',
         'weight' => 'int',
         'sort_order' => 'int',
         'cis' => 'bool',
@@ -62,17 +66,7 @@ class Fertilizer extends BaseModel
         'available' => 'bool',
     ];
 
-    protected $fillable = [
-        'fertilizer_label',
-        'name',
-        'type',
-        'fertilizer_key',
-        'weight',
-        'country',
-        'sort_order',
-        'use_case',
-        'cis',
-        'cim',
-        'available',
+    public $guarded = [
+        '*',
     ];
 }

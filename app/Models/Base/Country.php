@@ -10,8 +10,10 @@ namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
 use App\Models\CountryReviewer;
+use App\Models\Currency;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $boundary
  * @property string $code
  * @property Carbon|null $created_at
+ * @property string|null $currency_code
  * @property string $default_price_basis
  * @property int $id
  * @property float|null $latitude
@@ -33,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $sort_order
  * @property Carbon|null $updated_at
  * @property Collection|CountryReviewer[] $countryReviewers
+ * @property Currency|null $currency
  * @property-read int|null $country_reviewers_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newModelQuery()
@@ -42,6 +46,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereBoundary($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCurrencyCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereDefaultPriceBasis($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereLatitude($value)
@@ -91,5 +96,10 @@ class Country extends BaseModel
     public function countryReviewers(): HasMany
     {
         return $this->hasMany(CountryReviewer::class, 'country', 'code');
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_code', 'currency_code');
     }
 }

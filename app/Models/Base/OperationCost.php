@@ -15,14 +15,14 @@ use Carbon\Carbon;
  * Class OperationCost
  *
  * @property string $country_code
- * @property Carbon $created_at
+ * @property Carbon|null $created_at
  * @property int $id
- * @property bool $is_active
- * @property float $max_cost
- * @property float $min_cost
+ * @property int $is_active
+ * @property float|null $max_cost
+ * @property float|null $min_cost
  * @property string $operation_name
  * @property string $operation_type
- * @property Carbon $updated_at
+ * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OperationCost newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OperationCost newQuery()
@@ -43,18 +43,16 @@ class OperationCost extends BaseModel
 {
     protected $table = 'operation_costs';
 
+    public $incrementing = false;
+
     protected $casts = [
+        'id' => 'int',
         'min_cost' => 'float',
         'max_cost' => 'float',
-        'is_active' => 'bool',
+        'is_active' => 'int',
     ];
 
-    protected $fillable = [
-        'operation_name',
-        'operation_type',
-        'country_code',
-        'min_cost',
-        'max_cost',
-        'is_active',
+    public $guarded = [
+        '*',
     ];
 }

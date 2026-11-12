@@ -9,6 +9,7 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Models\FertilizerType;
 use App\Models\PriceCatalogueHistory;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon|null $created_at
  * @property string|null $currency
  * @property Carbon|null $effective_from
+ * @property string|null $fertilizer_type
  * @property int $id
  * @property string $item
  * @property float|null $max_price
@@ -39,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $unit
  * @property Carbon|null $updated_at
  * @property int|null $updated_by
+ * @property FertilizerType|null $fertilizerType
  * @property Collection|PriceCatalogueHistory[] $priceCatalogueHistories
  * @property User|null $user
  * @property-read int|null $price_catalogue_histories_count
@@ -52,6 +55,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereCurrency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereEffectiveFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereFertilizerType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereItem($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceCatalogue whereMaxPrice($value)
@@ -89,6 +93,7 @@ class PriceCatalogue extends BaseModel
         'country',
         'region',
         'item',
+        'fertilizer_type',
         'price',
         'subsidised_price',
         'unit',
@@ -104,6 +109,11 @@ class PriceCatalogue extends BaseModel
         'submitted_by',
         'currency',
     ];
+
+    public function fertilizerType(): BelongsTo
+    {
+        return $this->belongsTo(FertilizerType::class, 'fertilizer_type');
+    }
 
     public function priceCatalogueHistories(): HasMany
     {

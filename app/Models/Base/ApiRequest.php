@@ -9,7 +9,9 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class ApiRequest
@@ -38,6 +40,8 @@ use Carbon\Carbon;
  * @property bool|null $spp
  * @property Carbon|null $updated_at
  * @property string|null $use_case
+ * @property int|null $user_id
+ * @property User|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest newQuery()
@@ -66,6 +70,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest whereSpp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest whereUseCase($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiRequest whereUserId($value)
  *
  * @mixin \Eloquent
  */
@@ -74,6 +79,7 @@ class ApiRequest extends BaseModel
     protected $table = 'api_requests';
 
     protected $casts = [
+        'user_id' => 'int',
         'lat' => 'float',
         'lon' => 'float',
         'fr' => 'bool',
@@ -96,6 +102,7 @@ class ApiRequest extends BaseModel
     protected $fillable = [
         'request_id',
         'device_token',
+        'user_id',
         'country_code',
         'lat',
         'lon',
@@ -116,4 +123,9 @@ class ApiRequest extends BaseModel
         'request_duration_ms',
         'plumber_response',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
