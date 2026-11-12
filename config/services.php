@@ -36,17 +36,17 @@ return [
 
     // Social sign-in for farmer accounts (laravel/socialite, token flow: the app sends the provider's access token).
     // The secret is optional: reading a profile from a token does not use it, so leave it empty unless a provider needs it.
-    // redirect is only there because Socialite requires the key.
+    // The redirect URI is not used by the token flow either; Socialite only requires the key, so it defaults to '/'.
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => '/',
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/'),
     ],
 
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => '/',
+        'redirect' => env('FACEBOOK_REDIRECT_URI', '/'),
     ],
 
     // More sign-in providers for farmer accounts. To switch one on: uncomment its block, set the variable(s) in .env,
@@ -58,37 +58,37 @@ return [
     // 'github' => [
     //     'client_id' => env('GITHUB_CLIENT_ID'),
     //     'client_secret' => env('GITHUB_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('GITHUB_REDIRECT_URI', '/'),
     // ],
 
     // 'gitlab' => [
     //     'client_id' => env('GITLAB_CLIENT_ID'),
     //     'client_secret' => env('GITLAB_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('GITLAB_REDIRECT_URI', '/'),
     // ],
 
     // 'bitbucket' => [
     //     'client_id' => env('BITBUCKET_CLIENT_ID'),
     //     'client_secret' => env('BITBUCKET_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('BITBUCKET_REDIRECT_URI', '/'),
     // ],
 
     // 'linkedin-openid' => [
     //     'client_id' => env('LINKEDIN_CLIENT_ID'),
     //     'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('LINKEDIN_REDIRECT_URI', '/'),
     // ],
 
     // 'x' => [
     //     'client_id' => env('X_CLIENT_ID'),
     //     'client_secret' => env('X_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('X_REDIRECT_URI', '/'),
     // ],
 
     // 'slack-openid' => [
     //     'client_id' => env('SLACK_CLIENT_ID'),
     //     'client_secret' => env('SLACK_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('SLACK_REDIRECT_URI', '/'),
     // ],
 
     // Apple and Microsoft are not built into Socialite: install socialiteproviders/apple or socialiteproviders/microsoft
@@ -96,13 +96,13 @@ return [
     // 'apple' => [
     //     'client_id' => env('APPLE_CLIENT_ID'),
     //     'client_secret' => env('APPLE_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('APPLE_REDIRECT_URI', '/'),
     // ],
 
     // 'microsoft' => [
     //     'client_id' => env('MICROSOFT_CLIENT_ID'),
     //     'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
-    //     'redirect' => '/',
+    //     'redirect' => env('MICROSOFT_REDIRECT_URI', '/'),
     // ],
 
     'slack' => ['notifications' => [
