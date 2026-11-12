@@ -179,6 +179,22 @@ class FarmerAccountService
         return true;
     }
 
+    /**
+     * Delete the account and everything that identifies the farmer. Their past requests stay, for statistics, with the
+     * link to the person removed: user_id is set to null and the phone's device_token is cleared on those rows.
+     */
+    public function deleteAccount(User $user): void
+    {
+        DB::transaction(function () use ($user) {
+            ApiRequest::where('user_id', $user->id)->update(['user_id' => null, 'device_token' => null]);
+
+            $this->revokeAllTokens($user);
+            $user->apiKeys()->delete();
+            $user->identities()->delete();
+            $user->delete();
+        });
+    }
+
     public function revokeAllTokens(User $user): void
     {
         PersonalAccessToken::where('tokenable_type', User::class)->where('tokenable_id', $user->id)->delete();

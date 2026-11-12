@@ -7,6 +7,7 @@
  */
 
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AccountHistoryController;
 use App\Http\Controllers\Api\ApiKeyController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CassavaPricesController;
@@ -63,6 +64,19 @@ Route::middleware('throttle:auth')->prefix('v1/account')->group(function () {
 Route::middleware(['throttle:write', 'auth.token', 'farmer'])->prefix('v1/account')->group(function () {
     Route::post('/consent', [AccountController::class, 'consent']);
     Route::post('/logout', [AccountController::class, 'logout']);
+});
+
+Route::middleware(['throttle:read', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::get('/history', [AccountHistoryController::class, 'index']);
+    Route::get('/history/{requestId}', [AccountHistoryController::class, 'show'])->whereUuid('requestId');
+});
+
+Route::middleware(['throttle:write', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::delete('/history/{requestId}', [AccountHistoryController::class, 'destroy'])->whereUuid('requestId');
+});
+
+Route::middleware(['throttle:sensitive', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::delete('/', [AccountHistoryController::class, 'destroyAccount']);
 });
 
 // ── Public reference data ─────────────────────────────────────────────────────

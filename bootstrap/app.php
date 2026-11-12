@@ -13,6 +13,7 @@ use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\JsonFormatResponse;
 use App\Http\Middleware\OptionalFarmerAuth;
+use App\Http\Middleware\RequireConsent;
 use App\Http\Middleware\RequireFarmerToken;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -49,6 +50,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.token' => AuthenticateWithToken::class,
             'role' => EnsureAdminRole::class,
             'farmer' => RequireFarmerToken::class,
+            'farmer.consented' => RequireConsent::class,
             'farmer.optional' => OptionalFarmerAuth::class,
         ]);
     })

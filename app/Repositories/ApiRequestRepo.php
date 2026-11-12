@@ -88,6 +88,25 @@ class ApiRequestRepo extends BaseRepo
             ]);
     }
 
+    /** A farmer's saved advice, newest first. */
+    public function paginateForUser(int $userId, int $perPage = 20): LengthAwarePaginator
+    {
+        return $this->model->newQuery()
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate($perPage);
+    }
+
+    /** One saved recommendation, only when it belongs to this farmer. */
+    public function findForUser(int $userId, string $requestId): ?ApiRequest
+    {
+        return $this->model->newQuery()
+            ->where('user_id', $userId)
+            ->where('request_id', $requestId)
+            ->first();
+    }
+
     public function useCases(): array
     {
         return $this->model->newQuery()
