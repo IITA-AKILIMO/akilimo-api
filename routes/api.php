@@ -56,6 +56,8 @@ Route::middleware('throttle:sensitive')->prefix('v1/account')->group(function ()
 
 Route::middleware('throttle:auth')->prefix('v1/account')->group(function () {
     Route::post('/login', [AccountController::class, 'login']);
+    Route::post('/google', [AccountController::class, 'google']);
+    Route::post('/social/{provider}', [AccountController::class, 'social'])->where('provider', '[a-z0-9-]+');
 });
 
 Route::middleware(['throttle:write', 'auth.token', 'farmer'])->prefix('v1/account')->group(function () {

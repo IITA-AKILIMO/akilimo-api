@@ -26,6 +26,17 @@ return [
     /** Reject passwords found in known breaches (calls the Have I Been Pwned range API; off by default) */
     'check_breached_passwords' => filter_var(env('FARMER_CHECK_BREACHED_PASSWORDS', false), FILTER_VALIDATE_BOOL),
 
-    /** Google sign-in (step 3): non-secret OAuth client IDs, comma separated. Empty keeps Google sign-in off. */
-    'google_client_ids' => array_values(array_filter(array_map('trim', explode(',', (string)env('GOOGLE_CLIENT_ID', ''))))),
+    /**
+     * Social sign-in providers that are switched on, comma separated (names of Socialite drivers, e.g. "google,facebook").
+     * Empty keeps social sign-in off. Another provider needs its driver (Socialite, or a SocialiteProviders package) and a services.php entry.
+     */
+    'social_providers' => array_values(array_filter(array_map('trim', explode(',', (string)env('FARMER_SOCIAL_PROVIDERS', ''))))),
+
+    /**
+     * Non-secret OAuth client IDs the token must have been issued to, per provider (comma separated in .env).
+     * Socialite itself does not check which app a token was issued for, so the API does (Google: tokeninfo).
+     */
+    'client_ids' => [
+        'google' => array_values(array_filter(array_map('trim', explode(',', (string)env('GOOGLE_CLIENT_ID', ''))))),
+    ],
 ];

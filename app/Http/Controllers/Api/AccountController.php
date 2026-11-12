@@ -14,9 +14,11 @@ use App\Http\Requests\Account\EmailVerifyRequest;
 use App\Http\Requests\Account\PasswordForgotRequest;
 use App\Http\Requests\Account\PasswordResetRequest;
 use App\Http\Requests\Account\RegisterRequest;
+use App\Http\Requests\Account\SocialSignInRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Service\FarmerAccountService;
+use App\Service\SocialSignInService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,7 +33,10 @@ use Illuminate\Support\Facades\RateLimiter;
  */
 class AccountController extends Controller
 {
-    public function __construct(private readonly FarmerAccountService $accounts) {}
+    public function __construct(
+        private readonly FarmerAccountService $accounts,
+        private readonly SocialSignInService $socialSignIn,
+    ) {}
 
     /**
      * Create a farmer account
@@ -76,6 +81,49 @@ class AccountController extends Controller
         }
 
         return $this->tokenResponse($result);
+    }
+
+    /**
+     * Sign in with Google
+     *
+     * Same as `POST /v1/account/social/google`. Send the Google OAuth `access_token` the app got from Google sign-in.
+     *
+     * @unauthenticated
+     */
+    public function google(SocialSignInRequest $request): JsonResponse
+    {
+        return $this->social($request, 'google');
+    }
+
+    /**
+     * Sign in with a social provider (google, facebook, ...)
+     *
+     * The app signs the farmer in with the provider and sends that provider's OAuth `access_token`. A first sign-in creates
+     * the account and needs `consent: true`; otherwise the answer is 422 with `consent_required`. A verified provider email
+     * links to an existing account with the same address. Providers that are not switched on answer 404.
+     *
+     * @unauthenticated
+     */
+    public function social(SocialSignInRequest $request, string $provider): JsonResponse
+    {
+        if (!$this->socialSignIn->enabled($provider)) {
+            return response()->json(['message' => 'This sign-in method is not available.'], 404);
+        }
+
+        $result = $this->socialSignIn->signIn(
+            $provider,
+            $request->input('access_token'),
+            $request->boolean('consent'),
+            $request->input('device_token'),
+        );
+
+        return match ($result) {
+            SocialSignInService::FAILED => response()->json(['message' => 'Could not verify the sign-in.'], 401),
+            SocialSignInService::CONSENT_REQUIRED => response()->json(['message' => 'Consent is needed to create the account.', 'code' => 'consent_required'], 422),
+            SocialSignInService::NO_EMAIL => response()->json(['message' => 'The provider did not share an email address.', 'code' => 'no_email'], 422),
+            SocialSignInService::EMAIL_UNVERIFIED => response()->json(['message' => 'An account with this email exists. Sign in with your password.', 'code' => 'email_unverified'], 409),
+            default => $this->tokenResponse($result),
+        };
     }
 
     /**
