@@ -31,7 +31,9 @@ only these tokens (a staff token or an API key gets 403), and history and deleti
 login, register, reset and verify are limited per email address.
 
 `POST /v1/recommendations/compute` stays open to everyone. With a valid farmer token (and consent) the saved row gets `user_id` and the
-result is cached apart from the shared cache; any other credentials, expired tokens included, are treated as anonymous. An advice saved
+result is cached apart from the shared cache, and the answer's `request_id` is the id of the saved row (the same id again for a repeat of the
+same inputs), so a client can match its copy with `GET /history/{request_id}`; any other credentials, expired tokens included, are treated as
+anonymous and get a fresh `request_id` each call. An advice saved
 anonymously is claimed once at the next sign-in with the same `device_token` (only rows with no owner move).
 
 ## Social sign-in (laravel/socialite)
@@ -76,9 +78,11 @@ Verification and reset codes are kept hashed in the cache and work once. Never l
 1. **Owner inputs (design section 8):** the hosted email service and a verified sending domain (then set `MAIL_MAILER`); the Google Cloud
    OAuth client IDs for `GOOGLE_CLIENT_ID` (then `FARMER_SOCIAL_PROVIDERS=google`); the final consent and benefit wording
    (then `FARMER_CONSENT_VERSION` and the app text). No claim such as "your data is never shared" is to be written unless it is given.
-2. **Mobile app (`akilimo-mobile`, step 6):** sign-up and sign-in screens; Google sign-in that sends an **access token**; the token in
-   encrypted storage; send `device_token` on register and login; the Bearer header on `compute` when signed in; the saved-advice list
-   (also offline from Room); a share action.
+2. **Mobile app (`akilimo-mobile`, step 6): built, not yet run on a device.** Sign-up, sign-in, consent, reset password, email
+   confirmation, saved-advice list (offline from Room), share, sign-out and account deletion; Google through Play Services
+   `AuthorizationClient` (an **access token**); the token encrypted with an Android Keystore key. Still open there: try it on a phone against
+   a server with the account routes, the Google Cloud OAuth client (the button stays hidden until `GOOGLE_SIGN_IN=true` is set for the build),
+   the final consent text (the app has a draft in `strings_account.xml`), and the sw, rw and ha translations of the new strings.
 3. **Other providers:** an audience check for each one before it is switched on.
 4. **Later:** move the playground history from `device_token = 'playground-<id>'` to `user_id`; keep `user_id` and `device_token` out of
    any public export of `api_requests` (the rows kept after an account deletion still hold the farm location and answers).

@@ -18,7 +18,8 @@ before merging or deploying, and before telling the mobile app or partners.
 
 **Farmer accounts (additive, but read before deploying):** `POST /api/v1/recommendations/compute` stays open and unchanged for
 anonymous callers, but now passes through `farmer.optional`: a valid farmer token (and consent) saves the row with `user_id`, and
-that farmer's result is cached apart from the shared cache. Any other credentials are ignored. New endpoints are under `/api/v1/account`
+that farmer's result is cached apart from the shared cache and its `request_id` is the id of the saved row (anonymous callers still get a
+fresh `request_id` per call). Any other credentials are ignored. New endpoints are under `/api/v1/account`
 (see `docs/FARMER_ACCOUNTS_API.md`). Database: `users.password` may now be empty (a social-only account), `users.consent_at` and
 `consent_version`, a new table `user_identities`, and `api_requests.user_id` (nullable, `ON DELETE SET NULL`); three migrations
 `2026_11_12_000021` to `000023`. New dependency `laravel/socialite`; new config `config/farmer-accounts.php` and provider blocks in
