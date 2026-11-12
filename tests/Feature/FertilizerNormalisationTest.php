@@ -12,6 +12,8 @@ use App\Models\Fertilizer;
 use App\Models\FertilizerType;
 use App\Models\User;
 use App\Repositories\FertilizerRepo;
+use Illuminate\Database\Eloquent\MassAssignmentException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -76,7 +78,7 @@ it('refuses a catalogue price for a fertiliser that does not exist, or removing 
     expect(fn () => DB::table('price_catalogue')->insert([
         'country' => 'TZ', 'item' => 'mystery', 'fertilizer_type' => 'NOPE', 'price' => 1, 'unit' => 'per_bag',
         'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
-    ]))->toThrow(Illuminate\Database\QueryException::class);
+    ]))->toThrow(QueryException::class);
 
     DB::table('price_catalogue')->insert([
         'country' => 'TZ', 'item' => 'urea', 'fertilizer_type' => 'UREA', 'price' => 50000, 'unit' => 'per_bag',
@@ -84,14 +86,14 @@ it('refuses a catalogue price for a fertiliser that does not exist, or removing 
     ]);
     DB::table('country_fertilizers')->delete();
 
-    expect(fn () => DB::table('fertilizer_types')->where('type', 'UREA')->delete())->toThrow(Illuminate\Database\QueryException::class);
+    expect(fn () => DB::table('fertilizer_types')->where('type', 'UREA')->delete())->toThrow(QueryException::class);
 });
 
 it('does not let a fertiliser be sold twice in one country', function () {
     $urea = fertilizerType();
     soldIn($urea, 'TZ');
 
-    expect(fn () => soldIn($urea, 'TZ'))->toThrow(Illuminate\Database\QueryException::class);
+    expect(fn () => soldIn($urea, 'TZ'))->toThrow(QueryException::class);
 });
 
 it('serves the fertilizers view with the old columns and a computed key', function () {
@@ -160,9 +162,11 @@ it('stops selling in a country without removing the fertiliser', function () {
 it('is read-only through the fertilizers view', function () {
     fertilizerType();
 
-    expect(fn () => Fertilizer::query()->create([
-        'fertilizer_label' => 'x', 'name' => 'x', 'type' => 'X', 'fertilizer_key' => 'X_TZ', 'weight' => 50, 'country' => 'TZ', 'use_case' => 'FR',
-    ]))->toThrow(Illuminate\Database\QueryException::class);
+    $row = ['fertilizer_label' => 'x', 'name' => 'x', 'type' => 'X', 'fertilizer_key' => 'X_TZ', 'weight' => 50, 'country' => 'TZ', 'use_case' => 'FR'];
+
+    // The model refuses mass assignment, and the database refuses a direct write to the view
+    expect(fn () => Fertilizer::query()->create($row))->toThrow(MassAssignmentException::class)
+        ->and(fn () => DB::table('fertilizers')->insert($row))->toThrow(QueryException::class);
 });
 
 it('gives the admin form the fertiliser list and refuses an unknown type', function () {

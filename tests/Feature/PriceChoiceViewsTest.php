@@ -7,6 +7,7 @@
  */
 
 use App\Models\FertilizerPrice;
+use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,7 @@ function viewFertilizer(string $country, string $label, string $key): int
 {
     $type = preg_replace('/_' . preg_quote($country, '/') . '$/', '', $key);
 
-    if (! DB::table('fertilizer_types')->where('type', $type)->exists()) {
+    if (!DB::table('fertilizer_types')->where('type', $type)->exists()) {
         DB::table('fertilizer_types')->insert(['type' => $type, 'label' => $label, 'name' => $label, 'weight' => 50]);
     }
 
@@ -64,7 +65,7 @@ function viewPrice(array $overrides = []): int
 function viewOptions(string $key): array
 {
     return DB::table('fertilizer_prices')->where('fertilizer_key', $key)->where('price_per_bag', '>', 0)
-        ->orderBy('sort_order')->pluck('price_per_bag')->map(fn ($p) => (float) $p)->all();
+        ->orderBy('sort_order')->pluck('price_per_bag')->map(fn ($p) => (float)$p)->all();
 }
 
 it('serves four rounded options at -30, -10, +10 and +30 percent', function () {
@@ -176,9 +177,9 @@ it('gives a priced fertiliser the "I dont know" and "Exact price" rows, and an u
 
     // Only a fertiliser with an active price is listed; the two markers alone would leave the farmer nothing to choose
     expect($markers->pluck('fertilizer_key')->all())->toBe(['UREA_TZ', 'UREA_TZ'])
-        ->and($markers->pluck('sort_order')->map(fn ($s) => (int) $s)->all())->toBe([0, 5])
-        ->and((float) $markers->first()->price_per_bag)->toBe(0.0)
-        ->and((float) $markers->get(1)->price_per_bag)->toBeLessThan(0.0);
+        ->and($markers->pluck('sort_order')->map(fn ($s) => (int)$s)->all())->toBe([0, 5])
+        ->and((float)$markers->first()->price_per_bag)->toBe(0.0)
+        ->and((float)$markers->get(1)->price_per_bag)->toBeLessThan(0.0);
 
     expect(viewOptions('NAFAKAPLUS_TZ'))->toBe([])
         ->and(DB::table('fertilizer_prices')->where('fertilizer_key', 'NAFAKAPLUS_TZ')->count())->toBe(0);
@@ -198,8 +199,8 @@ it('keeps a row id when its price changes and follows the price immediately', fu
     $after = DB::table('fertilizer_prices')->where('fertilizer_key', 'UREA_TZ')->where('sort_order', 2)->first();
 
     expect($after->id)->toBe($before->id)
-        ->and((float) $before->price_per_bag)->toBe(45000.0)
-        ->and((float) $after->price_per_bag)->toBe(54000.0);
+        ->and((float)$before->price_per_bag)->toBe(45000.0)
+        ->and((float)$after->price_per_bag)->toBe(54000.0);
 });
 
 it('follows the steps and rounding tables', function () {
@@ -218,10 +219,14 @@ it('follows the steps and rounding tables', function () {
 it('is read-only: the app lists cannot be written to', function () {
     viewCountry('TZ');
 
-    expect(fn () => FertilizerPrice::query()->create([
+    $row = [
         'country' => 'TZ', 'fertilizer_key' => 'UREA_TZ', 'min_price' => 1, 'max_price' => 1,
         'price_per_bag' => 1, 'sort_order' => 1,
-    ]))->toThrow(QueryException::class);
+    ];
+
+    // The model refuses mass assignment, and the database refuses a direct write to the view
+    expect(fn () => FertilizerPrice::query()->create($row))->toThrow(MassAssignmentException::class)
+        ->and(fn () => DB::table('fertilizer_prices')->insert($row))->toThrow(QueryException::class);
 });
 
 it('serves cassava as contiguous bands whose average is each step, plus the exact-price row', function () {
@@ -230,7 +235,7 @@ it('serves cassava as contiguous bands whose average is each step, plus the exac
 
     $rows = DB::table('cassava_prices')->where('country', 'NG')->orderBy('min_local_price')->get();
 
-    expect($rows->map(fn ($r) => [(float) $r->min_local_price, (float) $r->max_local_price, (int) $r->min_price, (int) $r->max_price])->all())->toBe([
+    expect($rows->map(fn ($r) => [(float)$r->min_local_price, (float)$r->max_local_price, (int)$r->min_price, (int)$r->max_price])->all())->toBe([
         [-1.0, -1.0, 0, 0],
         [7200.0, 9600.0, 1, 0],
         [9600.0, 12000.0, 0, 0],
@@ -272,12 +277,12 @@ it('serves maize grain per tonne and fresh cob per cob, each with its exact-pric
 
     // 230 per kg is 230,000 per tonne, the unit of every produce list (the app converts to the
     // farmer's unit of sale as average x weight / 1000), rounded to 100 naira
-    expect($grain->map(fn ($r) => [(float) $r->min_local_price, (float) $r->max_local_price])->all())->toBe([
+    expect($grain->map(fn ($r) => [(float)$r->min_local_price, (float)$r->max_local_price])->all())->toBe([
         [138000.0, 184000.0], [184000.0, 230000.0], [230000.0, 276000.0], [276000.0, 322000.0],
     ]);
 
     // 50 per cob keeps its own rounding of 5, which the naira step of 100 would round to zero
-    expect($cob->map(fn ($r) => [(float) $r->min_local_price, (float) $r->max_local_price])->all())->toBe([
+    expect($cob->map(fn ($r) => [(float)$r->min_local_price, (float)$r->max_local_price])->all())->toBe([
         [30.0, 40.0], [40.0, 50.0], [50.0, 60.0], [60.0, 70.0],
     ])->and(DB::table('maize_prices')->where('min_local_price', -1)->count())->toBe(2);
 });
@@ -287,7 +292,7 @@ it('serves investment amounts as multiples of the reference amount, with a 0 row
     viewCountry('NG');
     viewPrice(['item' => 'investment_amount', 'fertilizer_type' => null, 'unit' => 'per_acre', 'price' => 57550]);
 
-    $amounts = DB::table('investment_amount')->where('country', 'TZ')->orderBy('sort_order')->pluck('investment_amount')->map(fn ($a) => (float) $a)->all();
+    $amounts = DB::table('investment_amount')->where('country', 'TZ')->orderBy('sort_order')->pluck('investment_amount')->map(fn ($a) => (float)$a)->all();
 
     expect($amounts)->toBe([0.0, 57550.0, 115100.0, 172650.0, 230200.0, 345300.0])
         ->and(DB::table('investment_amount')->where('country', 'NG')->count())->toBe(0)
@@ -304,7 +309,7 @@ it('serves operation costs as bands around the mapped labour price', function ()
     // weeding2 is not mapped to an operation; tillage/manual follows manual_ploughing
     expect($rows->pluck('operation_name')->unique()->values()->all())->toBe(['tillage'])
         ->and($rows->pluck('operation_type')->unique()->values()->all())->toBe(['manual'])
-        ->and($rows->map(fn ($r) => [(float) $r->min_cost, (float) $r->max_cost])->all())->toBe([
+        ->and($rows->map(fn ($r) => [(float)$r->min_cost, (float)$r->max_cost])->all())->toBe([
             [10200.0, 13600.0], [13600.0, 17000.0], [17000.0, 20400.0], [20400.0, 23800.0],
         ]);
 });
@@ -317,8 +322,8 @@ it('follows the units, multiples and operation mapping tables', function () {
     DB::table('price_choice_units')->where('item', 'maize_grain')->update(['quantity' => 100]);
     DB::table('price_choice_multiples')->where('step_order', 5)->update(['multiple' => 10]);
 
-    expect((float) DB::table('maize_prices')->where('produce_type', 'grain')->where('min_local_price', '>', 0)->min('min_local_price'))->toBe(13800.0)
-        ->and((float) DB::table('investment_amount')->max('investment_amount'))->toBe(100000.0);
+    expect((float)DB::table('maize_prices')->where('produce_type', 'grain')->where('min_local_price', '>', 0)->min('min_local_price'))->toBe(13800.0)
+        ->and((float)DB::table('investment_amount')->max('investment_amount'))->toBe(100000.0);
 });
 
 it('serves the options through the public endpoints', function () {
@@ -330,7 +335,7 @@ it('serves the options through the public endpoints', function () {
     $response = $this->getJson('/api/v1/fertilizer-prices/country/TZ');
 
     $response->assertOk();
-    expect(collect($response->json('data'))->where('price_per_bag', '>', 0)->pluck('price_per_bag')->map(fn ($p) => (float) $p)->sort()->values()->all())
+    expect(collect($response->json('data'))->where('price_per_bag', '>', 0)->pluck('price_per_bag')->map(fn ($p) => (float)$p)->sort()->values()->all())
         ->toBe([35000.0, 45000.0, 55000.0, 65000.0]);
 });
 
