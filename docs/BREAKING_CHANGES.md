@@ -23,7 +23,7 @@ fresh `request_id` per call). Any other credentials are ignored. New endpoints a
 (see `docs/FARMER_ACCOUNTS_API.md`). Database: `users.password` may now be empty (a social-only account), `users.consent_at` and
 `consent_version`, a new table `user_identities`, and `api_requests.user_id` (nullable, `ON DELETE SET NULL`); three migrations
 `2026_11_12_000021` to `000023`. New dependency `laravel/socialite`; new config `config/farmer-accounts.php` and provider blocks in
-`config/services.php`. Social sign-in stays off until `FARMER_SOCIAL_PROVIDERS` and the client IDs are set, and verification and reset
+`config/services.php`. Google sign-in is on by default (`FARMER_SOCIAL_PROVIDERS=google`) but is refused until `GOOGLE_CLIENT_ID` is set, and verification and reset
 email stay off in production while `MAIL_MAILER` is `log`. Code that lists or exports `api_requests` must keep `user_id` out of any public export.
 
 **Data, not code:** six Nigerian prices (urea, NPK 20-10-10, NPK 15-15-15, CAN, DAP, MOP) were replaced by published

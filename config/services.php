@@ -43,11 +43,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/'),
     ],
 
-    'facebook' => [
-        'client_id' => env('FACEBOOK_CLIENT_ID'),
-        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => env('FACEBOOK_REDIRECT_URI', '/'),
-    ],
+    //    'facebook' => [
+    //        'client_id' => env('FACEBOOK_CLIENT_ID'),
+    //        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+    //        'redirect' => env('FACEBOOK_REDIRECT_URI', '/'),
+    //    ],
 
     // More sign-in providers for farmer accounts. To switch one on: uncomment its block, set the variable(s) in .env,
     // add the provider to FARMER_SOCIAL_PROVIDERS, and (outside Socialite's built-in list) install its SocialiteProviders package.

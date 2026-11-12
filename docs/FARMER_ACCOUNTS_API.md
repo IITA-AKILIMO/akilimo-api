@@ -51,7 +51,7 @@ set its variables in `.env`, add it to `FARMER_SOCIAL_PROVIDERS`, and add an aud
 
 | Variable | Purpose |
 |---|---|
-| `FARMER_SOCIAL_PROVIDERS` | providers switched on, e.g. `google,facebook`; empty keeps social sign-in off |
+| `FARMER_SOCIAL_PROVIDERS` | providers switched on; **`google` by default** (still refused while `GOOGLE_CLIENT_ID` is empty), e.g. `google,facebook`; a blank value switches social sign-in off |
 | `GOOGLE_CLIENT_ID` | non-secret OAuth client IDs, comma separated (Android and web); also the allowed token audiences |
 | `<PROVIDER>_CLIENT_ID`, `<PROVIDER>_CLIENT_SECRET`, `<PROVIDER>_REDIRECT_URI` | per provider in `config/services.php`; the redirect URI defaults to `/` and the secret is optional, because the token flow uses neither; secrets never go to the app and are never committed |
 | `MAIL_MAILER` | verification and reset email use the Laravel mailer; in production they are only sent once it is not `log` (outside production they are sent) |
@@ -76,12 +76,12 @@ Verification and reset codes are kept hashed in the cache and work once. Never l
 ## Open items
 
 1. **Owner inputs (design section 8):** the hosted email service and a verified sending domain (then set `MAIL_MAILER`); the Google Cloud
-   OAuth client IDs for `GOOGLE_CLIENT_ID` (then `FARMER_SOCIAL_PROVIDERS=google`); the final consent and benefit wording
+   OAuth client IDs for `GOOGLE_CLIENT_ID` (Google sign-in is already on by default and starts working once it is set); the final consent and benefit wording
    (then `FARMER_CONSENT_VERSION` and the app text). No claim such as "your data is never shared" is to be written unless it is given.
 2. **Mobile app (`akilimo-mobile`, step 6): built, not yet run on a device.** Sign-up, sign-in, consent, reset password, email
    confirmation, saved-advice list (offline from Room), share, sign-out and account deletion; Google through Play Services
    `AuthorizationClient` (an **access token**); the token encrypted with an Android Keystore key. Still open there: try it on a phone against
-   a server with the account routes, the Google Cloud OAuth client (the button stays hidden until `GOOGLE_SIGN_IN=true` is set for the build),
+   a server with the account routes, the Google Cloud OAuth client (the Google button is **on by default** in the app; `GOOGLE_SIGN_IN=false` hides it, and until the client exists it shows but fails with a message),
    the final consent text (the app has a draft in `strings_account.xml`), and the sw, rw and ha translations of the new strings.
 3. **Other providers:** an audience check for each one before it is switched on.
 4. **Later:** move the playground history from `device_token = 'playground-<id>'` to `user_id`; keep `user_id` and `device_token` out of

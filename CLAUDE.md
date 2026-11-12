@@ -208,7 +208,7 @@ AKILIMO_COMPUTE_LOGGING=       # Enable request/response logging (default: true)
 AUTH_TOKEN_TTL_DAYS=30         # Bearer token lifetime in days
 
 # Farmer accounts (config/farmer-accounts.php, config/services.php; see docs/FARMER_ACCOUNTS_API.md)
-FARMER_SOCIAL_PROVIDERS=       # e.g. google,facebook; empty = social sign-in off
+FARMER_SOCIAL_PROVIDERS=google # default google (refused until GOOGLE_CLIENT_ID is set); e.g. google,facebook; blank = social sign-in off
 GOOGLE_CLIENT_ID=              # non-secret OAuth client IDs (comma separated); also the allowed token audiences
                                # <PROVIDER>_CLIENT_SECRET and <PROVIDER>_REDIRECT_URI exist for every provider (optional)
 FARMER_CONSENT_VERSION=draft-1 # label stored with each consent; the final wording comes from the owner

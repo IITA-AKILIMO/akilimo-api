@@ -21,7 +21,7 @@
 */
 
 /** A comma separated .env value as a list: "a, b" becomes ['a', 'b'], empty becomes []. */
-$list = fn (string $name): array => array_values(array_filter(array_map('trim', explode(',', (string)env($name, '')))));
+$list = fn (string $name, string $default = ''): array => array_values(array_filter(array_map('trim', explode(',', (string)env($name, $default)))));
 
 return [
 
@@ -46,10 +46,10 @@ return [
     // ── Social sign-in (laravel/socialite) ────────────────────────────────────
 
     /**
-     * Providers switched on, as Socialite driver names (e.g. "google,facebook"). Empty keeps social sign-in off.
+     * Providers switched on, as Socialite driver names (e.g. "google,facebook"); Google is on by default, and still refused while GOOGLE_CLIENT_ID is empty. Set the variable to a blank value ("FARMER_SOCIAL_PROVIDERS=") to switch social sign-in off.
      * A provider also needs its entry in config/services.php, and a driver (built into Socialite, or a SocialiteProviders package).
      */
-    'social_providers' => $list('FARMER_SOCIAL_PROVIDERS'),
+    'social_providers' => $list('FARMER_SOCIAL_PROVIDERS', 'google'),
 
     /**
      * OAuth client IDs a provider's token must have been issued to (several allowed: Android and web). Socialite does not
