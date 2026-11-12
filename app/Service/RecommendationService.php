@@ -47,11 +47,13 @@ class RecommendationService
      *
      * @throws \JsonException
      */
-    public function compute(array $droidRequest): array
+    public function compute(array $droidRequest, ?int $userId = null): array
     {
-        $cacheKey = $this->generateCacheKey($droidRequest);
-        $result = Cache::remember($cacheKey, $this->cacheTTL, function () use ($droidRequest) {
-            return $this->performComputation($droidRequest);
+        // A farmer with an account keeps a saved row of their own, so their result is cached apart from the shared one:
+        // a shared hit would log nothing for them, and the row it was logged under belongs to someone else.
+        $cacheKey = $this->generateCacheKey($droidRequest) . ($userId !== null ? ":user:{$userId}" : '');
+        $result = Cache::remember($cacheKey, $this->cacheTTL, function () use ($droidRequest, $userId) {
+            return $this->performComputation($droidRequest, $userId);
         });
 
         // Always assign a fresh request_id — each HTTP call is a distinct trace event
@@ -92,7 +94,7 @@ class RecommendationService
      * @throws RecommendationException If there is an error specific to the recommendation process.
      * @throws Exception If a general exception occurs during the computation process.
      */
-    private function performComputation(array $droidRequest): array
+    private function performComputation(array $droidRequest, ?int $userId = null): array
     {
         $userInfoArray = Arr::get($droidRequest, 'user_info', []);
         $computeRequestArray = Arr::get($droidRequest, 'compute_request', []);
@@ -132,7 +134,7 @@ class RecommendationService
         // The client-supplied device_token is stored separately for device-level queries.
         $requestUuid = (string)Str::uuid();
         $akilimoComputeData->requestId = $requestUuid; // the report's printed reference
-        $requestLog = $this->logRequest($requestUuid, $deviceToken, $droidRequest, $akilimoComputeData);
+        $requestLog = $this->logRequest($requestUuid, $deviceToken, $droidRequest, $akilimoComputeData, $userId);
 
         $startedAt = Carbon::now();
 
@@ -310,11 +312,12 @@ class RecommendationService
      *
      * @return object The created log entry.
      */
-    private function logRequest(string $requestUuid, string $deviceToken, array $droidRequest, AkilimoComputeData $plumberRequest): object
+    private function logRequest(string $requestUuid, string $deviceToken, array $droidRequest, AkilimoComputeData $plumberRequest, ?int $userId = null): object
     {
         $log = $this->apiRequestRepo->create([
             'request_id' => $requestUuid,
             'device_token' => $deviceToken,
+            'user_id' => $userId,
             'droid_request' => $droidRequest,
             'plumber_request' => $plumberRequest,
         ]);

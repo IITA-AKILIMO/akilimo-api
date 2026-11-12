@@ -155,7 +155,8 @@ Route::middleware('throttle:read')->prefix('v1/coverage')->group(function () {
 //    Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 // });
 
-Route::middleware(['throttle:compute'])->group(function () {
+// Open to everyone; a signed-in farmer's token (optional) links the saved advice to their account
+Route::middleware(['throttle:compute', 'farmer.optional'])->group(function () {
     Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 });
 
