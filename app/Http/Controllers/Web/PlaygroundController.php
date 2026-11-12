@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Exceptions\RecommendationException;
 use App\Models\ApiRequest;
+use App\Rules\HarvestDateWindow;
 use App\Repositories\ApiRequestRepo;
 use App\Service\RecommendationService;
 use Illuminate\Http\JsonResponse;
@@ -84,23 +85,7 @@ class PlaygroundController extends Controller
             'inter_cropping_potato_rec' => ['sometimes', 'boolean'],
             // Dates
             'planting_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:' . now()->subMonths(6)->toDateString()],
-            'harvest_date' => ['required', 'date_format:Y-m-d', 'after:planting_date',
-                function (string $attribute, mixed $value, \Closure $fail) use ($request) {
-                    $planting = $request->input('planting_date');
-                    if (!is_string($planting) || $planting === '') {
-                        return;
-                    }
-                    $plantingTs = strtotime($planting);
-                    $harvestTs = strtotime($value);
-                    // ~7.8 months = 7 months + 24 days
-                    if ($harvestTs < strtotime('+7 months +24 days', $plantingTs)) {
-                        $fail('Harvest date must be at least ~7.8 months after the planting date.');
-                    }
-                    if ($harvestTs > strtotime('+15 months', $plantingTs)) {
-                        $fail('Harvest date must be within 15 months of the planting date.');
-                    }
-                },
-            ],
+            'harvest_date' => ['required', 'date_format:Y-m-d', 'after:planting_date', new HarvestDateWindow('planting_date')],
             'planting_date_window' => ['required', 'integer', 'in:0,1,2'],
             'harvest_date_window' => ['required', 'integer', 'in:0,1,2'],
             // Fertilizers
