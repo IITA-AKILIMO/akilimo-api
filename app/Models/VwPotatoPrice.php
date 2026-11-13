@@ -8,6 +8,6 @@
 
 namespace App\Models;
 
-use App\Models\Base\MaizePrice as BaseMaizePrice;
+use App\Models\Base\VwPotatoPrice as BaseVwPotatoPrice;
 
-class MaizePrice extends BaseMaizePrice {}
+class VwPotatoPrice extends BaseVwPotatoPrice {}

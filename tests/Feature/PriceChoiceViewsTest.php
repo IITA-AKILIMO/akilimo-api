@@ -6,7 +6,7 @@
  * For licence information, see the LICENCE file.
  */
 
-use App\Models\FertilizerPrice;
+use App\Models\VwFertilizerPrice;
 use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -225,7 +225,7 @@ it('is read-only: the app lists cannot be written to', function () {
     ];
 
     // The model refuses mass assignment, and the database refuses a direct write to the view
-    expect(fn () => FertilizerPrice::query()->create($row))->toThrow(MassAssignmentException::class)
+    expect(fn () => VwFertilizerPrice::query()->create($row))->toThrow(MassAssignmentException::class)
         ->and(fn () => DB::table('vw_fertilizer_prices')->insert($row))->toThrow(QueryException::class);
 });
 

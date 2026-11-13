@@ -8,6 +8,6 @@
 
 namespace App\Models;
 
-use App\Models\Base\CassavaPrice as BaseCassavaPrice;
+use App\Models\Base\VwCassavaPrice as BaseVwCassavaPrice;
 
-class CassavaPrice extends BaseCassavaPrice {}
+class VwCassavaPrice extends BaseVwCassavaPrice {}

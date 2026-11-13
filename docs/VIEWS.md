@@ -4,16 +4,16 @@ The lists the app reads (the fertilizers, the price options, the investment amou
 database views over the price catalogue and the rule tables, so they can never drift from them. A view is read-only
 and computed, so its name says so: **every view starts with `vw_`**.
 
-| View | What it is |
-|---|---|
-| `vw_fertilizers` | A fertilizer sold in a country (`fertilizer_types` joined to `country_fertilizers`) |
-| `vw_fertilizer_prices` | The price options for each fertilizer that has an active price, plus its two marker rows |
-| `vw_price_bands` | The range-list rule, written once, for every non-bag price |
-| `vw_cassava_prices`, `vw_potato_prices`, `vw_maize_prices` | The crop price options, from `vw_price_bands` |
-| `vw_investment_amount` | The investment amounts per country |
-| `vw_operation_costs` | The labour and machinery cost bands |
+| View | Model | What it is |
+|---|---|---|
+| `vw_fertilizers` | `VwFertilizer` | A fertilizer sold in a country (`fertilizer_types` joined to `country_fertilizers`) |
+| `vw_fertilizer_prices` | `VwFertilizerPrice` | The price options for each fertilizer that has an active price, plus its two marker rows |
+| `vw_price_bands` | `VwPriceBand` | The range-list rule, written once, for every non-bag price |
+| `vw_cassava_prices`, `vw_potato_prices`, `vw_maize_prices` | `VwCassavaPrice`, `VwPotatoPrice`, `VwMaizePrice` | The crop price options, from `vw_price_bands` |
+| `vw_investment_amount` | `VwInvestmentAmount` | The investment amounts per country |
+| `vw_operation_costs` | `VwOperationCost` | The labour and machinery cost bands |
 
-They used to be called `fertilizers`, `fertilizer_prices`, `cassava_prices`, `potato_prices`, `maize_prices`,
+Each has a model named for it (`App\Models\VwFertilizerPrice`, with its generated base in `App\Models\Base`). They used to be called `fertilizers`, `fertilizer_prices`, `cassava_prices`, `potato_prices`, `maize_prices`,
 `investment_amount`, `operation_costs` and `price_bands` (renamed by migration `000021`). The columns are the same,
 so the API responses did not change.
 

@@ -11,7 +11,7 @@ namespace App\Repositories;
 use App\Models\ApiKey;
 use App\Models\Base\ApiRequest;
 use App\Models\Base\Country;
-use App\Models\Base\Fertilizer;
+use App\Models\Base\VwFertilizer;
 use App\Models\Base\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
@@ -104,7 +104,7 @@ class ApiRequestStatsRepo extends BaseRepo
             'activeKeys' => (int)ApiKey::where('is_active', true)
                 ->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))
                 ->count(),
-            'totalFertilizers' => (int)Fertilizer::where('available', true)->count(),
+            'totalFertilizers' => (int)VwFertilizer::where('available', true)->count(),
             'totalCountries' => (int)Country::where('active', true)->count(),
         ];
     }

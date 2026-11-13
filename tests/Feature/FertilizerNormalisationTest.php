@@ -8,7 +8,7 @@
 
 use App\Enums\EnumUserRole;
 use App\Models\CountryFertilizer;
-use App\Models\Fertilizer;
+use App\Models\VwFertilizer;
 use App\Models\FertilizerType;
 use App\Models\User;
 use App\Repositories\FertilizerRepo;
@@ -67,7 +67,7 @@ it('uses the type code as the key and follows a rename', function () {
 
     expect(FertilizerType::find('UREA_46')->name)->toBe('Urea')
         ->and(CountryFertilizer::find($row->id)->fertilizer_type)->toBe('UREA_46')
-        ->and(Fertilizer::find($row->id)->fertilizer_key)->toBe('UREA_46_TZ')
+        ->and(VwFertilizer::find($row->id)->fertilizer_key)->toBe('UREA_46_TZ')
         ->and(DB::table('price_catalogue')->where('id', $priceId)->value('fertilizer_type'))->toBe('UREA_46');
 });
 
@@ -100,7 +100,7 @@ it('serves the fertilizers view with the old columns and a computed key', functi
     $npk = fertilizerType('NPK_20_10_10', 'NPK201010', 'NPK 20:10:10', 25);
     $row = soldIn($npk, 'GH', ['use_case' => 'CIM', 'cis' => false, 'cim' => true, 'available' => false, 'sort_order' => 4]);
 
-    $fertilizer = Fertilizer::find($row->id);
+    $fertilizer = VwFertilizer::find($row->id);
 
     expect($fertilizer->fertilizer_key)->toBe('NPK_20_10_10_GH')
         ->and($fertilizer->fertilizer_label)->toBe('NPK201010')
@@ -122,8 +122,8 @@ it('changes a fertiliser name for every country in one place', function () {
 
     $urea->update(['name' => 'Urea 46%', 'weight' => 25]);
 
-    expect(Fertilizer::find($tz->id)->name)->toBe('Urea 46%')
-        ->and(Fertilizer::find($ng->id)->weight)->toBe(25);
+    expect(VwFertilizer::find($tz->id)->name)->toBe('Urea 46%')
+        ->and(VwFertilizer::find($ng->id)->weight)->toBe(25);
 });
 
 it('sells a fertiliser in a country through the repository', function () {
@@ -165,7 +165,7 @@ it('is read-only through the fertilizers view', function () {
     $row = ['fertilizer_label' => 'x', 'name' => 'x', 'type' => 'X', 'fertilizer_key' => 'X_TZ', 'weight' => 50, 'country' => 'TZ', 'use_case' => 'FR'];
 
     // The model refuses mass assignment, and the database refuses a direct write to the view
-    expect(fn () => Fertilizer::query()->create($row))->toThrow(MassAssignmentException::class)
+    expect(fn () => VwFertilizer::query()->create($row))->toThrow(MassAssignmentException::class)
         ->and(fn () => DB::table('vw_fertilizers')->insert($row))->toThrow(QueryException::class);
 });
 
