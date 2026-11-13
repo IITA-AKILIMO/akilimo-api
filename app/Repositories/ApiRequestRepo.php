@@ -88,14 +88,43 @@ class ApiRequestRepo extends BaseRepo
             ]);
     }
 
-    /** A farmer's saved advice, newest first. */
+    /**
+     * A farmer's saved advice, newest first. Only the columns the list shows are read: a saved row also holds the whole
+     * request and answer (large JSON), which a farmer with a long history must not drag through every page.
+     */
     public function paginateForUser(int $userId, int $perPage = 20): LengthAwarePaginator
     {
         return $this->model->newQuery()
+            ->select(['id', 'request_id', 'country_code', 'use_case', 'fr', 'ic', 'pp', 'sph', 'spp', 'request_duration_ms', 'created_at'])
             ->where('user_id', $userId)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->paginate($perPage);
+    }
+
+    /**
+     * The ids of a farmer's saved advice, newest first, at most $max of them (one more is read to tell whether the list was cut).
+     * A client uses it to drop its own copies of items that were deleted elsewhere.
+     *
+     * @return array{ids: list<string>, truncated: bool}
+     */
+    public function requestIdsForUser(int $userId, int $max): array
+    {
+        $ids = $this->model->newQuery()
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit($max + 1)
+            ->pluck('request_id')
+            ->all();
+
+        return ['ids' => array_slice($ids, 0, $max), 'truncated' => count($ids) > $max];
+    }
+
+    /** Removes all of a farmer's saved advice. Returns how many rows went. */
+    public function deleteAllForUser(int $userId): int
+    {
+        return $this->model->newQuery()->where('user_id', $userId)->delete();
     }
 
     /** One saved recommendation, only when it belongs to this farmer. */

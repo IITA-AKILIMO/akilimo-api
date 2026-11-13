@@ -28,6 +28,9 @@ class AccountHistoryController extends Controller
 {
     use HasPaginationParams;
 
+    /** The most ids GET /history/ids returns. */
+    private const MAX_IDS = 5000;
+
     public function __construct(
         private readonly ApiRequestRepo $requests,
         private readonly FarmerAccountService $accounts,
@@ -43,6 +46,22 @@ class AccountHistoryController extends Controller
         $page = $this->requests->paginateForUser($this->user($request)->id, $this->getPerPage($request, 20));
 
         return FarmerHistoryResource::collection($page);
+    }
+
+    /**
+     * The ids of all saved advice
+     *
+     * Newest first, a few dozen bytes each, at most 5000 (`meta.truncated` says when the list was cut). An app compares it with
+     * its own copies and drops the ones that were deleted elsewhere, without downloading the whole history again.
+     */
+    public function ids(Request $request): JsonResponse
+    {
+        $result = $this->requests->requestIdsForUser($this->user($request)->id, self::MAX_IDS);
+
+        return response()->json([
+            'data' => $result['ids'],
+            'meta' => ['count' => count($result['ids']), 'truncated' => $result['truncated']],
+        ]);
     }
 
     /**
@@ -67,6 +86,18 @@ class AccountHistoryController extends Controller
         $row->delete();
 
         return response()->json(['message' => 'Saved advice deleted.']);
+    }
+
+    /**
+     * Remove all saved advice
+     *
+     * Deletes every saved recommendation of the signed-in farmer and keeps the account. Cannot be undone.
+     */
+    public function destroyAll(Request $request): JsonResponse
+    {
+        $deleted = $this->requests->deleteAllForUser($this->user($request)->id);
+
+        return response()->json(['message' => 'All saved advice deleted.', 'deleted' => $deleted]);
     }
 
     /**

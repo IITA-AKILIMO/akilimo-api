@@ -11,6 +11,7 @@ use App\Models\ApiRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Models\UserIdentity;
+use App\Repositories\ApiRequestRepo;
 use Illuminate\Support\Facades\RateLimiter;
 
 beforeEach(function () {
@@ -160,4 +161,118 @@ it('cannot reclaim the kept rows after deletion, because the device token is gon
 
     expect($again->json('claimed_requests'))->toBe(0)
         ->and($kept->fresh()->user_id)->toBeNull();
+});
+
+// ── A long history (a farmer with over a thousand saved items) ───────────────
+
+/** Saves $count rows for a farmer in one insert, the oldest first at $count minutes ago. */
+function bulkAdvice(int $userId, int $count): void
+{
+    $rows = [];
+    for ($i = 0; $i < $count; $i++) {
+        $rows[] = [
+            'request_id' => (string)str()->uuid(),
+            'device_token' => 'bulk',
+            'user_id' => $userId,
+            'droid_request' => json_encode(['n' => $i]),
+            'plumber_request' => json_encode(['n' => $i]),
+            'plumber_response' => json_encode(['status' => 'success']),
+            'created_at' => now()->subMinutes($count - $i),
+            'updated_at' => now(),
+        ];
+    }
+
+    foreach (array_chunk($rows, 500) as $chunk) {
+        ApiRequest::insert($chunk);
+    }
+}
+
+it('pages through more than a thousand saved items without losing or repeating one', function () {
+    [$me, $token] = signedInFarmer();
+    bulkAdvice($me->id, 1200);
+    saveAdviceFor('other', makeFarmer()->id); // someone else's row must not show up
+
+    $seen = [];
+    $page = 1;
+    do {
+        $response = $this->withToken($token)->getJson("/api/v1/account/history?per_page=100&page={$page}")->assertOk();
+        array_push($seen, ...array_column($response->json('data'), 'request_id'));
+        $last = $response->json('meta.last_page');
+        $page++;
+    } while ($page <= $last);
+
+    expect($response->json('meta.total'))->toBe(1200)
+        ->and($last)->toBe(12)
+        ->and($seen)->toHaveCount(1200)
+        ->and(array_unique($seen))->toHaveCount(1200);
+
+    // newest first: the first item of the first page is the newest row
+    $newest = ApiRequest::where('user_id', $me->id)->orderByDesc('created_at')->orderByDesc('id')->value('request_id');
+    expect($seen[0])->toBe($newest);
+});
+
+it('reads only the columns the list shows, never the stored request and answer', function () {
+    [$me, $token] = signedInFarmer();
+    bulkAdvice($me->id, 5);
+
+    DB::enableQueryLog();
+    $this->withToken($token)->getJson('/api/v1/account/history')->assertOk();
+    $queries = collect(DB::getQueryLog())->pluck('query')->filter(fn ($q) => str_contains($q, 'api_requests'))->implode(' | ');
+    DB::disableQueryLog();
+
+    expect($queries)->not->toContain('plumber_response')
+        ->and($queries)->not->toContain('droid_request')
+        ->and($queries)->not->toContain('plumber_request')
+        ->and($queries)->toContain('request_id');
+});
+
+it('lists the ids of all saved items, newest first, and only the caller own', function () {
+    [$me, $token] = signedInFarmer();
+    bulkAdvice($me->id, 30);
+    saveAdviceFor('other', makeFarmer()->id);
+
+    $response = $this->withToken($token)->getJson('/api/v1/account/history/ids')->assertOk();
+
+    $expected = ApiRequest::where('user_id', $me->id)->orderByDesc('created_at')->orderByDesc('id')->pluck('request_id')->all();
+    expect($response->json('data'))->toBe($expected)
+        ->and($response->json('meta.count'))->toBe(30)
+        ->and($response->json('meta.truncated'))->toBeFalse();
+});
+
+it('says when the list of ids was cut', function () {
+    [$me] = signedInFarmer();
+    bulkAdvice($me->id, 5);
+
+    $cut = app(ApiRequestRepo::class)->requestIdsForUser($me->id, 3);
+    $all = app(ApiRequestRepo::class)->requestIdsForUser($me->id, 5);
+
+    expect($cut['ids'])->toHaveCount(3)->and($cut['truncated'])->toBeTrue()
+        ->and($all['ids'])->toHaveCount(5)->and($all['truncated'])->toBeFalse();
+});
+
+it('deletes all of the caller saved advice and keeps the account and everyone else rows', function () {
+    [$me, $token] = signedInFarmer();
+    $other = makeFarmer();
+    bulkAdvice($me->id, 40);
+    $theirs = saveAdviceFor('other', $other->id);
+    $anonymous = saveAdviceFor('anon');
+
+    $this->withToken($token)->deleteJson('/api/v1/account/history')
+        ->assertOk()->assertJsonPath('deleted', 40);
+
+    expect(ApiRequest::where('user_id', $me->id)->count())->toBe(0)
+        ->and(User::find($me->id))->not->toBeNull()
+        ->and($theirs->fresh())->not->toBeNull()
+        ->and($anonymous->fresh())->not->toBeNull();
+});
+
+it('keeps the bulk history routes for farmer tokens with consent only', function () {
+    $this->getJson('/api/v1/account/history/ids')->assertUnauthorized();
+    $this->actingAsApiUser()->getJson('/api/v1/account/history/ids')->assertForbidden();
+    $this->actingAsApiUser()->deleteJson('/api/v1/account/history')->assertForbidden();
+
+    [$me, $token] = signedInFarmer(['consent_at' => null]);
+    bulkAdvice($me->id, 3);
+    $this->withToken($token)->deleteJson('/api/v1/account/history')->assertForbidden();
+    expect(ApiRequest::where('user_id', $me->id)->count())->toBe(3);
 });

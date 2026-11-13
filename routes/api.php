@@ -68,6 +68,7 @@ Route::middleware(['throttle:write', 'auth.token', 'farmer'])->prefix('v1/accoun
 
 Route::middleware(['throttle:read', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
     Route::get('/history', [AccountHistoryController::class, 'index']);
+    Route::get('/history/ids', [AccountHistoryController::class, 'ids']);
     Route::get('/history/{requestId}', [AccountHistoryController::class, 'show'])->whereUuid('requestId');
 });
 
@@ -76,6 +77,7 @@ Route::middleware(['throttle:write', 'auth.token:history:own', 'farmer', 'farmer
 });
 
 Route::middleware(['throttle:sensitive', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::delete('/history', [AccountHistoryController::class, 'destroyAll']);
     Route::delete('/', [AccountHistoryController::class, 'destroyAccount']);
 });
 

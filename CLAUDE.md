@@ -68,7 +68,7 @@ Routes are split into four groups in `routes/api.php`:
 
 **Protected — requires `Authorization: Bearer <token>` or `X-Api-Key: <key>`:**
 - `POST /v1/auth/logout`, `/v1/auth/api-keys` (CRUD) — throttle 30/min
-- `POST /v1/account/consent|logout|email/resend`, `GET /v1/account/history[/{request_id}]`, `DELETE /v1/account/history/{request_id}`, `DELETE /v1/account` — farmer token only (`auth.token` + `farmer`; history and deletion also `farmer.consented`); a staff token or API key gets 403
+- `POST /v1/account/consent|logout|email/resend`, `GET /v1/account/history[/{request_id}|/ids]`, `DELETE /v1/account/history[/{request_id}]`, `DELETE /v1/account` — farmer token only (`auth.token` + `farmer`; history and deletion also `farmer.consented`); a staff token or API key gets 403
 - `POST /v1/recommendations/compute` — open to everyone (a valid farmer token, through `farmer.optional`, links the saved row to the account); limiter `compute`, 30/min per IP; `POST /v1/user-feedback` — limiter `write`, 30/min. **All request limits are in `config/rate-limits.php`** (seven keys: `auth` 10, `sensitive` 5, `read` 120, `write` 30, `compute` 30, `admin-write` 60, `mcp-verify` 600, each set by `API_RATE_<KEY>_PER_MINUTE` in `.env`), registered as named limiters in `AppServiceProvider` and used as `throttle:<key>`; routes sharing a key share one counter per IP; never write a number in a route file
 - `GET /v1/recommendations`, `GET /v1/user-feedback`, `GET /v1/translations` — throttle 120/min
 - `POST /v1/mcp/verify-key` — ability `mcp:verify-keys` (the AKILIMO MCP server's own key), throttle 600/min; checks users' MCP keys (`ApiKeyService::verifyMcpKey`, see `docs/MCP_KEYS.md`)
