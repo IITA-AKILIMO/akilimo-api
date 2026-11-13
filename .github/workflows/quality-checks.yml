@@ -50,9 +50,6 @@ jobs:
         with:
           coverage: xdebug
 
-      - name: Build frontend assets
-        uses: ./.github/actions/node-build
-
       - name: Install MariaDB client
         run: sudo apt-get install -y mariadb-client
 

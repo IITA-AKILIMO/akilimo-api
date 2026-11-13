@@ -21,6 +21,15 @@ abstract class TestCase extends BaseTestCase
      */
     protected bool $dropViews = true;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // No test loads the built front-end assets, so Vite is stood in for: a page renders without `public/build`, and CI needs
+        // no Node install or `pnpm build` to run the tests (without this, a page test fails with "Vite manifest not found").
+        $this->withoutVite();
+    }
+
     /**
      * Create a test user with a wildcard bearer token and apply it to all
      * subsequent requests in this test. Call in beforeEach() or at the start

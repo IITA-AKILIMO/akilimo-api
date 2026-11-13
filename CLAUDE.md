@@ -102,7 +102,7 @@ php artisan admin:regenerate-api-key --force  # skip confirmation
 ```
 
 ### Database
-MariaDB in production/dev; SQLite in-memory for tests. Key tables:
+MariaDB in production, dev and tests (the tests need database views and generated columns, so SQLite does not work; CI runs MariaDB 11.2). Key tables:
 - `api_requests` — logs every computation request/response (JSON columns for `droid_request`, `plumber_request`, `plumber_response`)
 - `personal_access_tokens` — hashed bearer tokens (Sanctum-compatible schema)
 - `api_keys` — hashed long-lived API keys with `key_prefix` (plain, for display), `abilities` (JSON), `is_active`, `expires_at`
@@ -189,7 +189,7 @@ No PHP code changes are required.
 **Docker:** Multi-stage build (Node 20 Alpine for frontend assets → PHP 8.3-fpm Alpine). Supervisor manages PHP-FPM and the Laravel queue worker. `docker-compose.yml` provides the full stack: API, MariaDB 11.2.3, Redis 7.4.1, Dozzle.
 
 **CI/CD** (`.github/workflows/`):
-- `unit-test.yml` — runs on every push, PHP 8.3, SQLite in-memory
+- `unit-test.yml` — runs on every push and pull request (a push and the pull request of one branch replace each other), PHP 8.4, MariaDB 11.2 service. Steps: code style (`composer lint:check`), Pest through `composer run test:ci` (plain Pest, not `--bail`, so every failure shows) with a JUnit report, a step summary and an uploaded `test-results` artifact, and a non-blocking `composer audit`. No Node build: `tests/TestCase.php` calls `withoutVite()`. Setup lives in the reusable action `.github/actions/php-setup` (also used by `quality-checks.yml`); `.github/dependabot.yml` keeps the actions current
 - `quality-checks.yml` — Pest with coverage + SonarQube gate (develop branch)
 - `docker-build.yml` — builds and pushes `iita/akilimo-api` image (main/develop)
 

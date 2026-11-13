@@ -1,0 +1,45 @@
+name: PHP setup
+description: PHP with the extensions the app needs, and Composer dependencies (the download cache is kept between runs)
+
+inputs:
+  php-version:
+    description: PHP version (the production image is php8.4)
+    required: false
+    default: '8.4'
+  coverage:
+    description: Coverage driver (none, xdebug, pcov)
+    required: false
+    default: none
+
+runs:
+  using: composite
+  steps:
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        # The tests use MariaDB through pdo_mysql; composer.json asks for ext-pdo only
+        extensions: pdo_mysql, mbstring
+        coverage: ${{ inputs.coverage }}
+        tools: composer
+
+    - name: Find the Composer cache folder
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    # The download cache, not vendor/: a restored vendor/ can hide a changed lock file, and installing from the cache is fast
+    - name: Restore the Composer cache
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: composer-${{ runner.os }}-php${{ inputs.php-version }}-${{ hashFiles('composer.lock') }}
+        restore-keys: composer-${{ runner.os }}-php${{ inputs.php-version }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: composer install --no-progress --prefer-dist --no-scripts
+
+    - name: Run the Composer scripts
+      shell: bash
+      run: composer run-script post-autoload-dump
