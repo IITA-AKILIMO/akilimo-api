@@ -73,7 +73,7 @@ jobs:
       - name: Build and push
         id: build_push
         if: steps.final-tag.outputs.tag != '' && (inputs.force_rebuild == true || steps.check-image.outputs.exists != 'true')
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ${{ inputs.dockerfile }}
