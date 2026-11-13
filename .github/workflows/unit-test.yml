@@ -68,7 +68,7 @@ jobs:
 
       # The tests migrate the database themselves (RefreshDatabase), so there is no separate migrate step here
       - name: Check code style
-        run: composer lint:check
+        run: composer run lint:check
 
       # test:ci is plain Pest. `composer test` adds --bail, which stops at the first failure and hides the others
       - name: Run tests
