@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\EnumUserRole;
@@ -29,13 +35,13 @@ class AdminAuthController extends Controller
             ->orWhere('email', $identifier)
             ->first();
 
-        if ($user === null || ! Hash::check($password, $user->password)) {
+        if ($user === null || !Hash::check($password, $user->password)) {
             return back()->withErrors([
                 'username' => 'These credentials do not match our records.',
             ])->onlyInput('username');
         }
 
-        if (! in_array($user->role, EnumUserRole::adminRoles(), true)) {
+        if (!in_array($user->role, EnumUserRole::adminRoles(), true)) {
             return back()->withErrors([
                 'username' => 'You do not have permission to access the admin panel.',
             ])->onlyInput('username');

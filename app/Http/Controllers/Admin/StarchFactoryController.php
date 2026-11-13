@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\StarchFactoryRequest;
@@ -15,22 +21,24 @@ class StarchFactoryController extends AdminController
 
     public function index(Request $request): Response
     {
-        $filters = $this->filtersFrom($request, ['country']);
+        $values = $this->filterValues($request, ['search', 'country', 'active']);
         $paginator = $this->repo->paginateWithSort(
-            perPage: (int) $request->get('per_page', 20),
+            perPage: (int)$request->get('per_page', 20),
             orderBy: 'sort_order',
             direction: 'asc',
-            filters: $filters,
+            filters: ['country' => $values['country'], 'factory_active' => $values['active']],
+            search: $values['search'],
+            searchColumns: ['factory_name', 'factory_label'],
         );
 
         return Inertia::render('StarchFactories/Index', [
-            'filters' => ['country' => $request->get('country', '')],
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'factory_name' => $f->factory_name,
                 'factory_label' => $f->factory_label,
                 'country' => $f->country,
-                'factory_active' => (bool) $f->factory_active,
+                'factory_active' => (bool)$f->factory_active,
                 'sort_order' => $f->sort_order,
             ]),
         ]);

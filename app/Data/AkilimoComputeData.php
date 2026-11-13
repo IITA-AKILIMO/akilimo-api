@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Data;
 
 use Illuminate\Support\Carbon;
@@ -21,8 +27,9 @@ class AkilimoComputeData extends Data
     #[MapOutputName('lang')]
     public string $recommendationLanguage;
 
+    // The yield class in t/ha (3.75, 11.25, ...): a float, an int would cut 11.25 to 11
     #[MapOutputName('FCY')]
-    public int $currentFieldYield;
+    public float $currentFieldYield;
 
     #[MapOutputName('FR')]
     public bool $fertilizerRec;
@@ -110,6 +117,14 @@ class AkilimoComputeData extends Data
     #[MapOutputName('SMS')]
     public bool $sendSms;
 
+    /** The API's request_id (api_requests); printed on the PDF report as its reference */
+    #[MapOutputName('requestId')]
+    public ?string $requestId = null;
+
+    /** Ask the compute service to send the PDF reports back (stored by RecommendationReportService) */
+    #[MapOutputName('returnPdf')]
+    public bool $returnPdf = false;
+
     #[MapOutputName('fallowGreen')]
     public bool $fallowGreen;
 
@@ -192,7 +207,7 @@ class AkilimoComputeData extends Data
     public ?string $emailAddress;
 
     #[MapOutputName('userField')]
-    public string $farmName;
+    public ?string $farmName = null;
 
     #[MapOutputName('userName')]
     public string $userName;

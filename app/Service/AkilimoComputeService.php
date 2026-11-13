@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Service;
 
 use App\Data\AkilimoComputeData;
@@ -38,12 +44,22 @@ class AkilimoComputeService
      */
     public function compute(AkilimoComputeData $data): array
     {
+        return $this->computePayload($data->toArray());
+    }
+
+    /**
+     * Send an already built compute payload (the R service's field names), e.g. one kept in api_requests.
+     *
+     * @throws ConnectionException|RecommendationException|RequestException
+     */
+    public function computePayload(array $payload): array
+    {
         try {
             $response = Http::baseUrl($this->baseUrl)
                 ->timeout($this->timeout)
                 ->retry($this->retries)
                 ->acceptJson()
-                ->post($this->endpoint, $data->toArray());
+                ->post($this->endpoint, $payload);
         } catch (ConnectionException $e) {
             Log::error('AKILIMO Compute API Connection Error', ['endpoint' => $this->endpoint, 'error' => $e->getMessage()]);
             throw $e;
@@ -83,9 +99,34 @@ class AkilimoComputeService
         throw new RecommendationException($message, $response->status());
     }
 
+    /**
+     * The area the compute service covers for one country, as GeoJSON (GET /coverage/{country}).
+     *
+     * @return array<string, mixed> a FeatureCollection
+     *
+     * @throws ConnectionException|RequestException|RecommendationException
+     */
+    public function coverage(string $country): array
+    {
+        $response = Http::baseUrl($this->baseUrl)
+            ->timeout($this->timeout)
+            ->retry(2, 500)
+            ->accept('application/geo+json,application/json')
+            ->get('coverage/' . strtoupper($country))
+            ->throw();
+
+        $body = $response->json();
+
+        if (!is_array($body) || !isset($body['type'])) {
+            throw new RecommendationException("The compute service sent no GeoJSON for coverage of {$country}", 502);
+        }
+
+        return $body;
+    }
+
     protected function log(string $level, string $context, $response, ?string $message = null, ?array $body = null): void
     {
-        if (! $this->logging) {
+        if (!$this->logging) {
             return;
         }
 

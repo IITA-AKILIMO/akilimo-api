@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Models;
 
 use App\Auth\TokenAbility;
@@ -52,7 +58,7 @@ class ApiKey extends Model
 
     public function isUsable(): bool
     {
-        return $this->is_active && ! $this->isExpired();
+        return $this->is_active && !$this->isExpired();
     }
 
     public function can(string $ability): bool

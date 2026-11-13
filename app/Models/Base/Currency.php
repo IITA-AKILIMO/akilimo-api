@@ -1,27 +1,34 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Models\Country;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Currency
  *
- * @property int $id
- * @property string|null $country_code
  * @property string|null $country
- * @property string|null $currency_name
- * @property string|null $currency_code
- * @property string|null $currency_symbol
- * @property string|null $currency_native_symbol
- * @property string|null $name_plural
+ * @property string|null $country_code
  * @property Carbon|null $created_at
+ * @property string|null $currency_code
+ * @property string|null $currency_name
+ * @property string|null $currency_native_symbol
+ * @property string|null $currency_symbol
+ * @property int $id
+ * @property string|null $name_plural
  * @property Carbon|null $updated_at
+ * @property Collection|Country[] $countries
+ * @property-read int|null $countries_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newQuery()
@@ -52,4 +59,9 @@ class Currency extends BaseModel
         'currency_native_symbol',
         'name_plural',
     ];
+
+    public function countries(): HasMany
+    {
+        return $this->hasMany(Country::class, 'currency_code', 'currency_code');
+    }
 }

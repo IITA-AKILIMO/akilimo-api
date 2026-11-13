@@ -1,31 +1,43 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
  */
 
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Models\CountryReviewer;
+use App\Models\Currency;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Country
  *
- * @property int $id
- * @property string $code
- * @property string $name
  * @property bool $active
- * @property int|null $sort_order
+ * @property string $boundary
+ * @property string $code
+ * @property Carbon|null $created_at
+ * @property string|null $currency_code
+ * @property string $default_price_basis
+ * @property int $id
  * @property float|null $latitude
  * @property float|null $longitude
- * @property float|null $min_latitude
  * @property float|null $max_latitude
- * @property float|null $min_longitude
  * @property float|null $max_longitude
- * @property string $boundary
- * @property Carbon|null $created_at
+ * @property float|null $min_latitude
+ * @property float|null $min_longitude
+ * @property string $name
+ * @property int|null $sort_order
  * @property Carbon|null $updated_at
+ * @property Collection|CountryReviewer[] $countryReviewers
+ * @property Currency|null $currency
+ * @property-read int|null $country_reviewers_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newQuery()
@@ -34,6 +46,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereBoundary($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCurrencyCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereDefaultPriceBasis($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereLongitude($value)
@@ -66,7 +80,9 @@ class Country extends BaseModel
     protected $fillable = [
         'code',
         'name',
+        'currency_code',
         'active',
+        'default_price_basis',
         'sort_order',
         'latitude',
         'longitude',
@@ -76,4 +92,14 @@ class Country extends BaseModel
         'max_longitude',
         'boundary',
     ];
+
+    public function countryReviewers(): HasMany
+    {
+        return $this->hasMany(CountryReviewer::class, 'country', 'code');
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_code', 'currency_code');
+    }
 }

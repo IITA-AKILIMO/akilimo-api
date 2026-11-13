@@ -38,12 +38,18 @@ export const SWEET_POTATO_PRODUCE_TYPES = [
     {value: 'flour',  label: 'Flour'},
 ]
 
-export const COUNTRY_COORDS: Record<string, [number, number]> = {
-    NG: [7.3451,  6.9660],
-    TZ: [-5.6408, 35.3456],
-    GH: [7.4923,  -1.2756],
-    RW: [-1.9997, 29.9486],
-    BI: [-3.3335, 29.9238],
+// Used when the API has no cassava-units list
+export const DEFAULT_CASSAVA_UNITS = [
+    {unit_weight: 1,    label: 'ONE_KG'},
+    {unit_weight: 50,   label: 'FIFTY_KG'},
+    {unit_weight: 100,  label: 'HUNDRED_KG'},
+    {unit_weight: 1000, label: 'THOUSAND_KG'},
+]
+
+export function cassavaUnitLabel(kg: number): string {
+    if (kg === 1000) return 'per tonne'
+    if (kg === 1) return 'per kg'
+    return `per ${kg} kg bag`
 }
 
 export const COUNTRY_INTERCROP: Partial<Record<string, IntercropCrop>> = {
@@ -62,10 +68,16 @@ export const INITIAL_FORM_STATE = {
     lang:                  'en',
     fieldYield:            '10',
     soilQuality:           '3',
-    riskAttitude:          '0',
+    // Moderate: with Conservative the extra income must be 1.8× the fertilizer
+    // cost, so "fertilizer doesn't pay" became the usual first answer.
+    riskAttitude:          '1',
     cassavaProduceType:    'roots',
+    cassavaPrice:          '',
+    cassavaUnitWeight:     '1000',
     maizeProduceType:      'fresh_cob',
+    maizePrice:            '',
     sweetPotatoProduceType:'tubers',
+    sweetPotatoPrice:      '',
     plantingDate:          '',
     harvestDate:           '',
     plantingDateWindow:    '0',

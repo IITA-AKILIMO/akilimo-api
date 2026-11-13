@@ -25,3 +25,6 @@ yarn-error.log
 
 .scannerwork/
 .claude
+
+# Test report written by the unit-test workflow (and by a local --log-junit run)
+/test-results

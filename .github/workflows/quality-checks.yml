@@ -20,7 +20,7 @@ jobs:
         image: mariadb:11.2
         env:
           MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: akilimo_test
+          MARIADB_DATABASE: akilimo
         ports:
           - 3306:3306
         options: >-
@@ -35,13 +35,13 @@ jobs:
       DB_CONNECTION: mariadb
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_DATABASE: akilimo_test
+      DB_DATABASE: akilimo
       DB_USERNAME: root
       DB_PASSWORD: root
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -49,9 +49,6 @@ jobs:
         uses: ./.github/actions/php-setup
         with:
           coverage: xdebug
-
-      - name: Build frontend assets
-        uses: ./.github/actions/node-build
 
       - name: Install MariaDB client
         run: sudo apt-get install -y mariadb-client
@@ -68,7 +65,7 @@ jobs:
         run: composer pest:coverage-xml
 
       - name: sonar checks
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

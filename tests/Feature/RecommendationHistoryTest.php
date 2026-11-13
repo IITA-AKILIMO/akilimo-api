@@ -1,8 +1,17 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use Illuminate\Support\Facades\Http;
 
-beforeEach(fn () => $this->actingAsApiUser());
+beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->actingAsApiUser();
+});
 
 it('returns an empty paginated list when no recommendations exist', function () {
     $this->getJson('/api/v1/recommendations')

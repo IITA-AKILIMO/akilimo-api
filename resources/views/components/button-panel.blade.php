@@ -19,7 +19,7 @@
 {{--        Admin Panel--}}
 {{--    </x-button>--}}
 
-    <x-button href="/health"
+    <x-button href="/playground/health"
               variant="outline"
               :icon="view('components.icons.pulse')">
         Health Status

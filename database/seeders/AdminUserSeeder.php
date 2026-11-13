@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -29,13 +35,13 @@ class AdminUserSeeder extends Seeder
         $user = User::updateOrCreate(
             ['username' => $defaultUser],
             [
-                'name' => "$defaultUser Admin",
+                'name' => "{$defaultUser} Admin",
                 'email' => 'akilimo@cgiar.org',
                 'password' => Hash::make($defaultPassword),
             ],
         );
 
-        $this->command->info("Admin user [$user->email] ready.");
+        $this->command->info("Admin user [{$user->email}] ready.");
 
         // Skip key generation if the user already has an active key
         if ($user->apiKeys()->where('is_active', true)->exists()) {
@@ -44,7 +50,7 @@ class AdminUserSeeder extends Seeder
             return;
         }
 
-        $rawKey = 'ak_'.bin2hex(random_bytes(16));
+        $rawKey = 'ak_' . bin2hex(random_bytes(16));
         $prefix = substr($rawKey, 0, 12);
 
         $user->apiKeys()->create([
@@ -55,8 +61,8 @@ class AdminUserSeeder extends Seeder
             'expires_at' => null, // never expires
         ]);
 
-        $keyLine = "  X-Api-Key: $rawKey  ";
-        $passLine = "  Password:  $defaultPassword  ";
+        $keyLine = "  X-Api-Key: {$rawKey}  ";
+        $passLine = "  Password:  {$defaultPassword}  ";
         $width = max(mb_strlen($keyLine), mb_strlen($passLine));
         $pad = str_repeat('─', $width);
 

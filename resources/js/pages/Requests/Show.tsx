@@ -1,13 +1,15 @@
-import { Link } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/AdminLayout'
-import type { ApiRequestDetail } from '../../types'
+import type { ApiRequestDetail, PageProps } from '../../types'
 
 interface Props {
     request: ApiRequestDetail & {
         full_names: string | null
         phone_number: string | null
         gender_code: string | null
+        // The PDF report kept for this request, with fresh signed links, or null
+        report: { expires_at: string; files: { name: string; url: string }[] } | null
     }
 }
 
@@ -109,6 +111,9 @@ function JsonPanel({ title, subtitle, data, defaultOpen = true }: JsonPanelProps
 }
 
 export default function RequestShow({ request }: Props) {
+    const { auth } = usePage<PageProps>().props
+    const isAdmin = auth.user?.role === 'admin'
+    const [regenerating, setRegenerating] = useState(false)
     return (
         <AdminLayout title="Request Detail">
             <div className="mb-3">
@@ -141,6 +146,28 @@ export default function RequestShow({ request }: Props) {
                         <Field label="Gender" value={request.gender_code} />
                         <Field label="Duration" value={request.duration_ms != null ? `${request.duration_ms}ms` : null} />
                         <Field label="Date" value={request.created_at ? new Date(request.created_at).toLocaleString() : null} />
+                        <Field label="PDF report" value={
+                            <>
+                                {request.report?.files.map((f) => (
+                                    <a key={f.name} href={f.url} className="btn btn-outline-success btn-sm me-2 mb-1" target="_blank" rel="noopener noreferrer">
+                                        Download {f.name}
+                                    </a>
+                                ))}
+                                {!request.report && <span className="text-muted me-2">None kept</span>}
+                                {isAdmin && (
+                                    <button type="button" className="btn btn-outline-secondary btn-sm mb-1" disabled={regenerating}
+                                        title="Make the report again from the request that was sent, with the current report template"
+                                        onClick={() => router.post(`/admin/requests/${request.id}/report`, {}, {
+                                            preserveScroll: true,
+                                            onStart: () => setRegenerating(true),
+                                            onFinish: () => setRegenerating(false),
+                                        })}>
+                                        {regenerating ? 'Making the report…' : request.report ? 'Make it again' : 'Make the report'}
+                                    </button>
+                                )}
+                            </>
+                        }
+                        />
                     </div>
                 </div>
             </div>

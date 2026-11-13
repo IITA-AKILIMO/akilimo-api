@@ -3,24 +3,25 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Try the AKILIMO recommendations API — get fertilizer, intercropping, and planting schedule recommendations without an account.">
+    <meta name="description" content="Try the AKILIMO recommendations API — see the fertilizer, intercropping and planting schedule recommendations it returns for a farm.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Playground — {{ config('app.name', 'AKILIMO API') }}</title>
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=dm-serif-display:400,400i|dm-sans:300,400,500,600&display=swap" rel="stylesheet" />
+    @include('partials.theme-head')
 
     @viteReactRefresh
-    @vite(['resources/scss/playground.scss', 'resources/js/playground/index.tsx'])
+    @vite(['resources/scss/playground.scss', 'resources/js/playground/index.tsx', 'resources/js/theme-switcher.tsx'])
 </head>
 <body>
 
 <nav class="pg-nav">
-    <a href="/" class="pg-nav-brand">
-        <img src="/images/akilimo_logo_colored.png" alt="Akilimo" class="pg-nav-brand-logo">
+    <a href="/" class="pg-nav-brand" aria-label="AKILIMO home">
+        <img src="/images/akilimo_logo_colored.png" alt="" class="pg-nav-brand-logo logo-on-light">
+        <img src="/images/akilimo_logo_white.png" alt="" class="pg-nav-brand-logo logo-on-dark">
     </a>
     <span class="pg-nav-badge">Playground</span>
     <div class="pg-nav-user">
+        <div data-theme-switcher></div>
         <a href="/playground/health" class="pg-nav-health-link" title="System status">
             <span class="pg-nav-health-dot" id="nav-health-dot"></span>
         </a>

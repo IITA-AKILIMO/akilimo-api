@@ -48,7 +48,7 @@ DELETE /v1/admin/{resource}/{id}
 | Cassava prices | `country`, `min_price`, `max_price` | ✅ Done |
 | Potato prices | `country`, `min_price`, `max_price` | ✅ Done |
 | Starch prices | `country`, price fields | ✅ Done |
-| Default prices | `country`, price fields | ✅ Done |
+| Price catalogue (was Default prices) | `country`, price fields | ✅ Done |
 | Investment amounts | `country`, `min`, `max` | ✅ Done |
 | Operation costs | `country`, cost fields | ✅ Done |
 | Starch factories | `country`, `name`, `location` | ✅ Done |
@@ -139,7 +139,8 @@ Each module follows an identical pattern: **list → create → edit → delete*
 - ✅ Maize prices
 - ✅ Cassava prices
 - ✅ Potato prices
-- ✅ Starch prices + default prices (both with batch create/edit)
+- ✅ Starch prices + Price catalogue (both with batch create/edit)
+- ✅ Price catalogue review workflow — draft → activate, second review over ±30 %, history
 
 ### 5c — Supporting Data ✅
 - ✅ **Investment amounts** — per country, min/max

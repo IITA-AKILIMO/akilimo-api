@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Repositories;
 
 use App\Models\UserFeedback;
@@ -27,27 +33,27 @@ class UserFeedBackRepo extends BaseRepo
 
         $query = $this->model->newQuery();
 
-        if (! empty($filters['use_case'])) {
+        if (!empty($filters['use_case'])) {
             $query->where('use_case', $filters['use_case']);
         }
 
-        if (! empty($filters['user_type'])) {
+        if (!empty($filters['user_type'])) {
             $query->where('user_type', $filters['user_type']);
         }
 
-        if (! empty($filters['language'])) {
+        if (!empty($filters['language'])) {
             $query->where('language', $filters['language']);
         }
 
-        if (! empty($filters['date_from'])) {
+        if (!empty($filters['date_from'])) {
             $query->whereDate('created_at', '>=', $filters['date_from']);
         }
 
-        if (! empty($filters['date_to'])) {
+        if (!empty($filters['date_to'])) {
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
 
-        if (! empty($filters['search'])) {
+        if (!empty($filters['search'])) {
             $term = $filters['search'];
             $query->where('device_token', 'like', "%{$term}%");
         }

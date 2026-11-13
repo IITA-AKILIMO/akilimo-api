@@ -1,66 +1,76 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // API Playground — AKILIMO
+//
+// Built on the shared tokens in _brand.scss, so it has the admin area's
+// palette, fonts and light/dark themes (one switch, `data-bs-theme` on <html>).
 // ─────────────────────────────────────────────────────────────────────────────
 
-$font-display: 'DM Serif Display', Georgia, serif;
-$font-body:    'DM Sans', system-ui, sans-serif;
-$font-mono:    'Courier New', Courier, monospace;
+@import 'brand';
 
-// ── Brand-accurate color system (from akilimo_logo.svg) ───────────────────────
-//   #006f45 deep forest green  (brand primary)
-//   #9aca3c brand lime green   (brand accent)
+$font-body: $font-sans;
 
+// Headings used a serif display face; they now share the admin's Inter, made
+// to stand out by weight instead.
+@mixin display-font {
+    font-family: $font-sans;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+// ── Colours, from the shared tokens ──────────────────────────────────────────
 :root {
-    --forest:        #006f45;   // brand primary dark green
-    --forest-deep:   #004a2e;
-    --forest-mid:    #00915a;   // lighter brand green
-    --lime:          #9aca3c;   // brand lime accent — vibrant!
-    --lime-dark:     #7aab28;
-    --sage:          #6aab82;   // supporting soft green
-    --sage-light:    #b0d4bc;
-    --terra:         #c4622d;
+    --forest:        #{$aki-green};      // brand green as text and borders
+    --primary-bg:    #{$aki-green};      // brand green behind white text
+    --forest-deep:   #{$aki-green-dark};
+    --forest-mid:    #{$aki-green-mid};
+    --lime:          #{$aki-lime};
+    --lime-dark:     #{$aki-lime-dark};
+    --sage:          #4f8f69;            // supporting soft green
+    --sage-light:    #{$primary-border-subtle};
+    --terra:         #c4622d;            // scenario accents
     --terra-light:   #e07a45;
-    --harvest:       #c8973a;
-    --harvest-light: #e4b55a;
-    --cream:         #f3f9f4;   // very light green-white tint
-    --soil:          #0a1f12;
-    --text-primary:  #0a1f12;
-    --text-secondary:#3a6b4a;
-    --text-muted:    #6b8f7a;
-    --surface:       #ffffff;
-    --surface-alt:   #f0f7f2;
-    --border:        #c5dece;
-    --error:         #c0392b;
-    --error-bg:      #fdf0ee;
-    --brand-gradient: linear-gradient(135deg, #006f45 0%, #9aca3c 100%);
+    --harvest:       #{$warning};
+    --harvest-light: #d9862b;
+    --cream:         #{$gray-100};       // page background behind cards
+    --soil:          #{$gray-900};
+    --text-primary:  #{$gray-900};
+    --text-secondary:#{$gray-700};
+    --text-muted:    #{$gray-600};
+    --surface:       #{$white};
+    --surface-alt:   #{$gray-100};
+    --border:        #{$gray-300};
+    --error:         #{$danger};
+    --error-bg:      #fdecea;
+    --focus-ring:    #{$focus-ring-color};
+    --brand-gradient: linear-gradient(135deg, #{$aki-green} 0%, #{$aki-lime} 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --forest:        #00a862;
-        --forest-deep:   #091a0f;
-        --forest-mid:    #00c470;
-        --lime:          #a8d840;
-        --lime-dark:     #8ab830;
-        --sage:          #4d8a62;
-        --sage-light:    #3a6b4a;
-        --terra:         #d4724d;
-        --terra-light:   #e88a65;
-        --harvest:       #d4a843;
-        --harvest-light: #e8c06a;
-        --cream:         #091a0f;
-        --soil:          #040d07;
-        --text-primary:  #e2f0e8;
-        --text-secondary:#8ec9a0;
-        --text-muted:    #5a8a6a;
-        --surface:       #112218;
-        --surface-alt:   #0d1c12;
-        --border:        #244a32;
-        --error:         #e07a6a;
-        --error-bg:      #2a1410;
-        --brand-gradient: linear-gradient(135deg, #00a862 0%, #a8d840 100%);
-    }
+:root[data-bs-theme="dark"] {
+    --forest:        #{$dark-link-color};
+    --primary-bg:    #{$aki-green};
+    --forest-deep:   #{$dark-primary-bg-subtle};
+    --forest-mid:    #{$dark-link-hover};
+    --lime:          #a8d840;
+    --lime-dark:     #8ab830;
+    --sage:          #{$dark-primary-text};
+    --sage-light:    #{$dark-primary-border-subtle};
+    --terra:         #d4724d;
+    --terra-light:   #e88a65;
+    --harvest:       #e0a845;
+    --harvest-light: #e8c06a;
+    --cream:         #{$dark-canvas};
+    --soil:          #{$black};
+    --text-primary:  #{$dark-body-color};
+    --text-secondary:#{$dark-secondary-color};
+    --text-muted:    #{$dark-tertiary-color};
+    --surface:       #{$dark-body-bg};
+    --surface-alt:   #{$dark-tertiary-bg};
+    --border:        #{$dark-input-border};
+    --error:         #f08a7e;
+    --error-bg:      #2d1414;
+    --brand-gradient: linear-gradient(135deg, #{$aki-green} 0%, #{$aki-lime} 100%);
 }
+
 
 *,
 *::before,
@@ -70,32 +80,70 @@ html { scroll-behavior: smooth; }
 
 body {
     font-family: $font-body;
+    font-size: 0.9375rem;
     background-color: var(--cream);
-    background-image:
-        radial-gradient(ellipse at 0% 0%, rgba(0, 111, 69, 0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 100% 100%, rgba(154, 202, 60, 0.04) 0%, transparent 50%);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+// Same focus ring as the admin area, on everything a keyboard can reach
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 $focus-ring-width var(--focus-ring);
+    border-radius: $radius-sm;
+}
+
+// Native controls (date pickers, scrollbars, checkboxes) follow the chosen theme,
+// as Bootstrap does for the admin; otherwise a dark page gets light pickers.
+:root { color-scheme: light; }
+:root[data-bs-theme="dark"] { color-scheme: dark; }
+
+// Date fields open their calendar on a click anywhere (StepDates.tsx)
+.pg-date {
+    cursor: pointer;
+
+    &::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.75;
+        &:hover { opacity: 1; }
+    }
+}
+
+// The coloured logo's lettering is dark; the white one replaces it in dark mode.
+.logo-on-dark { display: none; }
+@include dark-theme {
+    .logo-on-light { display: none; }
+    .logo-on-dark { display: block; }
 }
 
 // ── Layout ─────────────────────────────────────────────────────────────────────
+// Top bar, matching the admin header: plain surface, brand stripe, badge, theme switch.
 .pg-nav {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(243, 249, 244, 0.9);
-    backdrop-filter: blur(18px) saturate(1.8);
-    -webkit-backdrop-filter: blur(18px) saturate(1.8);
+    min-height: 60px;
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 0.625rem 2rem;
+    padding: 0.375rem 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.75rem;
 
-    @media (prefers-color-scheme: dark) {
-        background: rgba(9, 26, 15, 0.9);
+    @media (min-width: 768px) { padding: 0.375rem 1.5rem; }
+
+    // Thin brand stripe at the very top
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--brand-gradient);
     }
 
     &-brand {
@@ -104,69 +152,111 @@ body {
         align-items: center;
         flex-shrink: 0;
 
+        // The PNGs are 16:9 with a lot of padding around the mark.
         &-logo {
-            height: 28px;
+            height: 44px;
             width: auto;
+            margin: 0 -0.5rem;
             object-fit: contain;
-            display: block;
-
-            @media (prefers-color-scheme: dark) {
-                filter: brightness(0) invert(1);
-            }
         }
     }
 
     &-badge {
-        font-size: 0.62rem;
+        font-size: 0.625rem;
         font-weight: 700;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.07em;
         text-transform: uppercase;
-        color: var(--forest);
-        background: rgba(0, 111, 69, 0.08);
-        border: 1px solid rgba(0, 111, 69, 0.2);
-        padding: 0.2rem 0.6rem;
-        border-radius: 100px;
+        color: $aki-green-dark;
+        background: $primary-bg-subtle;
+        padding: 0.2rem 0.55rem;
+        border-radius: $radius-pill;
 
-        @media (prefers-color-scheme: dark) {
-            color: var(--lime);
-            background: rgba(154, 202, 60, 0.1);
-            border-color: rgba(154, 202, 60, 0.25);
+        @include dark-theme {
+            color: $dark-primary-text;
+            background: $dark-primary-bg-subtle;
         }
+
+        // On a phone the logo, theme switch and sign-out need the room
+        @media (max-width: 479.98px) { display: none; }
     }
 
     &-user {
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        margin-left: auto;
+
+        @media (max-width: 479.98px) { gap: 0.5rem; }
 
         &-name {
             font-family: $font-body;
             font-size: 0.8375rem;
             color: var(--text-secondary);
+
+            @media (max-width: 575.98px) { display: none; }
         }
     }
 
     &-signout {
         font-family: $font-body;
-        font-size: 0.78rem;
+        font-size: 0.8125rem;
         font-weight: 500;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         background: none;
         border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.22rem 0.6rem;
+        border-radius: $radius-sm;
+        padding: 0.3rem 0.7rem;
         cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
         transition: color 0.15s, border-color 0.15s, background 0.15s;
 
         &:hover {
             color: var(--forest);
-            border-color: rgba(0, 111, 69, 0.4);
-            background: rgba(0, 111, 69, 0.04);
+            border-color: var(--forest);
+            background: var(--surface-alt);
+        }
+    }
+}
+
+// The admin's Light / Dark / System switch (components/ThemeSwitcher.tsx uses
+// Bootstrap's button-group classes; the playground has no Bootstrap, so they
+// are styled here to look the same).
+.theme-switcher {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: $radius-sm;
+    overflow: hidden;
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 30px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.15s, background 0.15s;
+
+        & + .btn { border-left: 1px solid var(--border); }
+        &:hover { color: var(--text-primary); background: var(--surface-alt); }
+        &.active { color: #fff; background: $gray-600; }
+
+        @include dark-theme {
+            &.active { color: $gray-900; background: $dark-secondary-color; }
         }
     }
 }
 
 // ── Auth pages — glassmorphism over cycling photos ─────────────────────────────
+
+// The photo pages (sign-in, sign-up, health) are dark in either theme; without
+// this the light page background shows grey through the translucent top bar.
+body:has(> .pg-nav--glass) { background: $aki-sidebar-bg; }
 
 // Nav variant for auth pages (floats over the background image)
 .pg-nav--glass {
@@ -272,7 +362,7 @@ body {
 }
 
 .pg-auth-title {
-    font-family: $font-display;
+    @include display-font;
     font-size: 1.6rem;
     color: #fff;
     margin-bottom: 0.3rem;
@@ -434,13 +524,15 @@ body {
     margin-bottom: 2.5rem;
 
     &-title {
-        font-family: $font-display;
+        @include display-font;
         font-size: clamp(1.75rem, 3.5vw, 2.75rem);
         color: var(--text-primary);
         margin-bottom: 0.5rem;
 
+        // Highlighted by the brand gradient alone: an italic Inter clips its
+        // last letter inside the gradient box and looks unlike the admin.
         em {
-            font-style: italic;
+            font-style: normal;
             background: var(--brand-gradient);
             -webkit-background-clip: text;
             background-clip: text;
@@ -512,8 +604,8 @@ body {
 
     &--done {
         .pg-step-num {
-            background: var(--forest);
-            border-color: var(--forest);
+            background: var(--primary-bg);
+            border-color: var(--primary-bg);
             color: #fff;
 
             font-size: 0;
@@ -559,12 +651,12 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
     transition: box-shadow 0.2s;
 
-    @media (prefers-color-scheme: dark) {
+    @include dark-theme {
         box-shadow: none;
     }
 
     &-title {
-        font-family: $font-display;
+        @include display-font;
         font-size: 1.25rem;
         color: var(--text-primary);
         margin-bottom: 0.25rem;
@@ -578,6 +670,18 @@ body {
         font-weight: 300;
         line-height: 1.6;
     }
+}
+
+// A titled group inside a step card (e.g. "Selling prices")
+.pg-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 2rem 0 0.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+
+    + .pg-card-sub { margin-bottom: 1.25rem; }
 }
 
 // ── Scenario cards ──────────────────────────────────────────────────────────────
@@ -614,7 +718,7 @@ body {
 
         .scenario-card-title { color: var(--forest); }
 
-        @media (prefers-color-scheme: dark) {
+        @include dark-theme {
             background: rgba(0, 111, 69, 0.12);
             box-shadow: 0 0 0 3px rgba(154, 202, 60, 0.18);
             .scenario-card-title { color: var(--lime); }
@@ -666,8 +770,8 @@ body {
     }
 
     &--active {
-        background: var(--forest);
-        border-color: var(--forest);
+        background: var(--primary-bg);
+        border-color: var(--primary-bg);
         color: #fff;
     }
 }
@@ -761,8 +865,8 @@ body {
 
         &:focus {
             outline: none;
-            border-color: var(--forest-mid);
-            box-shadow: 0 0 0 3px rgba(29, 74, 47, 0.1);
+            border-color: var(--forest);
+            box-shadow: 0 0 0 3px var(--focus-ring);
         }
 
         &::placeholder { color: var(--text-muted); }
@@ -835,9 +939,64 @@ body {
 
         &:focus {
             outline: none;
-            border-color: var(--forest-mid);
-            box-shadow: 0 0 0 2px rgba(29, 74, 47, 0.1);
+            border-color: var(--forest);
+            box-shadow: 0 0 0 3px var(--focus-ring);
         }
+    }
+
+    .fert-name {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    // Phones: one small card per fertilizer — tick and name on top, then the
+    // bag weight and price side by side with their own labels, so the price is
+    // never off-screen.
+    @media (max-width: 575.98px) {
+        &, tbody { display: block; }
+
+        thead {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+        }
+
+        tr {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            align-items: center;
+            gap: 0.375rem 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child { border-bottom: none; }
+
+        td {
+            padding: 0 !important;
+            border-bottom: none;
+        }
+
+        td:nth-child(2) { grid-column: 2 / -1; }
+
+        td[data-label] {
+            grid-column: auto;
+            &:nth-child(3) { grid-column: 2; }
+            &:nth-child(4) { grid-column: 3; }
+
+            &::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 0.7rem;
+                font-weight: 600;
+                color: var(--text-muted);
+                margin-bottom: 0.2rem;
+            }
+        }
+
+        input[type="number"] { min-width: 0; }
     }
 }
 
@@ -966,7 +1125,7 @@ body {
             background: rgba(29, 74, 47, 0.1);
             color: var(--forest);
 
-            @media (prefers-color-scheme: dark) { color: var(--sage); }
+            @include dark-theme { color: var(--sage); }
         }
 
         &--error {
@@ -988,7 +1147,7 @@ body {
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.07);
 
-    @media (prefers-color-scheme: dark) {
+    @include dark-theme {
         background: #080f0a;
         border-color: var(--border);
     }
@@ -1071,7 +1230,7 @@ body {
         border-bottom-color: var(--lime);
         svg { opacity: 1; }
 
-        @media (prefers-color-scheme: dark) {
+        @include dark-theme {
             color: var(--lime);
             border-bottom-color: var(--lime);
         }
@@ -1317,7 +1476,7 @@ body {
     &--pp  { color: #5a7a3a;        background: rgba(90,122,58,0.08);  border-color: rgba(90,122,58,0.25); }
     &--sp  { color: var(--harvest); background: rgba(200,151,58,0.1);  border-color: rgba(200,151,58,0.3); }
 
-    @media (prefers-color-scheme: dark) {
+    @include dark-theme {
         &--fr, &--ic, &--pp { color: var(--sage); }
     }
 }
@@ -1348,7 +1507,7 @@ body {
     color: var(--forest);
     white-space: nowrap;
 
-    @media (prefers-color-scheme: dark) { color: var(--sage); }
+    @include dark-theme { color: var(--sage); }
 }
 
 // Recommendation text box
@@ -1392,7 +1551,7 @@ body {
 
     &-icon  { font-size: 1.375rem; margin-bottom: 0.5rem; }
     &-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
-    &-value { font-family: $font-display; font-size: 1.375rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 0.25rem; }
+    &-value { @include display-font; font-size: 1.375rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 0.25rem; }
     &-sub   { font-size: 0.75rem; color: var(--text-muted); }
 
     &--highlight {
@@ -1400,7 +1559,7 @@ body {
         border-color: rgba(29,74,47,0.2);
         .rec-metric-value { color: var(--forest); }
 
-        @media (prefers-color-scheme: dark) {
+        @include dark-theme {
             background: rgba(74,158,106,0.08);
             .rec-metric-value { color: var(--sage); }
         }
@@ -1408,7 +1567,7 @@ body {
 
     &--gain {
         .rec-metric-value { color: var(--forest-mid); }
-        @media (prefers-color-scheme: dark) { .rec-metric-value { color: var(--sage); } }
+        @include dark-theme { .rec-metric-value { color: var(--sage); } }
     }
 
     &--loss {
@@ -1422,7 +1581,7 @@ body {
 
 .rec-change {
     &--pos { color: var(--forest-mid); font-weight: 600;
-        @media (prefers-color-scheme: dark) { color: var(--sage); } }
+        @include dark-theme { color: var(--sage); } }
     &--neg { color: var(--error); font-weight: 600; }
 }
 
@@ -1456,7 +1615,7 @@ body {
     }
 
     &-letter {
-        font-family: $font-display;
+        @include display-font;
         font-size: 1.125rem;
         font-weight: 700;
         line-height: 1;
@@ -1533,7 +1692,7 @@ body {
     padding: 1.25rem 1.375rem;
     margin-bottom: 1.5rem;
 
-    @media (prefers-color-scheme: dark) {
+    @include dark-theme {
         background: rgba(74,158,106,0.07);
         border-color: rgba(74,158,106,0.2);
     }
@@ -1552,7 +1711,7 @@ body {
     color: var(--forest-mid);
     margin-bottom: 0.875rem;
 
-    @media (prefers-color-scheme: dark) { color: var(--sage); }
+    @include dark-theme { color: var(--sage); }
 }
 
 .rec-best-ops {
@@ -1602,7 +1761,7 @@ body {
 
 .rec-date-icon  { font-size: 1.5rem; margin-bottom: 0.25rem; }
 .rec-date-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.2rem; }
-.rec-date-value { font-family: $font-display; font-size: 1.125rem; color: var(--text-primary); font-weight: 400; }
+.rec-date-value { @include display-font; font-size: 1.125rem; color: var(--text-primary); font-weight: 400; }
 
 .rec-schedule-arrow {
     font-size: 1.5rem;
@@ -1679,7 +1838,7 @@ body {
         color: var(--forest);
         border: 1px solid rgba(29,74,47,0.25);
 
-        @media (prefers-color-scheme: dark) { color: var(--sage); }
+        @include dark-theme { color: var(--sage); }
     }
 
     &--current {
@@ -1687,7 +1846,7 @@ body {
         color: #8a6828;
         border: 1px solid rgba(200,151,58,0.3);
 
-        @media (prefers-color-scheme: dark) { color: var(--harvest); }
+        @include dark-theme { color: var(--harvest); }
     }
 }
 
@@ -1734,7 +1893,7 @@ body {
 }
 
 .tok-section-title {
-    font-family: $font-display;
+    @include display-font;
     font-size: 1.1rem;
     color: var(--text-primary);
     margin-bottom: 0.25rem;
@@ -1787,8 +1946,8 @@ body {
     transition: border-color 0.15s, box-shadow 0.15s;
 
     &:focus {
-        border-color: var(--forest-mid);
-        box-shadow: 0 0 0 3px rgba(45, 107, 68, 0.12);
+        border-color: var(--forest);
+        box-shadow: 0 0 0 3px var(--focus-ring);
     }
 }
 
@@ -1800,7 +1959,7 @@ body {
     font-size: 0.875rem;
     font-weight: 600;
     color: #fff;
-    background: var(--forest);
+    background: var(--primary-bg);
     border: none;
     border-radius: 8px;
     padding: 0.58rem 1.1rem;
@@ -1873,6 +2032,35 @@ body {
     transition: background 0.15s;
 
     &:hover { background: rgba(45, 107, 68, 0.08); }
+}
+
+// MCP key type picker and Claude Desktop config under a new MCP key
+.tok-type-select {
+    flex: 0 0 auto;
+}
+
+.tok-status--mcp {
+    color: var(--forest);
+    background: rgba(45, 107, 68, 0.1);
+}
+
+.tok-mcp-config {
+    font-family: $font-body;
+    font-size: 0.8125rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+
+    p { margin-bottom: 0.5rem; }
+
+    pre {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.6rem 0.875rem;
+        font-size: 0.8rem;
+        overflow-x: auto;
+        margin: 0;
+    }
 }
 
 .tok-reveal-dismiss {
@@ -2138,7 +2326,7 @@ body {
 }
 
 .ph-status-label {
-    font-family: $font-display;
+    @include display-font;
     font-size: 1.25rem;
     color: #fff;
     margin: 0 0 0.2rem;

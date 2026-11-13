@@ -5,37 +5,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
-DROP TABLE IF EXISTS `DATABASECHANGELOG`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `DATABASECHANGELOG` (
-  `ID` varchar(255) NOT NULL,
-  `AUTHOR` varchar(255) NOT NULL,
-  `FILENAME` varchar(255) NOT NULL,
-  `DATEEXECUTED` datetime NOT NULL,
-  `ORDEREXECUTED` int(11) NOT NULL,
-  `EXECTYPE` varchar(10) NOT NULL,
-  `MD5SUM` varchar(35) DEFAULT NULL,
-  `DESCRIPTION` varchar(255) DEFAULT NULL,
-  `COMMENTS` varchar(255) DEFAULT NULL,
-  `TAG` varchar(255) DEFAULT NULL,
-  `LIQUIBASE` varchar(20) DEFAULT NULL,
-  `CONTEXTS` varchar(255) DEFAULT NULL,
-  `LABELS` varchar(255) DEFAULT NULL,
-  `DEPLOYMENT_ID` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `DATABASECHANGELOGLOCK`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `DATABASECHANGELOGLOCK` (
-  `ID` int(11) NOT NULL,
-  `LOCKED` bit(1) NOT NULL,
-  `LOCKGRANTED` datetime DEFAULT NULL,
-  `LOCKEDBY` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `api_keys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -54,7 +23,7 @@ CREATE TABLE `api_keys` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `api_keys_key_hash_unique` (`key_hash`),
   KEY `api_keys_user_id_is_active_index` (`user_id`,`is_active`),
-  CONSTRAINT `api_keys_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `api_keys_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `api_requests`;
@@ -67,17 +36,17 @@ CREATE TABLE `api_requests` (
   `country_code` varchar(5) GENERATED ALWAYS AS (json_unquote(json_extract(`plumber_request`,'$.country'))) STORED,
   `lat` decimal(10,6) GENERATED ALWAYS AS (json_unquote(json_extract(`plumber_request`,'$.lat'))) STORED,
   `lon` decimal(10,6) GENERATED ALWAYS AS (json_unquote(json_extract(`plumber_request`,'$.lon'))) STORED,
-  `full_names` varchar(255) GENERATED ALWAYS AS (json_unquote(json_extract(`droid_request`,'$.userInfo.userName'))) STORED,
-  `phone_number` varchar(50) GENERATED ALWAYS AS (json_unquote(json_extract(`droid_request`,'$.userInfo.mobileNumber'))) STORED,
-  `gender` varchar(50) GENERATED ALWAYS AS (json_unquote(json_extract(`droid_request`,'$.userInfo.gender'))) STORED,
+  `full_names` varchar(255) GENERATED ALWAYS AS (coalesce(json_unquote(json_extract(`droid_request`,'$.userInfo.userName')),nullif(trim(concat_ws(' ',json_unquote(json_extract(`droid_request`,'$.user_info.first_name')),json_unquote(json_extract(`droid_request`,'$.user_info.last_name')))),''))) STORED,
+  `phone_number` varchar(50) GENERATED ALWAYS AS (coalesce(json_unquote(json_extract(`droid_request`,'$.userInfo.mobileNumber')),nullif(json_unquote(json_extract(`droid_request`,'$.user_info.phone_number')),'null'))) STORED,
+  `gender` varchar(50) GENERATED ALWAYS AS (coalesce(json_unquote(json_extract(`droid_request`,'$.userInfo.gender')),json_unquote(json_extract(`droid_request`,'$.user_info.gender')))) STORED,
   `fr` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.FR')) using utf8mb4) = 'true') STORED,
   `ic` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.IC')) using utf8mb4) = 'true') STORED,
   `pp` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.PP')) using utf8mb4) = 'true') STORED,
   `sph` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.SPH')) using utf8mb4) = 'true') STORED,
   `spp` tinyint(1) GENERATED ALWAYS AS (convert(json_unquote(json_extract(`plumber_request`,'$.SPP')) using utf8mb4) = 'true') STORED,
-  `excluded` tinyint(1) GENERATED ALWAYS AS (case when `phone_number` like '254%' or `phone_number` like '49%' then 1 when `full_names` like '%KREYE%' or `full_names` like '%C K%' then 1 else 0 end) STORED,
+  `excluded` tinyint(1) NOT NULL DEFAULT 0,
   `use_case` varchar(10) GENERATED ALWAYS AS (case when `fr` = 1 then 'FR' when `pp` = 1 then 'PP' when `ic` = 1 then 'IC' when `spp` = 1 or `sph` = 1 then 'SPHS' else 'NA' end) STORED,
-  `gender_code` varchar(2) GENERATED ALWAYS AS (case when `gender` in ('Male','Mwanaume') then 'M' when `gender` in ('Female','Mwanamke') then 'F' else 'NA' end) STORED,
+  `gender_code` varchar(2) GENERATED ALWAYS AS (case when `gender` in ('Male','Mwanaume','M') then 'M' when `gender` in ('Female','Mwanamke','F') then 'F' else 'NA' end) STORED,
   `droid_request` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`droid_request`)),
   `plumber_request` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`plumber_request`)),
   `request_started_at` timestamp NULL DEFAULT NULL,
@@ -240,6 +209,44 @@ CREATE TABLE `countries` (
   SPATIAL KEY `idx_country_boundary` (`boundary`),
   KEY `countries_name_index` (`name`),
   KEY `countries_active_index` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `coverage_areas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coverage_areas` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `country_code` varchar(2) NOT NULL,
+  `geojson` longtext NOT NULL,
+  `n_cells` int(10) unsigned DEFAULT NULL,
+  `min_lon` double NOT NULL,
+  `min_lat` double NOT NULL,
+  `max_lon` double NOT NULL,
+  `max_lat` double NOT NULL,
+  `checksum` char(64) NOT NULL,
+  `fetched_at` timestamp NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `coverage_areas_country_code_unique` (`country_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `crops`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `crops` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `crop_key` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `advice_available` tinyint(1) NOT NULL DEFAULT 0,
+  `countries` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`countries`)),
+  `sort_order` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `crops_crop_key_unique` (`crop_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `currencies`;
@@ -409,6 +416,43 @@ CREATE TABLE `migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `monitored_scheduled_task_log_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `monitored_scheduled_task_log_items` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `monitored_scheduled_task_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_scheduled_task_id` (`monitored_scheduled_task_id`),
+  CONSTRAINT `fk_scheduled_task_id` FOREIGN KEY (`monitored_scheduled_task_id`) REFERENCES `monitored_scheduled_tasks` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `monitored_scheduled_tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `monitored_scheduled_tasks` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `cron_expression` varchar(255) NOT NULL,
+  `timezone` varchar(255) DEFAULT NULL,
+  `ping_url` varchar(255) DEFAULT NULL,
+  `last_started_at` datetime DEFAULT NULL,
+  `last_finished_at` datetime DEFAULT NULL,
+  `last_failed_at` datetime DEFAULT NULL,
+  `last_skipped_at` datetime DEFAULT NULL,
+  `registered_on_oh_dear_at` datetime DEFAULT NULL,
+  `last_pinged_at` datetime DEFAULT NULL,
+  `grace_time_in_minutes` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `operation_costs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -553,6 +597,21 @@ CREATE TABLE `starch_prices` (
   CONSTRAINT `starch_prices_starch_factory_id_foreign` FOREIGN KEY (`starch_factory_id`) REFERENCES `starch_factories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `traffic_exclusions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `traffic_exclusions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `field` varchar(20) NOT NULL,
+  `match_type` varchar(20) NOT NULL,
+  `value` varchar(191) NOT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `translations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -593,6 +652,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `role` enum('admin','partner','user') NOT NULL DEFAULT 'user',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
@@ -602,20 +662,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_username_unique` (`username`),
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `users_old`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users_old` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(150) NOT NULL,
-  `enabled` bit(1) NOT NULL DEFAULT b'0',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `username` (`username`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `yield_request`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -655,56 +701,5 @@ CREATE TABLE `yield_request` (
 
 /*M!999999\- enable the sandbox mode */ 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1,'2025_04_01_140811_create_app_report_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2,'2025_04_01_140811_create_authorities_table ',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3,'2025_04_01_140811_create_app_report_table',3);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4,'2025_04_01_140811_create_authorities_table',4);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5,'2025_04_01_140811_create_available_fertilizer_table',5);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6,'2025_04_01_140811_create_cassava_prices_table',6);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2025_04_01_140811_create_countries_table',7);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8,'2025_04_01_140811_create_currencies_table',8);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2025_04_01_140811_create_fertilizer_price_table',9);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10,'2025_04_01_140811_create_fertilizers_table',10);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11,'2025_04_01_140811_create_investment_amount_table',11);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2025_04_01_140811_create_maize_prices_table',12);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2025_04_01_140811_create_operation_costs_table',13);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2025_04_01_140811_create_potato_prices_table',14);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2025_04_01_140811_create_request_fertilizer_table',15);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2025_04_01_140811_create_request_response_table',16);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2025_04_01_140811_create_starch_factory_table',17);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2025_04_01_140811_create_user_feedback_table',18);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2025_04_01_140811_create_yield_request_table',19);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2025_04_01_140812_create_v_app_request_stats_view_view',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2025_04_01_140813_create_exclusion_flag_evaluation_proc',21);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2025_04_01_140813_create_process_rec_request_proc',22);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2025_04_16_000002_create_jobs_table',24);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2025_04_17_081036_rename_request_response_to_api_requests',25);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2025_04_17_081230_rename_starch_factory_to_starch_factories',26);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2025_04_29_051435_rename_operation_costs_table_to_operation_costs_old',27);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2025_04_29_051449_create_operation_costs_table',28);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2025_04_29_052838_drop_operation_costs_old_table',29);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2025_05_21_053527_create_cache_table',30);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2025_05_21_113041_add_fertilizer_label_to_fertilizers_table',31);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2025_04_16_000000_create_users_table',23);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2025_05_22_062954_change_api_request_columns_to_json',32);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (35,'2025_10_27_075019_drop_fertilizer_prices_table',33);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2025_10_27_075129_rename_fertilizer_price_to_fertilizer_prices',34);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2025_10_29_122432_create_cassava_unit_of_sale_table',35);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2025_10_31_214215_create_produce_prices_table',36);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2026_01_08_080329_add_use_case_column_to_user_feedback_table',37);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2026_03_26_000001_add_request_tracking_to_api_requests_table',38);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (41,'2026_04_07_195619_add_cis_and_cim_boolean_columns_to_fertilizers_table',39);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (42,'2026_04_08_062915_create_translations_table',40);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (43,'2026_04_08_063545_create_starch_prices_table',41);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (44,'2026_04_08_063603_create_default_prices_table',42);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (45,'2026_04_08_093844_create_api_keys_table',43);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (46,'2026_04_08_093844_create_personal_access_tokens_table',44);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2026_04_08_094604_add_abilities_to_api_keys_table',45);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2026_04_09_081130_recreate_countries_table',46);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2026_04_09_081203_improve_api_requests_table',47);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2026_04_09_120751_switch_stats_view_to_api_requests',48);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (51,'2026_04_09_120812_drop_legacy_app_report_procedures',49);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (52,'2026_04_09_121704_drop_unused_triggers_for_app_report',50);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (53,'2026_04_09_122400_drop_stats_view_add_computed_columns',51);
 COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;

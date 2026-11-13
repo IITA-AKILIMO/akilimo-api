@@ -1,0 +1,5 @@
+id,field,match_type,value,note,active
+1,phone,starts_with,254,Kenyan numbers (staff before Kenya was a target country),1
+2,phone,starts_with,49,German numbers (staff),1
+3,name,contains,KREYE,Staff name,1
+4,name,contains,C K,Staff initials,1

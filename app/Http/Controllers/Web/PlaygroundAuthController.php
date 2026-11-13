@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Web;
 
 use App\Models\User;
@@ -31,7 +37,7 @@ class PlaygroundAuthController extends Controller
             ->orWhere('email', $identifier)
             ->first();
 
-        if ($user === null || ! Hash::check($request->input('password'), $user->password)) {
+        if ($user === null || !Hash::check(value: $request->input('password'), hashedValue: $user->password)) {
             return back()->withErrors([
                 'login' => 'These credentials do not match our records.',
             ])->onlyInput('login');
@@ -50,20 +56,20 @@ class PlaygroundAuthController extends Controller
 
     public function checkUsername(Request $request): JsonResponse
     {
-        $username = trim((string) $request->query('username', ''));
+        $username = trim((string)$request->query(key: 'username', default: ''));
 
         if (strlen($username) < 3) {
             return response()->json(['available' => false, 'message' => 'At least 3 characters required']);
         }
 
-        if (! preg_match('/^[a-z0-9_]+$/', $username)) {
+        if (!preg_match('/^[a-z0-9_]+$/', $username)) {
             return response()->json(['available' => false, 'message' => 'Only lowercase letters, numbers and underscores']);
         }
 
         $taken = User::where('username', $username)->exists();
 
         return response()->json([
-            'available' => ! $taken,
+            'available' => !$taken,
             'message' => $taken ? 'Username is already taken' : 'Username is available',
         ]);
     }

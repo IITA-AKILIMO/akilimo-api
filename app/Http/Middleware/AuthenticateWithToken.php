@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Middleware;
 
 use App\Models\ApiKey;
@@ -14,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  *  1. Bearer token  — Authorization: Bearer <token>
  *     Looked up in personal_access_tokens (SHA-256 hash match).
  *
- *  2. API key       — X-Api-Key: <key>
+ *  2. API key       — X-Api-Key: <key>  (or Authorization: Bearer ak_…)
  *     Looked up in api_keys (SHA-256 hash match).
  *     Must be active and not expired.
  *
@@ -29,6 +35,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AuthenticateWithToken
 {
+    private const API_KEY_PREFIX = 'ak_';
+
     public function handle(Request $request, Closure $next, string ...$abilities): Response
     {
         $token = $this->resolveToken($request);
@@ -38,7 +46,7 @@ class AuthenticateWithToken
         }
 
         foreach ($abilities as $ability) {
-            if (! $token->can($ability)) {
+            if (!$token->can($ability)) {
                 return response()->json(
                     ['message' => "Forbidden. This token does not have the [{$ability}] ability."],
                     Response::HTTP_FORBIDDEN,
@@ -87,6 +95,10 @@ class AuthenticateWithToken
     {
         $raw = $request->header('X-Api-Key');
 
+        if (blank($raw) && str_starts_with((string)$request->bearerToken(), self::API_KEY_PREFIX)) {
+            $raw = $request->bearerToken();
+        }
+
         if (blank($raw)) {
             return null;
         }
@@ -95,7 +107,7 @@ class AuthenticateWithToken
             ->with('user')
             ->first();
 
-        if ($apiKey === null || ! $apiKey->isUsable()) {
+        if ($apiKey === null || !$apiKey->isUsable()) {
             return null;
         }
 

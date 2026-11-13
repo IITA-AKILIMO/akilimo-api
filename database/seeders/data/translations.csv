@@ -57,3 +57,5 @@ pp_rec_plough_only,"We recommend {plo_method} ploughing, but no ridging. Plant o
 pp_rec_ridge_only,"We recommend no ploughing, but to directly perform {ridg_method} ridging.","Tunapendekeza usilime, lakini moja kwa moja {ridg_method} kuweka matuta."
 pp_cost_no_change,This will not change cost in comparison with your current practice. Root production and net revenue will not change in comparison with your current practice.,Hii haitapunguza gharama ikilinganishwa na kanuni/mbinu zako za sasa za kilimo. Mavuno ya muhogo mbichi na jumla ya kipato havitabadilika ikilinganishwa na kanuni/mbinu zako za sasa za kilimo.
 pp_cost_change,This will {direction} cost by {amount}. Root production and net revenue will not change in comparison with your current practice.,Hii ita{direction} gharama kwa {amount}. Mavuno ya muhogo mbichi na jumla ya kipato havitabadilika ikilinganishwa na kanuni/mbinu zako za sasa za kilimo.
+incr,increase,ongeza
+decr,decrease,punguza

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 use App\Repositories\ApiRequestRepo;
 use App\Repositories\FertilizerRepo;
 use App\Service\AkilimoComputeService;
@@ -32,7 +38,7 @@ function parseTtl(string $value): Carbon
  */
 function assertApproxSeconds(Carbon $result, int $expectedSeconds): void
 {
-    $diff = (int) now()->diffInSeconds($result, false);
+    $diff = (int)now()->diffInSeconds($result, false);
     expect($diff)->toBeGreaterThanOrEqual($expectedSeconds - 5)
         ->toBeLessThanOrEqual($expectedSeconds + 5);
 }

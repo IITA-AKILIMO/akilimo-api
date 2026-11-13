@@ -4,6 +4,7 @@ import DataTable from '../../components/DataTable'
 import type { Column } from '../../components/DataTable'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { Paginated, UserFeedback } from '../../types'
+import DateInput from '../../components/DateInput'
 
 interface Props {
     feedback: Paginated<UserFeedback>
@@ -32,6 +33,7 @@ function RatingStars({ value, max = 5 }: { value: number; max?: number }) {
 }
 
 function navigate(params: Record<string, unknown>) {
+    // @ts-ignore
     router.get('/admin/feedback', params, { preserveScroll: true, replace: true })
 }
 
@@ -114,12 +116,12 @@ export default function FeedbackIndex({ feedback, filters, use_cases, languages 
                         </div>
 
                         <div className="col-sm-auto">
-                            <input type="date" className="form-control form-control-sm" value={filters.date_from}
-                                onChange={(e) => applyFilters({ date_from: e.target.value })} />
+                            <DateInput small ariaLabel="From date" value={filters.date_from} max={filters.date_to || undefined}
+                                onChange={(v) => applyFilters({ date_from: v })} />
                         </div>
                         <div className="col-sm-auto">
-                            <input type="date" className="form-control form-control-sm" value={filters.date_to}
-                                onChange={(e) => applyFilters({ date_to: e.target.value })} />
+                            <DateInput small ariaLabel="To date" value={filters.date_to} min={filters.date_from || undefined}
+                                onChange={(v) => applyFilters({ date_to: v })} />
                         </div>
 
                         {hasFilters && (

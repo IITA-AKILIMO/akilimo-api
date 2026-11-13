@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -27,7 +33,7 @@ class FertilizerController extends Controller
     /**
      * List Fertilizers
      *
-     * Retrieves a paginated list of all fertilizers.
+     * Retrieves a paginated list of the fertilizers that have an active price in their country. A fertilizer without one is not listed until a price is activated.
      *
      * @unauthenticated
      */
@@ -44,7 +50,8 @@ class FertilizerController extends Controller
         $availableFertilizers = $this->fertilizerRepo->paginateWithSort(
             perPage: $perPage,
             orderBy: $orderBy,
-            direction: $sort);
+            direction: $sort,
+            scope: $this->fertilizerRepo->onlyWithActivePrice());
 
         return FertilizerResourceCollection::make($availableFertilizers);
     }
@@ -52,7 +59,7 @@ class FertilizerController extends Controller
     /**
      * Fertilizers by Country
      *
-     * Retrieves a paginated list of fertilizers available in a specific country. Optionally filter by use case.
+     * Retrieves a paginated list of the fertilizers available in a specific country that have an active price there. Optionally filter by use case.
      *
      * @unauthenticated
      */
@@ -82,7 +89,8 @@ class FertilizerController extends Controller
             perPage: $perPage,
             orderBy: $orderBy,
             direction: $sort,
-            filters: $filters);
+            filters: $filters,
+            scope: $this->fertilizerRepo->onlyWithActivePrice());
 
         return FertilizerResourceCollection::make($availableFertilizers);
     }

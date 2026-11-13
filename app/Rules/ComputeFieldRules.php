@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Rules;
 
 use App\Http\Enums\EnumAreaUnit;
@@ -38,7 +44,11 @@ class ComputeFieldRules
 
             // Planting Dates
             'compute_request.planting.planting_date' => ['required', 'date'],
-            'compute_request.planting.harvest_date' => ['required', 'date'],
+            'compute_request.planting.harvest_date' => [
+                'required',
+                'date',
+                new HarvestDateWindow('compute_request.planting.planting_date', 'compute_request.recommendations'),
+            ],
             'compute_request.planting.planting_date_window' => ['integer', 'min:0'],
             'compute_request.planting.harvest_date_window' => ['integer', 'min:0'],
 
@@ -128,7 +138,7 @@ class ComputeFieldRules
             '*.date_format' => 'The :attribute must be in the format m/d/Y.',
             '*.between' => 'The :attribute must be between :min and :max.',
             '*.nullable' => 'The :attribute can be null.',
-            'compute_request.farmInformation.area_unit.in' => 'The area unit :input must be one of: '.implode(', ', EnumAreaUnit::values()).'.',
+            'compute_request.farmInformation.area_unit.in' => 'The area unit :input must be one of: ' . implode(', ', EnumAreaUnit::values()) . '.',
         ];
     }
 }

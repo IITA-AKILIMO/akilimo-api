@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Auth;
 
 final class TokenAbility
@@ -20,6 +26,12 @@ final class TokenAbility
 
     const RECOMMENDATIONS_READ = 'recommendations:read';
 
+    /** A farmer reads and deletes only their own saved advice (GET /v1/account/history). */
+    const HISTORY_OWN = 'history:own';
+
+    /** New download links for a stored PDF report (GET /v1/recommendations/reports/{id}); the MCP server's own key */
+    const REPORTS_READ = 'reports:read';
+
     const PRICES_WRITE = 'prices:write';
 
     const FEEDBACK_READ = 'feedback:read';
@@ -28,11 +40,29 @@ final class TokenAbility
 
     const TRANSLATIONS_READ = 'translations:read';
 
+    // ── AKILIMO MCP server (akilimo-mcp-agent) ────────────────────────────────
+    /** A user's key for calling the AKILIMO MCP tools from their own MCP client. */
+    const MCP_USE = 'mcp:use';
+
+    /** The MCP server's own key, for checking users' MCP keys at POST /v1/mcp/verify-key. */
+    const MCP_VERIFY_KEYS = 'mcp:verify-keys';
+
     // ── Role presets ──────────────────────────────────────────────────────────
+
+    /** MCP keys users create for themselves: the MCP tools only. */
+    const MCP_ABILITIES = [
+        self::MCP_USE,
+    ];
 
     /** Playground users: compute recommendations only. */
     const PLAYGROUND_ABILITIES = [
         self::RECOMMENDATIONS_COMPUTE,
+    ];
+
+    /** Farmers with an account: compute, and read or delete their own saved advice only. */
+    const FARMER_ABILITIES = [
+        self::RECOMMENDATIONS_COMPUTE,
+        self::HISTORY_OWN,
     ];
 
     /** Partners: compute + read history, submit prices & feedback, read translations. */
@@ -48,10 +78,14 @@ final class TokenAbility
     const ALL = [
         self::RECOMMENDATIONS_COMPUTE,
         self::RECOMMENDATIONS_READ,
+        self::HISTORY_OWN,
+        self::REPORTS_READ,
         self::PRICES_WRITE,
         self::FEEDBACK_READ,
         self::FEEDBACK_WRITE,
         self::TRANSLATIONS_READ,
+        self::MCP_USE,
+        self::MCP_VERIFY_KEYS,
         self::API_KEYS_MANAGE,
         self::READ,
         self::WRITE,
@@ -81,10 +115,14 @@ final class TokenAbility
     const LABELS = [
         self::RECOMMENDATIONS_COMPUTE => 'Compute recommendations',
         self::RECOMMENDATIONS_READ => 'Read recommendation history',
+        self::HISTORY_OWN => 'Read and delete own saved advice (farmer accounts)',
+        self::REPORTS_READ => 'Renew PDF report links (MCP server)',
         self::PRICES_WRITE => 'Submit price updates',
         self::FEEDBACK_READ => 'Read user feedback',
         self::FEEDBACK_WRITE => 'Submit user feedback',
         self::TRANSLATIONS_READ => 'Read translations',
+        self::MCP_USE => 'Use the AKILIMO MCP tools',
+        self::MCP_VERIFY_KEYS => 'Verify MCP keys (MCP server only)',
         self::API_KEYS_MANAGE => 'Manage own API keys',
         self::READ => 'Broad read (legacy)',
         self::WRITE => 'Broad write (legacy)',
@@ -119,6 +157,8 @@ final class TokenAbility
         'Recommendations' => [
             self::RECOMMENDATIONS_COMPUTE,
             self::RECOMMENDATIONS_READ,
+            self::HISTORY_OWN,
+            self::REPORTS_READ,
         ],
         'Prices' => [
             self::PRICES_WRITE,
@@ -129,6 +169,10 @@ final class TokenAbility
         ],
         'Translations' => [
             self::TRANSLATIONS_READ,
+        ],
+        'MCP' => [
+            self::MCP_USE,
+            self::MCP_VERIFY_KEYS,
         ],
         'Keys' => [
             self::API_KEYS_MANAGE,

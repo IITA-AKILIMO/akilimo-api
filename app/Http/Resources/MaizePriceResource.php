@@ -1,19 +1,20 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Resources;
 
-use App\Data\MinMaxPriceDto;
 use App\Models\MaizePrice;
+use App\Support\PriceMarker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MaizePriceResource extends JsonResource
 {
-    public function __construct($resource, private readonly MinMaxPriceDto $priceBand)
-    {
-        parent::__construct($resource);
-    }
-
     public function toArray(Request $request): array
     {
         /** @var MaizePrice $model */
@@ -31,20 +32,16 @@ class MaizePriceResource extends JsonResource
             'country_code' => $model->country,
             /** Type of produce */
             'produce_type' => $model->produce_type,
-            /** Minimum local price */
-            'min_local_price' => $model->min_local_price,
-            /** Maximum local price */
-            'max_local_price' => $model->max_local_price,
             /** Average price */
             'average_price' => $avgPrice,
             /** Whether this is an exact price */
             'exact_price' => $avgPrice === -1.0,
+            /** The text to show for this choice: its price range, or "Exact price" for the row where the farmer types their own */
+            'label' => PriceMarker::labelForRange($model->min_local_price, $model->max_local_price),
+            /** Words for the exact-price row ("Exact price"); empty for an ordinary price band */
+            'description' => PriceMarker::describe($avgPrice) ?? '',
             /** Item tag identifier */
             'item_tag' => $tag,
-            /** Minimum allowed price band */
-            'min_allowed_price' => $this->priceBand->minPrice,
-            /** Maximum allowed price band */
-            'max_allowed_price' => $this->priceBand->maxPrice,
             /** Whether the price is active */
             'active' => $model->price_active,
             /** Sort order for display */

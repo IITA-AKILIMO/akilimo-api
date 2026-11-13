@@ -1,15 +1,16 @@
 import { Link, router, usePage } from '@inertiajs/react'
-import { useMemo, useState, type ReactNode } from 'react'
+import 'bootstrap/js/dist/collapse'
+import { useMemo, useState, type FocusEvent, type MouseEvent } from 'react'
 import type { PageProps, UserRole } from '../types'
 
-// ── Inline SVG icons (stroke-based, 15×15 viewport) ──────────────────────────
+// ── Inline SVG icons (stroke-based, 24×24 viewBox) ───────────────────────────
 
-function Icon({ d, d2 }: { d: string; d2?: string }) {
+function Icon({ paths }: { paths: string[] }) {
     return (
         <svg
-            className="nav-icon"
-            width="15"
-            height="15"
+            className="nav-icon flex-shrink-0"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -18,236 +19,392 @@ function Icon({ d, d2 }: { d: string; d2?: string }) {
             strokeLinejoin="round"
             aria-hidden="true"
         >
-            <path d={d} />
-            {d2 && <path d={d2} />}
+            {paths.map((d) => <path key={d} d={d} />)}
         </svg>
     )
 }
 
-const ICON_MAP: Record<string, ReactNode> = {
-    Dashboard:            <Icon d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" d2="M9 22V12h6v10" />,
-    Users:                <Icon d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" d2="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm6.5-2a4 4 0 1 1 0-7.75M23 21v-2a4 4 0 0 0-3-3.87" />,
-    'API Keys':           <Icon d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4" />,
-    'My API Keys':        <Icon d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4" />,
-    Fertilizers:          <Icon d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />,
-    'Fertilizer Prices':  <Icon d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 0 1 0 2.828l-7 7a2 2 0 0 1-2.828 0l-7-7A2 2 0 0 1 3 12V7a4 4 0 0 1 4-4z" />,
-    'Maize Prices':       <Icon d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm0-14a1 1 0 0 0-1 1v4l3 3a1 1 0 0 0 1.414-1.414L13 10.586V7a1 1 0 0 0-1-1z" />,
-    'Cassava Prices':     <Icon d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm0-14a1 1 0 0 0-1 1v4l3 3a1 1 0 0 0 1.414-1.414L13 10.586V7a1 1 0 0 0-1-1z" />,
-    'Potato Prices':      <Icon d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm0-14a1 1 0 0 0-1 1v4l3 3a1 1 0 0 0 1.414-1.414L13 10.586V7a1 1 0 0 0-1-1z" />,
-    'Starch Prices':      <Icon d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm0-14a1 1 0 0 0-1 1v4l3 3a1 1 0 0 0 1.414-1.414L13 10.586V7a1 1 0 0 0-1-1z" />,
-    'Default Prices':     <Icon d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />,
-    'Investment Amounts': <Icon d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />,
-    'Operation Costs':    <Icon d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3" d2="M9 11l3 3L22 4" />,
-    'Starch Factories':   <Icon d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />,
-    Countries:            <Icon d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" d2="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />,
-    Currencies:           <Icon d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />,
-    'Cassava Units':      <Icon d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />,
-    Translations:         <Icon d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10" d2="M14 18h7" />,
-    'Request Log':        <Icon d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" d2="M13 3H11a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2z" />,
-    'User Feedback':      <Icon d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />,
-}
-
-function getIcon(label: string) {
-    return ICON_MAP[label] ?? (
-        <Icon d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M13 3H11a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2z" />
-    )
-}
+const ICONS = {
+    dashboard:    ['M3 3h7v9H3z', 'M14 3h7v5h-7z', 'M14 12h7v9h-7z', 'M3 16h7v5H3z'],
+    users:        ['M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm6.5-2a4 4 0 1 1 0-7.75M23 21v-2a4 4 0 0 0-3-3.87'],
+    key:          ['M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4'],
+    activity:     ['M22 12h-4l-3 9L9 3l-3 9H2'],
+    feedback:     ['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
+    ban:          ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M4.93 4.93l14.14 14.14'],
+    tag:          ['M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 0 1 0 2.828l-7 7a2 2 0 0 1-2.828 0l-7-7A2 2 0 0 1 3 12V7a4 4 0 0 1 4-4z'],
+    cassava:      ['M2.27 21.7s9.87-3.5 12.73-6.36a4.5 4.5 0 0 0-6.36-6.37C5.77 11.84 2.27 21.7 2.27 21.7z', 'M8.64 14l-2.05-2.04M15.34 15l-2.46-2.46M22 9s-1.33-2-3.5-2C16.86 7 15 9 15 9s1.33 2 3.5 2S22 9 22 9zM15 2s-2 1.33-2 3.5S15 9 15 9s2-1.84 2-3.5C17 3.33 15 2 15 2z'],
+    maize:        ['M2 22L16 8', 'M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94zM7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94zM11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94zM20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4z'],
+    potato:       ['M12 3c4.5 0 8 3 8 8s-3.5 10-9 10-7-3-7-7 3-11 8-11z', 'M10 9h.01M14 13h.01M9 15h.01'],
+    beaker:       ['M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21.5h11.6a2 2 0 0 0 1.7-3L14 9V3', 'M7 15h10'],
+    dollar:       ['M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'],
+    wrench:       ['M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'],
+    trending:     ['M22 7l-8.5 8.5-5-5L2 17', 'M16 7h6v6'],
+    sack:         ['M7 4h10l-1 3c2 2 3 5 3 8a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6c0-3 1-6 3-8z', 'M8 7h8'],
+    globe:        ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'],
+    sprout:       ['M12 22V12m0 0C12 7 9 4 4 4c0 5 3 8 8 8zm0 0c0-5 3-8 8-8 0 5-3 8-8 8'],
+    coins:        ['M8 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12z', 'M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4M16.71 13.88l.7.71-2.82 2.82'],
+    scale:        ['M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1zM2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z', 'M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2'],
+    factory:      ['M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z', 'M17 18h1M12 18h1M7 18h1'],
+    translate:    ['M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10', 'M14 18h7'],
+    search:       ['M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', 'M21 21l-4.35-4.35'],
+    signOut:      ['M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75'],
+} satisfies Record<string, string[]>
 
 // ── Nav structure ─────────────────────────────────────────────────────────────
+// Roles per item mirror routes/web.php: everything outside the `role:admin`
+// group is open to partners too.
+
+const BOTH: UserRole[] = ['admin', 'partner']
+const ADMIN: UserRole[] = ['admin']
 
 interface NavItem {
     label: string
     href: string
+    icon: keyof typeof ICONS
+    roles: UserRole[]
+    /** Label shown to partners instead, when it differs. */
+    partnerLabel?: string
+    /** A submenu: shown under the item while the user is anywhere in its area. */
+    children?: { label: string; href: string }[]
+    /** Other pages that belong to this item, so it stays highlighted on them. */
+    also?: string[]
+    /** Pages under this item's href that belong to another item. */
+    exclude?: string[]
 }
 
-interface NavGroup {
+interface NavSection {
     heading: string
-    roles: UserRole[]
     items: NavItem[]
 }
 
-const navigation: NavGroup[] = [
+/** Pages that sit under Catalogue > Fertilizers (shown as tabs) */
+export const FERTILIZER_AREA = [
+    '/admin/fertilizer-types',
+    '/admin/reference/fertilizer-types',
+    '/admin/reference/fertilizer-categories',
+    '/admin/reference/fertilizer-use-cases',
+]
+/** Pages that sit under Catalogue > Units of sale (shown as tabs) */
+export const UNITS_AREA = ['/admin/cassava-units', '/admin/reference/maize-units']
+
+export const navigation: NavSection[] = [
     {
         heading: 'Overview',
-        roles: ['admin', 'partner'],
         items: [
-            { label: 'Dashboard', href: '/admin' },
+            { label: 'Dashboard', href: '/admin', icon: 'dashboard', roles: BOTH },
         ],
     },
     {
-        heading: 'Management',
-        roles: ['admin'],
+        heading: 'Prices',
         items: [
-            { label: 'Users', href: '/admin/users' },
-            { label: 'API Keys', href: '/admin/api-keys' },
-            { label: 'Fertilizers', href: '/admin/fertilizers' },
-            { label: 'Fertilizer Prices', href: '/admin/fertilizer-prices' },
+            { label: 'Price catalogue', href: '/admin/price-catalogue', icon: 'dollar', roles: ADMIN },
+            { label: 'Starch prices', href: '/admin/starch-prices', icon: 'beaker', roles: ADMIN },
+            { label: 'App price lists', href: '/admin/price-lists', icon: 'tag', roles: ADMIN },
         ],
     },
     {
-        heading: 'Commodity Prices',
-        roles: ['admin'],
+        heading: 'Catalogue',
         items: [
-            { label: 'Maize Prices', href: '/admin/maize-prices' },
-            { label: 'Cassava Prices', href: '/admin/cassava-prices' },
-            { label: 'Potato Prices', href: '/admin/potato-prices' },
-            { label: 'Starch Prices', href: '/admin/starch-prices' },
-            { label: 'Default Prices', href: '/admin/default-prices' },
+            // The tab bar (components/SectionTabs.tsx) holds the pages that belong with each of these
+            { label: 'Fertilizers', href: '/admin/fertilizers', icon: 'sack', roles: ADMIN, also: FERTILIZER_AREA },
+            { label: 'Crops', href: '/admin/crops', icon: 'sprout', roles: ADMIN },
+            { label: 'Starch factories', href: '/admin/starch-factories', icon: 'factory', roles: ADMIN },
+            { label: 'Units of sale', href: '/admin/cassava-units', icon: 'scale', roles: ADMIN, also: UNITS_AREA },
         ],
     },
     {
-        heading: 'Supporting Data',
-        roles: ['admin'],
+        heading: 'Places and money',
         items: [
-            { label: 'Investment Amounts', href: '/admin/investment-amounts' },
-            { label: 'Operation Costs', href: '/admin/operation-costs' },
-            { label: 'Starch Factories', href: '/admin/starch-factories' },
-            { label: 'Countries', href: '/admin/countries' },
-            { label: 'Currencies', href: '/admin/currencies' },
-            { label: 'Cassava Units', href: '/admin/cassava-units' },
-            { label: 'Translations', href: '/admin/translations' },
+            { label: 'Countries', href: '/admin/countries', icon: 'globe', roles: ADMIN },
+            { label: 'Currencies', href: '/admin/currencies', icon: 'coins', roles: ADMIN },
         ],
     },
     {
-        heading: 'API Keys',
-        roles: ['partner'],
+        heading: 'Price rules',
         items: [
-            { label: 'My API Keys', href: '/admin/api-keys' },
+            // The hub of the settings the price lists are worked out with; fertilizer and unit lists live under Catalogue
+            { label: 'Price rules', href: '/admin/reference', icon: 'wrench', roles: ADMIN, exclude: [...FERTILIZER_AREA, ...UNITS_AREA] },
+        ],
+    },
+    {
+        heading: 'Content',
+        items: [
+            { label: 'Translations', href: '/admin/translations', icon: 'translate', roles: ADMIN },
         ],
     },
     {
         heading: 'Monitoring',
-        roles: ['admin', 'partner'],
         items: [
-            { label: 'Request Log', href: '/admin/requests' },
-            { label: 'User Feedback', href: '/admin/feedback' },
+            { label: 'Request log', href: '/admin/requests', icon: 'activity', roles: BOTH },
+            { label: 'User feedback', href: '/admin/feedback', icon: 'feedback', roles: BOTH },
+            { label: 'Excluded traffic', href: '/admin/traffic-exclusions', icon: 'ban', roles: ADMIN },
+        ],
+    },
+    {
+        heading: 'Access',
+        items: [
+            { label: 'API keys', partnerLabel: 'My API keys', href: '/admin/api-keys', icon: 'key', roles: BOTH },
+            { label: 'Users', href: '/admin/users', icon: 'users', roles: ADMIN },
         ],
     },
 ]
 
-function isActive(currentPath: string, href: string): boolean {
+/** The item is highlighted on its own page, on the pages it lists as `also`, and not on the ones it excludes. */
+export function itemActive(item: NavItem, currentPath: string): boolean {
+    if ((item.exclude ?? []).some((h) => isActive(currentPath, h))) return false
+    return isActive(currentPath, item.href) || (item.also ?? []).some((h) => isActive(currentPath, h))
+}
+
+export function isActive(currentPath: string, href: string): boolean {
+    if (href === '/admin') return currentPath === '/admin' || currentPath === '/admin/'
     return currentPath === href || currentPath.startsWith(href + '/')
 }
 
-interface SidebarProps {
-    currentPath: string
+/** The submenu entry the current page is on, if the item has one. */
+function activeChild(item: NavItem, currentPath: string) {
+    return item.children?.find((c) => isActive(currentPath, c.href))
 }
 
-export default function Sidebar({ currentPath }: SidebarProps) {
+/** The section and item the current page belongs to, for the header eyebrow. */
+export function findActive(currentPath: string): { section: string; label: string } | null {
+    for (const section of navigation) {
+        const item = section.items.find((i) => itemActive(i, currentPath) || activeChild(i, currentPath))
+        if (item) return { section: section.heading, label: activeChild(item, currentPath)?.label ?? item.label }
+    }
+    return null
+}
+
+// Matches Bootstrap's lg breakpoint, where the offcanvas becomes a static sidebar.
+export const DESKTOP_QUERY = '(min-width: 992px)'
+
+const NAV_ID = 'admin-nav'
+
+interface SidebarProps {
+    id: string
+    currentPath: string
+    /** Desktop icon rail; below lg the offcanvas always shows labels. */
+    collapsed: boolean
+}
+
+/**
+ * Bootstrap `offcanvas-lg`: a static sidebar from lg up, an off-canvas drawer
+ * below it (backdrop, focus trap, Escape and scroll lock come from Bootstrap).
+ */
+export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
     const { auth } = usePage<PageProps>().props
     const role = auth.user?.role
 
-    const visibleGroups = useMemo(
-        () => navigation.filter((g) => role !== undefined && g.roles.includes(role)),
-        [role],
+    const [filter, setFilter] = useState('')
+    const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(null)
+
+    const sections = useMemo(() => {
+        const q = filter.trim().toLowerCase()
+        return navigation
+            .map((s) => ({
+                heading: s.heading,
+                items: s.items
+                    .filter((i) => role !== undefined && i.roles.includes(role))
+                    .map((i) => ({ ...i, label: role === 'partner' && i.partnerLabel ? i.partnerLabel : i.label }))
+                    .filter((i) => !q || i.label.toLowerCase().includes(q) || s.heading.toLowerCase().includes(q)
+                        || (i.children ?? []).some((c) => c.label.toLowerCase().includes(q))),
+            }))
+            .filter((s) => s.items.length > 0)
+    }, [role, filter])
+
+    const filtering = filter.trim() !== ''
+
+    // The accordion opens on the current page's section; the first collapsible one otherwise.
+    const activeHeading = findActive(currentPath)?.section
+    const openSlug = ((sections.find((s) => s.heading === activeHeading && s.items.length > 1)
+        ?? sections.find((s) => s.items.length > 1))?.heading ?? '').replace(/\W+/g, '-').toLowerCase()
+
+    const itemCount = navigation.reduce(
+        (n, s) => n + s.items.filter((i) => role !== undefined && i.roles.includes(role)).length,
+        0,
     )
 
-    const initialOpen = Object.fromEntries(
-        visibleGroups.map((g) => [
-            g.heading,
-            g.items.some((i) => isActive(currentPath, i.href)),
-        ]),
-    )
-    const [open, setOpen] = useState<Record<string, boolean>>(initialOpen)
-
-    function toggle(heading: string) {
-        setOpen((prev) => ({ ...prev, [heading]: !prev[heading] }))
+    // Labels are hidden only in the desktop rail, so that's the only place tooltips are needed.
+    function showTooltip(label: string, e: MouseEvent<HTMLElement> | FocusEvent<HTMLElement>) {
+        if (!collapsed || !window.matchMedia(DESKTOP_QUERY).matches) return
+        const r = e.currentTarget.getBoundingClientRect()
+        setTooltip({ label, top: r.top + r.height / 2 })
     }
 
-    function handleLogout() {
-        router.post('/admin/logout')
-    }
+    const tooltipProps = (label: string) => ({
+        onMouseEnter: (e: MouseEvent<HTMLElement>) => showTooltip(label, e),
+        onMouseLeave: () => setTooltip(null),
+        onFocus: (e: FocusEvent<HTMLElement>) => showTooltip(label, e),
+        onBlur: () => setTooltip(null),
+    })
 
     return (
-        <aside className="admin-sidebar flex-shrink-0">
+        <aside
+            id={id}
+            className="admin-sidebar offcanvas-lg offcanvas-start"
+            tabIndex={-1}
+            aria-label="Admin menu"
+        >
             {/* Brand */}
-            <div className="sidebar-brand">
-                <div className="brand-logo-wrap">
-                    <img src="/images/akilimo_logo_white.png" alt="Akilimo" />
-                </div>
-                <span className="brand-label">Admin</span>
+            <div className="sidebar-brand d-flex align-items-center gap-2 border-bottom">
+                <Link href="/admin" className="brand-logo rounded focus-ring" aria-label="AKILIMO admin home">
+                    <img className="brand-logo-full logo-on-light" src="/images/akilimo_logo_colored.png" alt="" />
+                    <img className="brand-logo-full logo-on-dark" src="/images/akilimo_logo_white.png" alt="" />
+                    <img className="brand-logo-icon" src="/images/akilimo_mark.png" alt="" />
+                </Link>
+                <span className="brand-label badge rounded-pill bg-primary-subtle text-primary-emphasis">Admin</span>
+                <button
+                    type="button"
+                    className="btn-close ms-auto d-lg-none"
+                    data-bs-dismiss="offcanvas"
+                    data-bs-target={`#${id}`}
+                    aria-label="Close menu"
+                />
             </div>
 
-            {/* Navigation */}
-            <nav className="nav-scroll" aria-label="Main navigation">
-                {visibleGroups.map((group) => {
-                    const isOpen = open[group.heading] ?? false
-                    const hasActive = group.items.some((i) => isActive(currentPath, i.href))
-
-                    return (
-                        <div key={group.heading} className="nav-group">
-                            <button
-                                type="button"
-                                onClick={() => toggle(group.heading)}
-                                className="nav-group-toggle"
-                                aria-expanded={isOpen}
-                            >
-                                <span className={`nav-group-label${hasActive ? ' is-active' : ''}`}>
-                                    {group.heading}
-                                </span>
-                                <svg
-                                    className={`nav-chevron${isOpen ? ' is-open' : ''}`}
-                                    width="11"
-                                    height="11"
-                                    viewBox="0 0 12 12"
-                                    fill="currentColor"
-                                    aria-hidden="true"
-                                >
-                                    <path d="M6 8L1 3h10L6 8z" />
-                                </svg>
-                            </button>
-
-                            <div style={{
-                                overflow: 'hidden',
-                                maxHeight: isOpen ? '600px' : '0',
-                                transition: 'max-height 0.25s ease',
-                            }}>
-                                {group.items.map((item) => (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        className={`nav-link${isActive(currentPath, item.href) ? ' active' : ''}`}
-                                    >
-                                        {getIcon(item.label)}
-                                        {item.label}
-                                    </Link>
-                                ))}
-                            </div>
+            <div className="offcanvas-body d-flex flex-column p-0">
+                {/* Quick filter, only worth it when the list is long */}
+                {itemCount > 6 && (
+                    <div className="nav-filter px-3 pt-3">
+                        <div className="input-group input-group-sm">
+                            <span className="input-group-text bg-body text-body-tertiary">
+                                <Icon paths={ICONS.search} />
+                            </span>
+                            <input
+                                type="search"
+                                className="form-control border-start-0 ps-0"
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Escape' && filter) { e.stopPropagation(); setFilter('') } }}
+                                placeholder="Find a page"
+                                aria-label="Find a page in the menu"
+                            />
                         </div>
-                    )
-                })}
-            </nav>
+                    </div>
+                )}
 
-            {/* User footer */}
-            <div className="sidebar-footer">
-                <div className="d-flex align-items-center gap-2">
-                    <div className="user-avatar">
+                {/* Navigation */}
+                {/* Sections are a Bootstrap accordion (data-bs-parent): opening one closes the
+                    others. A filter shows every match, so it renders them all open instead. */}
+                <nav
+                    id={NAV_ID}
+                    key={filtering ? 'filtered' : 'accordion'}
+                    className="nav-scroll flex-grow-1 overflow-y-auto px-3 pb-3"
+                    aria-label="Main navigation"
+                    onScroll={() => setTooltip(null)}
+                >
+                    {sections.map((section) => {
+                        const slug = section.heading.replace(/\W+/g, '-').toLowerCase()
+                        const headingId = `nav-h-${slug}`
+                        const listId = `nav-s-${slug}`
+                        // A single-link section has nothing to fold away.
+                        const collapsible = !filtering && section.items.length > 1
+                        const open = !collapsible || slug === openSlug
+                        return (
+                            <div key={section.heading} className="nav-section">
+                                <h2 className="nav-heading">
+                                    {collapsible ? (
+                                        <button
+                                            id={headingId}
+                                            type="button"
+                                            className={`nav-heading-toggle${open ? '' : ' collapsed'}`}
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#${listId}`}
+                                            aria-expanded={open}
+                                            aria-controls={listId}
+                                        >
+                                            {section.heading}
+                                            <svg className="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <path d="M6 9l6 6 6-6" />
+                                            </svg>
+                                        </button>
+                                    ) : (
+                                        <span id={headingId}>{section.heading}</span>
+                                    )}
+                                </h2>
+                                <div
+                                    id={listId}
+                                    className={collapsible ? `collapse${open ? ' show' : ''}` : undefined}
+                                    data-bs-parent={collapsible ? `#${NAV_ID}` : undefined}
+                                >
+                                <ul className="nav nav-pills flex-column gap-1" aria-labelledby={headingId}>
+                                    {section.items.map((item) => {
+                                        // An item with a submenu is highlighted only on its own page; on a
+                                        // submenu page the submenu entry is highlighted instead
+                                        const inArea = itemActive(item, currentPath) || !!activeChild(item, currentPath)
+                                        const active = item.children ? currentPath === item.href : itemActive(item, currentPath)
+                                        const showChildren = !!item.children && (inArea || filtering)
+                                        return (
+                                            <li key={item.href} className="nav-item">
+                                                <Link
+                                                    href={item.href}
+                                                    className={`nav-link d-flex align-items-center gap-2${active ? ' active' : ''}`}
+                                                    aria-current={active ? 'page' : undefined}
+                                                    {...tooltipProps(item.label)}
+                                                >
+                                                    <Icon paths={ICONS[item.icon]} />
+                                                    <span className="nav-label text-truncate">{item.label}</span>
+                                                </Link>
+                                                {showChildren && (
+                                                    <ul className="nav-sub list-unstyled" aria-label={`${item.label} pages`}>
+                                                        {item.children!.map((child) => {
+                                                            const childActive = isActive(currentPath, child.href)
+                                                            return (
+                                                                <li key={child.href}>
+                                                                    <Link
+                                                                        href={child.href}
+                                                                        className={`nav-sublink${childActive ? ' active' : ''}`}
+                                                                        aria-current={childActive ? 'page' : undefined}
+                                                                    >
+                                                                        {child.label}
+                                                                    </Link>
+                                                                </li>
+                                                            )
+                                                        })}
+                                                    </ul>
+                                                )}
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                                </div>
+                            </div>
+                        )
+                    })}
+                    {sections.length === 0 && (
+                        <p className="small text-body-secondary px-2 py-3 mb-0" role="status">No page matches “{filter}”.</p>
+                    )}
+                </nav>
+
+                {/* User footer */}
+                <div className="sidebar-footer d-flex align-items-center gap-2 border-top p-3">
+                    <div className="user-avatar rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" aria-hidden="true">
                         {auth.user?.name?.charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex-grow-1 overflow-hidden">
+                    <div className="user-info flex-grow-1 overflow-hidden lh-sm">
                         <div className="d-flex align-items-center gap-2">
-                            <span className="user-name text-truncate">{auth.user?.name}</span>
-                            <span
-                                className={`badge ${role === 'admin' ? 'bg-success' : 'bg-secondary'}`}
-                                style={{ fontSize: '0.6rem' }}
-                            >
-                                {role}
-                            </span>
+                            <span className="fw-medium small text-truncate">{auth.user?.name}</span>
+                            <span className={`badge rounded-pill ${role === 'admin' ? 'bg-primary-subtle text-primary-emphasis' : 'bg-secondary-subtle text-secondary-emphasis'}`}>{role}</span>
                         </div>
-                        <div className="user-meta text-truncate">{auth.user?.username}</div>
+                        <div className="small text-body-secondary text-truncate">{auth.user?.username}</div>
                     </div>
                     <button
-                        onClick={handleLogout}
-                        className="signout-btn"
-                        title="Sign out"
+                        type="button"
+                        onClick={() => router.post('/admin/logout')}
+                        className="btn btn-sm btn-outline-secondary border-0 flex-shrink-0"
                         aria-label="Sign out"
+                        {...tooltipProps('Sign out')}
                     >
-                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                        </svg>
+                        <Icon paths={ICONS.signOut} />
                     </button>
                 </div>
             </div>
+
+            {tooltip && (
+                <div className="tooltip bs-tooltip-end show rail-tooltip" role="tooltip" style={{ top: tooltip.top }}>
+                    <div className="tooltip-arrow" />
+                    <div className="tooltip-inner">{tooltip.label}</div>
+                </div>
+            )}
         </aside>
     )
 }

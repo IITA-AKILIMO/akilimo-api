@@ -1,5 +1,6 @@
+import type {MouseEvent} from 'react'
 import SubmitButton from './SubmitButton'
-import {minHarvestDate, maxHarvestDate, plantingMin} from './usePlaygroundForm'
+import {minHarvestDate, maxHarvestDate, plantingMin, typicalHarvestDate} from './usePlaygroundForm'
 import type {FormState} from './types'
 
 interface Props {
@@ -11,12 +12,27 @@ interface Props {
     onSubmit: () => void
 }
 
+/**
+ * Open the browser's calendar when the field itself is clicked, not only its small
+ * icon. Typing a date still works; browsers without showPicker() keep their own behaviour.
+ */
+function openPicker(e: MouseEvent<HTMLInputElement>) {
+    try {
+        e.currentTarget.showPicker?.()
+    } catch {
+        // Not allowed here (e.g. in a cross-origin frame): the icon still opens it
+    }
+}
+
 export default function StepDates({form, errors, submitting, onChange, onBack, onSubmit}: Readonly<Props>) {
     function handlePlantingChange(pd: string) {
+        if (!pd) { onChange({plantingDate: pd}); return }
         const minH = minHarvestDate(pd)
         const maxH = maxHarvestDate(pd)
         onChange({
             plantingDate: pd,
+            // No harvest date yet: suggest a typical 12-month season
+            ...(!form.harvestDate ? {harvestDate: typicalHarvestDate(pd)} : {}),
             ...(form.harvestDate && form.harvestDate < minH ? {harvestDate: minH} : {}),
             ...(form.harvestDate && form.harvestDate > maxH ? {harvestDate: maxH} : {}),
         })
@@ -34,8 +50,9 @@ export default function StepDates({form, errors, submitting, onChange, onBack, o
             <div className="pg-form-grid">
                 <div className="pg-field">
                     <label htmlFor="plantingDate">Planting date</label>
-                    <input id="plantingDate" type="date" value={form.plantingDate}
+                    <input id="plantingDate" type="date" className="pg-date" value={form.plantingDate}
                            min={plantingMin}
+                           onClick={openPicker}
                            onChange={(e) => handlePlantingChange(e.target.value)}/>
                     {errors.plantingDate && <span className="pg-field-error">{errors.plantingDate}</span>}
                     <span className="pg-field-hint">No earlier than {plantingMin}</span>
@@ -43,12 +60,17 @@ export default function StepDates({form, errors, submitting, onChange, onBack, o
 
                 <div className="pg-field">
                     <label htmlFor="harvestDate">Expected harvest date</label>
-                    <input id="harvestDate" type="date" value={form.harvestDate}
+                    <input id="harvestDate" type="date" className="pg-date" value={form.harvestDate}
                            min={minHarvestDate(form.plantingDate)}
                            max={maxHarvestDate(form.plantingDate)}
+                           onClick={openPicker}
                            onChange={(e) => onChange({harvestDate: e.target.value})}/>
                     {errors.harvestDate && <span className="pg-field-error">{errors.harvestDate}</span>}
-                    <span className="pg-field-hint">~7.8–15 months after planting date</span>
+                    <span className="pg-field-hint">
+                        {form.plantingDate
+                            ? `Between ${minHarvestDate(form.plantingDate)} and ${maxHarvestDate(form.plantingDate)}; set to 12 months after planting`
+                            : 'Set automatically once you pick a planting date'}
+                    </span>
                 </div>
 
                 <div className="pg-field">

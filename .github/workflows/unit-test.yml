@@ -1,5 +1,7 @@
 name: UnitTests
 
+# The tests need MariaDB (database views and generated columns), not SQLite. No Node build is needed: the tests stand in for
+# Vite (tests/TestCase.php), so they run without public/build.
 on:
   push:
     paths-ignore:
@@ -8,24 +10,65 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+# Runs of the same kind on one branch replace each other. A push run and a pull-request run never do: the gate job below skips
+# the push run when a pull request is open, because cancelling one of the two would leave a cancelled check on the pull request
+concurrency:
+  group: unit-test-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 env:
   APP_ENV: testing
+  # A throwaway key for tests only; phpunit.xml sets one as well
   APP_KEY: base64:Ny2n0WddJ9K1bJPlK4CkS5I0Wj9BbytcVYdRmqNP/5I=
 
 jobs:
+  # A push to a branch that has an open pull request is checked by the pull request's own run, so the push run is skipped here.
+  # Without this, the push run and the pull-request run check the same commit, one of them is cancelled, and GitHub shows a
+  # cancelled (not passing) check on the pull request. Pushes to branches without a pull request still run.
+  gate:
+    name: Decide whether to run
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          run=true
+
+          if [ "$EVENT" = "push" ]; then
+            # An open pull request runs the same checks on this commit, so the push run would only duplicate it
+            open="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq 'length' 2>/dev/null || echo 0)"
+            if [ "${open:-0}" != "0" ]; then
+              run=false
+              echo "A pull request is open for $BRANCH, so its own run checks this commit. This push run is skipped." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   test:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    concurrency:
-      cancel-in-progress: true
-      group: unit-test-${{ github.ref }}
 
     services:
       mariadb:
         image: mariadb:11.2
         env:
           MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: akilimo_test
+          MARIADB_DATABASE: akilimo
         ports:
           - 3306:3306
         options: >-
@@ -38,7 +81,7 @@ jobs:
       DB_CONNECTION: mariadb
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_DATABASE: akilimo_test
+      DB_DATABASE: akilimo
       DB_USERNAME: root
       DB_PASSWORD: root
 
@@ -46,94 +89,62 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      # ── Test-result cache ────────────────────────────────────────────────────
-      - name: Restore test result cache
-        id: test-cache
-        uses: actions/cache/restore@v6
-        with:
-          path: .test-passed
-          key: test-result-${{ github.sha }}
+      - name: Set up PHP and install dependencies
+        uses: ./.github/actions/php-setup
 
-      # ── PHP setup ───────────────────────────────────────────────────────────
-      - name: Set up PHP
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: pdo_pgsql,pdo_mysql,mbstring
-          coverage: none
-
-      # ── Install DB Client CLI ────────────────────────────────────────────────
-      - name: Install MariaDB Client
-        if: steps.test-cache.outputs.cache-hit != 'true'
+      # Laravel loads the committed MariaDB schema dump with the client program
+      - name: Install MariaDB client
         run: |
           sudo apt-get update
           sudo apt-get install -y mariadb-client
 
-      # ── Composer vendor cache ────────────────────────────────────────────────
-      - name: Restore composer cache
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        id: composer-cache
-        uses: actions/cache@v6
-        with:
-          path: vendor
-          key: composer-${{ runner.os }}-php8.4-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            composer-${{ runner.os }}-php8.4-
-
-      - name: Install dependencies
-        if: steps.test-cache.outputs.cache-hit != 'true' && steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer install --no-progress --no-suggest --prefer-dist --no-scripts
-
-      - name: Run composer scripts
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        run: composer run-script post-autoload-dump
-
-      # ── App bootstrap ────────────────────────────────────────────────────────
-      - name: Copy .env
-        if: steps.test-cache.outputs.cache-hit != 'true'
+      - name: Prepare environment file
         run: cp .env.example .env
 
-      - name: Generate app key
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        run: php artisan key:generate --new
+      # The tests migrate the database themselves (RefreshDatabase), so there is no separate migrate step here
+      - name: Check code style
+        run: composer run lint:check
 
-      # ── Frontend assets ──────────────────────────────────────────────────────
-      - name: Set up pnpm
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11.27.0
-
-      - name: Restore pnpm cache
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@v6
-        with:
-          path: ~/.local/share/pnpm/store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: pnpm-${{ runner.os }}-
-
-      - name: Install Node dependencies
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        run: pnpm install --frozen-lockfile
-
-      - name: Build assets
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        run: pnpm build
-
-      # ── Tests ────────────────────────────────────────────────────────────────
+      # test:ci is plain Pest. `composer test` adds --bail, which stops at the first failure and hides the others
       - name: Run tests
-        if: steps.test-cache.outputs.cache-hit != 'true'
-        run: composer run test
+        run: |
+          mkdir -p test-results
+          composer run test:ci -- --log-junit=test-results/junit.xml
 
-      # Save sentinel only after tests pass
-      - name: Create test sentinel
-        if: steps.test-cache.outputs.cache-hit != 'true' && success()
-        run: echo "passed at $(date -u)" > .test-passed
+      - name: Summarise the test results
+        if: always()
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import os
+          import xml.etree.ElementTree as ET
 
-      - name: Save test result cache
-        if: steps.test-cache.outputs.cache-hit != 'true' && success()
-        uses: actions/cache/save@v6
+          path = "test-results/junit.xml"
+          if not os.path.exists(path):
+              print("## Tests\n\nNo test report was written (the run stopped before the tests finished).")
+              raise SystemExit
+
+          root = ET.parse(path).getroot()
+          cases = list(root.iter("testcase"))
+          failed = [c for c in cases if c.find("failure") is not None or c.find("error") is not None]
+          skipped = [c for c in cases if c.find("skipped") is not None]
+          print(f"## Tests\n\n{len(cases)} run, {len(failed)} failed, {len(skipped)} skipped.\n")
+          for case in failed[:30]:
+              print(f"- `{case.get('classname', '')}::{case.get('name', '')}`")
+          if len(failed) > 30:
+              print(f"- ... and {len(failed) - 30} more")
+          PY
+
+      - name: Upload the test report
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          path: .test-passed
-          key: test-result-${{ github.sha }}
+          name: test-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # Information, not a gate: an advisory in a package we cannot fix today must not stop every build
+      - name: Check dependencies for known vulnerabilities
+        if: always()
+        continue-on-error: true
+        run: composer audit --no-dev

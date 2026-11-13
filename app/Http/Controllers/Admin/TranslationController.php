@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\TranslationRequest;
@@ -16,15 +22,22 @@ class TranslationController extends AdminController
 
     public function index(Request $request): Response
     {
-        $search = (string) $request->get('search', '');
-        $perPage = (int) $request->get('per_page', 20);
+        $values = $this->filterValues($request, ['search', 'missing']);
+        // Rows still to translate: that language's text is empty
+        $missing = in_array($values['missing'], ['sw', 'rw'], true) ? $values['missing'] : null;
 
-        $paginator = $search !== ''
-            ? $this->repo->paginateWithSearch($search, $perPage)
-            : $this->repo->paginateWithSort(perPage: $perPage, orderBy: 'key', direction: 'asc');
+        $paginator = $this->repo->paginateWithSort(
+            perPage: (int)$request->get('per_page', 20),
+            orderBy: 'key',
+            direction: 'asc',
+            // Was the key only; the text in any language now finds a row too
+            search: $values['search'],
+            searchColumns: ['key', 'en', 'sw', 'rw'],
+            scope: $missing ? fn ($q) => $q->where(fn ($w) => $w->whereNull($missing)->orWhere($missing, '')) : null,
+        );
 
         return Inertia::render('Translations/Index', [
-            'filters' => ['search' => $search],
+            'filters' => $values,
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'key' => $f->key,
@@ -75,8 +88,8 @@ class TranslationController extends AdminController
 
     public function batchEdit(Request $request): Response
     {
-        $search = (string) $request->get('search', '');
-        $limit = (int) $request->get('limit', 50);
+        $search = (string)$request->get('search', '');
+        $limit = (int)$request->get('limit', 50);
 
         $rows = $this->repo->forBatchEdit($search, $limit)->map(fn ($t) => [
             'id' => $t->id,
@@ -107,7 +120,7 @@ class TranslationController extends AdminController
         ]);
 
         DB::transaction(function () use ($validated) {
-            if (! empty($validated['deleted_ids'])) {
+            if (!empty($validated['deleted_ids'])) {
                 $this->repo->deleteByIds($validated['deleted_ids']);
             }
 
@@ -119,7 +132,7 @@ class TranslationController extends AdminController
                     'rw' => $row['rw'] ?? null,
                 ];
 
-                if (! empty($row['id'])) {
+                if (!empty($row['id'])) {
                     $this->repo->update($row['id'], $fields);
                 } else {
                     $this->repo->create($fields);

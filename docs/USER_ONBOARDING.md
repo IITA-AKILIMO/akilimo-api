@@ -104,7 +104,14 @@ X-Api-Key: ak_a1b2c3d4e5f6...
 |---------|-------------|
 | `read` | GET protected endpoints (recommendations history, feedback, translations) |
 | `write` | POST/compute endpoints (compute recommendations, submit feedback) |
-| `api-keys:manage` | Create, list, revoke, delete own API keys |
+| `api-keys:manage` | Create, list, revoke, delete own API keys. A new key can only have abilities the creating token or key has itself (otherwise `422`); leaving `abilities` out asks for a wildcard key, which only a wildcard or admin token may create |
+| `mcp:use` | The AKILIMO MCP server only (see below); such a key works nowhere else in this API |
+
+---
+
+### MCP keys (AKILIMO tools in Claude Desktop and other AI clients)
+
+The AKILIMO MCP server (`https://akilimo-mcp.akilimo.org/mcp`, repository `akilimo-mcp-agent`) gives AI clients the same data and recommendations as tools. When it requires a key, create one in the playground: sign in at `/playground` > **API keys** > type **MCP key** > **Generate**, and copy it (shown once, with a ready Claude Desktop configuration). Send it to the MCP server, not to this API, as `Authorization: Bearer <key>` or `X-API-Key: <key>`. Revoking or deleting it in the playground stops it within a minute. Details: [MCP_KEYS.md](./MCP_KEYS.md).
 
 ---
 
@@ -158,11 +165,18 @@ Content-Type: application/json
     "rec_type": "FR",
     "recommendation": { ... },
     "fertilizer_rates": { ... }
+  },
+  "report": {
+    "url": "https://api.akilimo.org/api/v1/recommendations/reports/<id>/fertilizer_advice.pdf?expires=...&signature=...",
+    "expires_at": "2026-11-12T10:00:00+00:00",
+    "files": [{ "name": "fertilizer_advice.pdf", "url": "..." }]
   }
 }
 ```
 
 `request_id` is a unique UUID per call — use it when reporting issues.
+
+`report` is the PDF report of the recommendation, or `null` when none could be made. Its `url` needs no key, cannot be guessed and stops working at `expires_at` (7 days by default). The report itself is kept with the recommendation history: a key with the `reports:read` ability gets new links at any time with `GET /v1/recommendations/reports/{report.id}`. The report shows the farmer's name and farm, so share the link only with them. A request served from the cache gets a report only when it carries the same personal details as the one that made it.
 
 ---
 
@@ -190,7 +204,8 @@ These endpoints are public — no authentication required.
 | `GET /v1/starch-factories` | Cassava starch factories |
 | `GET /v1/starch-factories/country/{code}` | Factories for a country |
 | `GET /v1/starch-prices` | Starch price list |
-| `GET /v1/default-prices` | Default price reference data |
+| `GET /v1/price-catalogue` | Default price reference data (active rows only) |
+| `GET /v1/prices?country={code}` | Reviewed price catalogue with basis, ranges and ETag sync |
 | `GET /v1/cassava-units` | Cassava unit definitions |
 
 ---

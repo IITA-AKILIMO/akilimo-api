@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Console\Commands\Dev;
 
 use Illuminate\Console\Command;
@@ -21,7 +27,7 @@ class BackfillAppReport extends Command
             return self::FAILURE;
         }
 
-        $limit = (int) $this->option('limit');
+        $limit = (int)$this->option('limit');
         $limitClause = $limit > 0 ? "LIMIT {$limit}" : '';
 
         $pendingQuery = "SELECT COUNT(*) AS cnt FROM (
@@ -41,7 +47,7 @@ class BackfillAppReport extends Command
 
         $this->line("Rows to backfill: <comment>{$pending}</comment>");
 
-        if (! $this->option('force') && ! $this->confirm('Proceed?', true)) {
+        if (!$this->option('force') && !$this->confirm('Proceed?', true)) {
             $this->line('Aborted.');
 
             return self::SUCCESS;
@@ -74,13 +80,8 @@ class BackfillAppReport extends Command
                 IF(STRCMP(REPLACE(JSON_EXTRACT(ar.plumber_request, '$.PP'),  '\"', ''), 'false') = 1, 1, 0),
                 IF(STRCMP(REPLACE(JSON_EXTRACT(ar.plumber_request, '$.SPH'), '\"', ''), 'false') = 1, 1, 0),
                 IF(STRCMP(REPLACE(JSON_EXTRACT(ar.plumber_request, '$.SPP'), '\"', ''), 'false') = 1, 1, 0),
-                CASE
-                    WHEN REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.mobileNumber'), '\"', '') LIKE '254%'
-                      OR REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.mobileNumber'), '\"', '') LIKE '49%'  THEN 1
-                    WHEN REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.userName'), '\"', '') LIKE '%KREYE%'
-                      OR REPLACE(JSON_EXTRACT(ar.droid_request, '$.userInfo.userName'), '\"', '') LIKE '%C K%'    THEN 1
-                    ELSE 0
-                END,
+                -- Staff/test flag, set from the admin-managed rules (TrafficExclusionService)
+                ar.excluded,
                 ar.created_at,
                 ar.updated_at
             FROM api_requests ar

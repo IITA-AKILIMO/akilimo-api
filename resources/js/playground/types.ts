@@ -18,6 +18,21 @@ export interface Fertilizer {
     available: boolean
 }
 
+export interface CassavaUnit {
+    unit_weight: number
+    label: string
+}
+
+/** What the API's price lists say for the chosen country, used to prefill prices. */
+export interface PriceHints {
+    currency: string | null
+    /** Middle band of the cassava price list, per tonne of fresh roots */
+    cassavaPerTonne: number | null
+    maizeCob: number | null
+    maizeGrain: number | null
+    sweetPotatoPerTonne: number | null
+}
+
 export interface FertilizerEntry {
     key: string
     name: string
@@ -40,8 +55,13 @@ export interface FormState {
     soilQuality: string
     riskAttitude: string
     cassavaProduceType: string
+    // Selling prices in local currency; cassava per unit of cassavaUnitWeight kg
+    cassavaPrice: string
+    cassavaUnitWeight: string
     maizeProduceType: string
+    maizePrice: string
     sweetPotatoProduceType: string
+    sweetPotatoPrice: string
     plantingDate: string
     harvestDate: string
     plantingDateWindow: string

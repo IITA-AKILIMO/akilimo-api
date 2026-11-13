@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
 namespace App\Http\Resources;
 
 use App\Models\Country;
@@ -24,6 +30,14 @@ class CountryResource extends JsonResource
             'active' => $country->active,
             /** Sort order for display */
             'sort_order' => $country->sort_order,
+            /** Centre of the country, for a map (null when unknown) */
+            'latitude' => $country->latitude,
+            'longitude' => $country->longitude,
+            /** Bounding box of the country, for fitting a map (null when unknown) */
+            'min_latitude' => $country->min_latitude,
+            'max_latitude' => $country->max_latitude,
+            'min_longitude' => $country->min_longitude,
+            'max_longitude' => $country->max_longitude,
         ];
     }
 }
