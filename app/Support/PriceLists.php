@@ -19,35 +19,35 @@ final class PriceLists
      */
     public const LISTS = [
         'fertilizer' => [
-            'title' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'country' => 'country',
+            'title' => 'Fertilizer prices', 'table' => 'vw_fertilizer_prices', 'country' => 'country',
             'order' => ['fertilizer_key', 'sort_order'],
             'columns' => ['country' => 'Country', 'fertilizer_key' => 'Fertilizer key', 'price_per_bag' => 'Price per bag', 'sort_order' => 'Order'],
         ],
         'cassava' => [
-            'title' => 'Cassava prices', 'table' => 'cassava_prices', 'country' => 'country',
+            'title' => 'Cassava prices', 'table' => 'vw_cassava_prices', 'country' => 'country',
             'order' => ['min_local_price'],
             'columns' => ['country' => 'Country', 'min_local_price' => 'From', 'max_local_price' => 'To', 'average' => 'Average sent'],
             'raw' => ['average' => '(min_local_price + max_local_price) / 2'],
         ],
         'maize' => [
-            'title' => 'Maize prices', 'table' => 'maize_prices', 'country' => 'country',
+            'title' => 'Maize prices', 'table' => 'vw_maize_prices', 'country' => 'country',
             'order' => ['produce_type', 'min_local_price'],
             'columns' => ['country' => 'Country', 'produce_type' => 'Produce', 'min_local_price' => 'From', 'max_local_price' => 'To', 'average' => 'Average sent'],
             'raw' => ['average' => '(min_local_price + max_local_price) / 2'],
         ],
         'potato' => [
-            'title' => 'Sweet potato prices', 'table' => 'potato_prices', 'country' => 'country',
+            'title' => 'Sweet potato prices', 'table' => 'vw_potato_prices', 'country' => 'country',
             'order' => ['min_local_price'],
             'columns' => ['country' => 'Country', 'min_local_price' => 'From', 'max_local_price' => 'To', 'average' => 'Average sent'],
             'raw' => ['average' => '(min_local_price + max_local_price) / 2'],
         ],
         'investment' => [
-            'title' => 'Investment amounts', 'table' => 'investment_amount', 'country' => 'country',
+            'title' => 'Investment amounts', 'table' => 'vw_investment_amount', 'country' => 'country',
             'order' => ['sort_order'],
             'columns' => ['country' => 'Country', 'investment_amount' => 'Amount', 'area_unit' => 'Per', 'sort_order' => 'Order'],
         ],
         'operations' => [
-            'title' => 'Operation costs', 'table' => 'operation_costs', 'country' => 'country_code',
+            'title' => 'Operation costs', 'table' => 'vw_operation_costs', 'country' => 'country_code',
             'order' => ['operation_name', 'operation_type', 'min_cost'],
             'columns' => ['country_code' => 'Country', 'operation_name' => 'Operation', 'operation_type' => 'Type', 'min_cost' => 'From', 'max_cost' => 'To'],
         ],

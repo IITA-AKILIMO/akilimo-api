@@ -41,7 +41,7 @@ use Carbon\Carbon;
  */
 class OperationCost extends BaseModel
 {
-    protected $table = 'operation_costs';
+    protected $table = 'vw_operation_costs';
 
     public $incrementing = false;
 

@@ -39,7 +39,7 @@ use Carbon\Carbon;
  */
 class InvestmentAmount extends BaseModel
 {
-    protected $table = 'investment_amount';
+    protected $table = 'vw_investment_amount';
 
     public $incrementing = false;
 

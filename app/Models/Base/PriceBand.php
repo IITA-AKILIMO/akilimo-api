@@ -41,7 +41,7 @@ use Carbon\Carbon;
  */
 class PriceBand extends BaseModel
 {
-    protected $table = 'price_bands';
+    protected $table = 'vw_price_bands';
 
     public $incrementing = false;
 

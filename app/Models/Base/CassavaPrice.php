@@ -47,7 +47,7 @@ use Carbon\Carbon;
  */
 class CassavaPrice extends BaseModel
 {
-    protected $table = 'cassava_prices';
+    protected $table = 'vw_cassava_prices';
 
     public $incrementing = false;
 

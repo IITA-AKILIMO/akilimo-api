@@ -45,7 +45,7 @@ use Carbon\Carbon;
  */
 class FertilizerPrice extends BaseModel
 {
-    protected $table = 'fertilizer_prices';
+    protected $table = 'vw_fertilizer_prices';
 
     public $incrementing = false;
 

@@ -185,12 +185,12 @@ it('changes the app price lists when a rule is edited', function () {
         'status' => 'active', 'created_at' => now(), 'updated_at' => now(),
     ]);
 
-    $before = DB::table('cassava_prices')->where('min_local_price', '>', 0)->max('max_local_price');
+    $before = DB::table('vw_cassava_prices')->where('min_local_price', '>', 0)->max('max_local_price');
 
     $this->actingAs(referenceAdmin())->put('/admin/reference/price-choice-steps?' . refKey(['step_order' => 4]), ['change_pct' => 50, 'band_half_pct' => 10])
         ->assertRedirect();
 
-    $after = DB::table('cassava_prices')->where('min_local_price', '>', 0)->max('max_local_price');
+    $after = DB::table('vw_cassava_prices')->where('min_local_price', '>', 0)->max('max_local_price');
 
     expect((float) $before)->toBe(14000.0)->and((float) $after)->toBe(16000.0);
 });
@@ -208,7 +208,7 @@ function previewCatalogue(): void
 it('previews what a changed step would do, and saves nothing', function () {
     previewCatalogue();
     $steps = fn () => DB::table('price_choice_steps')->orderBy('step_order')->pluck('change_pct')->map(fn ($v) => (float) $v)->all();
-    $maxBefore = DB::table('cassava_prices')->max('max_local_price');
+    $maxBefore = DB::table('vw_cassava_prices')->max('max_local_price');
 
     $response = $this->actingAs(referenceAdmin())
         ->postJson('/admin/reference/price-choice-steps/preview?' . refKey(['step_order' => 4]), ['change_pct' => 50, 'band_half_pct' => 10])
@@ -222,12 +222,12 @@ it('previews what a changed step would do, and saves nothing', function () {
         ->and($cassava['rows'][0]['before'])->toBe('12,000 – 14,000')
         ->and($cassava['rows'][0]['after'])->toBe('14,000 – 16,000')
         ->and($steps())->toBe([-30.0, -10.0, 10.0, 30.0])                       // nothing was saved
-        ->and(DB::table('cassava_prices')->max('max_local_price'))->toBe($maxBefore);
+        ->and(DB::table('vw_cassava_prices')->max('max_local_price'))->toBe($maxBefore);
 });
 
 it('previews what deleting a row would remove, and deletes nothing', function () {
     previewCatalogue();
-    $before = DB::table('cassava_prices')->count();
+    $before = DB::table('vw_cassava_prices')->count();
 
     $response = $this->actingAs(referenceAdmin())
         ->postJson('/admin/reference/price-choice-steps/preview?delete=1&' . refKey(['step_order' => 4]))
@@ -240,7 +240,7 @@ it('previews what deleting a row would remove, and deletes nothing', function ()
         ->and($cassava['rows'][0]['before'])->toBe('12,000 – 14,000')
         ->and($cassava['rows'][0]['after'])->toBeNull()
         ->and(DB::table('price_choice_steps')->count())->toBe(4)                 // nothing was deleted
-        ->and(DB::table('cassava_prices')->count())->toBe($before);
+        ->and(DB::table('vw_cassava_prices')->count())->toBe($before);
 });
 
 it('previews deleting an investment multiple and a unit', function () {

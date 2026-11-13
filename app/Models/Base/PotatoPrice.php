@@ -47,7 +47,7 @@ use Carbon\Carbon;
  */
 class PotatoPrice extends BaseModel
 {
-    protected $table = 'potato_prices';
+    protected $table = 'vw_potato_prices';
 
     public $incrementing = false;
 

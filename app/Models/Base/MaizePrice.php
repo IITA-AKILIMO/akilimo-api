@@ -49,7 +49,7 @@ use Carbon\Carbon;
  */
 class MaizePrice extends BaseModel
 {
-    protected $table = 'maize_prices';
+    protected $table = 'vw_maize_prices';
 
     public $incrementing = false;
 

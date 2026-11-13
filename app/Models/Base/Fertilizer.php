@@ -53,7 +53,7 @@ use Carbon\Carbon;
  */
 class Fertilizer extends BaseModel
 {
-    protected $table = 'fertilizers';
+    protected $table = 'vw_fertilizers';
 
     public $incrementing = false;
 

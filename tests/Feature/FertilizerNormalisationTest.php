@@ -166,7 +166,7 @@ it('is read-only through the fertilizers view', function () {
 
     // The model refuses mass assignment, and the database refuses a direct write to the view
     expect(fn () => Fertilizer::query()->create($row))->toThrow(MassAssignmentException::class)
-        ->and(fn () => DB::table('fertilizers')->insert($row))->toThrow(QueryException::class);
+        ->and(fn () => DB::table('vw_fertilizers')->insert($row))->toThrow(QueryException::class);
 });
 
 it('gives the admin form the fertiliser list and refuses an unknown type', function () {
@@ -183,5 +183,5 @@ it('gives the admin form the fertiliser list and refuses an unknown type', funct
         ->assertRedirect('/admin/fertilizers');
 
     // saved with the spelling in the lookup, and the key is worked out
-    expect(DB::table('fertilizers')->where('country', 'TZ')->value('fertilizer_key'))->toBe('UREA_TZ');
+    expect(DB::table('vw_fertilizers')->where('country', 'TZ')->value('fertilizer_key'))->toBe('UREA_TZ');
 });
