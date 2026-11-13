@@ -8,6 +8,6 @@
 
 namespace App\Models;
 
-use App\Models\Base\OperationCost as BaseOperationCost;
+use App\Models\Base\VwOperationCost as BaseVwOperationCost;
 
-class OperationCost extends BaseOperationCost {}
+class VwOperationCost extends BaseVwOperationCost {}

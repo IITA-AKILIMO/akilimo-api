@@ -39,7 +39,7 @@ class FertilizerController extends AdminController
 
         return Inertia::render('Fertilizers/Index', [
             'filters' => $values,
-            'useCases' => $this->distinctValues('fertilizers', 'use_case'),
+            'useCases' => $this->distinctValues('vw_fertilizers', 'use_case'),
             'items' => $this->paginateShape($paginator, fn ($f) => [
                 'id' => $f->id,
                 'name' => $f->name,

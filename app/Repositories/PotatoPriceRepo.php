@@ -8,12 +8,12 @@
 
 namespace App\Repositories;
 
-use App\Models\PotatoPrice;
+use App\Models\VwPotatoPrice;
 
 class PotatoPriceRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return PotatoPrice::class;
+        return VwPotatoPrice::class;
     }
 }

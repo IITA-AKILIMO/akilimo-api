@@ -10,7 +10,7 @@ namespace App\Http\Resources;
 
 use App\Support\PriceMarker;
 use App\Models\Currency;
-use App\Models\InvestmentAmount;
+use App\Models\VwInvestmentAmount;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,7 +30,7 @@ class InvestmentAmountResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var InvestmentAmount $model */
+        /** @var VwInvestmentAmount $model */
         $model = $this->resource;
 
         $tag = $model->id;

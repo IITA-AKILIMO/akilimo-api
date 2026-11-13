@@ -23,9 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null $created_at
  * @property int $id
  * @property string $item
- * @property string|null $new_values
+ * @property array|null $new_values
  * @property string|null $note
- * @property string|null $old_values
+ * @property array|null $old_values
  * @property int|null $price_catalogue_id
  * @property string|null $region
  * @property Carbon|null $updated_at
@@ -56,6 +56,8 @@ class PriceCatalogueHistory extends BaseModel
 
     protected $casts = [
         'price_catalogue_id' => 'int',
+        'old_values' => 'array',
+        'new_values' => 'array',
         'changed_by' => 'int',
     ];
 

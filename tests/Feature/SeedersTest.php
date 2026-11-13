@@ -27,7 +27,7 @@ it('seeds the fertilizers, crops, units, rules and prices on a new database', fu
         ->and(DB::table('traffic_exclusions')->count())->toBe(4)
         ->and(DB::table('starch_factories')->count())->toBe(12)
         ->and(DB::table('price_catalogue')->count())->toBe(72)
-        ->and(DB::table('fertilizers')->count())->toBe(38);
+        ->and(DB::table('vw_fertilizers')->count())->toBe(38);
 
     // every fertilizer's catalogue label can be priced, as a fertilizer
     expect(DB::table('price_items')->where('item', 'urea')->value('category'))->toBe('FERTILIZER')
@@ -57,7 +57,7 @@ it('keeps the ids the app and the price lists refer to', function () {
 it('lists a fertilizer only once it has an active price, and links the prices to their fertilizers', function () {
     $this->seed(DatabaseSeeder::class);
 
-    $priced = DB::table('fertilizer_prices')->distinct()->pluck('fertilizer_key')->all();
+    $priced = DB::table('vw_fertilizer_prices')->distinct()->pluck('fertilizer_key')->all();
 
     // NG TSP has an active price and a link to its fertilizer; NG urea is a draft until reviewed
     expect($priced)->toContain('TSP_NG')->and($priced)->not->toContain('UREA_NG');

@@ -13,6 +13,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | PostgreSQL Schema Namespace
+    |--------------------------------------------------------------------------
+    |
+    | For PostgreSQL connections, this controls which schema namespace is
+    | introspected when generating models. Set DB_SCHEMA in your .env file
+    | to override the default. Falls back to the schema set in
+    | database.connections.{connection}.schema, then to "public".
+    |
+    | Can also be overridden at runtime with the --pg-schema Artisan option.
+    |
+    */
+
+    'pg_schema' => env('DB_SCHEMA', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Default Configurations
     |--------------------------------------------------------------------------
     |
@@ -60,10 +76,6 @@ return [
         | will allow you to create custom database castings.
         |
         */
-
-        //        'parent' => Illuminate\Database\Eloquent\Model::class,
-
-        // Table specific parent override examples:
         'parent' => [
             'users' => BaseUser::class,
             '*' => BaseModel::class,
@@ -285,7 +297,7 @@ return [
         |
         | When casting your models into arrays or json, the need to hide some
         | attributes sometimes arise. If your tables have some fields you
-        | want to hide, you can define them below.
+        | want to hide, you can define them bellow.
         | Some fields were defined for you.
         |
         */
@@ -323,6 +335,11 @@ return [
         | assigned. We have defined some fields for you. Feel free to
         | modify them to fit your needs.
         |
+        | Patterns defined here apply to every generated model. To override a
+        | cast for one table, add a root-level table block with its own 'casts'
+        | key (see "Table-Specific Configuration" below). Table-level patterns
+        | win over these global ones and are merged on top of them.
+        |
         */
 
         'casts' => [
@@ -345,6 +362,9 @@ return [
         | You can define those tables bellow. The migrations table was
         | filled for you, since you may not want a model for it.
         |
+        | Table-specific blocks (including 'casts') are ignored for tables
+        | matched here. To generate one anyway, pass --table=<name>.
+        |
         */
 
         'except' => [
@@ -354,10 +374,8 @@ return [
             'job_batches',
             'authorities',
             'sessions',
-            'password_resets',
-            'personal_access_tokens',
-            'password_reset_tokens',
             'cache*',
+            'legacy_*',
         ],
 
         /*
@@ -373,6 +391,74 @@ return [
         'only' => [
             // 'users',
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Table Generation Order
+        |--------------------------------------------------------------------------
+        |
+        | Models are generated in alphabetical order by default. If your schema
+        | needs a specific writing order, set "table_order" to one of:
+        |
+        | - "alphabetical" (default): tables are sorted by name.
+        | - "database": tables keep the order returned by the database.
+        | - an array of table names for full control, e.g.
+        |
+        |       'table_order' => ['users', 'teams', 'memberships'],
+        |
+        |   Tables not listed are generated after the listed ones, in
+        |   alphabetical order.
+        |
+        */
+
+        'table_order' => 'alphabetical',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Annotation Order
+        |--------------------------------------------------------------------------
+        |
+        | Controls the order of the "@property" annotations generated in each
+        | model's docblock (both the column attributes and the relation
+        | annotations). It also orders the generated property constants
+        | (with_property_constants), setter methods and relation methods so the
+        | class body stays consistent with the docblock.
+        |
+        | - "alphabetical" (default): sorted by name.
+        | - "database": keep the order returned by the database.
+        | - an array of column/relation names for full control, e.g.
+        |
+        |       'annotations_order' => ['id', 'user_invitation_id', 'role_id'],
+        |
+        |   Items not listed are appended after the listed ones, in
+        |   alphabetical order.
+        |
+        */
+
+        'annotations_order' => 'alphabetical',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Property Order
+        |--------------------------------------------------------------------------
+        |
+        | Controls the order of the attribute arrays written into the model:
+        | "$columns" (with_column_list), "$casts", "$hidden", "$fillable" and
+        | "$hints". By default these follow the column order returned by the
+        | database, matching the previous behaviour.
+        |
+        | - "database" (default): keep the order columns were read in.
+        | - "alphabetical": sort the attributes by name.
+        | - an array of column names for full control, e.g.
+        |
+        |       'properties_order' => ['id', 'user_invitation_id', 'role_id'],
+        |
+        |   Attributes not listed are appended after the listed ones, in
+        |   alphabetical order.
+        |
+        */
+
+        'properties_order' => 'database',
 
         /*
         |--------------------------------------------------------------------------
@@ -530,6 +616,9 @@ return [
         | When enable_return_types is set to true, return type declarations are added
         | to all generated relation methods for your models.
         |
+        | Example output with this enabled:
+        |   public function apiKeys(): HasMany { ... }
+        |
         | NOTE: This requires PHP 7.0 or later.
         |
         */
@@ -538,104 +627,73 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Database Specifics
+    | Table-Specific Configuration
     |--------------------------------------------------------------------------
     |
-    | In this section you may define the default configuration for each model
-    | that will be generated from a specific database. You can also nest
-    | table specific configurations.
-    | These values will override those defined in the section above.
+    | To override settings for a single table, add a block at the ROOT of this
+    | file (a sibling of '*'), using the table name as the key. Do NOT nest it
+    | inside the '*' block: nested table keys are not part of the configuration
+    | resolution tree and will be silently ignored.
+    |
+    | Table blocks are resolved before the global '*' defaults, so only the
+    | keys you specify are overridden; everything else falls back to '*'.
+    |
+    | The complete resolution order, from highest to lowest precedence, is:
+    |
+    |       @connections.{connection}.{schema}.{table}
+    |       @connections.{connection}.{table}
+    |       @connections.{connection}.{schema}
+    |       @connections.{connection}
+    |       {schema}.{table}
+    |       {table}
+    |       {schema}
+    |       *
+    |
+    | For MySQL, {schema} is the database name; for PostgreSQL it is the schema
+    | namespace.
+    |
+    | The 'casts' key behaves slightly differently: casts from every level are
+    | merged instead of the first block winning outright. A table-level cast
+    | overrides the same pattern from '*', while all other global patterns still
+    | apply. Because patterns are evaluated most-specific first, a broad
+    | table-level pattern (such as '*') will shadow global patterns.
+    |
+    | Example: keep the global casts, but store these columns as arrays only on
+    | the tables below.
+    |
+    | 'price_catalogue_history' => [
+    |     'casts' => [
+    |         'old_values' => 'array',
+    |         'new_values' => 'array',
+    |     ],
+    | ],
+    |
+    | 'api_keys' => [
+    |     'casts' => [
+    |         'password' => 'encrypted',
+    |     ],
+    | ],
+    |
+    | Table-specific blocks are ignored for tables matched by the 'except'
+    | list in the '*' block above. They still apply when a table is generated
+    | explicitly with --table.
     |
     */
 
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Schema Mappers
-    |--------------------------------------------------------------------------
-    |
-    | If you use a custom or third-party database connection class that is not
-    | natively supported by this package (e.g. a PgBouncer connection wrapper
-    | or any other connection decorator), you can register its schema mapper
-    | here. The key must be the fully-qualified class name of the connection
-    | and the value must be the fully-qualified class name of the schema mapper
-    | that should handle it.
-    |
-    | Built-in mapper classes you can reuse:
-    |   Reliese\Meta\MySql\Schema    — for MySQL/MariaDB-compatible connections
-    |   Reliese\Meta\Postgres\Schema — for PostgreSQL-compatible connections
-    |   Reliese\Meta\Sqlite\Schema   — for SQLite-compatible connections
-    |
-    | Example:
-    |   'custom_mappers' => [
-    |       \Vermaysha\PgbouncerLaravelExtension\PostgresPGBouncerExtension::class
-    |           => \Reliese\Meta\Postgres\Schema::class,
-    |   ],
-    |
-    */
+    'personal_access_tokens' => [
+        'casts' => [
+            'abilities' => 'array',
+        ],
+    ],
 
-    //    'custom_mappers' => [
-    //        \Vermaysha\PgbouncerLaravelExtension\PostgresPGBouncerExtension::class
-    //        => \Reliese\Meta\Postgres\Schema::class,
-    //    ],
+    'price_catalogue_history' => [
+        'casts' => [
+            'old_values' => 'array',
+            'new_values' => 'array',
+        ],
+    ],
+    'fertilizer_types' => [
+        'fillable_primary_keys' => true,
+    ],
 
-    // 'shop' => [
-    //     'path' => app_path(),
-    //     'namespace' => 'App',
-    //     'snake_attributes' => false,
-    //     'qualified_tables' => true,
-    //     'use' => [
-    //         Reliese\Database\Eloquent\BitBooleans::class,
-    //     ],
-    //     'except' => ['migrations'],
-    //     'only' => ['users'],
-    //      // Table Specifics Bellow:
-    //     'user' => [
-    //      // Don't use any default trait
-    //         'use' => [],
-    //     ]
-    // ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Connection Specifics
-    |--------------------------------------------------------------------------
-    |
-    | In this section you may define the default configuration for each model
-    | that will be generated from a specific connection. You can also nest
-    | database and table specific configurations.
-    |
-    | You may wish to use connection specific config for setting a parent
-    | model with a read only setup, or enforcing a different set of rules
-    | for a connection, e.g. using snake_case naming over CamelCase naming.
-    |
-    | This supports nesting with the following key configuration values, in
-    | reverse precedence order (i.e. the last one found becomes the value).
-    |
-    |       connections.{connection_name}.property
-    |       connections.{connection_name}.{database_name}.property
-    |       connections.{connection_name}.{table_name}.property
-    |       connections.{connection_name}.{database_name}.{table_name}.property
-    |
-    | These values will override those defined in the section above.
-    |
-    */
-
-    //    'connections' => [
-    //        'read_only_external' => [
-    //            'parent' => \App\Models\ReadOnlyModel::class,
-    //            'connection' => true,
-    //            'users' => [
-    //                'connection' => false,
-    //                'parent' => \Illuminate\Foundation\Auth\User::class,
-    //            ],
-    //            'my_other_database' => [
-    //                'users' => [
-    //                    'parent' => \Illuminate\Foundation\Auth\User::class,
-    //                ],
-    //                'password_resets' => [
-    //                    'connection' => false,
-    //                ]
-    //            ]
-    //        ],
-    //    ],
 ];

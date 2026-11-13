@@ -8,6 +8,6 @@
 
 namespace App\Models;
 
-use App\Models\Base\PotatoPrice as BasePotatoPrice;
+use App\Models\Base\PasswordResetToken as BasePasswordResetToken;
 
-class PotatoPrice extends BasePotatoPrice {}
+class PasswordResetToken extends BasePasswordResetToken {}

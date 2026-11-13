@@ -9,7 +9,7 @@
 namespace App\Repositories;
 
 use App\Models\CountryFertilizer;
-use App\Models\Fertilizer;
+use App\Models\VwFertilizer;
 use App\Models\FertilizerType;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -21,17 +21,17 @@ use Illuminate\Support\Facades\DB;
  * 000027). A write names the fertiliser by its type code (UREA) and the country;
  * the fertilizer key is computed from them and cannot be set.
  *
- * @extends BaseRepo<Fertilizer>
+ * @extends BaseRepo<VwFertilizer>
  */
 class FertilizerRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return Fertilizer::class;
+        return VwFertilizer::class;
     }
 
     /**
-     * @return Collection<int, Fertilizer>
+     * @return Collection<int, VwFertilizer>
      */
     public function forCountry(string $country): Collection
     {
@@ -48,7 +48,7 @@ class FertilizerRepo extends BaseRepo
      * price matches by the fertilizer type, or by the catalogue label for a price
      * that is not linked to a type yet.
      *
-     * @return \Closure(\Illuminate\Database\Eloquent\Builder<Fertilizer>): void
+     * @return \Closure(\Illuminate\Database\Eloquent\Builder<VwFertilizer>): void
      */
     public function onlyWithActivePrice(): \Closure
     {
@@ -56,11 +56,11 @@ class FertilizerRepo extends BaseRepo
             $query->whereExists(function ($price) {
                 $price->selectRaw('1')
                     ->from('price_catalogue')
-                    ->whereColumn('price_catalogue.country', 'fertilizers.country')
+                    ->whereColumn('price_catalogue.country', 'vw_fertilizers.country')
                     ->where('price_catalogue.status', 'active')
                     ->where(function ($match) {
-                        $match->whereColumn('price_catalogue.fertilizer_type', 'fertilizers.type')
-                            ->orWhereColumn('price_catalogue.item', 'fertilizers.fertilizer_label');
+                        $match->whereColumn('price_catalogue.fertilizer_type', 'vw_fertilizers.type')
+                            ->orWhereColumn('price_catalogue.item', 'vw_fertilizers.fertilizer_label');
                     });
             });
         };

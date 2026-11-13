@@ -8,7 +8,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\OperationCost;
+use App\Models\VwOperationCost;
 use App\Support\PriceMarker;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
@@ -17,7 +17,7 @@ class OperationCostResource extends JsonResource
 {
     public function toArray($request): array
     {
-        /** @var OperationCost $model */
+        /** @var VwOperationCost $model */
         $model = $this->resource;
 
         $avgCost = ($model->min_cost + $model->max_cost) / 2;

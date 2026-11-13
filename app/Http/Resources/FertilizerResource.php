@@ -9,7 +9,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Enums\EnumCountry;
-use App\Models\Fertilizer;
+use App\Models\VwFertilizer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,7 +22,7 @@ class FertilizerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var Fertilizer $fertilizer */
+        /** @var VwFertilizer $fertilizer */
         $fertilizer = $this->resource;
 
         return [
