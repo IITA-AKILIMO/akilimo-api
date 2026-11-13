@@ -1,15 +1,22 @@
 <?php
 
-/**
- * (c) 2026 AKILIMO — https://akilimo.org
- *
- * For licence information, see the LICENCE file.
- */
-
-use App\Core\Models\BaseModel;
-use App\Core\Models\BaseUser;
-
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | PostgreSQL Schema Namespace
+    |--------------------------------------------------------------------------
+    |
+    | For PostgreSQL connections, this controls which schema namespace is
+    | introspected when generating models. Set DB_SCHEMA in your .env file
+    | to override the default. Falls back to the schema set in
+    | database.connections.{connection}.schema, then to "public".
+    |
+    | Can also be overridden at runtime with the --pg-schema Artisan option.
+    |
+    */
+
+    'pg_schema' => env('DB_SCHEMA', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -61,12 +68,12 @@ return [
         |
         */
 
-        //        'parent' => Illuminate\Database\Eloquent\Model::class,
+//        'parent' => Illuminate\Database\Eloquent\Model::class,
 
         // Table specific parent override examples:
         'parent' => [
-            'users' => BaseUser::class,
-            '*' => BaseModel::class,
+            'users' => \App\Core\Models\BaseUser::class,
+            '*' => \App\Core\Models\BaseModel::class,
         ],
 
         /*
@@ -228,6 +235,7 @@ return [
 
         'snake_attributes' => true,
 
+
         /*
         |--------------------------------------------------------------------------
         | CamelCase Relation Method Names
@@ -285,7 +293,7 @@ return [
         |
         | When casting your models into arrays or json, the need to hide some
         | attributes sometimes arise. If your tables have some fields you
-        | want to hide, you can define them below.
+        | want to hide, you can define them bellow.
         | Some fields were defined for you.
         |
         */
@@ -323,6 +331,11 @@ return [
         | assigned. We have defined some fields for you. Feel free to
         | modify them to fit your needs.
         |
+        | Patterns defined here apply to every generated model. If a specific
+        | model needs its own casting, define a per-model 'casts' block (see
+        | the Per-Model Casts section below). Per-model patterns win over these
+        | global ones and are merged on top of them.
+        |
         */
 
         'casts' => [
@@ -335,6 +348,40 @@ return [
             'boundary' => 'string',
         ],
 
+        /*
+        |--------------------------------------------------------------------------
+        | Per-Model Casts
+        |--------------------------------------------------------------------------
+        |
+        | Not every column with the same name needs the same cast. To cast a
+        | column differently for a single model, add a 'casts' key inside that
+        | table's own configuration block. Table-level patterns are merged on
+        | top of the global 'casts' above, so the global patterns still apply
+        | to every other column of the model and only the ones you list here
+        | are overridden.
+        |
+        | Example: keep 'password' as 'hashed' for most models but make it
+        | 'encrypted' only on the 'api_keys' model:
+        |
+        | 'api_keys' => [
+        |     'casts' => [
+        |         'password' => 'encrypted',
+        |         'records' => 'encrypted:array',
+        |         'lease_expires_at' => 'immutable_datetime',
+        |     ],
+        | ],
+        |
+        | Any key from the resolution tree works the same way (connection,
+        | schema, table), from most specific to least specific. Patterns listed
+        | in a more specific block win over the same pattern in the global one.
+        |
+        */
+
+        'personal_access_tokens' => [
+            'casts' => [
+                'abilities' => 'array',
+            ],
+        ],
         /*
         |--------------------------------------------------------------------------
         | Excluded Tables
@@ -354,10 +401,8 @@ return [
             'job_batches',
             'authorities',
             'sessions',
-            'password_resets',
-            'personal_access_tokens',
-            'password_reset_tokens',
             'cache*',
+            'legacy_*'
         ],
 
         /*
@@ -373,6 +418,74 @@ return [
         'only' => [
             // 'users',
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Table Generation Order
+        |--------------------------------------------------------------------------
+        |
+        | Models are generated in alphabetical order by default. If your schema
+        | needs a specific writing order, set "table_order" to one of:
+        |
+        | - "alphabetical" (default): tables are sorted by name.
+        | - "database": tables keep the order returned by the database.
+        | - an array of table names for full control, e.g.
+        |
+        |       'table_order' => ['users', 'teams', 'memberships'],
+        |
+        |   Tables not listed are generated after the listed ones, in
+        |   alphabetical order.
+        |
+        */
+
+        'table_order' => 'alphabetical',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Annotation Order
+        |--------------------------------------------------------------------------
+        |
+        | Controls the order of the "@property" annotations generated in each
+        | model's docblock (both the column attributes and the relation
+        | annotations). It also orders the generated property constants
+        | (with_property_constants), setter methods and relation methods so the
+        | class body stays consistent with the docblock.
+        |
+        | - "alphabetical" (default): sorted by name.
+        | - "database": keep the order returned by the database.
+        | - an array of column/relation names for full control, e.g.
+        |
+        |       'annotations_order' => ['id', 'user_invitation_id', 'role_id'],
+        |
+        |   Items not listed are appended after the listed ones, in
+        |   alphabetical order.
+        |
+        */
+
+        'annotations_order' => 'alphabetical',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Property Order
+        |--------------------------------------------------------------------------
+        |
+        | Controls the order of the attribute arrays written into the model:
+        | "$columns" (with_column_list), "$casts", "$hidden", "$fillable" and
+        | "$hints". By default these follow the column order returned by the
+        | database, matching the previous behaviour.
+        |
+        | - "database" (default): keep the order columns were read in.
+        | - "alphabetical": sort the attributes by name.
+        | - an array of column names for full control, e.g.
+        |
+        |       'properties_order' => ['id', 'user_invitation_id', 'role_id'],
+        |
+        |   Attributes not listed are appended after the listed ones, in
+        |   alphabetical order.
+        |
+        */
+
+        'properties_order' => 'database',
 
         /*
         |--------------------------------------------------------------------------
@@ -530,6 +643,9 @@ return [
         | When enable_return_types is set to true, return type declarations are added
         | to all generated relation methods for your models.
         |
+        | Example output with this enabled:
+        |   public function apiKeys(): HasMany { ... }
+        |
         | NOTE: This requires PHP 7.0 or later.
         |
         */
@@ -573,10 +689,10 @@ return [
     |
     */
 
-    //    'custom_mappers' => [
-    //        \Vermaysha\PgbouncerLaravelExtension\PostgresPGBouncerExtension::class
-    //        => \Reliese\Meta\Postgres\Schema::class,
-    //    ],
+    // 'custom_mappers' => [
+    //     \Vermaysha\PgbouncerLaravelExtension\PostgresPGBouncerExtension::class
+    //         => \Reliese\Meta\Postgres\Schema::class,
+    // ],
 
     // 'shop' => [
     //     'path' => app_path(),
@@ -620,22 +736,22 @@ return [
     |
     */
 
-    //    'connections' => [
-    //        'read_only_external' => [
-    //            'parent' => \App\Models\ReadOnlyModel::class,
-    //            'connection' => true,
-    //            'users' => [
-    //                'connection' => false,
-    //                'parent' => \Illuminate\Foundation\Auth\User::class,
-    //            ],
-    //            'my_other_database' => [
-    //                'users' => [
-    //                    'parent' => \Illuminate\Foundation\Auth\User::class,
-    //                ],
-    //                'password_resets' => [
-    //                    'connection' => false,
-    //                ]
-    //            ]
-    //        ],
-    //    ],
+//    'connections' => [
+//        'read_only_external' => [
+//            'parent' => \App\Models\ReadOnlyModel::class,
+//            'connection' => true,
+//            'users' => [
+//                'connection' => false,
+//                'parent' => \Illuminate\Foundation\Auth\User::class,
+//            ],
+//            'my_other_database' => [
+//                'users' => [
+//                    'parent' => \Illuminate\Foundation\Auth\User::class,
+//                ],
+//                'password_resets' => [
+//                    'connection' => false,
+//                ]
+//            ]
+//        ],
+//    ],
 ];
