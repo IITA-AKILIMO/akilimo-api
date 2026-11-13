@@ -191,6 +191,7 @@ No PHP code changes are required.
 **CI/CD** (`.github/workflows/`):
 - `unit-test.yml` — runs on every push and pull request (a push and the pull request of one branch replace each other), PHP 8.4, MariaDB 11.2 service. Steps: code style (`composer lint:check`), Pest through `composer run test:ci` (plain Pest, not `--bail`, so every failure shows) with a JUnit report, a step summary and an uploaded `test-results` artifact, and a non-blocking `composer audit`. No Node build: `tests/TestCase.php` calls `withoutVite()`. Setup lives in the reusable action `.github/actions/php-setup` (also used by `quality-checks.yml`); `.github/dependabot.yml` keeps the actions current
 - `quality-checks.yml` — Pest with coverage + SonarQube gate (develop branch)
+- `auto-approve.yml` — approves pull requests opened by bots (Dependabot, the release bot) only after the `UnitTests` workflow succeeded, from this repository only, with `hmarr/auto-approve-action` and a GitHub App token (`APP_ID` variable, `APP_PRIVATE_KEY` secret). Human pull requests are never auto-approved. It replaced `pull-request-automation.yml`, which approved every pull request not opened by masgeek the moment it opened, without waiting for any check
 - `docker-build.yml` — builds and pushes `iita/akilimo-api` image (main/develop)
 
 ## Environment Configuration
