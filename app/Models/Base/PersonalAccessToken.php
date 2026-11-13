@@ -14,7 +14,7 @@ use Carbon\Carbon;
 /**
  * Class PersonalAccessToken
  *
- * @property string|null $abilities
+ * @property array|null $abilities
  * @property Carbon|null $created_at
  * @property Carbon|null $expires_at
  * @property int $id
@@ -47,6 +47,7 @@ class PersonalAccessToken extends BaseModel
 
     protected $casts = [
         'tokenable_id' => 'int',
+        'abilities' => 'array',
         'last_used_at' => 'datetime',
         'expires_at' => 'datetime',
     ];
