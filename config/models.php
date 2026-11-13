@@ -692,5 +692,8 @@ return [
             'new_values' => 'array',
         ],
     ],
+    'fertilizer_types' => [
+        'fillable_primary_keys' => true,
+    ],
 
 ];
