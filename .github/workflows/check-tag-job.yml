@@ -64,7 +64,7 @@ jobs:
 
       - name: Docker login
         if: steps.final-tag.outputs.tag != '' && (inputs.force_rebuild == true || steps.check-image.outputs.exists != 'true')
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
