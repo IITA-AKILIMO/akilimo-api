@@ -74,6 +74,7 @@ Route::middleware(['throttle:read', 'auth.token:history:own', 'farmer', 'farmer.
 
 Route::middleware(['throttle:write', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
     Route::delete('/history/{requestId}', [AccountHistoryController::class, 'destroy'])->whereUuid('requestId');
+    Route::post('/history/delete', [AccountHistoryController::class, 'destroyMany']);
 });
 
 Route::middleware(['throttle:sensitive', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {

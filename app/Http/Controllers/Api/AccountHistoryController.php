@@ -31,6 +31,9 @@ class AccountHistoryController extends Controller
     /** The most ids GET /history/ids returns. */
     private const MAX_IDS = 5000;
 
+    /** The most items one bulk delete takes. */
+    private const MAX_BULK_DELETE = 500;
+
     public function __construct(
         private readonly ApiRequestRepo $requests,
         private readonly FarmerAccountService $accounts,
@@ -89,6 +92,24 @@ class AccountHistoryController extends Controller
         abort_if(!$released, 404, 'Saved advice not found.');
 
         return response()->json(['message' => 'Saved advice deleted.']);
+    }
+
+    /**
+     * Remove several saved items at once
+     *
+     * Body `{"ids": ["<request_id>", ...]}`, up to 500. The same soft delete as for one item. Ids that are not the caller's or no
+     * longer exist are skipped, so a repeated request is harmless; `deleted` is how many items left the account.
+     */
+    public function destroyMany(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:' . self::MAX_BULK_DELETE],
+            'ids.*' => ['required', 'uuid'],
+        ]);
+
+        $deleted = $this->requests->releaseManyForUser($this->user($request)->id, array_values(array_unique($data['ids'])));
+
+        return response()->json(['message' => 'Saved advice deleted.', 'deleted' => $deleted]);
     }
 
     /**

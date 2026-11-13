@@ -20,6 +20,7 @@ app) and the owner's inputs (below) are open.
 | `GET /history`, `GET /history/{request_id}` | farmer token + consent | `read` | only the caller's rows, newest first, `per_page` up to 100; the detail adds `result` |
 | `GET /history/ids` | farmer token + consent | `read` | the ids of all saved items, newest first (at most 5000, `meta.truncated` says when cut); an app compares them with its own copies and drops the ones deleted elsewhere |
 | `DELETE /history/{request_id}` | farmer token + consent | `write` | **soft delete**: the item leaves the account, the request stays for statistics unlinked (`user_id` null, `device_token` cleared) |
+| `POST /history/delete` | farmer token + consent | `write` | body `{"ids": [...]}`, up to 500: the same soft delete for several items at once (swipe and multi-select in the app); ids that are not the caller's or no longer exist are skipped; answers `deleted` |
 | `DELETE /history` | farmer token + consent | `sensitive` | the same **soft delete** for **all** the caller's saved advice; keeps the account; answers `deleted` (how many items left the account) |
 | `DELETE /` | farmer token + consent | `sensitive` | deletes the account; past requests stay with `user_id` and `device_token` cleared |
 

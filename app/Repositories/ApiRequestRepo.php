@@ -133,6 +133,17 @@ class ApiRequestRepo extends BaseRepo
         return $this->release($this->model->newQuery()->where('user_id', $userId)->where('request_id', $requestId)) > 0;
     }
 
+    /**
+     * The same soft delete for several of a farmer's items at once. Ids that are not the farmer's, or no longer exist, are
+     * skipped without an error, so repeating a request is harmless. Returns how many rows were released.
+     *
+     * @param list<string> $requestIds
+     */
+    public function releaseManyForUser(int $userId, array $requestIds): int
+    {
+        return $this->release($this->model->newQuery()->where('user_id', $userId)->whereIn('request_id', $requestIds));
+    }
+
     /** The same soft delete for all of a farmer's saved advice. Returns how many rows were released. */
     public function releaseAllForUser(int $userId): int
     {

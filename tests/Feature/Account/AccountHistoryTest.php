@@ -309,3 +309,54 @@ it('keeps the bulk history routes for farmer tokens with consent only', function
     $this->withToken($token)->deleteJson('/api/v1/account/history')->assertForbidden();
     expect(ApiRequest::where('user_id', $me->id)->count())->toBe(3);
 });
+
+// ── Deleting several at once (swipe and multi-select in the app) ─────────────
+
+it('soft deletes the chosen items in one request and leaves the others', function () {
+    [$me, $token] = signedInFarmer();
+    $rows = collect(range(1, 5))->map(fn () => saveAdviceFor('phone-b', $me->id));
+    $chosen = $rows->take(3);
+
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', ['ids' => $chosen->pluck('request_id')->all()])
+        ->assertOk()->assertJsonPath('deleted', 3);
+
+    foreach ($chosen as $row) {
+        expect($row->fresh()->user_id)->toBeNull()->and($row->fresh()->device_token)->toBeNull();
+    }
+    foreach ($rows->skip(3) as $row) {
+        expect($row->fresh()->user_id)->toBe($me->id);
+    }
+    expect(ApiRequest::count())->toBe(5);
+});
+
+it('skips ids that are someone else or unknown, and a repeat does nothing more', function () {
+    [$me, $token] = signedInFarmer();
+    $mine = saveAdviceFor('p', $me->id);
+    $theirs = saveAdviceFor('q', makeFarmer()->id);
+    $body = ['ids' => [$mine->request_id, $theirs->request_id, (string)str()->uuid()]];
+
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', $body)->assertOk()->assertJsonPath('deleted', 1);
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', $body)->assertOk()->assertJsonPath('deleted', 0);
+
+    expect($theirs->fresh()->user_id)->not->toBeNull();
+});
+
+it('checks the ids of a bulk delete', function () {
+    [$me, $token] = signedInFarmer();
+
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', [])->assertUnprocessable();
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', ['ids' => []])->assertUnprocessable();
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', ['ids' => ['not-a-uuid']])->assertUnprocessable();
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', ['ids' => array_map(fn () => (string)str()->uuid(), range(1, 501))])
+        ->assertUnprocessable();
+});
+
+it('keeps the bulk delete for farmer tokens with consent only', function () {
+    $ids = ['ids' => [(string)str()->uuid()]];
+
+    $this->postJson('/api/v1/account/history/delete', $ids)->assertUnauthorized();
+    $this->actingAsApiUser()->postJson('/api/v1/account/history/delete', $ids)->assertForbidden();
+
+    [, $token] = signedInFarmer(['consent_at' => null]);
+    $this->withToken($token)->postJson('/api/v1/account/history/delete', $ids)->assertForbidden();
+});
