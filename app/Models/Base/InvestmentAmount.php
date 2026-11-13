@@ -14,13 +14,13 @@ use Carbon\Carbon;
 /**
  * Class InvestmentAmount
  *
- * @property string|null $area_unit
- * @property string|null $country
+ * @property string $area_unit
+ * @property string $country
  * @property Carbon|null $created_at
  * @property int $id
  * @property float $investment_amount
- * @property bool|null $price_active
- * @property int $sort_order
+ * @property int $price_active
+ * @property float $sort_order
  * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InvestmentAmount newModelQuery()
@@ -41,17 +41,16 @@ class InvestmentAmount extends BaseModel
 {
     protected $table = 'investment_amount';
 
+    public $incrementing = false;
+
     protected $casts = [
+        'id' => 'int',
         'investment_amount' => 'float',
-        'price_active' => 'bool',
-        'sort_order' => 'int',
+        'price_active' => 'int',
+        'sort_order' => 'float',
     ];
 
-    protected $fillable = [
-        'country',
-        'investment_amount',
-        'area_unit',
-        'price_active',
-        'sort_order',
+    public $guarded = [
+        '*',
     ];
 }

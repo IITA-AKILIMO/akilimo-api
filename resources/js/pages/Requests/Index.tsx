@@ -4,6 +4,7 @@ import DataTable from '../../components/DataTable'
 import type { Column } from '../../components/DataTable'
 import AdminLayout from '../../layouts/AdminLayout'
 import type { ApiRequest, Paginated } from '../../types'
+import DateInput from '../../components/DateInput'
 
 interface Props {
     requests: Paginated<ApiRequest>
@@ -136,19 +137,21 @@ export default function RequestsIndex({ requests, filters, use_cases }: Props) {
 
                         {/* Date range */}
                         <div className="col-sm-auto">
-                            <input
-                                type="date"
-                                className="form-control form-control-sm"
+                            <DateInput
+                                small
+                                ariaLabel="From date"
                                 value={filters.date_from}
-                                onChange={(e) => applyFilters({ date_from: e.target.value })}
+                                max={filters.date_to || undefined}
+                                onChange={(v) => applyFilters({ date_from: v })}
                             />
                         </div>
                         <div className="col-sm-auto">
-                            <input
-                                type="date"
-                                className="form-control form-control-sm"
+                            <DateInput
+                                small
+                                ariaLabel="To date"
                                 value={filters.date_to}
-                                onChange={(e) => applyFilters({ date_to: e.target.value })}
+                                min={filters.date_from || undefined}
+                                onChange={(v) => applyFilters({ date_to: v })}
                             />
                         </div>
 

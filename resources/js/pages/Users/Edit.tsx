@@ -106,7 +106,7 @@ export default function UsersEdit({ user, countries }: Props) {
                             Price Reviewer
                         </p>
                         <p className="text-body-secondary small mb-3">
-                            Tick the countries this user may review and activate default prices for. Leave all
+                            Tick the countries this user may review and activate catalogue prices for. Leave all
                             unticked for no reviewer access.
                         </p>
                         {countries.length === 0 ? (

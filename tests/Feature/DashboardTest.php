@@ -14,7 +14,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia as Assert;
 
-beforeEach(fn () => $this->withoutVite());
+beforeEach(function () {
+    $this->withoutVite();
+    $this->seed(\Database\Seeders\TrafficExclusionSeeder::class);
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+});
 
 function dashboardUser(EnumUserRole $role): User
 {
@@ -130,6 +134,10 @@ it('averages feedback satisfaction over real 1 to 5 answers only', function () {
 });
 
 it('flags price lists that have not been updated recently', function () {
+    // The app's price lists are views over the catalogue, so they are empty when the catalogue is
+    DB::table('price_catalogue_history')->delete();
+    DB::table('price_catalogue')->delete();
+
     $this->actingAs(dashboardUser(EnumUserRole::Admin))
         ->get('/admin')
         ->assertInertia(fn (Assert $page) => $page

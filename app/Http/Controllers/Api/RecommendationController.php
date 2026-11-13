@@ -59,7 +59,7 @@ class RecommendationController extends Controller
      */
     public function computeRecommendations(ComputeRequest $request): RecommendationResource
     {
-        $result = $this->recommendationService->compute(droidRequest: $request->toArray());
+        $result = $this->recommendationService->compute(droidRequest: $request->toArray(), userId: $request->attributes->get('farmer_id'));
 
         return RecommendationResource::make($result);
     }

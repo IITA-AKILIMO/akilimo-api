@@ -9,14 +9,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\MaizePriceRequest;
 use App\Http\Resources\Collections\MaizePriceResourceCollection;
-use App\Http\Resources\MaizePriceResource;
 use App\Repositories\MaizePriceRepo;
 use App\Traits\HasPaginationParams;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MaizePricesController extends Controller
@@ -44,7 +41,6 @@ class MaizePricesController extends Controller
 
         return MaizePriceResourceCollection::make(
             $this->repo->paginateWithSort(perPage: $perPage, orderBy: $orderBy, direction: $sort),
-            $this->repo,
         );
     }
 
@@ -73,37 +69,6 @@ class MaizePricesController extends Controller
                 direction: $sort,
                 filters: ['country' => strtoupper(trim($countryCode))],
             ),
-            $this->repo,
         );
-    }
-
-    public function store(MaizePriceRequest $request): JsonResponse
-    {
-        $price = $this->repo->create($request->validated());
-
-        /**
-         * @status 201
-         */
-        return response()->json([
-            'data' => new MaizePriceResource($price),
-            'message' => 'Maize price created.',
-        ], 201);
-    }
-
-    public function update(MaizePriceRequest $request, int $id): JsonResponse
-    {
-        $price = $this->repo->update($id, $request->validated());
-
-        return response()->json([
-            'data' => new MaizePriceResource($price),
-            'message' => 'Maize price updated.',
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $this->repo->delete($id);
-
-        return response()->json(null, 204);
     }
 }

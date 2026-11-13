@@ -18,6 +18,8 @@ use League\Csv\UnavailableStream;
 
 class StarchPricesSeeder extends Seeder
 {
+    use ReadsSeedCsv;
+
     /**
      * @throws Exception
      * @throws UnavailableStream
@@ -31,6 +33,21 @@ class StarchPricesSeeder extends Seeder
         $batch = [];
         $batchSize = 1000;
         $starchPriceTable = (new StarchPrice)->getTable();
+
+        // The factories keep the ids they had (starch_factory_ids.csv): prices and the app refer to them, and
+        // the two inactive factories added by a migration must not take the first ids
+        foreach ($this->csvRows('starch_factory_ids.csv') as $row) {
+            DB::table('starch_factories')->insertOrIgnore([
+                'id' => (int) $row['id'],
+                'factory_name' => $row['factory_name'],
+                'factory_label' => $row['factory_label'] ?? '',
+                'country' => $row['country'] ?? '',
+                'factory_active' => (bool) $row['factory_active'],
+                'sort_order' => (int) $row['sort_order'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         foreach ($csv as $record) {
             $factory = StarchFactory::firstOrCreate(

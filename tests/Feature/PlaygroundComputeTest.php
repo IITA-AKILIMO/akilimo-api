@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
+// The compute service needs a fertilizer catalogue for the country; migrations no longer seed one
+beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+});
+
 function playgroundUser(): User
 {
     return User::create([

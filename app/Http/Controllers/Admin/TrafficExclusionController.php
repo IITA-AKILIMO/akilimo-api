@@ -34,17 +34,21 @@ class TrafficExclusionController extends AdminController
         $values = $this->filterValues($request, ['search', 'field', 'active']);
         $like = '%' . addcslashes($values['search'], '\\%_') . '%';
 
-        $rules = TrafficExclusion::query()
+        $paginator = TrafficExclusion::query()
             ->when($values['search'] !== '', fn ($q) => $q->where(fn ($w) => $w->where('value', 'like', $like)->orWhere('note', 'like', $like)))
             ->when(array_key_exists($values['field'], TrafficExclusionService::FIELDS), fn ($q) => $q->where('field', $values['field']))
             ->when($values['active'] !== '', fn ($q) => $q->where('active', $values['active'] === '1'))
             ->orderByDesc('active')
             ->orderBy('id')
-            ->get();
+            ->paginate((int) min(100, max(10, (int) $request->get('per_page', 25))))
+            ->withQueryString();
+        // The rules on this page; how many requests each matches is worked out for these only
+        $rules = $paginator->getCollection();
         $matches = $this->exclusions->matchCounts($rules);
 
         return Inertia::render('TrafficExclusions/Index', [
             'filters' => $values,
+            'pagination' => collect($this->paginateShape($paginator, fn ($r) => $r))->only(['meta', 'links'])->all(),
             'rules' => $rules
                 ->map(fn (TrafficExclusion $r) => [
                     'id' => $r->id,

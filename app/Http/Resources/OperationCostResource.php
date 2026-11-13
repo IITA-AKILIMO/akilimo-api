@@ -9,6 +9,7 @@
 namespace App\Http\Resources;
 
 use App\Models\OperationCost;
+use App\Support\PriceMarker;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
@@ -42,6 +43,8 @@ class OperationCostResource extends JsonResource
             'max_cost' => $model->max_cost,
             /** Average cost */
             'average_cost' => $avgCost,
+            /** The text to show for this choice: its cost range */
+            'label' => PriceMarker::labelForRange($model->min_cost, $model->max_cost),
             /** Whether the record is active */
             'is_active' => $model->is_active,
             /** Timestamp when created */

@@ -8,13 +8,15 @@ import type { Country, PriceBasis } from '../../types'
 interface Props {
     item: Country
     basisOptions: { value: PriceBasis; label: string }[]
+    currencies: { value: string; label: string }[]
 }
 
-export default function CountriesEdit({ item, basisOptions }: Props) {
+export default function CountriesEdit({ item, basisOptions, currencies }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         code: item.code,
         name: item.name,
         active: item.active ?? true,
+        currency_code: item.currency_code ?? '',
         default_price_basis: (item.default_price_basis ?? 'open_market') as PriceBasis,
         sort_order: item.sort_order != null ? String(item.sort_order) : '',
     })
@@ -54,6 +56,14 @@ export default function CountriesEdit({ item, basisOptions }: Props) {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                 />
+                            </FormField>
+                        </div>
+                        <div className="col-md-4">
+                            <FormField label="Currency" error={errors.currency_code}>
+                                <select className={`form-select ${errors.currency_code ? 'is-invalid' : ''}`} value={data.currency_code} onChange={(e) => setData('currency_code', e.target.value)}>
+                                    <option value="">None</option>
+                                    {currencies.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                </select>
                             </FormField>
                         </div>
                         <div className="col-md-4">

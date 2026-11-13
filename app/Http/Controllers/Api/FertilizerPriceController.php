@@ -9,14 +9,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\FertilizerPriceRequest;
 use App\Http\Resources\Collections\FertilizerPriceResourceCollection;
-use App\Http\Resources\FertilizerPriceResource;
 use App\Repositories\FertilizerPriceRepo;
 use App\Traits\HasPaginationParams;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FertilizerPriceController extends Controller
@@ -81,36 +78,6 @@ class FertilizerPriceController extends Controller
         ]);
     }
 
-    public function store(FertilizerPriceRequest $request): JsonResponse
-    {
-        $price = $this->repo->create($request->validated());
-
-        /**
-         * @status 201
-         */
-        return response()->json([
-            'data' => new FertilizerPriceResource($price),
-            'message' => 'Fertilizer price created.',
-        ], 201);
-    }
-
-    public function update(FertilizerPriceRequest $request, int $id): JsonResponse
-    {
-        $price = $this->repo->update($id, $request->validated());
-
-        return response()->json([
-            'data' => new FertilizerPriceResource($price),
-            'message' => 'Fertilizer price updated.',
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $this->repo->delete($id);
-
-        return response()->json(null, 204);
-    }
-
     private function getPaginatedPrices(Request $request, array $filters = []): FertilizerPriceResourceCollection
     {
         $perPage = $this->getPerPage($request);
@@ -124,6 +91,6 @@ class FertilizerPriceController extends Controller
             filters: $filters
         );
 
-        return FertilizerPriceResourceCollection::make($fertilizerPrices, $this->repo);
+        return FertilizerPriceResourceCollection::make($fertilizerPrices);
     }
 }

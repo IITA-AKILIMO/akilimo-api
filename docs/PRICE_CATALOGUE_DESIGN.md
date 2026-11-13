@@ -9,7 +9,7 @@ AKILIMO prices live in three places that are maintained separately and drift apa
 | Where | What | Read by |
 |---|---|---|
 | API "choice list" tables: `fertilizer_prices`, `cassava_prices`, `maize_prices`, `potato_prices`, `operation_costs`, `investment_amount` | Hand-made rows of price options per country, e.g. TZ urea: 85,174 / 105,892 / 119,704 / 135,818, plus a `0` row ("I don't know") and a negative row ("Exact price"). `min_allowed_price`/`max_allowed_price` are the min and max of those rows | Mobile app picker. It reads fertilizer, cassava, maize and investment prices, but not potato prices or operation costs, and it never uses the allowed range (see [§5](#5-mobile-app-later-at-the-app-teams-pace)) |
-| API `default_prices`, `starch_prices` | One value per country and item; starch prices by class | Recommendations engine, via `refresh_prices.R` → SQLite (`R/akilimo_db.R`); used e.g. to fill missing fertiliser costs (`R/fertilizers.R`) |
+| API `price_catalogue`, `starch_prices` | One value per country and item; starch prices by class | Recommendations engine, via `refresh_prices.R` → SQLite (`R/akilimo_db.R`); used e.g. to fill missing fertiliser costs (`R/fertilizers.R`) |
 | Hardcoded in the engine (`R/AkilimoMain.R`) | Labour defaults (`default_lmo_costs`, NG and TZ only), maize 50/cob and 230/kg, sweet potato 120,000 and 384,000/t | Engine only |
 
 Consequences seen in the November 2026 price review ([docs/data/price-review-2026-11.md](data/price-review-2026-11.md)):
@@ -29,7 +29,7 @@ Non-goals: live market feeds; regional prices now (the schema leaves room for th
 
 ### 1. Price catalogue (API)
 
-Extend `default_prices` rather than add a new table, so the engine's existing sync keeps working while it is migrated. One row per `(country, item)`:
+Extend `price_catalogue` rather than add a new table, so the engine's existing sync keeps working while it is migrated. One row per `(country, item)`:
 
 | Column | Notes |
 |---|---|
@@ -46,7 +46,7 @@ Extend `default_prices` rather than add a new table, so the engine's existing sy
 | `effective_from` | New. Lets a reviewed price be scheduled for a season |
 | `updated_by` | New. The admin user who last changed it |
 
-A `default_price_history` table records every change (old value, new value, who, when) for audit.
+A `price_catalogue_history` table records every change (old value, new value, who, when) for audit.
 
 Each country also gets a `default_price_basis` (`open_market` or `subsidised`), set by its team. It decides which price applies when a farmer hasn't said whether they get subsidised fertiliser (D1).
 
@@ -62,7 +62,7 @@ Starch prices keep their own tables, because they are priced by starch class; th
 
 `GET /v1/prices?country=TZ[&updated_since=ISO8601]`. It is public like the other reference data and returns only `active`, national (`region` null) rows whose `effective_from` has passed. Each row carries `price`, `subsidised_price`, `min_price`, `max_price`, `unit`, `bag_kg`, `currency`, `source_date` and `updated_at`. The response also includes the country's `default_price_basis`. The response has an `ETag`, and `updated_since` lets clients download only changes.
 
-`GET /v1/default-prices` keeps its response shape until the engine has moved over, then becomes an alias. Since phase 1 it returns only `active` rows, so drafts never reach the engine. It does not apply the `region` or `effective_from` filters.
+`GET /v1/price-catalogue` keeps its response shape until the engine has moved over, then becomes an alias. Since phase 1 it returns only `active` rows, so drafts never reach the engine. It does not apply the `region` or `effective_from` filters.
 
 ### 3. Choice lists generated from the catalogue
 
@@ -80,7 +80,7 @@ Generation runs when a catalogue row is activated or changed, either as a job or
 
 ### 4. Recommendations engine
 
-- `refresh_prices.R` reads `/v1/prices` (paginated, with `updated_since`) into the SQLite `default_prices` table, keeping unit, bag size, currency and range.
+- `refresh_prices.R` reads `/v1/prices` (paginated, with `updated_since`) into the SQLite `price_catalogue` table, keeping unit, bag size, currency and range.
 - The hardcoded defaults in `R/AkilimoMain.R` (labour, maize, sweet potato) become lookups in that table. A hardcoded value is used only if the table has no row, and that is logged at WARN.
 - **Which price:** a new optional request field, `subsidisedFertilizer` (boolean), says whether the farmer gets subsidised fertiliser. If absent, the country's `default_price_basis` applies. Fertiliser costs the farmer typed always win over catalogue prices (D1).
 - **Out-of-range prices are accepted and logged** (D6). The engine computes with the farmer's price, logs a WARN, and adds a note to the response naming the expected range. It never rejects or clamps the price.
@@ -89,7 +89,7 @@ Generation runs when a catalogue row is activated or changed, either as a job or
 ### 5. Mobile app (later, at the app team's pace)
 
 **How the app uses prices today** (`akilimo-mobile`, checked 2026-11-08):
-- **Endpoints:** it calls `/v1/fertilizers`, `/v1/fertilizer-prices`, `/v1/cassava-prices`, `/v1/maize-prices`, `/v1/investment-amounts`, `/v1/starch-factories` and `/v1/cassava-units`, and posts requests to `/v1/recommendations/compute`. It does **not** call `/v1/default-prices`, `/v1/prices`, `/v1/potato-prices` or `/v1/operation-costs`.
+- **Endpoints:** it calls `/v1/fertilizers`, `/v1/fertilizer-prices`, `/v1/cassava-prices`, `/v1/maize-prices`, `/v1/investment-amounts`, `/v1/starch-factories` and `/v1/cassava-units`, and posts requests to `/v1/recommendations/compute`. It does **not** call `/v1/price-catalogue`, `/v1/prices`, `/v1/potato-prices` or `/v1/operation-costs`.
 - **Fertiliser price sheet** (`FertilizerScreen.kt`): one radio option per `fertilizer_prices` row. `0` means "I don't know", a negative value means "Exact price" (free text, any value), and anything else shows its `price_range`. `min_allowed_price`/`max_allowed_price` are stored but never used.
 - **Labour costs** come only from what the farmer enters, or else the engine's catalogue and defaults.
 - **Starch factories:** the app keeps only rows with `factory_active` true, so inactive (unconfirmed) factories stay hidden.
@@ -140,3 +140,5 @@ Country-team input is entered later through the admin UI, so none of it blocks p
 - **Prices:** country teams enter and update them as drafts in the admin price screens; activation follows D4. The review drafts in `docs/data/` are imported as the starting drafts.
 - **Reviewers per country:** assigned in the admin user screens. Until someone is assigned, any admin can review.
 - **The subsidy question's wording:** stored as a translation key served by `GET /v1/translations`, so it can be edited in the admin and translated without an app release.
+
+> **Update (2026-11-11):** the price list responses no longer include min_local_price, max_local_price, min_allowed_price or max_allowed_price. Clients show label and send the choice's value; nothing enforced a range.

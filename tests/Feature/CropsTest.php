@@ -8,6 +8,9 @@
 
 use App\Models\Crop;
 
+// Cassava is created by the test, as the crops migration used to do
+beforeEach(fn () => seedCassavaCrop());
+
 function addCrop(string $key, array $attributes = []): Crop
 {
     return Crop::create(array_merge([
@@ -20,7 +23,7 @@ function addCrop(string $key, array $attributes = []): Crop
     ], $attributes));
 }
 
-it('lists cassava after migrating, with recommendations available', function () {
+it('lists cassava once it exists, with recommendations available', function () {
     $this->getJson('/api/v1/crops')
         ->assertOk()
         ->assertJsonFragment(['key' => 'cassava', 'advice_available' => true]);

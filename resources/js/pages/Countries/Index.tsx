@@ -22,6 +22,7 @@ export default function CountriesIndex({items, filters}: Props) {
         {key: 'sort_order', label: 'Order'},
         {key: 'code', label: 'Code'},
         {key: 'name', label: 'Country Name'},
+        {key: 'currency_code', label: 'Currency'},
         {
             key: 'default_price_basis',
             label: 'Price basis',

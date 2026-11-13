@@ -14,6 +14,7 @@ export interface User {
 }
 
 export interface Country {
+    currency_code?: string | null
     id: number
     code: string
     name: string
@@ -29,6 +30,7 @@ export interface Fertilizer {
     type: string
     fertilizer_key: string
     fertilizer_label?: string
+    category?: string
     country: string
     weight: number
     use_case: string
@@ -167,11 +169,99 @@ export interface Translation {
     rw?: string
 }
 
-export interface DefaultPrice {
+/** A field of a reference or settings table, as the generic Price settings screens describe it */
+export interface ReferenceField {
+    name: string
+    label: string
+    type: 'text' | 'number' | 'select'
+    /** Part of the row's key: read-only once the row exists */
+    key: boolean
+    required: boolean
+    help: string | null
+    step: string | null
+    default: number | null
+}
+
+/** One reference or settings table (ReferenceTables), without its validation rules */
+export interface ReferenceResource {
+    slug: string
+    title: string
+    description: string
+    warning: string | null
+    createUrl: string | null
+    /** The table drives the app's price lists, so a change can be previewed before it is saved */
+    canPreview: boolean
+    fields: ReferenceField[]
+}
+
+/** What a change would do to one of the app's price lists (SettingsPreviewService) */
+export interface PreviewList {
+    key: string
+    title: string
+    total: number
+    changed: number
+    added: number
+    removed: number
+    truncated: boolean
+    rows: { label: string; before: string | null; after: string | null }[]
+}
+
+export interface PreviewResult {
+    changed: number
+    lists: PreviewList[]
+}
+
+/** A row of such a table, with the key columns that address it */
+export type ReferenceRow = Record<string, string | number | null | Record<string, string>> & { _key: Record<string, string> }
+
+/** What a fertilizer is offered for (fertilizer_use_cases), picked in the fertilizer forms */
+export interface FertilizerUseCase {
+    value: string
+    label: string
+}
+
+/** A fertilizer a country can sell (fertilizer_types), picked in the fertilizer forms */
+export interface FertilizerTypeOption {
+    type: string
+    name: string
+    weight: number
+    category?: string
+}
+
+export interface PriceCurrency {
+    code: string
+    name: string
+}
+
+export interface PriceUnit {
+    value: string
+    label: string
+}
+
+export interface PriceItem {
+    item: string
+    /** The unit the item is priced in, so choosing the item fills in the unit */
+    unit: string
+}
+
+/** The lists the price forms choose from (PriceLookupService::forForms), all read from the database */
+export interface PriceLookups {
+    currencies: PriceCurrency[]
+    units: PriceUnit[]
+    items: PriceItem[]
+    /** The currency a country uses, so choosing the country fills in the currency */
+    currencyByCountry: Record<string, string>
+    /** The fertilizers a per-bag price can be for; the label is how the catalogue names it */
+    fertilizerTypes: { type: string; name: string; label: string | null }[]
+}
+
+export interface PriceCatalogue {
+    category?: string
     id: number
     country: string
     region?: string | null
     item: string
+    fertilizer_type?: string | null
     price: number
     subsidised_price?: number | null
     unit: string
@@ -188,7 +278,7 @@ export interface DefaultPrice {
     updated_at?: string
 }
 
-export interface DefaultPriceHistory {
+export interface PriceCatalogueHistory {
     id: number
     action: string
     old_values?: Record<string, unknown> | null

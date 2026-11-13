@@ -8,7 +8,10 @@
 
 use Illuminate\Support\Facades\Http;
 
-beforeEach(fn () => $this->actingAsApiUser());
+beforeEach(function () {
+    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->actingAsApiUser();
+});
 
 // ---------------------------------------------------------------------------
 // Shared helper — different name to avoid collision with ComputeRecommendationTest

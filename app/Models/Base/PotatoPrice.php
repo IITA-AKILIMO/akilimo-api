@@ -17,13 +17,13 @@ use Carbon\Carbon;
  * @property string $country
  * @property Carbon|null $created_at
  * @property int $id
- * @property float $max_local_price
- * @property float $max_price
- * @property float $max_usd
- * @property float $min_local_price
- * @property float $min_price
- * @property float $min_usd
- * @property bool|null $price_active
+ * @property float|null $max_local_price
+ * @property float|null $max_price
+ * @property int $max_usd
+ * @property float|null $min_local_price
+ * @property float|null $min_price
+ * @property int $min_usd
+ * @property int $price_active
  * @property int $sort_order
  * @property Carbon|null $updated_at
  *
@@ -49,26 +49,21 @@ class PotatoPrice extends BaseModel
 {
     protected $table = 'potato_prices';
 
+    public $incrementing = false;
+
     protected $casts = [
+        'id' => 'int',
         'min_local_price' => 'float',
         'max_local_price' => 'float',
-        'min_usd' => 'float',
-        'max_usd' => 'float',
+        'min_usd' => 'int',
+        'max_usd' => 'int',
         'min_price' => 'float',
         'max_price' => 'float',
-        'price_active' => 'bool',
+        'price_active' => 'int',
         'sort_order' => 'int',
     ];
 
-    protected $fillable = [
-        'country',
-        'min_local_price',
-        'max_local_price',
-        'min_usd',
-        'max_usd',
-        'min_price',
-        'max_price',
-        'price_active',
-        'sort_order',
+    public $guarded = [
+        '*',
     ];
 }

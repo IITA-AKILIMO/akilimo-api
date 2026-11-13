@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import FormField from '../../components/FormField'
 import ResourceForm from '../../components/ResourceForm'
 import AdminLayout from '../../layouts/AdminLayout'
+import DateInput, { todayISO } from '../../components/DateInput'
 
 interface User {
     id: number
@@ -157,11 +158,12 @@ export default function ApiKeysCreate({ users, abilityGroups, abilityLabels, rol
                     </FormField>
 
                     <FormField label="Expiry Date" error={errors.expires_at}>
-                        <input
-                            type="date"
+                        <DateInput
                             value={data.expires_at}
-                            onChange={(e) => setData('expires_at', e.target.value)}
-                            className={`form-control ${errors.expires_at ? 'is-invalid' : ''}`}
+                            onChange={(v) => setData('expires_at', v)}
+                            error={errors.expires_at}
+                            min={todayISO()}
+                            today={false}
                         />
                         <div className="form-text">Optional. Leave empty for no expiration.</div>
                     </FormField>

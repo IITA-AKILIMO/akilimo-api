@@ -9,9 +9,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DefaultPriceResource;
+use App\Http\Resources\PriceCatalogueResource;
 use App\Models\Country;
-use App\Repositories\DefaultPriceRepo;
+use App\Repositories\PriceCatalogueRepo;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
 
 class PriceController extends Controller
 {
-    public function __construct(protected DefaultPriceRepo $repo) {}
+    public function __construct(protected PriceCatalogueRepo $repo) {}
 
     /**
      * List catalogue prices
@@ -55,7 +55,7 @@ class PriceController extends Controller
             'country' => $code,
             'default_price_basis' => $country?->default_price_basis?->value
                 ?? config('price_catalogue.default_basis'),
-            'data' => DefaultPriceResource::collection($rows)->resolve($request),
+            'data' => PriceCatalogueResource::collection($rows)->resolve($request),
             'updated_at' => $rows->max('updated_at')?->toIso8601String(),
         ];
 

@@ -9,20 +9,17 @@
 use App\Enums\EnumUserRole;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
-use App\Http\Controllers\Admin\CassavaPriceController;
 use App\Http\Controllers\Admin\CassavaUnitController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CropController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\DefaultPriceController;
+use App\Http\Controllers\Admin\PriceCatalogueController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\FertilizerController;
-use App\Http\Controllers\Admin\FertilizerPriceController;
-use App\Http\Controllers\Admin\InvestmentAmountController;
-use App\Http\Controllers\Admin\MaizePriceController;
-use App\Http\Controllers\Admin\OperationCostController;
-use App\Http\Controllers\Admin\PotatoPriceController;
+use App\Http\Controllers\Admin\FertilizerTypeController;
+use App\Http\Controllers\Admin\PriceListController;
+use App\Http\Controllers\Admin\ReferenceDataController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\StarchFactoryController;
 use App\Http\Controllers\Admin\StarchPriceController;
@@ -108,28 +105,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
             ->except(['show'])
             ->parameters(['fertilizers' => 'id']);
 
-        // Fertilizer prices — batch routes before resource
-        Route::get('fertilizer-prices/batch-create', [FertilizerPriceController::class, 'batchCreate'])->name('fertilizer-prices.batch-create');
-        Route::post('fertilizer-prices/batch', [FertilizerPriceController::class, 'batchStore'])->name('fertilizer-prices.batch-store');
-        Route::get('fertilizer-prices/batch-edit', [FertilizerPriceController::class, 'batchEdit'])->name('fertilizer-prices.batch-edit');
-        Route::put('fertilizer-prices/batch', [FertilizerPriceController::class, 'batchUpdate'])->name('fertilizer-prices.batch-update');
+        // Reference data and price settings: the lists the price forms choose from and the rules the app's lists use
+        Route::get('reference', [ReferenceDataController::class, 'hub'])->name('reference.hub');
+        Route::get('reference/{slug}', [ReferenceDataController::class, 'index'])->name('reference.index');
+        Route::get('reference/{slug}/create', [ReferenceDataController::class, 'create'])->name('reference.create');
+        Route::post('reference/{slug}', [ReferenceDataController::class, 'store'])->name('reference.store');
+        Route::post('reference/{slug}/preview', [ReferenceDataController::class, 'preview'])->name('reference.preview');
+        Route::get('reference/{slug}/edit', [ReferenceDataController::class, 'edit'])->name('reference.edit');
+        Route::put('reference/{slug}', [ReferenceDataController::class, 'update'])->name('reference.update');
+        Route::delete('reference/{slug}', [ReferenceDataController::class, 'destroy'])->name('reference.destroy');
 
-        Route::resource('fertilizer-prices', FertilizerPriceController::class)
-            ->except(['show'])
-            ->parameters(['fertilizer-prices' => 'id']);
+        // What the app's price lists contain right now (read-only)
+        Route::get('price-lists', [PriceListController::class, 'index'])->name('price-lists.index');
 
-        // Commodity prices
-        Route::resource('maize-prices', MaizePriceController::class)
-            ->except(['show'])
-            ->parameters(['maize-prices' => 'id']);
-
-        Route::resource('cassava-prices', CassavaPriceController::class)
-            ->except(['show'])
-            ->parameters(['cassava-prices' => 'id']);
-
-        Route::resource('potato-prices', PotatoPriceController::class)
-            ->except(['show'])
-            ->parameters(['potato-prices' => 'id']);
+        // A new fertilizer (its type code is generated from the name)
+        Route::get('fertilizer-types/create', [FertilizerTypeController::class, 'create'])->name('fertilizer-types.create');
+        Route::post('fertilizer-types', [FertilizerTypeController::class, 'store'])->name('fertilizer-types.store');
+        // Change a fertilizer's own details (name, bag weight, category) for every country at once
+        Route::get('fertilizer-types/{type}/edit', [FertilizerTypeController::class, 'edit'])->name('fertilizer-types.edit');
+        Route::put('fertilizer-types/{type}', [FertilizerTypeController::class, 'update'])->name('fertilizer-types.update');
 
         // Starch prices — batch routes must come before the resource to avoid {id} capture
         Route::get('starch-prices/batch-create', [StarchPriceController::class, 'batchCreate'])->name('starch-prices.batch-create');
@@ -141,37 +135,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
             ->except(['show'])
             ->parameters(['starch-prices' => 'id']);
 
-        // Default prices — batch and workflow routes before resource
-        Route::get('default-prices/batch-create', [DefaultPriceController::class, 'batchCreate'])->name('default-prices.batch-create');
-        Route::post('default-prices/batch', [DefaultPriceController::class, 'batchStore'])->name('default-prices.batch-store');
-        Route::get('default-prices/batch-edit', [DefaultPriceController::class, 'batchEdit'])->name('default-prices.batch-edit');
-        Route::put('default-prices/batch', [DefaultPriceController::class, 'batchUpdate'])->name('default-prices.batch-update');
+        // Price catalogue: batch and workflow routes before the resource
+        Route::get('price-catalogue/batch-create', [PriceCatalogueController::class, 'batchCreate'])->name('price-catalogue.batch-create');
+        Route::post('price-catalogue/batch', [PriceCatalogueController::class, 'batchStore'])->name('price-catalogue.batch-store');
+        Route::get('price-catalogue/batch-edit', [PriceCatalogueController::class, 'batchEdit'])->name('price-catalogue.batch-edit');
+        Route::put('price-catalogue/batch', [PriceCatalogueController::class, 'batchUpdate'])->name('price-catalogue.batch-update');
 
-        Route::post('default-prices/{id}/activate', [DefaultPriceController::class, 'activate'])->name('default-prices.activate');
-        Route::post('default-prices/{id}/confirm', [DefaultPriceController::class, 'confirm'])->name('default-prices.confirm');
+        Route::post('price-catalogue/{id}/activate', [PriceCatalogueController::class, 'activate'])->name('price-catalogue.activate');
+        Route::post('price-catalogue/{id}/deactivate', [PriceCatalogueController::class, 'deactivate'])->name('price-catalogue.deactivate');
+        Route::post('price-catalogue/{id}/confirm', [PriceCatalogueController::class, 'confirm'])->name('price-catalogue.confirm');
 
-        Route::resource('default-prices', DefaultPriceController::class)
+        Route::resource('price-catalogue', PriceCatalogueController::class)
             ->except(['show'])
-            ->parameters(['default-prices' => 'id']);
+            ->parameters(['price-catalogue' => 'id']);
 
         // Supporting data
         Route::resource('starch-factories', StarchFactoryController::class)
             ->except(['show'])
             ->parameters(['starch-factories' => 'id']);
-
-        Route::resource('investment-amounts', InvestmentAmountController::class)
-            ->except(['show'])
-            ->parameters(['investment-amounts' => 'id']);
-
-        // Operation costs — batch routes before resource
-        Route::get('operation-costs/batch-create', [OperationCostController::class, 'batchCreate'])->name('operation-costs.batch-create');
-        Route::post('operation-costs/batch', [OperationCostController::class, 'batchStore'])->name('operation-costs.batch-store');
-        Route::get('operation-costs/batch-edit', [OperationCostController::class, 'batchEdit'])->name('operation-costs.batch-edit');
-        Route::put('operation-costs/batch', [OperationCostController::class, 'batchUpdate'])->name('operation-costs.batch-update');
-
-        Route::resource('operation-costs', OperationCostController::class)
-            ->except(['show'])
-            ->parameters(['operation-costs' => 'id']);
 
         Route::resource('crops', CropController::class)
             ->except(['show'])

@@ -76,6 +76,7 @@ it('finds translations by their text and lists the ones still missing a language
 });
 
 it('lists the crops offered in a country, including those offered everywhere', function () {
+    seedCassavaCrop();
     DB::table('crops')->insert([
         ['crop_key' => 'yam', 'name' => 'Yam', 'active' => true, 'advice_available' => false, 'countries' => json_encode(['NG']), 'sort_order' => 5],
         ['crop_key' => 'rice', 'name' => 'Rice', 'active' => true, 'advice_available' => false, 'countries' => json_encode(['TZ']), 'sort_order' => 6],

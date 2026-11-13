@@ -6,6 +6,8 @@
  * For licence information, see the LICENCE file.
  */
 
+use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AccountHistoryController;
 use App\Http\Controllers\Api\ApiKeyController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CassavaPricesController;
@@ -14,14 +16,15 @@ use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\CoverageController;
 use App\Http\Controllers\Api\CropController;
 use App\Http\Controllers\Api\CurrencyController;
-use App\Http\Controllers\Api\DefaultPriceController;
 use App\Http\Controllers\Api\FertilizerController;
 use App\Http\Controllers\Api\FertilizerPriceController;
 use App\Http\Controllers\Api\InvestmentAmountController;
 use App\Http\Controllers\Api\MaizePricesController;
+use App\Http\Controllers\Api\MaizeUnitsController;
 use App\Http\Controllers\Api\McpKeyController;
 use App\Http\Controllers\Api\OperationCostController;
 use App\Http\Controllers\Api\PotatoPricesController;
+use App\Http\Controllers\Api\PriceCatalogueController;
 use App\Http\Controllers\Api\PriceController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Api\StarchFactoryController;
@@ -41,6 +44,42 @@ Route::prefix('health')->group(function () {
 Route::middleware('throttle:auth')->prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth.token');
+});
+
+// ── Farmer accounts (optional; the app works without one) ────────────────────
+Route::middleware('throttle:sensitive')->prefix('v1/account')->group(function () {
+    Route::post('/register', [AccountController::class, 'register']);
+    Route::post('/email/verify', [AccountController::class, 'verifyEmail']);
+    Route::post('/password/forgot', [AccountController::class, 'forgotPassword']);
+    Route::post('/password/reset', [AccountController::class, 'resetPassword']);
+    Route::post('/email/resend', [AccountController::class, 'resendVerification'])->middleware(['auth.token', 'farmer']);
+});
+
+Route::middleware('throttle:auth')->prefix('v1/account')->group(function () {
+    Route::post('/login', [AccountController::class, 'login']);
+    Route::post('/google', [AccountController::class, 'google']);
+    Route::post('/social/{provider}', [AccountController::class, 'social'])->where('provider', '[a-z0-9-]+');
+});
+
+Route::middleware(['throttle:write', 'auth.token', 'farmer'])->prefix('v1/account')->group(function () {
+    Route::post('/consent', [AccountController::class, 'consent']);
+    Route::post('/logout', [AccountController::class, 'logout']);
+});
+
+Route::middleware(['throttle:read', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::get('/history', [AccountHistoryController::class, 'index']);
+    Route::get('/history/ids', [AccountHistoryController::class, 'ids']);
+    Route::get('/history/{requestId}', [AccountHistoryController::class, 'show'])->whereUuid('requestId');
+});
+
+Route::middleware(['throttle:write', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::delete('/history/{requestId}', [AccountHistoryController::class, 'destroy'])->whereUuid('requestId');
+    Route::post('/history/delete', [AccountHistoryController::class, 'destroyMany']);
+});
+
+Route::middleware(['throttle:sensitive', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
+    Route::delete('/history', [AccountHistoryController::class, 'destroyAll']);
+    Route::delete('/', [AccountHistoryController::class, 'destroyAccount']);
 });
 
 // ── Public reference data ─────────────────────────────────────────────────────
@@ -88,8 +127,8 @@ Route::middleware('throttle:read')->group(function () {
         Route::get('/', [StarchPricesController::class, 'index']);
     });
 
-    Route::prefix('v1/default-prices')->group(function () {
-        Route::get('/', [DefaultPriceController::class, 'index']);
+    Route::prefix('v1/price-catalogue')->group(function () {
+        Route::get('/', [PriceCatalogueController::class, 'index']);
     });
 
     Route::prefix('v1/prices')->group(function () {
@@ -98,6 +137,10 @@ Route::middleware('throttle:read')->group(function () {
 
     Route::prefix('v1/cassava-units')->group(function () {
         Route::get('/', [CassavaUnitsController::class, 'index']);
+    });
+
+    Route::prefix('v1/maize-units')->group(function () {
+        Route::get('/', [MaizeUnitsController::class, 'index']);
     });
 
     Route::prefix('v1/cassava-prices')->group(function () {
@@ -129,7 +172,8 @@ Route::middleware('throttle:read')->prefix('v1/coverage')->group(function () {
 //    Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 // });
 
-Route::middleware(['throttle:compute'])->group(function () {
+// Open to everyone; a signed-in farmer's token (optional) links the saved advice to their account
+Route::middleware(['throttle:compute', 'farmer.optional'])->group(function () {
     Route::post('v1/recommendations/compute', [RecommendationController::class, 'computeRecommendations']);
 });
 
@@ -163,12 +207,7 @@ Route::middleware(['throttle:read', 'auth.token:translations:read'])->group(func
 });
 
 // ── Partner — price submissions (requires prices:write) ───────────────────────
-Route::middleware(['throttle:write', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {
-    Route::post('/prices/maize', [MaizePricesController::class, 'store']);
-    Route::post('/prices/cassava', [CassavaPricesController::class, 'store']);
-    Route::post('/prices/potato', [PotatoPricesController::class, 'store']);
-    Route::post('/prices/fertilizer', [FertilizerPriceController::class, 'store']);
-});
+Route::middleware(['throttle:write', 'auth.token:prices:write'])->prefix('v1/partner')->group(function () {});
 
 // ── API key self-management ───────────────────────────────────────────────────
 Route::middleware(['throttle:write', 'auth.token:api-keys:manage'])->prefix('v1/auth')->group(function () {
@@ -186,18 +225,12 @@ Route::middleware(['throttle:mcp-verify', 'auth.token:mcp:verify-keys'])->prefix
 // ── Admin — lookup data CRUD (requires write)─────────────────────────────────
 Route::middleware(['throttle:admin-write', 'auth.token:write'])->prefix('v1/admin')->group(function () {
     Route::apiResource('fertilizers', FertilizerController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('fertilizer-prices', FertilizerPriceController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('maize-prices', MaizePricesController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('cassava-prices', CassavaPricesController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('potato-prices', PotatoPricesController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('starch-prices', StarchPricesController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('starch-factories', StarchFactoryController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('investment-amounts', InvestmentAmountController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('operation-costs', OperationCostController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('currencies', CurrencyController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('cassava-units', CassavaUnitsController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('translations', TranslationController::class)->only(['store', 'update', 'destroy']);
-    Route::apiResource('default-prices', DefaultPriceController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('price-catalogue', PriceCatalogueController::class)->only(['store', 'update', 'destroy']);
 });
 
 // ── Admin — user management (requires admin) ──────────────────────────────────

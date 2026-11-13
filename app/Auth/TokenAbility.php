@@ -26,6 +26,9 @@ final class TokenAbility
 
     const RECOMMENDATIONS_READ = 'recommendations:read';
 
+    /** A farmer reads and deletes only their own saved advice (GET /v1/account/history). */
+    const HISTORY_OWN = 'history:own';
+
     /** New download links for a stored PDF report (GET /v1/recommendations/reports/{id}); the MCP server's own key */
     const REPORTS_READ = 'reports:read';
 
@@ -56,6 +59,12 @@ final class TokenAbility
         self::RECOMMENDATIONS_COMPUTE,
     ];
 
+    /** Farmers with an account: compute, and read or delete their own saved advice only. */
+    const FARMER_ABILITIES = [
+        self::RECOMMENDATIONS_COMPUTE,
+        self::HISTORY_OWN,
+    ];
+
     /** Partners: compute + read history, submit prices & feedback, read translations. */
     const PARTNER_ABILITIES = [
         self::RECOMMENDATIONS_COMPUTE,
@@ -69,6 +78,7 @@ final class TokenAbility
     const ALL = [
         self::RECOMMENDATIONS_COMPUTE,
         self::RECOMMENDATIONS_READ,
+        self::HISTORY_OWN,
         self::REPORTS_READ,
         self::PRICES_WRITE,
         self::FEEDBACK_READ,
@@ -105,6 +115,7 @@ final class TokenAbility
     const LABELS = [
         self::RECOMMENDATIONS_COMPUTE => 'Compute recommendations',
         self::RECOMMENDATIONS_READ => 'Read recommendation history',
+        self::HISTORY_OWN => 'Read and delete own saved advice (farmer accounts)',
         self::REPORTS_READ => 'Renew PDF report links (MCP server)',
         self::PRICES_WRITE => 'Submit price updates',
         self::FEEDBACK_READ => 'Read user feedback',
@@ -146,6 +157,7 @@ final class TokenAbility
         'Recommendations' => [
             self::RECOMMENDATIONS_COMPUTE,
             self::RECOMMENDATIONS_READ,
+            self::HISTORY_OWN,
             self::REPORTS_READ,
         ],
         'Prices' => [

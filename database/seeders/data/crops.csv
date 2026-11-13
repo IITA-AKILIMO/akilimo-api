@@ -1,0 +1,6 @@
+id,crop_key,name,description,active,advice_available,countries,sort_order
+1,cassava,Cassava,"Fertilizer, planting practices, planting and harvest dates, and intercropping advice",1,1,,0
+2,maize,Maize,,1,0,,1
+3,rice,Rice,,1,0,,5
+4,potatoes,Potatoes,,1,0,,2
+5,sorghum,Sorghum,,1,0,,2

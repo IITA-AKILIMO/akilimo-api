@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\DB;
  * which already has its own per-factory active flag.
  */
 return new class extends Migration {
+    private const FIRST_ID = 55;
+
     /**
      * country, item, price, currency, confidence, source basis
      *
@@ -51,8 +53,11 @@ return new class extends Migration {
         $now = now();
         $rows = [];
 
-        foreach (self::ROWS as [$country, $item, $price, $currency, $confidence, $basis]) {
+        foreach (self::ROWS as $index => [$country, $item, $price, $currency, $confidence, $basis]) {
             $rows[] = [
+                // Fixed ids, so a new database numbers these rows like an existing one: the seeder
+                // (price_catalogue.csv) gives the other prices the ids before and after them
+                'id' => self::FIRST_ID + $index,
                 'country' => $country,
                 'region' => null,
                 'item' => $item,

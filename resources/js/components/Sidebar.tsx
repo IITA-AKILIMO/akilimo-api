@@ -64,12 +64,28 @@ interface NavItem {
     roles: UserRole[]
     /** Label shown to partners instead, when it differs. */
     partnerLabel?: string
+    /** A submenu: shown under the item while the user is anywhere in its area. */
+    children?: { label: string; href: string }[]
+    /** Other pages that belong to this item, so it stays highlighted on them. */
+    also?: string[]
+    /** Pages under this item's href that belong to another item. */
+    exclude?: string[]
 }
 
 interface NavSection {
     heading: string
     items: NavItem[]
 }
+
+/** Pages that sit under Catalogue > Fertilizers (shown as tabs) */
+export const FERTILIZER_AREA = [
+    '/admin/fertilizer-types',
+    '/admin/reference/fertilizer-types',
+    '/admin/reference/fertilizer-categories',
+    '/admin/reference/fertilizer-use-cases',
+]
+/** Pages that sit under Catalogue > Units of sale (shown as tabs) */
+export const UNITS_AREA = ['/admin/cassava-units', '/admin/reference/maize-units']
 
 export const navigation: NavSection[] = [
     {
@@ -79,10 +95,41 @@ export const navigation: NavSection[] = [
         ],
     },
     {
-        heading: 'Keys and access',
+        heading: 'Prices',
         items: [
-            { label: 'API keys', partnerLabel: 'My API keys', href: '/admin/api-keys', icon: 'key', roles: BOTH },
-            { label: 'Users', href: '/admin/users', icon: 'users', roles: ADMIN },
+            { label: 'Price catalogue', href: '/admin/price-catalogue', icon: 'dollar', roles: ADMIN },
+            { label: 'Starch prices', href: '/admin/starch-prices', icon: 'beaker', roles: ADMIN },
+            { label: 'App price lists', href: '/admin/price-lists', icon: 'tag', roles: ADMIN },
+        ],
+    },
+    {
+        heading: 'Catalogue',
+        items: [
+            // The tab bar (components/SectionTabs.tsx) holds the pages that belong with each of these
+            { label: 'Fertilizers', href: '/admin/fertilizers', icon: 'sack', roles: ADMIN, also: FERTILIZER_AREA },
+            { label: 'Crops', href: '/admin/crops', icon: 'sprout', roles: ADMIN },
+            { label: 'Starch factories', href: '/admin/starch-factories', icon: 'factory', roles: ADMIN },
+            { label: 'Units of sale', href: '/admin/cassava-units', icon: 'scale', roles: ADMIN, also: UNITS_AREA },
+        ],
+    },
+    {
+        heading: 'Places and money',
+        items: [
+            { label: 'Countries', href: '/admin/countries', icon: 'globe', roles: ADMIN },
+            { label: 'Currencies', href: '/admin/currencies', icon: 'coins', roles: ADMIN },
+        ],
+    },
+    {
+        heading: 'Price rules',
+        items: [
+            // The hub of the settings the price lists are worked out with; fertilizer and unit lists live under Catalogue
+            { label: 'Price rules', href: '/admin/reference', icon: 'wrench', roles: ADMIN, exclude: [...FERTILIZER_AREA, ...UNITS_AREA] },
+        ],
+    },
+    {
+        heading: 'Content',
+        items: [
+            { label: 'Translations', href: '/admin/translations', icon: 'translate', roles: ADMIN },
         ],
     },
     {
@@ -94,42 +141,35 @@ export const navigation: NavSection[] = [
         ],
     },
     {
-        heading: 'Prices and costs',
+        heading: 'Access',
         items: [
-            { label: 'Fertilizer prices', href: '/admin/fertilizer-prices', icon: 'tag', roles: ADMIN },
-            { label: 'Cassava prices', href: '/admin/cassava-prices', icon: 'cassava', roles: ADMIN },
-            { label: 'Maize prices', href: '/admin/maize-prices', icon: 'maize', roles: ADMIN },
-            { label: 'Potato prices', href: '/admin/potato-prices', icon: 'potato', roles: ADMIN },
-            { label: 'Starch prices', href: '/admin/starch-prices', icon: 'beaker', roles: ADMIN },
-            { label: 'Default prices', href: '/admin/default-prices', icon: 'dollar', roles: ADMIN },
-            { label: 'Operation costs', href: '/admin/operation-costs', icon: 'wrench', roles: ADMIN },
-            { label: 'Investment amounts', href: '/admin/investment-amounts', icon: 'trending', roles: ADMIN },
-        ],
-    },
-    {
-        heading: 'Reference data',
-        items: [
-            { label: 'Fertilizers', href: '/admin/fertilizers', icon: 'sack', roles: ADMIN },
-            { label: 'Crops', href: '/admin/crops', icon: 'sprout', roles: ADMIN },
-            { label: 'Countries', href: '/admin/countries', icon: 'globe', roles: ADMIN },
-            { label: 'Currencies', href: '/admin/currencies', icon: 'coins', roles: ADMIN },
-            { label: 'Cassava units', href: '/admin/cassava-units', icon: 'scale', roles: ADMIN },
-            { label: 'Starch factories', href: '/admin/starch-factories', icon: 'factory', roles: ADMIN },
-            { label: 'Translations', href: '/admin/translations', icon: 'translate', roles: ADMIN },
+            { label: 'API keys', partnerLabel: 'My API keys', href: '/admin/api-keys', icon: 'key', roles: BOTH },
+            { label: 'Users', href: '/admin/users', icon: 'users', roles: ADMIN },
         ],
     },
 ]
+
+/** The item is highlighted on its own page, on the pages it lists as `also`, and not on the ones it excludes. */
+export function itemActive(item: NavItem, currentPath: string): boolean {
+    if ((item.exclude ?? []).some((h) => isActive(currentPath, h))) return false
+    return isActive(currentPath, item.href) || (item.also ?? []).some((h) => isActive(currentPath, h))
+}
 
 export function isActive(currentPath: string, href: string): boolean {
     if (href === '/admin') return currentPath === '/admin' || currentPath === '/admin/'
     return currentPath === href || currentPath.startsWith(href + '/')
 }
 
+/** The submenu entry the current page is on, if the item has one. */
+function activeChild(item: NavItem, currentPath: string) {
+    return item.children?.find((c) => isActive(currentPath, c.href))
+}
+
 /** The section and item the current page belongs to, for the header eyebrow. */
 export function findActive(currentPath: string): { section: string; label: string } | null {
     for (const section of navigation) {
-        const item = section.items.find((i) => isActive(currentPath, i.href))
-        if (item) return { section: section.heading, label: item.label }
+        const item = section.items.find((i) => itemActive(i, currentPath) || activeChild(i, currentPath))
+        if (item) return { section: section.heading, label: activeChild(item, currentPath)?.label ?? item.label }
     }
     return null
 }
@@ -165,7 +205,8 @@ export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
                 items: s.items
                     .filter((i) => role !== undefined && i.roles.includes(role))
                     .map((i) => ({ ...i, label: role === 'partner' && i.partnerLabel ? i.partnerLabel : i.label }))
-                    .filter((i) => !q || i.label.toLowerCase().includes(q) || s.heading.toLowerCase().includes(q)),
+                    .filter((i) => !q || i.label.toLowerCase().includes(q) || s.heading.toLowerCase().includes(q)
+                        || (i.children ?? []).some((c) => c.label.toLowerCase().includes(q))),
             }))
             .filter((s) => s.items.length > 0)
     }, [role, filter])
@@ -287,7 +328,11 @@ export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
                                 >
                                 <ul className="nav nav-pills flex-column gap-1" aria-labelledby={headingId}>
                                     {section.items.map((item) => {
-                                        const active = isActive(currentPath, item.href)
+                                        // An item with a submenu is highlighted only on its own page; on a
+                                        // submenu page the submenu entry is highlighted instead
+                                        const inArea = itemActive(item, currentPath) || !!activeChild(item, currentPath)
+                                        const active = item.children ? currentPath === item.href : itemActive(item, currentPath)
+                                        const showChildren = !!item.children && (inArea || filtering)
                                         return (
                                             <li key={item.href} className="nav-item">
                                                 <Link
@@ -299,6 +344,24 @@ export default function Sidebar({ id, currentPath, collapsed }: SidebarProps) {
                                                     <Icon paths={ICONS[item.icon]} />
                                                     <span className="nav-label text-truncate">{item.label}</span>
                                                 </Link>
+                                                {showChildren && (
+                                                    <ul className="nav-sub list-unstyled" aria-label={`${item.label} pages`}>
+                                                        {item.children!.map((child) => {
+                                                            const childActive = isActive(currentPath, child.href)
+                                                            return (
+                                                                <li key={child.href}>
+                                                                    <Link
+                                                                        href={child.href}
+                                                                        className={`nav-sublink${childActive ? ' active' : ''}`}
+                                                                        aria-current={childActive ? 'page' : undefined}
+                                                                    >
+                                                                        {child.label}
+                                                                    </Link>
+                                                                </li>
+                                                            )
+                                                        })}
+                                                    </ul>
+                                                )}
                                             </li>
                                         )
                                     })}
