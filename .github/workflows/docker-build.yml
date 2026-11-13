@@ -43,7 +43,7 @@ jobs:
           ref_name: ${{ github.event.workflow_run.head_branch }}
 
       - name: Build application image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile
