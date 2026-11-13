@@ -19,8 +19,8 @@ app) and the owner's inputs (below) are open.
 | `POST /password/forgot`, `POST /password/reset` | none | `sensitive` | same answer for known and unknown addresses; a reset signs the account out everywhere |
 | `GET /history`, `GET /history/{request_id}` | farmer token + consent | `read` | only the caller's rows, newest first, `per_page` up to 100; the detail adds `result` |
 | `GET /history/ids` | farmer token + consent | `read` | the ids of all saved items, newest first (at most 5000, `meta.truncated` says when cut); an app compares them with its own copies and drops the ones deleted elsewhere |
-| `DELETE /history/{request_id}` | farmer token + consent | `write` | |
-| `DELETE /history` | farmer token + consent | `sensitive` | deletes **all** the caller's saved advice and keeps the account; answers `deleted` (the count) |
+| `DELETE /history/{request_id}` | farmer token + consent | `write` | **soft delete**: the item leaves the account, the request stays for statistics unlinked (`user_id` null, `device_token` cleared) |
+| `DELETE /history` | farmer token + consent | `sensitive` | the same **soft delete** for **all** the caller's saved advice; keeps the account; answers `deleted` (how many items left the account) |
 | `DELETE /` | farmer token + consent | `sensitive` | deletes the account; past requests stay with `user_id` and `device_token` cleared |
 
 Sign-in answers use the staff login shape (`token_type`, `token`, `expires_at`, `user`) plus `consent_required` and `claimed_requests`.
@@ -37,6 +37,8 @@ result is cached apart from the shared cache, and the answer's `request_id` is t
 same inputs), so a client can match its copy with `GET /history/{request_id}`; any other credentials, expired tokens included, are treated as
 anonymous and get a fresh `request_id` each call. An advice saved
 anonymously is claimed once at the next sign-in with the same `device_token` (only rows with no owner move).
+
+**Deleting is a soft delete.** Deleting one item, all items or the account never removes a row from `api_requests`, because the requests are still needed for statistics. The row is released: `user_id` is set to null and the phone's `device_token` is cleared, so it can no longer be seen by the farmer or claimed back by the same phone at the next sign-in (without clearing the token it would be). The location and answers stay in those rows, so keep them out of any public export. See `ApiRequestRepo::releaseForUser` and `releaseAllForUser`; account deletion does the same in `FarmerAccountService::deleteAccount`.
 
 **A long history.** The list reads only the columns it shows (never the stored request and answer, which are large) and is paginated (per_page up to 100, newest first, stable order by created_at then id), so a farmer with thousands of saved items costs no more per page than one with a few. A client should not download the history again on every start: fetch newest-first and stop at the first page it already has, and use GET /history/ids now and then to drop items deleted elsewhere (the app does this; see SavedAdviceRepo). Tests: 	ests/Feature/Account/AccountHistoryTest.php (1200 items paged without a loss or repeat, the list query, the ids, delete all).
 

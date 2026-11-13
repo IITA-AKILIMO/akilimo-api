@@ -89,7 +89,7 @@ Document all of them in the OpenAPI (Scramble) like the rest.
   `plumber_response`). That is personal data once linked to an account.
 - Store only what the history needs; no phone number or name is required to sign up (display name is optional).
 - Consent is recorded at sign-up or first app sign-in (`consent_at`, wording version).
-- **Retention:** saved advice is kept until the farmer deletes it; there is no scheduled purge. The farmer can delete one item or the whole account at any time.
+- **Retention:** saved advice is kept until the farmer deletes it; there is no scheduled purge. The farmer can delete one item, all items or the whole account at any time. **All three are soft deletes (owner, 2026-11-13): the requests stay for statistics, unlinked from the person.**
 - **Deleting an account** removes the account and its tokens. Their past requests are **kept for statistics with the link removed**:
   `api_requests.user_id` is set to null (`ON DELETE SET NULL`) and `device_token` is cleared on those rows. The location and answers
   stay in those rows, so keep them out of any public export.

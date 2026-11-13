@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 use App\Models\ApiRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -121,10 +122,26 @@ class ApiRequestRepo extends BaseRepo
         return ['ids' => array_slice($ids, 0, $max), 'truncated' => count($ids) > $max];
     }
 
-    /** Removes all of a farmer's saved advice. Returns how many rows went. */
-    public function deleteAllForUser(int $userId): int
+    /**
+     * "Deletes" one saved item for a farmer: a soft delete. The row stays, because the requests are still needed for
+     * statistics, but it no longer belongs to anyone: user_id is set to null and the phone's device_token is cleared, exactly as
+     * when an account is deleted. The device_token must go too, otherwise the next sign-in from that phone would claim the
+     * item back.
+     */
+    public function releaseForUser(int $userId, string $requestId): bool
     {
-        return $this->model->newQuery()->where('user_id', $userId)->delete();
+        return $this->release($this->model->newQuery()->where('user_id', $userId)->where('request_id', $requestId)) > 0;
+    }
+
+    /** The same soft delete for all of a farmer's saved advice. Returns how many rows were released. */
+    public function releaseAllForUser(int $userId): int
+    {
+        return $this->release($this->model->newQuery()->where('user_id', $userId));
+    }
+
+    private function release(Builder $query): int
+    {
+        return $query->update(['user_id' => null, 'device_token' => null]);
     }
 
     /** One saved recommendation, only when it belongs to this farmer. */

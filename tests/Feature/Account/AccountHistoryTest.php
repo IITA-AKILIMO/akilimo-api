@@ -73,15 +73,43 @@ it('answers 404 for someone else saved advice or an unknown id, and never leaks 
     expect(ApiRequest::find($theirs->id))->not->toBeNull();
 });
 
-it('deletes one saved item and only that one', function () {
+it('soft deletes one saved item: it leaves the account but the request stays for statistics', function () {
     [$me, $token] = signedInFarmer();
     $a = saveAdviceFor('d1', $me->id);
     $b = saveAdviceFor('d1', $me->id);
 
     $this->withToken($token)->deleteJson("/api/v1/account/history/{$a->request_id}")->assertOk();
 
-    expect(ApiRequest::find($a->id))->toBeNull()
-        ->and(ApiRequest::find($b->id))->not->toBeNull();
+    // The row is still there, with its data, but belongs to nobody and cannot be claimed back by the phone
+    $kept = ApiRequest::find($a->id);
+    expect($kept)->not->toBeNull()
+        ->and($kept->user_id)->toBeNull()
+        ->and($kept->device_token)->toBeNull()
+        ->and($kept->plumber_response)->toBe(['status' => 'success'])
+        ->and($kept->request_id)->toBe($a->request_id)
+        ->and(ApiRequest::find($b->id)->user_id)->toBe($me->id);
+
+    // Gone from the farmer's view
+    $this->withToken($token)->getJson("/api/v1/account/history/{$a->request_id}")->assertNotFound();
+    $ids = $this->withToken($token)->getJson('/api/v1/account/history/ids')->json('data');
+    expect($ids)->toBe([$b->request_id]);
+
+    // A second delete finds nothing
+    $this->withToken($token)->deleteJson("/api/v1/account/history/{$a->request_id}")->assertNotFound();
+});
+
+it('does not give a soft-deleted item back when the same phone signs in again', function () {
+    [$me, $token] = signedInFarmer();
+    $row = saveAdviceFor('phone-9', $me->id);
+
+    $this->withToken($token)->deleteJson("/api/v1/account/history/{$row->request_id}")->assertOk();
+
+    $login = $this->postJson('/api/v1/account/login', [
+        'email' => $me->email, 'password' => 'long-enough-1', 'device_token' => 'phone-9',
+    ])->assertOk();
+
+    expect($login->json('claimed_requests'))->toBe(0)
+        ->and($row->fresh()->user_id)->toBeNull();
 });
 
 it('needs a token, and a farmer token, to reach the history', function () {
@@ -250,20 +278,25 @@ it('says when the list of ids was cut', function () {
         ->and($all['ids'])->toHaveCount(5)->and($all['truncated'])->toBeFalse();
 });
 
-it('deletes all of the caller saved advice and keeps the account and everyone else rows', function () {
+it('soft deletes all of the caller saved advice: the account stays, the requests stay unlinked, others are untouched', function () {
     [$me, $token] = signedInFarmer();
     $other = makeFarmer();
     bulkAdvice($me->id, 40);
     $theirs = saveAdviceFor('other', $other->id);
     $anonymous = saveAdviceFor('anon');
+    $totalBefore = ApiRequest::count();
 
     $this->withToken($token)->deleteJson('/api/v1/account/history')
         ->assertOk()->assertJsonPath('deleted', 40);
 
     expect(ApiRequest::where('user_id', $me->id)->count())->toBe(0)
+        ->and(ApiRequest::count())->toBe($totalBefore)                 // nothing was removed from the table
+        ->and(ApiRequest::where('device_token', 'bulk')->count())->toBe(0)  // and none can be claimed back
         ->and(User::find($me->id))->not->toBeNull()
-        ->and($theirs->fresh())->not->toBeNull()
-        ->and($anonymous->fresh())->not->toBeNull();
+        ->and($theirs->fresh()->user_id)->toBe($other->id)
+        ->and($anonymous->fresh()->device_token)->toBe('anon');
+
+    $this->withToken($token)->getJson('/api/v1/account/history')->assertOk()->assertJsonPath('meta.total', 0);
 });
 
 it('keeps the bulk history routes for farmer tokens with consent only', function () {

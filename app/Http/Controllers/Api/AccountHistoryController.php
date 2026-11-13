@@ -77,13 +77,16 @@ class AccountHistoryController extends Controller
         return new FarmerHistoryResource($row, detail: true);
     }
 
-    /** Remove one saved item. */
+    /**
+     * Remove one saved item
+     *
+     * A soft delete: the item disappears from the farmer's account, but the request is kept for statistics with the link to the
+     * person removed (`user_id` set to null and the phone's `device_token` cleared), as when an account is deleted.
+     */
     public function destroy(Request $request, string $requestId): JsonResponse
     {
-        $row = $this->requests->findForUser($this->user($request)->id, $requestId);
-        abort_if($row === null, 404, 'Saved advice not found.');
-
-        $row->delete();
+        $released = $this->requests->releaseForUser($this->user($request)->id, $requestId);
+        abort_if(!$released, 404, 'Saved advice not found.');
 
         return response()->json(['message' => 'Saved advice deleted.']);
     }
@@ -91,11 +94,12 @@ class AccountHistoryController extends Controller
     /**
      * Remove all saved advice
      *
-     * Deletes every saved recommendation of the signed-in farmer and keeps the account. Cannot be undone.
+     * The same soft delete for every saved recommendation of the signed-in farmer; the account stays. The requests are kept for
+     * statistics with the link to the person removed. `deleted` is how many items were removed from the account.
      */
     public function destroyAll(Request $request): JsonResponse
     {
-        $deleted = $this->requests->deleteAllForUser($this->user($request)->id);
+        $deleted = $this->requests->releaseAllForUser($this->user($request)->id);
 
         return response()->json(['message' => 'All saved advice deleted.', 'deleted' => $deleted]);
     }
