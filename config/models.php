@@ -358,46 +358,6 @@ return [
 
         /*
         |--------------------------------------------------------------------------
-        | Per-Model Casts
-        |--------------------------------------------------------------------------
-        |
-        | Not every column with the same name needs the same cast. To cast a
-        | column differently for a single model, add a 'casts' key inside that
-        | table's own configuration block. Table-level patterns are merged on
-        | top of the global 'casts' above, so the global patterns still apply
-        | to every other column of the model and only the ones you list here
-        | are overridden.
-        |
-        | Example: keep 'password' as 'hashed' for most models but make it
-        | 'encrypted' only on the 'api_keys' model:
-        |
-        | 'api_keys' => [
-        |     'casts' => [
-        |         'password' => 'encrypted',
-        |         'records' => 'encrypted:array',
-        |         'lease_expires_at' => 'immutable_datetime',
-        |     ],
-        | ],
-        |
-        | Any key from the resolution tree works the same way (connection,
-        | schema, table), from most specific to least specific. Patterns listed
-        | in a more specific block win over the same pattern in the global one.
-        |
-        */
-
-        'personal_access_tokens' => [
-            'casts' => [
-                'abilities' => 'array',
-            ],
-        ],
-        'price_catalogue_history' => [
-            'casts' => [
-                'old_values' => 'array',
-                'new_values' => 'array',
-            ],
-        ],
-        /*
-        |--------------------------------------------------------------------------
         | Excluded Tables
         |--------------------------------------------------------------------------
         |
@@ -666,6 +626,46 @@ return [
         'enable_return_types' => true,
     ],
 
+    /*
+       |--------------------------------------------------------------------------
+       | Per-Model Casts
+       |--------------------------------------------------------------------------
+       |
+       | Not every column with the same name needs the same cast. To cast a
+       | column differently for a single model, add a 'casts' key inside that
+       | table's own configuration block. Table-level patterns are merged on
+       | top of the global 'casts' above, so the global patterns still apply
+       | to every other column of the model and only the ones you list here
+       | are overridden.
+       |
+       | Example: keep 'password' as 'hashed' for most models but make it
+       | 'encrypted' only on the 'api_keys' model:
+       |
+       | 'api_keys' => [
+       |     'casts' => [
+       |         'password' => 'encrypted',
+       |         'records' => 'encrypted:array',
+       |         'lease_expires_at' => 'immutable_datetime',
+       |     ],
+       | ],
+       |
+       | Any key from the resolution tree works the same way (connection,
+       | schema, table), from most specific to least specific. Patterns listed
+       | in a more specific block win over the same pattern in the global one.
+       |
+       */
+
+    'personal_access_tokens' => [
+        'casts' => [
+            'abilities' => 'array',
+        ],
+    ],
+    'price_catalogue_history' => [
+        'casts' => [
+            'old_values' => 'array',
+            'new_values' => 'array',
+        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | Database Specifics
