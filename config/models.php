@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) 2026 AKILIMO — https://akilimo.org
+ *
+ * For licence information, see the LICENCE file.
+ */
+
+use App\Core\Models\BaseModel;
+use App\Core\Models\BaseUser;
+
 return [
 
     /*
@@ -68,12 +77,12 @@ return [
         |
         */
 
-//        'parent' => Illuminate\Database\Eloquent\Model::class,
+        //        'parent' => Illuminate\Database\Eloquent\Model::class,
 
         // Table specific parent override examples:
         'parent' => [
-            'users' => \App\Core\Models\BaseUser::class,
-            '*' => \App\Core\Models\BaseModel::class,
+            'users' => BaseUser::class,
+            '*' => BaseModel::class,
         ],
 
         /*
@@ -235,7 +244,6 @@ return [
 
         'snake_attributes' => true,
 
-
         /*
         |--------------------------------------------------------------------------
         | CamelCase Relation Method Names
@@ -382,6 +390,12 @@ return [
                 'abilities' => 'array',
             ],
         ],
+        'price_catalogue_history' => [
+            'casts' => [
+                'old_values' => 'array',
+                'new_values' => 'array',
+            ],
+        ],
         /*
         |--------------------------------------------------------------------------
         | Excluded Tables
@@ -402,7 +416,7 @@ return [
             'authorities',
             'sessions',
             'cache*',
-            'legacy_*'
+            'legacy_*',
         ],
 
         /*
@@ -736,22 +750,22 @@ return [
     |
     */
 
-//    'connections' => [
-//        'read_only_external' => [
-//            'parent' => \App\Models\ReadOnlyModel::class,
-//            'connection' => true,
-//            'users' => [
-//                'connection' => false,
-//                'parent' => \Illuminate\Foundation\Auth\User::class,
-//            ],
-//            'my_other_database' => [
-//                'users' => [
-//                    'parent' => \Illuminate\Foundation\Auth\User::class,
-//                ],
-//                'password_resets' => [
-//                    'connection' => false,
-//                ]
-//            ]
-//        ],
-//    ],
+    //    'connections' => [
+    //        'read_only_external' => [
+    //            'parent' => \App\Models\ReadOnlyModel::class,
+    //            'connection' => true,
+    //            'users' => [
+    //                'connection' => false,
+    //                'parent' => \Illuminate\Foundation\Auth\User::class,
+    //            ],
+    //            'my_other_database' => [
+    //                'users' => [
+    //                    'parent' => \Illuminate\Foundation\Auth\User::class,
+    //                ],
+    //                'password_resets' => [
+    //                    'connection' => false,
+    //                ]
+    //            ]
+    //        ],
+    //    ],
 ];
