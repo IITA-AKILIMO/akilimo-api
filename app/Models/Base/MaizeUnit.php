@@ -47,7 +47,7 @@ class MaizeUnit extends BaseModel
         'unit_weight' => 'float',
         'sort_order' => 'int',
         'is_default' => 'bool',
-        'is_active' => 'bool',
+        'is_active' => 'boolean',
     ];
 
     protected $fillable = [

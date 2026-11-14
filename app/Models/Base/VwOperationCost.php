@@ -17,7 +17,7 @@ use Carbon\Carbon;
  * @property string $country_code
  * @property Carbon|null $created_at
  * @property int $id
- * @property int $is_active
+ * @property bool $is_active
  * @property float|null $max_cost
  * @property float|null $min_cost
  * @property string $operation_name
@@ -49,7 +49,7 @@ class VwOperationCost extends BaseModel
         'id' => 'int',
         'min_cost' => 'float',
         'max_cost' => 'float',
-        'is_active' => 'int',
+        'is_active' => 'boolean',
     ];
 
     public $guarded = [
