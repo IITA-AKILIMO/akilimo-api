@@ -6,8 +6,9 @@
  * For licence information, see the LICENCE file.
  */
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Collections;
 
+use App\Http\Resources\ApiRequestResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
