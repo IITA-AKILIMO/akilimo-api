@@ -12,7 +12,7 @@ use App\Models\ApiRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin ApiRequest */
-class ApiRequestResource extends JsonResource
+class ApiRequestResource extends BaseJsonResource
 {
     public function toArray($request): array
     {
@@ -22,8 +22,8 @@ class ApiRequestResource extends JsonResource
             'device_token' => $this->device_token,
             'droid_request' => $this->droid_request,
             'request_duration_ms' => $this->request_duration_ms,
-            'created_at' => $this->created_at?->toDateTimeString(),
-            'updated_at' => $this->updated_at?->toDateTimeString(),
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }
