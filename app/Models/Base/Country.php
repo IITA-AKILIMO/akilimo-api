@@ -9,6 +9,7 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Enums\PriceBasis;
 use App\Models\CountryReviewer;
 use App\Models\Currency;
 use Carbon\Carbon;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $code
  * @property Carbon|null $created_at
  * @property string|null $currency_code
- * @property string $default_price_basis
+ * @property PriceBasis $default_price_basis
  * @property int $id
  * @property float|null $latitude
  * @property float|null $longitude
@@ -67,6 +68,7 @@ class Country extends BaseModel
 
     protected $casts = [
         'active' => 'boolean',
+        'default_price_basis' => PriceBasis::class,
         'sort_order' => 'int',
         'latitude' => 'float',
         'longitude' => 'float',
