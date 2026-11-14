@@ -8,6 +8,9 @@
 
 use App\Core\Models\BaseModel;
 use App\Core\Models\BaseUser;
+use App\Enums\EnumUserRole;
+use App\Enums\PriceBasis;
+use App\Enums\PriceStatus;
 
 return [
 
@@ -691,6 +694,36 @@ return [
         'casts' => [
             'old_values' => 'array',
             'new_values' => 'array',
+        ],
+    ],
+    'price_catalogue' => [
+        'casts' => [
+            'status' => PriceStatus::class,
+            'source_date' => 'date',
+            'effective_from' => 'date',
+        ],
+    ],
+    'countries' => [
+        'casts' => [
+            'default_price_basis' => PriceBasis::class,
+        ],
+    ],
+    'crops' => [
+        'casts' => [
+            'countries' => 'array',
+        ],
+    ],
+    'users' => [
+        'casts' => [
+            'id' => 'int',
+            'email_verified_at' => 'datetime',
+            'consent_at' => 'datetime',
+            'role' => EnumUserRole::class,
+        ],
+    ],
+    'api_requests' => [
+        'casts' => [
+            'user_id' => 'int',
         ],
     ],
     'fertilizer_types' => [
