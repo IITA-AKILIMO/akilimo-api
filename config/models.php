@@ -349,6 +349,7 @@ return [
             'plumber_response' => 'json',
             '*price' => 'float',
             'active' => 'boolean',
+            'price_active' => 'boolean',
             'boundary' => 'string',
         ],
 
