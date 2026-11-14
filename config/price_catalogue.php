@@ -8,11 +8,13 @@
 
 return [
     // Applied when a country has not chosen a basis yet (decision D1).
-    'default_basis' => 'open_market',
+    'default_basis' => \App\Enums\PriceBasis::OpenMarket,
 
-    'basis' => ['open_market', 'subsidised'],
+//    'basis' => ['open_market', 'subsidised'],
+    'basis' => \App\Enums\PriceBasis::values(),
 
-    'statuses' => ['draft', 'pending_second_review', 'active'],
+//    'statuses' => ['draft', 'pending_second_review', 'active'],
+    'statuses' => \App\Enums\PriceStatus::values(),
 
     // A change larger than this needs a second admin to confirm (decision D4).
     'second_review_threshold' => 0.30,
