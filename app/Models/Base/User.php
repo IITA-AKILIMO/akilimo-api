@@ -9,6 +9,7 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseUser;
+use App\Enums\EnumUserRole;
 use App\Models\ApiKey;
 use App\Models\ApiRequest;
 use App\Models\CountryReviewer;
@@ -34,7 +35,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string $name
  * @property string|null $password
  * @property string|null $remember_token
- * @property string $role
+ * @property EnumUserRole $role
  * @property Carbon|null $updated_at
  * @property string $username
  * @property Collection|ApiKey[] $apiKeys
@@ -77,6 +78,7 @@ class User extends BaseUser
     protected $table = 'users';
 
     protected $casts = [
+        'role' => EnumUserRole::class,
         'email_verified_at' => 'datetime',
         'consent_at' => 'datetime',
     ];

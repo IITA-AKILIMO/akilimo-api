@@ -8,7 +8,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\PotatoPrice;
+use App\Models\VwPotatoPrice;
 use App\Support\PriceMarker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,7 +20,7 @@ class PotatoPriceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var PotatoPrice $model */
+        /** @var VwPotatoPrice $model */
         $model = $this->resource;
         $avgPrice = ($model->min_local_price + $model->max_local_price) / 2;
         $tag = "{$model->id}";

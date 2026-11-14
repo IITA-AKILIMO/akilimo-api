@@ -52,7 +52,7 @@ class ApiKey extends BaseModel
 
     protected $casts = [
         'user_id' => 'int',
-        'is_active' => 'bool',
+        'is_active' => 'boolean',
         'last_used_at' => 'datetime',
         'expires_at' => 'datetime',
     ];

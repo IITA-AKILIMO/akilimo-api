@@ -8,12 +8,12 @@
 
 namespace App\Repositories;
 
-use App\Models\CassavaPrice;
+use App\Models\VwCassavaPrice;
 
 class CassavaPriceRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return CassavaPrice::class;
+        return VwCassavaPrice::class;
     }
 }

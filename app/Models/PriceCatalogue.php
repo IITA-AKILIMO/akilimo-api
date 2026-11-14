@@ -11,63 +11,11 @@ namespace App\Models;
 use App\Enums\PriceBasis;
 use App\Enums\PriceStatus;
 use App\Models\Base\PriceCatalogue as BasePriceCatalogue;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property string $country
- * @property string|null $region
- * @property string $item
- * @property float $price
- * @property float|null $subsidised_price
- * @property string $unit
- * @property int|null $bag_kg
- * @property float|null $min_price
- * @property float|null $max_price
- * @property PriceStatus $status
- * @property string|null $source
- * @property Carbon|null $source_date
- * @property string|null $confidence
- * @property Carbon|null $effective_from
- * @property int|null $updated_by
- * @property int|null $submitted_by
- */
 class PriceCatalogue extends BasePriceCatalogue
 {
-    public $incrementing = true;
-
-    protected $fillable = [
-        'country',
-        'region',
-        'item',
-        'fertilizer_type',
-        'price',
-        'subsidised_price',
-        'unit',
-        'bag_kg',
-        'currency',
-        'min_price',
-        'max_price',
-        'status',
-        'source',
-        'source_date',
-        'confidence',
-        'effective_from',
-        'updated_by',
-        'submitted_by',
-    ];
-
-    protected $casts = [
-        'price' => 'float',
-        'subsidised_price' => 'float',
-        'bag_kg' => 'int',
-        'min_price' => 'float',
-        'max_price' => 'float',
-        'status' => PriceStatus::class,
-        'source_date' => 'date',
-        'effective_from' => 'date',
-    ];
 
     public function updatedBy(): BelongsTo
     {

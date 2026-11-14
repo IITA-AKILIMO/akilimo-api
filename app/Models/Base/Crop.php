@@ -16,7 +16,7 @@ use Carbon\Carbon;
  *
  * @property bool $active
  * @property bool $advice_available
- * @property string|null $countries
+ * @property array|null $countries
  * @property Carbon|null $created_at
  * @property string $crop_key
  * @property string|null $description
@@ -48,6 +48,7 @@ class Crop extends BaseModel
     protected $casts = [
         'active' => 'boolean',
         'advice_available' => 'bool',
+        'countries' => 'array',
         'sort_order' => 'int',
     ];
 

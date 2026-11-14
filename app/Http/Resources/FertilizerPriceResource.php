@@ -9,7 +9,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Currency;
-use App\Models\FertilizerPrice;
+use App\Models\VwFertilizerPrice;
 use App\Support\PriceMarker;
 use App\Utils\CurrencyConversion;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class FertilizerPriceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var FertilizerPrice $fertilizerPrice */
+        /** @var VwFertilizerPrice $fertilizerPrice */
         $fertilizerPrice = $this->resource;
         $conv = new CurrencyConversion;
         $currencyResource = $this->currency ? CurrencyResource::make($this->currency) : null;

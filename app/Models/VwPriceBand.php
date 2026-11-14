@@ -8,6 +8,6 @@
 
 namespace App\Models;
 
-use App\Models\Base\PriceBand as BasePriceBand;
+use App\Models\Base\VwPriceBand as BaseVwPriceBand;
 
-class PriceBand extends BasePriceBand {}
+class VwPriceBand extends BaseVwPriceBand {}
