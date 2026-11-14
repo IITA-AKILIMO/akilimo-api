@@ -19,7 +19,7 @@ use Carbon\Carbon;
  * @property Carbon|null $created_at
  * @property int $id
  * @property float $investment_amount
- * @property int $price_active
+ * @property bool $price_active
  * @property float $sort_order
  * @property Carbon|null $updated_at
  *
@@ -46,7 +46,7 @@ class VwInvestmentAmount extends BaseModel
     protected $casts = [
         'id' => 'int',
         'investment_amount' => 'float',
-        'price_active' => 'int',
+        'price_active' => 'boolean',
         'sort_order' => 'float',
     ];
 

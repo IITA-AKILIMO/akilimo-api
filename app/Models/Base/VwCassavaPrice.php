@@ -23,7 +23,7 @@ use Carbon\Carbon;
  * @property float|null $min_local_price
  * @property float|null $min_price
  * @property int $min_usd
- * @property int $price_active
+ * @property bool $price_active
  * @property int $sort_order
  * @property Carbon|null $updated_at
  *
@@ -59,7 +59,7 @@ class VwCassavaPrice extends BaseModel
         'max_usd' => 'int',
         'min_price' => 'float',
         'max_price' => 'float',
-        'price_active' => 'int',
+        'price_active' => 'boolean',
         'sort_order' => 'int',
     ];
 

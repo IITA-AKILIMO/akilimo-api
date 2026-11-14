@@ -21,7 +21,7 @@ use Carbon\Carbon;
  * @property int $id
  * @property float|null $max_price
  * @property float|null $min_price
- * @property int $price_active
+ * @property bool $price_active
  * @property float|null $price_per_bag
  * @property float $sort_order
  * @property Carbon|null $updated_at
@@ -54,7 +54,7 @@ class VwFertilizerPrice extends BaseModel
         'min_price' => 'float',
         'max_price' => 'float',
         'price_per_bag' => 'float',
-        'price_active' => 'int',
+        'price_active' => 'boolean',
         'sort_order' => 'float',
     ];
 
