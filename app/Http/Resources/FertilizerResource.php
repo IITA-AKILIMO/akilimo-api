@@ -13,7 +13,10 @@ use App\Models\VwFertilizer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FertilizerResource extends JsonResource
+/**
+ * @mixin VwFertilizer
+ */
+class FertilizerResource extends BaseJsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,40 +25,37 @@ class FertilizerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var VwFertilizer $fertilizer */
-        $fertilizer = $this->resource;
-
         return [
             /** Unique identifier for the fertilizer */
-            'id' => $fertilizer->id,
+            'id' => $this->id,
             /** Human-readable display name */
-            'name' => $fertilizer->name,
+            'name' => $this->name,
             /** Fertilizer type (e.g. STRAIGHT, COMPOUND) */
-            'type' => $fertilizer->type,
+            'type' => $this->type,
             /** Kind of fertilizer: STRAIGHT (one nutrient), COMPOUND (several) or OTHER */
-            'category' => $fertilizer->category,
+            'category' => $this->category,
             /** Stable identifier key for the fertilizer */
-            'fertilizer_key' => $fertilizer->fertilizer_key,
+            'fertilizer_key' => $this->fertilizer_key,
             /** Default bag weight in kg */
-            'weight' => $fertilizer->weight,
+            'weight' => $this->weight,
             /** ISO 3166-1 alpha-2 country code */
-            'country_code' => $fertilizer->country,
+            'country_code' => $this->country,
             /** ISO 4217 currency code */
-            'currency_code' => EnumCountry::fromCode($fertilizer->country)->currency(),
+            'currency_code' => EnumCountry::fromCode($this->country)->currency(),
             /** Sort order for display */
-            'sort_order' => $fertilizer->sort_order,
+            'sort_order' => $this->sort_order,
             /** Use case(s) the fertilizer is applicable for */
-            'use_case' => $fertilizer->use_case,
+            'use_case' => $this->use_case,
             /** Cereal intensity score */
-            'cis' => $fertilizer->cis,
+            'cis' => $this->cis,
             /** Cereal intensity mean */
-            'cim' => $fertilizer->cim,
+            'cim' => $this->cim,
             /** Whether the fertilizer is currently available */
-            'available' => $fertilizer->available,
+            'available' => $this->available,
             /** Timestamp when created */
-            'created_at' => $fertilizer->created_at,
+            'created_at' => $this->formatDate($this->created_at),
             /** Timestamp when last updated */
-            'updated_at' => $fertilizer->updated_at,
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

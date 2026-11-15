@@ -16,12 +16,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 
-class FertilizerPriceResource extends JsonResource
+/**
+ * @mixin VwFertilizerPrice
+ */
+class FertilizerPriceResource extends BaseJsonResource
 {
     public function __construct(
         $resource,
         private readonly ?Currency $currency,
-    ) {
+    )
+    {
         parent::__construct($resource);
     }
 
@@ -30,52 +34,48 @@ class FertilizerPriceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var VwFertilizerPrice $fertilizerPrice */
-        $fertilizerPrice = $this->resource;
         $conv = new CurrencyConversion;
         $currencyResource = $this->currency ? CurrencyResource::make($this->currency) : null;
 
         // "I don't know" and "Exact price" are shown as words, not as a price (0 TSh, -1 TSh)
-        $marker = PriceMarker::describe($fertilizerPrice->price_per_bag);
+        $marker = PriceMarker::describe($this->price_per_bag);
 
         $priceRange = $marker ?? $conv->convertPriceToLocalCurrency(
-            minUsd: $fertilizerPrice->price_per_bag,
-            maxUsd: $fertilizerPrice->price_per_bag,
-            currencyRate: 1,
-            // Same step the generated options are rounded to (price_choice_rounding), so the label matches the price sent
-            nearestValue: (float)(DB::table('price_choice_rounding')->where('currency', strtoupper((string)$this->currency?->currency_code))->value('step') ?? 1000),
-            currency: $this->currency
+            minUsd: $this->price_per_bag,
+            maxUsd: $this->price_per_bag,
+            currency: $this->currency,
+            nearestValue: (float)(DB::table('price_choice_rounding')->where('currency', strtoupper((string)$this->currency?->currency_code))->value('step') ?? 1000)
         );
 
         return [
             /** Unique identifier for the price record */
-            'id' => $fertilizerPrice->id,
+            'id' => $this->id,
             /** Same as id, for compatibility */
-            'price_id' => $fertilizerPrice->id,
+            'price_id' => $this->id,
             /** Fertilizer key identifier */
-            'fertilizer_key' => $fertilizerPrice->fertilizer_key,
+            'fertilizer_key' => $this->fertilizer_key,
             /** Country and id composite identifier */
-            'fertilizer_country' => "{$fertilizerPrice->country}{$fertilizerPrice->id}",
+            'fertilizer_country' => "{$this->country}{$this->id}",
             /** ISO 3166-1 alpha-2 country code */
-            'country_code' => $fertilizerPrice->country,
+            'country_code' => $this->country,
             /** Currency details */
             'currency' => $currencyResource,
             /** Sort order for display */
-            'sort_order' => $fertilizerPrice->sort_order,
+            'sort_order' => $this->sort_order,
             /** Price per bag */
-            'price_per_bag' => $fertilizerPrice->price_per_bag,
+            'price_per_bag' => $this->price_per_bag,
             /** Converted price range; the words "I don't know" or "Exact price" for those two rows */
             'price_range' => $priceRange,
             /** The text to show for this choice (same as price_range), which the client maps back to the value it sends */
             'label' => $priceRange,
             /** Whether the price is active */
-            'active' => $fertilizerPrice->price_active,
+            'active' => $this->price_active,
             /** Description or notes */
-            'description' => $fertilizerPrice->desc,
+            'description' => $this->desc,
             /** Timestamp when created */
-            'created_at' => $fertilizerPrice->created_at,
+            'created_at' => $this->formatDate($this->created_at),
             /** Timestamp when last updated */
-            'updated_at' => $fertilizerPrice->updated_at,
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }
