@@ -79,6 +79,9 @@ return [
     | farm's location: keep the disk private and in the backups.
     */
     'reports' => [
+        // Email the PDF to the address a farmer gave when they asked for it (user_info.send_email). The API sends it, not
+        // the compute service. Needs a real mailer (MAIL_*), see RecommendationReportService::emailEnabled().
+        'email' => filter_var(env('AKILIMO_REPORT_EMAIL_ENABLED', true), FILTER_VALIDATE_BOOL),
         'enabled' => filter_var(env('AKILIMO_REPORTS_ENABLED', true), FILTER_VALIDATE_BOOL),
         // Any filesystem disk. AKILIMO_REPORTS_DISK if set, otherwise the app's default disk (FILESYSTEM_DISK), so
         // FILESYSTEM_DISK=s3 puts the reports on S3 too; `local` (storage/app/private) needs a persistent volume.
