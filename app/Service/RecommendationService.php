@@ -81,7 +81,7 @@ class RecommendationService
     }
 
     /**
-     * Email the PDF advice when the farmer asked for it (user_info.send_email) and gave an address. Only reached with a
+     * Email the PDF advice whenever the farmer gave an email address (user_info.send_email is not needed). Only reached with a
      * report that is this farmer's own (see the owner check in compute()), so a cached report is never mailed to
      * someone else. Queued; a failure to queue is logged and never fails the recommendation. The address is not logged.
      *
@@ -92,9 +92,7 @@ class RecommendationService
         $user = Arr::get($droidRequest, 'user_info', []);
         $address = is_array($user) ? trim((string)($user['email_address'] ?? '')) : '';
 
-        if (!filter_var($user['send_email'] ?? false, FILTER_VALIDATE_BOOLEAN)
-            || filter_var($address, FILTER_VALIDATE_EMAIL) === false
-            || !$this->reportService()->emailEnabled()) {
+        if (filter_var($address, FILTER_VALIDATE_EMAIL) === false || !$this->reportService()->emailEnabled()) {
             return;
         }
 

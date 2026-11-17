@@ -79,7 +79,7 @@ return [
     | farm's location: keep the disk private and in the backups.
     */
     'reports' => [
-        // Email the PDF to the address a farmer gave when they asked for it (user_info.send_email). The API sends it, not
+        // Email the PDF to the address a farmer gave (user_info.email_address; the send_email flag is not needed). The API sends it, not
         // the compute service. Needs a real mailer (MAIL_*), see RecommendationReportService::emailEnabled().
         'email' => filter_var(env('AKILIMO_REPORT_EMAIL_ENABLED', true), FILTER_VALIDATE_BOOL),
         'enabled' => filter_var(env('AKILIMO_REPORTS_ENABLED', true), FILTER_VALIDATE_BOOL),

@@ -13,7 +13,20 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
-/** A compute payload for a farmer who asked for the advice by email */
+/** What the compute service answers with when it also returns a PDF report */
+function emailReportResponse(): array
+{
+    return [
+        ...plumberSuccessResponse(),
+        'reports' => [[
+            'name' => 'fertilizer_advice.pdf',
+            'content_type' => 'application/pdf',
+            'content' => base64_encode("%PDF-1.4\n% AKILIMO email test\n%%EOF"),
+        ]],
+    ];
+}
+
+/** A compute payload for a farmer who gave an email address */
 function emailPayload(array $user = [], string $lang = 'en'): array
 {
     $payload = validComputePayload();
@@ -33,7 +46,9 @@ beforeEach(function () {
         'akilimo-compute.reports.disk' => 'local',
         'mail.default' => 'smtp',
     ]);
-    Http::fake(['*' => Http::response(plumberResponseWithReport(), 200)]);
+    // what the compute service answers with; a test changes it to answer differently
+    $this->computeAnswer = emailReportResponse();
+    Http::fake(fn () => Http::response($this->computeAnswer, 200));
 });
 
 it('emails the PDF to the address the farmer gave', function () {
@@ -55,29 +70,35 @@ it('tells the compute service not to send an email of its own', function () {
 
 it('writes the mail in Swahili when the advice is in Swahili, and in English for other languages', function () {
     $this->postJson('/api/v1/recommendations/compute', emailPayload(lang: 'sw'))->assertOk();
-    Mail::assertQueued(RecommendationReportMail::class, fn (RecommendationReportMail $mail) => $mail->lang === 'sw'
-        && $mail->envelope()->subject === 'Mapendekezo ya AKILIMO');
+    Mail::assertQueued(RecommendationReportMail::class, fn (RecommendationReportMail $mail) => $mail->lang === 'sw' && $mail->locale === 'sw');
 
-    expect(RecommendationReportMail::languageFor('rw'))->toBe('en')
+    expect(__('report_mail.subject', [], 'sw'))->toBe('Mapendekezo ya AKILIMO')
+        ->and(__('report_mail.subject', [], 'en'))->toBe('AKILIMO recommendation')
+        ->and(RecommendationReportMail::languageFor('rw'))->toBe('en')
         ->and(RecommendationReportMail::languageFor(null))->toBe('en');
 });
 
-it('sends nothing unless the farmer asked for it', function () {
-    $this->postJson('/api/v1/recommendations/compute', emailPayload(['send_email' => false]))->assertOk();
+it('emails the PDF whenever an address is given, whatever the send_email flag says', function (bool $flag) {
+    $this->postJson('/api/v1/recommendations/compute', emailPayload(['send_email' => $flag]))->assertOk();
 
-    Mail::assertNothingQueued();
-    Mail::assertNothingSent();
-});
-
+    Mail::assertQueued(RecommendationReportMail::class, fn (RecommendationReportMail $mail) => $mail->hasTo('farmer@example.test'));
+    Mail::assertQueuedCount(1);
+})->with([true, false]);
 it('sends nothing without a valid address', function (?string $address) {
     $this->postJson('/api/v1/recommendations/compute', emailPayload(['email_address' => $address]))->assertOk();
 
     Mail::assertNothingQueued();
     Mail::assertNothingSent();
-})->with([null, '', 'not-an-address']);
+})->with([null, '']);
+
+it('refuses a request whose email address is not valid, before anything is sent', function () {
+    $this->postJson('/api/v1/recommendations/compute', emailPayload(['email_address' => 'not-an-address']))->assertStatus(422);
+
+    Mail::assertNothingQueued();
+});
 
 it('sends nothing when no report was made', function () {
-    Http::fake(['*' => Http::response(plumberSuccessResponse(), 200)]);
+    $this->computeAnswer = plumberSuccessResponse();
 
     $this->postJson('/api/v1/recommendations/compute', emailPayload())->assertOk();
 
