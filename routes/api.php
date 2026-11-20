@@ -70,6 +70,7 @@ Route::middleware(['throttle:read', 'auth.token:history:own', 'farmer', 'farmer.
     Route::get('/history', [AccountHistoryController::class, 'index']);
     Route::get('/history/ids', [AccountHistoryController::class, 'ids']);
     Route::get('/history/{requestId}', [AccountHistoryController::class, 'show'])->whereUuid('requestId');
+    Route::get('/history/{requestId}/report', [AccountHistoryController::class, 'report'])->whereUuid('requestId');
 });
 
 Route::middleware(['throttle:write', 'auth.token:history:own', 'farmer', 'farmer.consented'])->prefix('v1/account')->group(function () {
