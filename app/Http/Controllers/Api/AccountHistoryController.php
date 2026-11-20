@@ -12,6 +12,7 @@ use App\Http\Resources\FarmerHistoryResource;
 use App\Models\User;
 use App\Repositories\ApiRequestRepo;
 use App\Service\FarmerAccountService;
+use App\Service\RecommendationReportService;
 use App\Traits\HasPaginationParams;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -78,6 +79,21 @@ class AccountHistoryController extends Controller
         abort_if($row === null, 404, 'Saved advice not found.');
 
         return new FarmerHistoryResource($row, detail: true);
+    }
+
+    /**
+     * Fresh PDF download links of one saved recommendation
+     *
+     * New signed links (same shape as `report` in the compute answer) for the report of the farmer's own saved advice, for when the
+     * links stored with it have expired. 404 when the id does not exist, belongs to someone else or was deleted, or has no report.
+     */
+    public function report(Request $request, string $requestId, RecommendationReportService $reports): JsonResponse
+    {
+        $row = $this->requests->findForUser($this->user($request)->id, $requestId);
+        $links = $row === null ? null : $reports->links($row->request_id);
+        abort_if($links === null, 404, 'This saved advice has no report.');
+
+        return response()->json(['data' => $links]);
     }
 
     /**
