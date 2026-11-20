@@ -58,7 +58,7 @@ Client → ComputeRequest (validation) → RecommendationController
 
 ### Routes
 
-Routes are split into four groups in `routes/api.php`:
+`routes/api.php` only holds the health route and `require`s one file per area from `routes/api/` (`auth`, `account`, `reference`, `coverage`, `recommendations`, `feedback`, `admin`); add a route to the file of its area. Routes fall into four groups:
 
 **Public — no auth required:**
 - `GET /health` — comprehensive health check
