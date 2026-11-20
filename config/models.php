@@ -690,6 +690,12 @@ return [
         ],
     ],
 
+    'api_keys' => [
+        'casts' => [
+            'abilities' => 'array',
+        ],
+    ],
+
     'price_catalogue_history' => [
         'casts' => [
             'old_values' => 'array',
