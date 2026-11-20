@@ -7,7 +7,6 @@ name: Publish Policies
 #   SITE_SSH_KEY          private key of an SSH key pair whose public half is in ~/.ssh/authorized_keys of the deploy user on the server
 #   SITE_SSH_HOST         the server's host name
 #   SITE_SSH_USER         the deploy user
-#   SITE_SSH_FINGERPRINT  the server's host key fingerprint (SHA256:...), from `ssh-keygen -lf <(ssh-keyscan -p <port> <host>)` on a trusted machine
 # Repository variables:
 #   SITE_WEB_ROOT         absolute path of the web root on the server, e.g. /data/extra_storage/services/akilimo/
 #   SITE_SSH_PORT         optional, default 22
@@ -57,7 +56,6 @@ jobs:
           username: ${{ secrets.SITE_SSH_USER }}
           port: ${{ vars.SITE_SSH_PORT || '22' }}
           key: ${{ secrets.SITE_SSH_KEY }}
-          fingerprint: ${{ secrets.SITE_SSH_FINGERPRINT }}
           envs: WEB_ROOT,PRIVACY_B64,TERMS_B64
           script: |
             set -eu

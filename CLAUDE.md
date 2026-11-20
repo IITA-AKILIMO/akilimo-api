@@ -193,7 +193,7 @@ No PHP code changes are required.
 - `quality-checks.yml` — Pest with coverage + SonarQube gate (develop branch)
 - `auto-approve.yml` — approves pull requests opened by bots (Dependabot, the release bot) only after the `UnitTests` workflow succeeded, from this repository only, with `hmarr/auto-approve-action` and a GitHub App token (`APP_CLIENT_ID` variable, `APP_PRIVATE_KEY` secret; `actions/create-github-app-token@v3.3.0` takes the App's client ID). The allowed bot logins come from the `ALLOWED_BOTS` environment variable of the workflow (a space-separated list of bare bot names, default `github-actions dependabot munywele-bot`; `name`, `name[bot]` and `app/name` all match in any letter case, and GitHub must also report the author as a bot; set a repository variable `ALLOWED_BOTS` to override the list without editing the file). Human pull requests are never auto-approved. It replaced `pull-request-automation.yml`, which approved every pull request not opened by masgeek the moment it opened, without waiting for any check
 - `docker-build.yml` — builds and pushes `iita/akilimo-api` image (main/develop)
-- `publish-policies.yml` — writes the privacy policy and terms (`docs/polices/*.html`) to the akilimo.org WordPress web root over SSH (`appleboy/ssh-action`) on pushes to develop; needs secrets `SITE_SSH_KEY`, `SITE_SSH_HOST`, `SITE_SSH_USER`, `SITE_SSH_FINGERPRINT` and variable `SITE_WEB_ROOT` (optional `SITE_SSH_PORT`)
+- `publish-policies.yml` — writes the privacy policy and terms (`docs/polices/*.html`) to the akilimo.org WordPress web root over SSH (`appleboy/ssh-action`) on pushes to develop; needs secrets `SITE_SSH_KEY`, `SITE_SSH_HOST`, `SITE_SSH_USER` and variable `SITE_WEB_ROOT` (optional `SITE_SSH_PORT`)
 
 ## Environment Configuration
 
