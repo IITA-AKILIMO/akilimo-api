@@ -1,0 +1,76 @@
+name: Publish Policies
+
+# Writes the privacy policy and terms of use (docs/polices/) into the web root of the server that serves akilimo.org, over SSH
+# (appleboy/ssh-action), so they appear at https://akilimo.org/akilimo-privacy-policy.html and https://akilimo.org/akilimo-terms.html.
+#
+# Repository secrets (Settings > Secrets and variables > Actions):
+#   SITE_SSH_KEY          private key of an SSH key pair whose public half is in ~/.ssh/authorized_keys of the deploy user on the server
+#   SITE_SSH_HOST         the server's host name
+#   SITE_SSH_USER         the deploy user
+#   SITE_SSH_FINGERPRINT  the server's host key fingerprint (SHA256:...), from `ssh-keygen -lf <(ssh-keyscan -p <port> <host>)` on a trusted machine
+# Repository variables:
+#   SITE_WEB_ROOT         absolute path of the web root on the server, e.g. /data/extra_storage/services/akilimo/
+#   SITE_SSH_PORT         optional, default 22
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'docs/polices/*.html'
+      - '.github/workflows/publish-policies.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-policies
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v7
+
+      - name: Check the settings and encode the pages
+        id: pages
+        env:
+          WEB_ROOT: ${{ vars.SITE_WEB_ROOT }}
+        run: |
+          set -euo pipefail
+          if [ -z "$WEB_ROOT" ]; then echo "::error::SITE_WEB_ROOT is not set (see the comments at the top of this workflow)"; exit 1; fi
+          for page in akilimo-privacy-policy.html akilimo-terms.html; do test -s "docs/polices/$page"; done
+          # base64 so the files travel safely inside the remote script
+          echo "privacy=$(base64 -w0 docs/polices/akilimo-privacy-policy.html)" >> "$GITHUB_OUTPUT"
+          echo "terms=$(base64 -w0 docs/polices/akilimo-terms.html)" >> "$GITHUB_OUTPUT"
+
+      - name: Write the pages on the server
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          WEB_ROOT: ${{ vars.SITE_WEB_ROOT }}
+          PRIVACY_B64: ${{ steps.pages.outputs.privacy }}
+          TERMS_B64: ${{ steps.pages.outputs.terms }}
+        with:
+          host: ${{ secrets.SITE_SSH_HOST }}
+          username: ${{ secrets.SITE_SSH_USER }}
+          port: ${{ vars.SITE_SSH_PORT || '22' }}
+          key: ${{ secrets.SITE_SSH_KEY }}
+          fingerprint: ${{ secrets.SITE_SSH_FINGERPRINT }}
+          envs: WEB_ROOT,PRIVACY_B64,TERMS_B64
+          script_stop: true
+          script: |
+            set -eu
+            root="${WEB_ROOT%/}"
+            test -d "$root" && test -w "$root"
+            write() {
+              tmp="$(mktemp "$root/.policy.XXXXXX")"
+              printf '%s' "$2" | base64 -d > "$tmp"
+              test -s "$tmp"
+              chmod 644 "$tmp"
+              mv -f "$tmp" "$root/$1"
+              echo "wrote $root/$1"
+            }
+            write akilimo-privacy-policy.html "$PRIVACY_B64"
+            write akilimo-terms.html "$TERMS_B64"
