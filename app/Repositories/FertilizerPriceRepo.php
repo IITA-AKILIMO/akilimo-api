@@ -8,18 +8,18 @@
 
 namespace App\Repositories;
 
-use App\Models\FertilizerPrice;
+use App\Models\VwFertilizerPrice;
 use Illuminate\Database\Eloquent\Collection;
 
 class FertilizerPriceRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return FertilizerPrice::class;
+        return VwFertilizerPrice::class;
     }
 
     /**
-     * @return Collection<int, FertilizerPrice>
+     * @return Collection<int, VwFertilizerPrice>
      */
     public function forCountry(string $country): Collection
     {

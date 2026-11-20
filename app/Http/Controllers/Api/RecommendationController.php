@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ComputeRequest;
-use App\Http\Resources\ApiRequestResourceCollection;
+use App\Http\Resources\Collections\ApiRequestResourceCollection;
 use App\Http\Resources\RecommendationResource;
 use App\Repositories\ApiRequestRepo;
 use App\Service\RecommendationReportService;

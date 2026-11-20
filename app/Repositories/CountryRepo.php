@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class CountryRepo extends BaseRepo
 {
+
     protected function model(): string
     {
         return Country::class;
@@ -31,5 +32,18 @@ class CountryRepo extends BaseRepo
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
+    }
+
+    /**
+     * @return array<int, array{code: string, name: string}>
+     */
+    public function countryOptions(): array
+    {
+        return $this->query()
+            ->where('active', true)
+            ->orderBy('name')
+            ->get(['code', 'name'])
+            ->map(fn(Country $c) => ['code' => $c->code, 'name' => $c->name])
+            ->all();
     }
 }

@@ -60,6 +60,39 @@ class RecommendationReportService
     }
 
     /**
+     * True when a recommendation's PDFs may be emailed to the farmer: reports are on, the email switch
+     * (AKILIMO_REPORT_EMAIL_ENABLED) is on, and the mailer is a real one (MAIL_MAILER is not "log") or the app is not in
+     * production. The log mailer would write the whole message, PDF included, into the log, so production stays off
+     * until the hosted email service is configured.
+     */
+    public function emailEnabled(): bool
+    {
+        return $this->enabled()
+            && (bool)config('akilimo-compute.reports.email', true)
+            && (config('mail.default') !== 'log' || !app()->isProduction());
+    }
+
+    /**
+     * The stored PDFs of a report as mail attachments: where each one is on the reports disk and the name to send it as.
+     * A file that is no longer stored is left out.
+     *
+     * @param array<int, string> $files the stored file names (as in FILES)
+     * @return array{disk: string, files: array<int, array{path: string, name: string}>}
+     */
+    public function attachments(string $reportId, array $files): array
+    {
+        $attachments = [];
+        foreach ($files as $file) {
+            $path = $this->locate($reportId, $file);
+            if ($path !== null) {
+                $attachments[] = ['path' => $path, 'name' => $this->downloadName($reportId, $file, $path)];
+            }
+        }
+
+        return ['disk' => (string)config('akilimo-compute.reports.disk', 'local'), 'files' => $attachments];
+    }
+
+    /**
      * Save the reports of one computation. Entries that are not a valid PDF, or not one of FILES, are skipped.
      *
      * @param array<int, array{name?: string, content_type?: string, content?: string}> $reports

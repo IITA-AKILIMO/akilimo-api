@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - AKILIMO Mobile App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #059669;
+            --primary-light: #10b981;
+            --primary-dark: #047857;
+            --secondary-color: #3b82f6;
+            --accent-color: #8b5cf6;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-700);
+            background-color: var(--gray-50);
+            font-size: 16px;
+        }
+
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--gray-900) !important;
+            font-size: 1.25rem;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--gray-600);
+            font-size: 18px;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+            color: var(--gray-900);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+            position: sticky;
+            top: 100px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            min-height: 48px;
+            touch-action: manipulation;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: var(--primary-dark);
+            border-left: 4px solid var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .content-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .highlight-box {
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+            border-left: 4px solid;
+        }
+
+        .highlight-success {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-color: var(--success-color);
+            color: #065f46;
+        }
+
+        .highlight-info {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-color: var(--secondary-color);
+            color: #1e40af;
+        }
+
+        .highlight-warning {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-color: var(--warning-color);
+            color: #92400e;
+        }
+
+        .highlight-danger {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            border-color: var(--danger-color);
+            color: #991b1b;
+        }
+
+        .service-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--gray-900);
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--gray-200);
+            min-height: 48px;
+            touch-action: manipulation;
+        }
+
+        .service-link:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+            transform: translateX(4px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .contact-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 1rem;
+        }
+
+        .quick-contact {
+            background: var(--gray-50);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .quick-contact h6 {
+            color: var(--gray-900);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+
+        .quick-contact a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        .quick-contact a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .quick-contact i {
+            margin-right: 8px;
+        }
+
+        .footer {
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+
+        .info-card {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .info-card h6 {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+
+        .info-card p {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .feature-list i {
+            color: var(--primary-color);
+            margin-right: 12px;
+            margin-top: 2px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            touch-action: manipulation;
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 320px;
+                height: 100vh;
+                z-index: 1050;
+                transition: left 0.3s ease;
+                border-radius: 0;
+                overflow-y: auto;
+                max-height: 100vh;
+            }
+
+            .sidebar.show {
+                left: 0;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+                display: none;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+
+            .content-section {
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .section-title {
+                font-size: 1.375rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.125rem;
+            }
+
+            .brand-icon {
+                width: 32px;
+                height: 32px;
+                margin-right: 8px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            body {
+                font-size: 15px;
+            }
+
+            .content-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+            }
+
+            .section-icon {
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+                width: 40px;
+                height: 40px;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+                text-align: center;
+            }
+
+            .highlight-box {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+
+            .contact-card {
+                padding: 1.25rem;
+            }
+
+            .contact-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .footer {
+                padding: 1.25rem;
+            }
+
+            .scroll-to-top {
+                width: 48px;
+                height: 48px;
+                bottom: 16px;
+                right: 16px;
+                font-size: 18px;
+            }
+
+            .navbar {
+                padding: 0.75rem 0;
+            }
+
+            .sidebar {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .container-fluid {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .py-4 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            .feature-list li {
+                padding: 0.875rem;
+                margin: 0.5rem 0;
+            }
+
+            .service-link {
+                padding: 0.875rem;
+            }
+
+            .info-card {
+                padding: 0.875rem;
+            }
+
+            .quick-contact {
+                padding: 0.875rem;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Desktop optimizations */
+        @media (min-width: 992px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-section {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .section-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                margin-right: 16px;
+            }
+        }
+
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .nav-link:hover {
+                transform: none;
+            }
+
+            .service-link:hover {
+                transform: none;
+            }
+
+            .content-section:hover {
+                transform: none;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .brand-icon, .section-icon, .contact-icon {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .scroll-to-top {
+                transition: opacity 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for keyboard navigation */
+        .nav-link:focus,
+        .service-link:focus,
+        .mobile-menu-btn:focus,
+        .scroll-to-top:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Print styles */
+        @media print {
+            .navbar,
+            .sidebar,
+            .scroll-to-top,
+            .mobile-menu-btn {
+                display: none !important;
+            }
+
+            .content-section {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                break-inside: avoid;
+            }
+
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+                <span class="brand-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </span>
+            <div class="d-inline-block">
+                <div class="fw-bold">Privacy Policy</div>
+                <small class="text-muted d-none d-sm-inline">AKILIMO Mobile App</small>
+            </div>
+        </a>
+        <button class="mobile-menu-btn d-lg-none" type="button" onclick="toggleSidebar()" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleSidebar()" aria-hidden="true"></div>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="sidebar p-3" id="sidebar" role="navigation" aria-label="Table of contents">
+                <div class="d-flex justify-content-between align-items-center mb-3 d-lg-none">
+                    <h5 class="mb-0">Table of Contents</h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleSidebar()" aria-label="Close menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <h5 class="mb-3 d-none d-lg-block">Table of Contents</h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#overview" onclick="scrollToSection('overview')" role="button" tabindex="0">
+                        <i class="fas fa-shield-alt"></i>
+                        Overview
+                    </a>
+                    <a class="nav-link" href="#information-collection" onclick="scrollToSection('information-collection')" role="button" tabindex="0">
+                        <i class="fas fa-eye"></i>
+                        Information Collection
+                    </a>
+                    <a class="nav-link" href="#accounts" onclick="scrollToSection('accounts')" role="button" tabindex="0">
+                        <i class="fas fa-user-circle"></i>
+                        Optional Accounts
+                    </a>
+                    <a class="nav-link" href="#saved-advice" onclick="scrollToSection('saved-advice')" role="button" tabindex="0">
+                        <i class="fas fa-history"></i>
+                        Saved Advice
+                    </a>
+                    <a class="nav-link" href="#pdf-reports" onclick="scrollToSection('pdf-reports')" role="button" tabindex="0">
+                        <i class="fas fa-file-pdf"></i>
+                        PDF Reports
+                    </a>
+                    <a class="nav-link" href="#compute-service" onclick="scrollToSection('compute-service')" role="button" tabindex="0">
+                        <i class="fas fa-calculator"></i>
+                        How Advice Is Calculated
+                    </a>
+                    <a class="nav-link" href="#third-party-access" onclick="scrollToSection('third-party-access')" role="button" tabindex="0">
+                        <i class="fas fa-users"></i>
+                        Third Party Access
+                    </a>
+                    <a class="nav-link" href="#opt-out-rights" onclick="scrollToSection('opt-out-rights')" role="button" tabindex="0">
+                        <i class="fas fa-check-circle"></i>
+                        Opt-Out Rights
+                    </a>
+                    <a class="nav-link" href="#data-retention" onclick="scrollToSection('data-retention')" role="button" tabindex="0">
+                        <i class="fas fa-clock"></i>
+                        Data Retention
+                    </a>
+                    <a class="nav-link" href="#children" onclick="scrollToSection('children')" role="button" tabindex="0">
+                        <i class="fas fa-baby"></i>
+                        Children's Privacy
+                    </a>
+                    <a class="nav-link" href="#security" onclick="scrollToSection('security')" role="button" tabindex="0">
+                        <i class="fas fa-lock"></i>
+                        Security
+                    </a>
+                    <a class="nav-link" href="#changes" onclick="scrollToSection('changes')" role="button" tabindex="0">
+                        <i class="fas fa-file-alt"></i>
+                        Policy Changes
+                    </a>
+                    <a class="nav-link" href="#consent" onclick="scrollToSection('consent')" role="button" tabindex="0">
+                        <i class="fas fa-handshake"></i>
+                        Your Consent
+                    </a>
+                    <a class="nav-link" href="#contact" onclick="scrollToSection('contact')" role="button" tabindex="0">
+                        <i class="fas fa-envelope"></i>
+                        Contact Us
+                    </a>
+                </nav>
+
+                <div class="quick-contact">
+                    <h6>Quick Contact</h6>
+                    <a href="mailto:akilimo@cgiar.org" aria-label="Send email to akilimo@cgiar.org">
+                        <i class="fas fa-envelope"></i>
+                        akilimo@cgiar.org
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--success-color), #22c55e);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2 class="section-title">Privacy Policy Overview</h2>
+                </div>
+
+                <p class="lead mb-4">
+                    This privacy policy applies to the <strong>AKILIMO Mobile App</strong> for mobile devices created by the
+                    <strong>International Institute of Tropical Agriculture (IITA)</strong> as a Free service.
+                    This service is intended for use "AS IS".
+                </p>
+
+                <div class="highlight-box highlight-success">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-check-circle me-3 mt-1" style="color: var(--success-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Agronomic recommendations</h5>
+                            <p class="mb-0">AKILIMO provides agronomic recommendations to help farmers optimise their crop production.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h6>Service Provider</h6>
+                        <p>
+                            <a href="https://iita.org/digital-tools/appdetails?app=AKILIMO_smartphone_app" target="_blank" rel="noopener noreferrer" class="service-link" aria-label="International Institute of Tropical Agriculture (IITA) (opens in new tab)">
+                                <span class="fw-medium">International Institute of Tropical Agriculture (IITA)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h6>Last Updated</h6>
+                        <p>November 20, 2026</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Information Collection Section -->
+            <section id="information-collection" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--secondary-color), #60a5fa);">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h2 class="section-title">Information Collection and Use</h2>
+                </div>
+
+                <p class="mb-4">
+                    The Application collects information when you download and use it. This information may include:
+                </p>
+
+                <ul class="feature-list">
+                    <li>
+                        <i class="fas fa-globe"></i>
+                        <div>
+                            <strong>Device Information:</strong> Your device's IP address, operating system, and usage statistics
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Location Data:</strong> Approximate geographical location for personalized agricultural recommendations
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <strong>Personal Information:</strong> Email, phone number, and gender for better service delivery
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="highlight-box highlight-info">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-info-circle me-3 mt-1" style="color: var(--secondary-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">How We Use Location Data</h5>
+                            <ul class="mb-0">
+                                <li>Provide personalized agricultural content and recommendations</li>
+                                <li>Analyze user behavior and improve app functionality</li>
+                                <li>Share anonymized data with third-party services for app optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Optional Accounts Section -->
+            <section id="accounts" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-light));">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h2 class="section-title">Optional Accounts</h2>
+                </div>
+
+
+                <p class="mb-3">
+                    An AKILIMO account is optional. The app works without one. You can sign up with an email address and a password,
+                    or sign in with Google (IITA may switch on other sign-in providers).
+                </p>
+
+                <ul class="feature-list">
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>What we store for an account:</strong> your email address, your name (optional; for Google sign-in, the name on your Google profile),
+                            a protected (hashed) password (none for Google-only accounts), whether your email address is confirmed, the link between your account and
+                            your sign-in provider, and the version and time of your consent.
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Consent:</strong> your consent is recorded when you sign up or first sign in. Until you consent, your advice is not linked to your account
+                            and no history is shown.
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-key"></i>
+                        <div>
+                            <strong>Email codes and sign-in:</strong> confirmation and password-reset codes are sent to your email address and expire after a short time.
+                            You stay signed in for a limited period, and resetting your password signs you out everywhere.
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-trash-alt"></i>
+                        <div>
+                            <strong>Deleting your account:</strong> you can delete your account at any time. This removes your account, sign-in sessions, keys and linked sign-in providers.
+                            Your earlier advice requests are kept as anonymous statistics with the link to you removed (see Saved Advice).
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Saved Advice Section -->
+            <section id="saved-advice" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--secondary-color), #60a5fa);">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h2 class="section-title">Saved Advice History</h2>
+                </div>
+
+                <p class="mb-3">
+                    When you are signed in and have consented, each advice request is linked to your account so you can see it again.
+                    A saved request holds your farm location, your answers and the advice you received.
+                </p>
+                <p class="mb-3">
+                    <strong>Advice from before you signed up:</strong> the app gives your phone a random code (a device token). When you sign in after consenting,
+                    advice saved by that phone that does not yet belong to any account is linked to your account. Advice that already belongs to another account is never taken.
+                </p>
+                <p class="mb-3">
+                    <strong>Deleting saved advice:</strong> you can delete one item, several, or all of your saved advice. The request is then kept as an
+                    <strong>anonymous statistic</strong>: the link to your account and the phone's device token are removed, but the location and answers in the record stay.
+                    The same happens to your requests when you delete your account.
+                </p>
+                <p class="mb-0">
+                    Saved advice is kept until you delete it. There is no automatic deletion.
+                </p>
+            </section>
+
+            <!-- PDF Reports Section -->
+            <section id="pdf-reports" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #dc2626, #f87171);">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h2 class="section-title">PDF Advice Reports</h2>
+                </div>
+
+                <p class="mb-3">Each advice can come with PDF reports (fertilizer, intercropping, planting practices, planting dates).</p>
+
+                <ul class="feature-list">
+                    <li>
+                        <i class="fas fa-id-card"></i>
+                        <div><strong>What is in the PDF:</strong> your name, a masked phone number and your farm location, with the advice.</div>
+                    </li>
+                    <li>
+                        <i class="fas fa-lock"></i>
+                        <div><strong>Where it is kept:</strong> on private storage, not on a public web address. It is kept as long as your saved advice history, unless IITA sets a shorter limit.</div>
+                    </li>
+                    <li>
+                        <i class="fas fa-link"></i>
+                        <div>
+                            <strong>Download links:</strong> you get a signed download link that expires after a few days (7 days by default).
+                            When you are signed in you can ask for a new link for your own saved advice at any time. Anyone who has an unexpired link can open the PDF, so do not share it with people you do not trust.
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope-open-text"></i>
+                        <div>
+                            <strong>By email:</strong> if you give an email address, the PDF can be emailed to that address. Email is not a secure channel: anyone with access to that inbox can open the report.
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="highlight-box highlight-info">
+                    Deleting saved advice or your account does not currently delete stored PDF reports. They stay on private storage under the retention described in this policy, and still contain the name, masked phone number and location shown in them.
+                </div>
+            </section>
+
+            <!-- Compute Service Section -->
+            <section id="compute-service" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--accent-color), #a78bfa);">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h2 class="section-title">How Your Advice Is Calculated</h2>
+                </div>
+
+                <p class="mb-3">
+                    To produce your advice, the AKILIMO service sends your request to the AKILIMO Compute service. The request contains your farm location, country, field size,
+                    planting and harvest dates, crop, yield, price and cost information, fertilizer choices and prices, language, your name, phone country code and number,
+                    your email address (if you gave one) and farm name (these appear on the PDF report), and a reference number for the request.
+                </p>
+                <p class="mb-3">
+                    It does not send your password, account details, sign-in provider data or your phone's device token. The Compute service returns the advice and the PDF reports.
+                </p>
+            </section>
+
+            <!-- Third Party Access Section -->
+            <section id="third-party-access" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--accent-color), #a78bfa);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2 class="section-title">Third Party Access</h2>
+                </div>
+
+                <p class="mb-4">
+                    Only aggregated, anonymized data is periodically transmitted to external services to aid in improving the Application and service quality.
+                </p>
+
+                <h4 class="mb-3">Third-Party Service Providers</h4>
+                <div class="mb-4">
+                    <a href="https://www.google.com/policies/privacy/" target="_blank" rel="noopener noreferrer" class="service-link" aria-label="Google Play Services Privacy Policy (opens in new tab)">
+                        <span class="fw-medium">Google Play Services</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer" class="service-link" aria-label="Google Analytics for Firebase Privacy Policy (opens in new tab)">
+                        <span class="fw-medium">Google Analytics for Firebase</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <a href="https://sentry.io/privacy/" target="_blank" rel="noopener noreferrer" class="service-link" aria-label="Sentry Privacy Policy (opens in new tab)">
+                        <span class="fw-medium">Sentry</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+
+                <div class="highlight-box highlight-warning">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-exclamation-triangle me-3 mt-1" style="color: var(--warning-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Information Disclosure</h5>
+                            <p class="mb-0">
+                                We may disclose information as required by law, to protect rights and safety, investigate fraud,
+                                or respond to government requests, and with trusted service providers bound by this privacy policy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Opt-Out Rights Section -->
+            <section id="opt-out-rights" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--success-color), #22c55e);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="section-title">Opt-Out Rights</h2>
+                </div>
+
+                <div class="highlight-box highlight-success">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-check-circle me-3 mt-1" style="color: var(--success-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Easy Opt-Out</h5>
+                            <p class="mb-0">
+                                You can stop all collection of information by the Application easily by uninstalling it.
+                                Use the standard uninstall processes available on your mobile device or app marketplace.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Retention Section -->
+            <section id="data-retention" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--warning-color), #fbbf24);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h2 class="section-title">Data Retention Policy</h2>
+                </div>
+
+                <p class="mb-4">
+                    The Service Provider will retain User Provided data for as long as you use the Application and for a reasonable time thereafter.
+                </p>
+                <p class="mb-4">
+                    Saved advice linked to an account is kept until you delete it, and deleting it leaves an anonymous record (see Saved Advice History).
+                    You can delete your account yourself in the app, without writing to us.
+                </p>
+
+                <div class="highlight-box highlight-warning">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-trash-alt me-3 mt-1" style="color: var(--warning-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Data Deletion Request</h5>
+                            <p class="mb-0">
+                                To delete your User Provided Data, contact us at
+                                <a href="mailto:akilimo@cgiar.org" class="fw-medium">akilimo@cgiar.org</a>
+                                and we will respond in a reasonable time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Children's Privacy Section -->
+            <section id="children" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h2 class="section-title">Children's Privacy</h2>
+                </div>
+
+                <div class="highlight-box highlight-danger">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-baby me-3 mt-1" style="color: var(--danger-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Age Restriction: 13+</h5>
+                            <p class="mb-3">
+                                The Service Provider does not use the Application to knowingly solicit data from or market to children under the age of 13.
+                            </p>
+                            <p class="mb-0 small">
+                                If we discover that a child under 13 has provided personal information, we will immediately delete this from our servers.
+                                If you are a parent or guardian and aware that your child has provided personal information, please contact us at
+                                <a href="mailto:akilimo@cgiar.org" class="fw-medium">akilimo@cgiar.org</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="section-title">Security</h2>
+                </div>
+
+                <div class="highlight-box highlight-info">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-lock me-3 mt-1" style="color: var(--secondary-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Data Protection</h5>
+                            <p class="mb-0">
+                                The Service Provider is concerned about safeguarding the confidentiality of your information.
+                                We provide physical, electronic, and procedural safeguards to protect information we process and maintain.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Policy Changes Section -->
+            <section id="changes" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--gray-600), var(--gray-500));">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h2 class="section-title">Policy Changes</h2>
+                </div>
+
+                <p class="mb-3">
+                    This Privacy Policy may be updated from time to time for any reason. The Service Provider will notify you of any changes
+                    by updating this page with the new Privacy Policy.
+                </p>
+                <p class="mb-3">
+                    You are advised to consult this Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.
+                </p>
+                <p class="mb-0">
+                    Please also read our
+                    <a href="https://akilimo.org/akilimo-terms.html" target="_blank" rel="noopener noreferrer" class="fw-medium">Terms of Use</a>.
+                    This policy is published at
+                    <a href="https://akilimo.org/akilimo-privacy-policy.html" target="_blank" rel="noopener noreferrer" class="fw-medium">https://akilimo.org/akilimo-privacy-policy.html</a>.
+                </p>
+            </section>
+
+            <!-- Your Consent Section -->
+            <section id="consent" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--success-color), #22c55e);">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h2 class="section-title">Your Consent</h2>
+                </div>
+
+                <div class="highlight-box highlight-success">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-handshake me-3 mt-1" style="color: var(--success-color);"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">Agreement to Process Information</h5>
+                            <p class="mb-0">
+                                By using the Application, you are consenting to the processing of your information as set forth in this Privacy Policy
+                                now and as amended by us.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Us Section -->
+            <section id="contact" class="content-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, var(--secondary-color), #60a5fa);">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h2 class="section-title">Contact Us</h2>
+                </div>
+
+                <p class="mb-4">
+                    If you have any questions regarding privacy while using the Application, or have questions about our practices,
+                    please contact the Service Provider.
+                </p>
+
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Email Support</h5>
+                    <a href="mailto:akilimo@cgiar.org" class="btn btn-primary btn-lg" aria-label="Send email to akilimo@cgiar.org">
+                        <i class="fas fa-envelope me-2"></i>
+                        akilimo@cgiar.org
+                    </a>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p class="mb-2">
+                    This privacy policy is effective as of <strong>November 20, 2026</strong>
+                </p>
+                <p class="text-muted small mb-0">
+                    International Institute of Tropical Agriculture (IITA) • AKILIMO Mobile App
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" onclick="scrollToTop()" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Navigation functionality
+    function scrollToSection(sectionId) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            const headerOffset = 100;
+            const elementPosition = element.offsetTop;
+            const offsetPosition = elementPosition - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[href="#${sectionId}"]`).classList.add('active');
+
+            // Close mobile sidebar
+            if (window.innerWidth < 992) {
+                toggleSidebar();
+            }
+        }
+    }
+
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+
+        // Prevent body scroll when sidebar is open
+        if (sidebar.classList.contains('show')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Scroll to top functionality
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // Show/hide scroll to top button
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        const scrollButton = document.querySelector('.scroll-to-top');
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            if (window.pageYOffset > 300) {
+                scrollButton.classList.add('show');
+            } else {
+                scrollButton.classList.remove('show');
+            }
+        }, 10);
+    });
+
+    // Update active navigation on scroll with throttling
+    let ticking = false;
+    function updateActiveNav() {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        let current = '';
+        const scrollPosition = window.pageYOffset + 150;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(updateActiveNav);
+            ticking = true;
+        }
+    });
+
+    // Close mobile menu when clicking outside or pressing escape
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+
+        if (!sidebar.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+            if (sidebar.classList.contains('show')) {
+                toggleSidebar();
+            }
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('show')) {
+                toggleSidebar();
+            }
+        }
+    });
+
+    // Handle keyboard navigation for nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const sectionId = this.getAttribute('href').substring(1);
+                scrollToSection(sectionId);
+            }
+        });
+    });
+
+    // Optimize for touch devices
+    if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+    }
+
+    // Handle orientation change
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('show') && window.innerWidth >= 992) {
+                toggleSidebar();
+            }
+        }, 100);
+    });
+
+    // Preload critical resources
+    const preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap';
+    preloadLink.as = 'style';
+    document.head.appendChild(preloadLink);
+</script>
+</body>
+</html>

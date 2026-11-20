@@ -19,15 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class PriceCatalogueHistory extends BasePriceCatalogueHistory
 {
-    /** The price row before and after the change, stored as JSON */
-    protected function casts(): array
-    {
-        return [
-            'old_values' => 'array',
-            'new_values' => 'array',
-        ];
-    }
-
     public function changedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'changed_by');

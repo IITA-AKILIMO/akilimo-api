@@ -8,18 +8,18 @@
 
 namespace App\Repositories;
 
-use App\Models\OperationCost;
+use App\Models\VwOperationCost;
 use Illuminate\Database\Eloquent\Collection;
 
 class OperationCostRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return OperationCost::class;
+        return VwOperationCost::class;
     }
 
     /**
-     * @return Collection<int, OperationCost>
+     * @return Collection<int, VwOperationCost>
      */
     public function forCountry(string $countryCode): Collection
     {

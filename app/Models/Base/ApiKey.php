@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class ApiKey
  *
- * @property string|null $abilities
+ * @property array|null $abilities
  * @property Carbon|null $created_at
  * @property Carbon|null $expires_at
  * @property int $id
@@ -52,7 +52,8 @@ class ApiKey extends BaseModel
 
     protected $casts = [
         'user_id' => 'int',
-        'is_active' => 'bool',
+        'abilities' => 'array',
+        'is_active' => 'boolean',
         'last_used_at' => 'datetime',
         'expires_at' => 'datetime',
     ];

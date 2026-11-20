@@ -15,9 +15,9 @@ use Illuminate\Mail\Mailables\Envelope;
 /** A one-time code for a farmer account: confirming the email address or resetting the password. */
 class AccountCodeMail extends Mailable
 {
-    public const VERIFY = 'verification';
+    public const string VERIFY = 'verification';
 
-    public const RESET = 'password reset';
+    public const string RESET = 'password reset';
 
     public function __construct(
         public readonly string $purpose,

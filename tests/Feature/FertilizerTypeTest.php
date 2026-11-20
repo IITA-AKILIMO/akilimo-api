@@ -142,7 +142,7 @@ it('shows the category in the fertilizers view and the API', function () {
 
     DB::table('price_catalogue')->insert(['country' => 'NG', 'item' => 'DAP', 'fertilizer_type' => 'DAP', 'price' => 9000, 'unit' => 'per_bag', 'currency' => 'NGN', 'status' => 'active', 'created_at' => now(), 'updated_at' => now()]);
 
-    expect(DB::table('fertilizers')->where('type', 'DAP')->value('category'))->toBe('COMPOUND');
+    expect(DB::table('vw_fertilizers')->where('type', 'DAP')->value('category'))->toBe('COMPOUND');
 
     $this->getJson('/api/v1/fertilizers/country/NG')->assertOk()
         ->assertJsonPath('data.0.category', 'COMPOUND');
@@ -208,7 +208,7 @@ it('lists only the fertilizers that have an active price in their country', func
     $this->getJson('/api/v1/fertilizers')->assertOk()->assertJsonCount(1, 'data');
 
     // The admin list still shows every fertilizer, so one without a price can be found and fixed
-    expect(DB::table('fertilizers')->where('country', 'NG')->count())->toBe(3);
+    expect(DB::table('vw_fertilizers')->where('country', 'NG')->count())->toBe(3);
 
     // Activating the price lists the fertilizer
     DB::table('price_catalogue')->where('item', 'TSP')->update(['status' => 'active']);

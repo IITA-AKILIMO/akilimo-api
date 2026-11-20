@@ -15,7 +15,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * fertilizer_prices, cassava_prices and potato_prices are database views, and
+     * the vw_ views (vw_fertilizer_prices, vw_cassava_prices, ...) are database views, and
      * migrate:fresh leaves views behind unless asked to drop them, which makes the
      * next run's schema load fail with "table already exists".
      */

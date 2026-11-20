@@ -8,12 +8,12 @@
 
 namespace App\Repositories;
 
-use App\Models\MaizePrice;
+use App\Models\VwMaizePrice;
 
 class MaizePriceRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return MaizePrice::class;
+        return VwMaizePrice::class;
     }
 }

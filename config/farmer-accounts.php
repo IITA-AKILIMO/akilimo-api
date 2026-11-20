@@ -28,7 +28,7 @@ return [
     // ── Consent ───────────────────────────────────────────────────────────────
 
     /** Label of the consent wording the farmer agreed to, stored in users.consent_version. The final wording comes from the owner. */
-    'consent_version' => env('FARMER_CONSENT_VERSION', 'draft-1'),
+    'consent_version' => env('FARMER_CONSENT_VERSION', 'v1'),
 
     // ── Email codes ───────────────────────────────────────────────────────────
 

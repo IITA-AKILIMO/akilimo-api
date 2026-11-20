@@ -15,8 +15,13 @@ concurrency:
 
 jobs:
   build:
+    # Only after UnitTests passed on a push to main or develop. Pull-request runs never build an image, and a push run that the
+    # tests' gate job skipped (an open pull request checks that commit) still reports "success", so it is told apart by its
+    # branch: main and develop never have the skipped case because their pull requests are closed when they are pushed.
     if: >-
-      github.event.workflow_run.conclusion == 'success'
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      contains(fromJSON('["main", "develop"]'), github.event.workflow_run.head_branch)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -44,7 +44,7 @@ class CassavaUnit extends BaseModel
     protected $casts = [
         'unit_weight' => 'float',
         'sort_order' => 'float',
-        'is_active' => 'bool',
+        'is_active' => 'boolean',
     ];
 
     protected $fillable = [
