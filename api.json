@@ -3237,6 +3237,85 @@
                 }
             }
         },
+        "/v1/account/history/{requestId}/report": {
+            "get": {
+                "operationId": "accountHistory.report",
+                "description": "New signed links (same shape as `report` in the compute answer) for the report of the farmer's own saved advice, for when the\nlinks stored with it have expired. 404 when the id does not exist, belongs to someone else or was deleted, or has no report. [View source](https://github.com/IITA-AKILIMO/new-akilimo-api/blob/main\\app\\Http\\Controllers\\Api\\AccountHistoryController.php#L83)",
+                "summary": "Fresh PDF download links of one saved recommendation",
+                "tags": [
+                    "Farmer accounts",
+                    "AccountHistory"
+                ],
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "expires_at",
+                                                "url",
+                                                "files"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            }
+        },
         "/v1/account/history/delete": {
             "post": {
                 "operationId": "accountHistory.destroyMany",
