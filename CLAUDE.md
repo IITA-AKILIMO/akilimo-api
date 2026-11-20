@@ -193,6 +193,7 @@ No PHP code changes are required.
 - `quality-checks.yml` — Pest with coverage + SonarQube gate (develop branch)
 - `auto-approve.yml` — approves pull requests opened by bots (Dependabot, the release bot) only after the `UnitTests` workflow succeeded, from this repository only, with `hmarr/auto-approve-action` and a GitHub App token (`APP_CLIENT_ID` variable, `APP_PRIVATE_KEY` secret; `actions/create-github-app-token@v3.3.0` takes the App's client ID). The allowed bot logins come from the `ALLOWED_BOTS` environment variable of the workflow (a space-separated list of bare bot names, default `github-actions dependabot munywele-bot`; `name`, `name[bot]` and `app/name` all match in any letter case, and GitHub must also report the author as a bot; set a repository variable `ALLOWED_BOTS` to override the list without editing the file). Human pull requests are never auto-approved. It replaced `pull-request-automation.yml`, which approved every pull request not opened by masgeek the moment it opened, without waiting for any check
 - `docker-build.yml` — builds and pushes `iita/akilimo-api` image (main/develop)
+- `publish-policies.yml` — writes the privacy policy and terms (`docs/polices/*.html`) to the akilimo.org WordPress web root over SSH (`appleboy/ssh-action`) on pushes to develop; needs secrets `SITE_SSH_KEY`, `SITE_SSH_HOST`, `SITE_SSH_USER`, `SITE_SSH_FINGERPRINT` and variable `SITE_WEB_ROOT` (optional `SITE_SSH_PORT`)
 
 ## Environment Configuration
 
@@ -212,7 +213,7 @@ AUTH_TOKEN_TTL_DAYS=30         # Bearer token lifetime in days
 FARMER_SOCIAL_PROVIDERS=google # default google (refused until GOOGLE_CLIENT_ID is set); e.g. google,facebook; blank = social sign-in off
 GOOGLE_CLIENT_ID=              # non-secret OAuth client IDs (comma separated); also the allowed token audiences
                                # <PROVIDER>_CLIENT_SECRET and <PROVIDER>_REDIRECT_URI exist for every provider (optional)
-FARMER_CONSENT_VERSION=draft-1 # label stored with each consent; the final wording comes from the owner
+FARMER_CONSENT_VERSION=v1      # label stored with each consent (users.consent_version, 20 characters at most); bump it (v2, ...) whenever the approved privacy policy or terms change in a way farmers agree to, see docs/PRIVACY_AND_TERMS_DRAFT.md
 # Verification and reset email go through MAIL_MAILER; in production they stay off while it is "log"
 DEFAULT_ADMIN_PASSWORD=        # Required for AdminUserSeeder
 

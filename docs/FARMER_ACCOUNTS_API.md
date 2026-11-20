@@ -63,7 +63,7 @@ set its variables in `.env`, add it to `FARMER_SOCIAL_PROVIDERS`, and add an aud
 | `GOOGLE_CLIENT_ID` | non-secret OAuth client IDs, comma separated (Android and web); also the allowed token audiences |
 | `<PROVIDER>_CLIENT_ID`, `<PROVIDER>_CLIENT_SECRET`, `<PROVIDER>_REDIRECT_URI` | per provider in `config/services.php`; the redirect URI defaults to `/` and the secret is optional, because the token flow uses neither; secrets never go to the app and are never committed |
 | `MAIL_MAILER` | verification and reset email use the Laravel mailer; in production they are only sent once it is not `log` (outside production they are sent) |
-| `FARMER_CONSENT_VERSION` | label stored with each consent; the final wording comes from the owner |
+| `FARMER_CONSENT_VERSION` | label stored with each consent (`v1` = the wording approved 2026-11-20, published as the privacy policy and terms on akilimo.org); bump it (`v2`, ...) when that wording changes; accounts that agreed to an older label are not asked again by the code |
 | `FARMER_RESET_TTL_MINUTES`, `FARMER_VERIFY_TTL_MINUTES` | code lifetimes (60 and 1440) |
 | `FARMER_CHECK_BREACHED_PASSWORDS` | reject breached passwords (calls the Have I Been Pwned range API); off by default |
 
@@ -85,7 +85,7 @@ Verification and reset codes are kept hashed in the cache and work once. Never l
 
 1. **Owner inputs (design section 8):** the hosted email service and a verified sending domain (then set `MAIL_MAILER`); the Google Cloud
    OAuth client IDs for `GOOGLE_CLIENT_ID` (Google sign-in is already on by default and starts working once it is set); the final consent and benefit wording
-   (then `FARMER_CONSENT_VERSION` and the app text). No claim such as "your data is never shared" is to be written unless it is given.
+   (the consent wording is approved as `v1`; see `docs/PRIVACY_AND_TERMS_DRAFT.md` and `docs/polices/`). No claim such as "your data is never shared" is to be written unless it is given.
 2. **Mobile app (`akilimo-mobile`, step 6): built, not yet run on a device.** Sign-up, sign-in, consent, reset password, email
    confirmation, saved-advice list (offline from Room), share, sign-out and account deletion; Google through Play Services
    `AuthorizationClient` (an **access token**); the token encrypted with an Android Keystore key. Still open there: try it on a phone against

@@ -1,19 +1,19 @@
 # AKILIMO API: privacy policy and terms of use, draft wording for accounts, saved advice and PDF reports
 
-**IITA Internal Use.** Draft for the owner. Not legal text and not approved for external sharing. Written 2026-11-20 from the code
+**IITA Internal Use.** Working notes. The privacy policy and terms wording in `docs/polices/` was approved by the owner (consent label `v1`, 2026-11-20); the pages are the source of truth and this file only records how they were derived. Written 2026-11-20 from the code
 (`FarmerAccountService`, `SocialSignInService`, `RecommendationReportService`, `ApiRequestRepo`, `AkilimoComputeData`,
 `config/farmer-accounts.php`, `config/akilimo-compute.php`).
 
 ## 0. Where the policy lives
 
-This repository holds **no** privacy policy or terms text (only the design notes in `docs/FARMER_ACCOUNTS_DESIGN.md`).
+The approved pages now live in `docs/polices/` and are published to akilimo.org by `.github/workflows/publish-policies.yml`. Before that, this repository held no policy text.
 The published policy is a separate web page: <https://akilimo.org/akilimo-privacy-policy.html> ("Privacy Policy - AKILIMO Mobile
 App", last updated 12 June 2025, provider IITA, contact akilimo@cgiar.org). That page predates farmer accounts. It says nothing
 about accounts, sign-in, saved history, PDF reports or emailing them, so sections 1 to 5 below are the **proposed additions** to
 it. There are no separate terms of use in the repo or on that page.
 
-**Consent version:** the wording below is `FARMER_CONSENT_VERSION=draft-1`. When the owner approves or changes any wording that
-farmers agree to, **the owner must bump `FARMER_CONSENT_VERSION`** (for example `v1`), so each stored consent records which text was
+**Consent version:** the approved wording is `FARMER_CONSENT_VERSION=v1`. When the owner changes any wording that
+farmers agree to, **the owner must bump `FARMER_CONSENT_VERSION`** (next: `v2`), so each stored consent records which text was
 accepted. Accounts that agreed to an older label are not asked again by the code; the owner must decide whether re-consent is needed.
 
 ## 1. Optional accounts (proposed text)
