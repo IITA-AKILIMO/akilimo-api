@@ -41,6 +41,8 @@ class ComputeFieldRules
             'compute_request.recommendations.planting_practices_rec' => ['boolean'],
             'compute_request.recommendations.scheduled_planting_rec' => ['boolean'],
             'compute_request.recommendations.scheduled_harvest_rec' => ['boolean'],
+            'compute_request.recommendations.planting_date_cultivar_rec' => ['boolean'],
+            'compute_request.recommendations.crop' => ['string', 'in:maize'],
 
             // Planting Dates
             'compute_request.planting.planting_date' => ['required', 'date'],

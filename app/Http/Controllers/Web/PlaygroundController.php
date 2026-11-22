@@ -57,7 +57,7 @@ class PlaygroundController extends Controller
     {
         $data = $request->validate([
             'country_code' => ['required', 'string', 'size:2'],
-            'use_case' => ['required', 'string', 'in:FR,IC,PP,SPHS,COMPLETE'],
+            'use_case' => ['required', 'string', 'in:FR,IC,PP,SPHS,PDC,COMPLETE'],
             'field_size' => ['required', 'numeric', 'min:0.1'],
             'area_unit' => ['required', 'string', 'in:acre,ha,m2,are'],
             'map_lat' => ['required', 'numeric', 'between:-90,90'],
@@ -81,6 +81,7 @@ class PlaygroundController extends Controller
             'planting_practices_rec' => ['required', 'boolean'],
             'scheduled_planting_rec' => ['required', 'boolean'],
             'scheduled_harvest_rec' => ['required', 'boolean'],
+            'planting_date_cultivar_rec' => ['sometimes', 'boolean'],
             'inter_cropping_maize_rec' => ['sometimes', 'boolean'],
             'inter_cropping_potato_rec' => ['sometimes', 'boolean'],
             // Dates
@@ -152,6 +153,7 @@ class PlaygroundController extends Controller
                     'planting_practices_rec' => (bool)$data['planting_practices_rec'],
                     'scheduled_planting_rec' => (bool)$data['scheduled_planting_rec'],
                     'scheduled_harvest_rec' => (bool)$data['scheduled_harvest_rec'],
+                    'planting_date_cultivar_rec' => (bool)($data['planting_date_cultivar_rec'] ?? false),
                 ],
                 'planting' => [
                     'planting_date' => $data['planting_date'],
