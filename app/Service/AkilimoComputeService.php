@@ -88,7 +88,9 @@ class AkilimoComputeService
             return $body;
         }
 
+        // The engine answers a rejected request as {status, data: {message, code}}
         $message = $body['message']
+            ?? ($body['data']['message'] ?? null)
             ?? $body['error']
             ?? $body['error_message']
             ?? $body['errorMessage']
@@ -96,7 +98,9 @@ class AkilimoComputeService
 
         $this->log('error', 'AKILIMO API Error', $response, $message, $body);
 
-        throw new RecommendationException($message, $response->status());
+        $code = $body['data']['code'] ?? $body['code'] ?? null;
+
+        throw new RecommendationException($message, $response->status(), is_string($code) ? ['code' => $code] : []);
     }
 
     /**

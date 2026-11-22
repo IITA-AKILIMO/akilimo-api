@@ -76,6 +76,11 @@ final class RecommendationException extends Exception
             'status' => $status,
         ];
 
+        // A stable reason (outside_coverage, rec_type_unavailable, ...) the mobile app translates itself
+        if (is_string($this->body['code'] ?? null)) {
+            $response['code'] = $this->body['code'];
+        }
+
         if (!empty($this->body['errors'])) {
             $response['errors'] = $this->body['errors'];
         }
