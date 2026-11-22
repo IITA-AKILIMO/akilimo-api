@@ -1,4 +1,4 @@
-export type Scenario = 'FR' | 'IC' | 'PP' | 'SPHS' | 'COMPLETE'
+export type Scenario = 'FR' | 'IC' | 'PP' | 'SPHS' | 'PDC' | 'COMPLETE'
 export type IntercropCrop = 'MAIZE' | 'POTATO'
 export type Step = 1 | 2 | 3 | 4 | 5
 

@@ -47,6 +47,7 @@ export function scenarioToFlags(s: string, intercropCrop: string) {
         planting_practices_rec:    s === 'PP'   || s === 'COMPLETE',
         scheduled_planting_rec:    s === 'SPHS' || s === 'COMPLETE',
         scheduled_harvest_rec:     s === 'SPHS' || s === 'COMPLETE',
+        planting_date_cultivar_rec: s === 'PDC',
         inter_cropping_maize_rec:  (s === 'IC' || s === 'COMPLETE') && intercropCrop === 'MAIZE',
         inter_cropping_potato_rec: (s === 'IC' || s === 'COMPLETE') && intercropCrop === 'POTATO',
     }

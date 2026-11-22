@@ -26,6 +26,7 @@ const SCENARIO_COLORS: Record<string, string> = {
     IC: '#92400e',
     PP: '#1e40af',
     SPHS: '#6b21a8',
+    PDC: '#0f766e',
     NA: '#374151',
 }
 

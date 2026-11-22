@@ -8911,6 +8911,15 @@
                                     },
                                     "scheduled_harvest_rec": {
                                         "type": "boolean"
+                                    },
+                                    "planting_date_cultivar_rec": {
+                                        "type": "boolean"
+                                    },
+                                    "crop": {
+                                        "type": "string",
+                                        "enum": [
+                                            "maize"
+                                        ]
                                     }
                                 },
                                 "required": [

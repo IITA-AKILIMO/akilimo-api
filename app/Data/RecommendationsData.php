@@ -23,5 +23,11 @@ class RecommendationsData extends Data
 
     public bool $scheduledHarvestRec;
 
+    /** Planting date and cultivar advice (PDC): the compute service has it for NG maize only */
+    public bool $plantingDateCultivarRec = false;
+
+    /** The crop PDC advice is for; the compute service defaults to (and only supports) maize */
+    public string $crop = 'maize';
+
     public string $lang = 'en';
 }
