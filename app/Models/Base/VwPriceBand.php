@@ -23,6 +23,21 @@ use Carbon\Carbon;
  * @property float|null $min_local_price
  * @property float $step_order
  * @property Carbon|null $updated_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereIsFirst($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereIsLast($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereMaxLocalPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereMinLocalPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereStepOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VwPriceBand whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
  */
 class VwPriceBand extends BaseModel
 {

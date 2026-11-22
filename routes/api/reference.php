@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\FertilizerPriceController;
 use App\Http\Controllers\Api\InvestmentAmountController;
 use App\Http\Controllers\Api\MaizePricesController;
 use App\Http\Controllers\Api\MaizeUnitsController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OperationCostController;
 use App\Http\Controllers\Api\PotatoPricesController;
 use App\Http\Controllers\Api\PriceCatalogueController;
@@ -34,6 +35,9 @@ Route::middleware('throttle:read')->group(function () {
         Route::get('/', [CropController::class, 'index']);
         Route::get('/country/{countryCode}', [CropController::class, 'byCountry']);
     });
+
+    // Messages for the mobile app's inbox (what it missed through push), filtered by its country and language
+    Route::get('v1/messages', [MessageController::class, 'index']);
 
     Route::prefix('v1/currencies')->group(function () {
         Route::get('/', [CurrencyController::class, 'index']);

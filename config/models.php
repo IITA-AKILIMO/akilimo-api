@@ -8,6 +8,7 @@
 
 use App\Core\Models\BaseModel;
 use App\Core\Models\BaseUser;
+use App\Enums\EnumMessageType;
 use App\Enums\EnumUserRole;
 use App\Enums\PriceBasis;
 use App\Enums\PriceStatus;
@@ -734,6 +735,12 @@ return [
     ],
     'fertilizer_types' => [
         'fillable_primary_keys' => true,
+    ],
+    'messages' => [
+        'casts' => [
+            'id' => 'string',
+            'type' => EnumMessageType::class,
+        ],
     ],
 
 ];
