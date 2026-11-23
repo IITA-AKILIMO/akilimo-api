@@ -19,7 +19,9 @@ use Illuminate\View\View;
  */
 class AccountDeletionController extends Controller
 {
-    public function __construct(private readonly FarmerAccountService $accounts) {}
+    public function __construct(private readonly FarmerAccountService $accounts)
+    {
+    }
 
     public function show(): View
     {
@@ -48,7 +50,7 @@ class AccountDeletionController extends Controller
             'code' => ['required', 'string', 'max:32'],
         ]);
 
-        if (!$this->accounts->deleteWithCode($data['email'], $data['code'])) {
+        if (!$this->accounts->deleteWithCode(email: $data['email'], code: $data['code'])) {
             return view('account-deletion', [
                 'step' => 'confirm',
                 'email' => $data['email'],
