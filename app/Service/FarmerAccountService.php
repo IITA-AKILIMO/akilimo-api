@@ -159,6 +159,38 @@ class FarmerAccountService
         }
     }
 
+    /**
+     * Send a deletion code if the address belongs to a farmer account; the caller answers the same either way, so the
+     * page cannot be used to find out who has an account. Staff accounts are never deleted this way.
+     */
+    public function sendDeletion(string $email): void
+    {
+        $user = $this->farmerByEmail($email);
+
+        if ($user !== null) {
+            $this->sendEmailCode($user, AccountCodeMail::DELETE);
+        }
+    }
+
+    /** Delete the account when the emailed code is right. False when the code or address is wrong. */
+    public function deleteWithCode(string $email, string $code): bool
+    {
+        $user = $this->farmerByEmail($email);
+
+        if ($user === null || !$this->consumeCode('delete', $user, $code)) {
+            return false;
+        }
+
+        $this->deleteAccount($user);
+
+        return true;
+    }
+
+    private function farmerByEmail(string $email): ?User
+    {
+        return User::where('email', strtolower($email))->where('role', EnumUserRole::User)->first();
+    }
+
     /** Set a new password with a valid code, and sign the account out everywhere. */
     public function resetPassword(string $email, string $code, string $password): bool
     {
@@ -182,13 +214,14 @@ class FarmerAccountService
     }
 
     /**
-     * Delete the account and everything that identifies the farmer. Their past requests stay, for statistics, with the
-     * link to the person removed: user_id is set to null and the phone's device_token is cleared on those rows.
+     * Delete the account and everything that identifies the farmer. Their past requests stay, for statistics, as anonymous
+     * records: the account link, the device token and every personal detail are removed and their PDFs are deleted
+     * (see AdviceAnonymiser).
      */
     public function deleteAccount(User $user): void
     {
         DB::transaction(function () use ($user) {
-            ApiRequest::where('user_id', $user->id)->update(['user_id' => null, 'device_token' => null]);
+            app(AdviceAnonymiser::class)->release(ApiRequest::where('user_id', $user->id));
 
             $this->revokeAllTokens($user);
             $user->apiKeys()->delete();
@@ -220,7 +253,11 @@ class FarmerAccountService
             return false;
         }
 
-        $kind = $purpose === AccountCodeMail::VERIFY ? 'verify' : 'reset';
+        $kind = match ($purpose) {
+            AccountCodeMail::VERIFY => 'verify',
+            AccountCodeMail::DELETE => 'delete',
+            default => 'reset',
+        };
         $minutes = (int)config($kind === 'verify' ? 'farmer-accounts.verify_ttl_minutes' : 'farmer-accounts.reset_ttl_minutes');
         $code = strtoupper(bin2hex(random_bytes(4)));
 
