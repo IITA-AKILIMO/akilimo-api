@@ -232,10 +232,16 @@ class RecommendationService
 
             $this->updateRequestLogResponse($requestLog->id, $errorBody, $startedAt);
 
+            // The engine answers a rejected request as {status, data: {message, code}}
+            $code = Arr::get($responseBody, 'data.code', Arr::get($responseBody, 'code'));
+            if (is_string($code)) {
+                $errorBody['code'] = $code;
+            }
+
             throw new RecommendationException(
-                Arr::get($responseBody, 'message', 'Recommendation service returned an error'),
+                Arr::get($responseBody, 'message') ?? Arr::get($responseBody, 'data.message') ?? 'Recommendation service returned an error',
                 $statusCode,
-                $errorBody,
+                is_string($code) ? ['code' => $code] + $errorBody : $errorBody,
                 $ex
             );
         } catch (Exception $ex) {

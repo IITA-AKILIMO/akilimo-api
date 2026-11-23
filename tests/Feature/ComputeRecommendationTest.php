@@ -106,6 +106,23 @@ it('returns an error when Plumbr responds with a non-2xx status', function () {
         ->assertStatus(422);
 });
 
+it('passes the compute service rejection reason and code on to the client', function () {
+    Http::fake(['*' => Http::response([
+        'status' => '400 - bad request',
+        'version' => '1',
+        'data' => [
+            'message' => 'Planting date and cultivar (PDC) recommendations are not available for country: TZ',
+            'code' => 'rec_type_unavailable',
+        ],
+    ], 400)]);
+    Cache::flush();
+
+    $this->postJson('/api/v1/recommendations/compute', validComputePayload())
+        ->assertStatus(400)
+        ->assertJsonPath('code', 'rec_type_unavailable')
+        ->assertJsonPath('message', 'Planting date and cultivar (PDC) recommendations are not available for country: TZ');
+});
+
 it('returns 422 when required fields are missing', function () {
     $this->postJson('/api/v1/recommendations/compute', [])
         ->assertUnprocessable();
