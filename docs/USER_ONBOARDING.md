@@ -140,7 +140,8 @@ Content-Type: application/json
     "inter_crop_rec": false,
     "planting_practices_rec": false,
     "scheduled_planting_rec": false,
-    "scheduled_harvest_rec": false
+    "scheduled_harvest_rec": false,
+    "planting_date_cultivar_rec": false
   },
   "fertilizer_list": [
     {

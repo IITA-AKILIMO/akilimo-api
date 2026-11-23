@@ -62,6 +62,36 @@ it('logs the request to api_requests with device_token and duration', function (
         ->and($record->request_duration_ms)->toBeInt()->toBeGreaterThanOrEqual(0);
 });
 
+it('sends the planting date and cultivar flag and crop to the compute service', function () {
+    Http::fake(['*' => Http::response(plumberSuccessResponse(), 200)]);
+    Cache::flush();
+
+    $payload = validComputePayload();
+    $payload['compute_request']['recommendations']['fertilizer_rec'] = false;
+    $payload['compute_request']['recommendations']['planting_date_cultivar_rec'] = true;
+
+    $this->postJson('/api/v1/recommendations/compute', $payload)->assertOk();
+
+    Http::assertSent(fn ($request) => $request['PDC'] === true && $request['FR'] === false && $request['crop'] === 'maize');
+});
+
+it('leaves PDC off when the request does not ask for it', function () {
+    Http::fake(['*' => Http::response(plumberSuccessResponse(), 200)]);
+    Cache::flush();
+
+    $this->postJson('/api/v1/recommendations/compute', validComputePayload())->assertOk();
+
+    Http::assertSent(fn ($request) => $request['PDC'] === false && $request['crop'] === 'maize');
+});
+
+it('rejects a crop other than maize for planting date and cultivar', function () {
+    $payload = validComputePayload();
+    $payload['compute_request']['recommendations']['planting_date_cultivar_rec'] = true;
+    $payload['compute_request']['recommendations']['crop'] = 'cassava';
+
+    $this->postJson('/api/v1/recommendations/compute', $payload)->assertUnprocessable();
+});
+
 it('returns 503 when Plumbr is unreachable', function () {
     Http::fake(['*' => fn () => throw new ConnectionException('timeout')]);
 

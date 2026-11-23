@@ -69,6 +69,8 @@ class ComputeRequestData extends Data
             'plantingPracticesRec' => $this->recommendations->plantingPracticesRec,
             'scheduledPlantingRec' => $this->recommendations->scheduledPlantingRec,
             'scheduledHarvestRec' => $this->recommendations->scheduledHarvestRec,
+            'plantingDateCultivarRec' => $this->recommendations->plantingDateCultivarRec,
+            'crop' => $this->recommendations->crop,
 
             // Planting
             'plantingDate' => $this->planting->plantingDate->toDateString(),

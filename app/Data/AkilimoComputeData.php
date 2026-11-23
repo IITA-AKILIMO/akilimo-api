@@ -46,6 +46,12 @@ class AkilimoComputeData extends Data
     #[MapOutputName('SPH')]
     public bool $scheduledHarvestRec;
 
+    #[MapOutputName('PDC')]
+    public bool $plantingDateCultivarRec;
+
+    #[MapOutputName('crop')]
+    public string $crop;
+
     #[MapOutputName('PD')]
     #[WithTransformer(DateTimeInterfaceTransformer::class, format: 'Y-m-d')]
     public Carbon $plantingDate;
