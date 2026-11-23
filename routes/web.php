@@ -18,5 +18,6 @@ Route::prefix('health')->group(function () {
 });
 
 // Split by area, one file each in routes/web/
+require __DIR__ . '/web/account-deletion.php'; // public page to request account deletion
 require __DIR__ . '/web/playground.php'; // public and signed-in playground
 require __DIR__ . '/web/admin.php';      // admin UI (its pricing and lookup-data routes are in routes/web/admin/)
