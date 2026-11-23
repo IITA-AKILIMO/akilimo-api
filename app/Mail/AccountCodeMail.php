@@ -12,12 +12,14 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/** A one-time code for a farmer account: confirming the email address or resetting the password. */
+/** A one-time code for a farmer account: confirming the email address, resetting the password or deleting the account. */
 class AccountCodeMail extends Mailable
 {
     public const string VERIFY = 'verification';
 
     public const string RESET = 'password reset';
+
+    public const string DELETE = 'account deletion';
 
     public function __construct(
         public readonly string $purpose,
