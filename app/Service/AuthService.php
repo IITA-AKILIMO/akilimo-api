@@ -12,11 +12,18 @@ use App\Auth\TokenAbility;
 use App\Enums\EnumUserRole;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
+use App\Repositories\PersonalAccessTokenRepo;
+use App\Repositories\UserRepo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
+    public function __construct(
+        private readonly UserRepo $users,
+        private readonly PersonalAccessTokenRepo $tokens,
+    ) {}
+
     /**
      * Attempt to authenticate a user by username/email and password.
      *
@@ -27,9 +34,7 @@ class AuthService
      */
     public function attempt(string $username, string $password): ?array
     {
-        $user = User::where('username', $username)
-            ->orWhere('email', $username)
-            ->first();
+        $user = $this->users->findByLogin($username);
 
         if ($user === null || !Hash::check($password, $user->password)) {
             return null;
@@ -45,14 +50,7 @@ class AuthService
             default => TokenAbility::PLAYGROUND_ABILITIES,
         };
 
-        PersonalAccessToken::create([
-            'tokenable_type' => User::class,
-            'tokenable_id' => $user->id,
-            'name' => 'login',
-            'token' => hash('sha256', $rawToken),
-            'abilities' => $abilities,
-            'expires_at' => $expiresAt,
-        ]);
+        $this->tokens->issue(User::class, $user->id, 'login', hash('sha256', $rawToken), $abilities, $expiresAt);
 
         return [
             'user' => $user,
@@ -66,6 +64,6 @@ class AuthService
      */
     public function revoke(PersonalAccessToken $token): void
     {
-        $token->delete();
+        $this->tokens->delete($token->getKey());
     }
 }

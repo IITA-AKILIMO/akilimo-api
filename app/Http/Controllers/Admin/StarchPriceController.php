@@ -168,7 +168,7 @@ class StarchPriceController extends AdminController
         DB::transaction(function () use ($validated, $factoryId) {
             // Delete removed rows (scoped to this factory for safety)
             if (!empty($validated['deleted_ids'])) {
-                $this->repo->deleteByIds($validated['deleted_ids'], $factoryId);
+                $this->repo->deleteByIds($validated['deleted_ids'], ['starch_factory_id' => $factoryId]);
             }
 
             foreach ($validated['rows'] as $row) {

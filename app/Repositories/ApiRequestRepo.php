@@ -30,41 +30,21 @@ class ApiRequestRepo extends BaseRepo
         array $filters = [],
     ): LengthAwarePaginator {
         $allowed = ['created_at', 'country_code', 'use_case', 'request_duration_ms'];
-        $orderBy = in_array($orderBy, $allowed) ? $orderBy : 'created_at';
-        $direction = $direction === 'asc' ? 'asc' : 'desc';
+        $excluded = $filters['excluded'] ?? '';
 
-        $query = $this->model->newQuery();
-
-        if (!empty($filters['country'])) {
-            $query->where('country_code', $filters['country']);
-        }
-
-        if (!empty($filters['use_case'])) {
-            $query->where('use_case', $filters['use_case']);
-        }
-
-        if (isset($filters['excluded']) && $filters['excluded'] !== '') {
-            $query->where('excluded', (bool)$filters['excluded']);
-        }
-
-        if (!empty($filters['date_from'])) {
-            $query->whereDate('created_at', '>=', $filters['date_from']);
-        }
-
-        if (!empty($filters['date_to'])) {
-            $query->whereDate('created_at', '<=', $filters['date_to']);
-        }
-
-        if (!empty($filters['search'])) {
-            $term = $filters['search'];
-            $query->where(fn ($q) => $q
-                ->where('device_token', 'like', "%{$term}%")
-                ->orWhere('full_names', 'like', "%{$term}%")
-                ->orWhere('phone_number', 'like', "%{$term}%")
-            );
-        }
-
-        return $query->orderBy($orderBy, $direction)->paginate($perPage);
+        return $this->paginateWithSort(
+            perPage: $perPage,
+            orderBy: in_array($orderBy, $allowed) ? $orderBy : 'created_at',
+            direction: $direction === 'asc' ? 'asc' : 'desc',
+            filters: [
+                'country_code' => $filters['country'] ?? null,
+                'use_case' => $filters['use_case'] ?? null,
+                'excluded' => $excluded === '' ? null : (bool)$excluded,
+            ],
+            search: $filters['search'] ?? null,
+            searchColumns: ['device_token', 'full_names', 'phone_number'],
+            scope: fn ($q) => $this->createdBetween($q, $filters),
+        );
     }
 
     public function playgroundHistory(int $userId, int $limit = 30): Collection
@@ -144,6 +124,12 @@ class ApiRequestRepo extends BaseRepo
         return $this->release($this->model->newQuery()->where('user_id', $userId)->whereIn('request_id', $requestIds));
     }
 
+    /** Give the advice a phone saved without an owner to a user. Only rows with no owner move; returns how many did. */
+    public function claimDevice(int $userId, string $deviceToken): int
+    {
+        return $this->query()->where('device_token', $deviceToken)->whereNull('user_id')->update(['user_id' => $userId]);
+    }
+
     /** The same soft delete for all of a farmer's saved advice. Returns how many rows were released. */
     public function releaseAllForUser(int $userId): int
     {
@@ -166,13 +152,6 @@ class ApiRequestRepo extends BaseRepo
 
     public function useCases(): array
     {
-        return $this->model->newQuery()
-            ->select('use_case')
-            ->whereNotNull('use_case')
-            ->where('use_case', '!=', 'NA')
-            ->distinct()
-            ->orderBy('use_case')
-            ->pluck('use_case')
-            ->all();
+        return $this->distinctValues('use_case', ['NA']);
     }
 }

@@ -21,6 +21,25 @@ class UserRepo extends BaseRepo
         return User::class;
     }
 
+    /** The user whose username or email is this login, or null */
+    public function findByLogin(string $login): ?User
+    {
+        return $this->query()->where('username', $login)->orWhere('email', $login)->first();
+    }
+
+    public function findByEmail(string $email): ?User
+    {
+        return $this->query()->where('email', $email)->first();
+    }
+
+    /** Set columns on a user, including ones that are not mass assignable, and save it */
+    public function forceUpdate(User $user, array $attributes): User
+    {
+        $user->forceFill($attributes)->save();
+
+        return $user;
+    }
+
     public function paginateWithSearch(
         string $search,
         int $perPage = 20,

@@ -8,6 +8,7 @@
 
 namespace App\Service;
 
+use App\Repositories\PriceListViewRepo;
 use App\Support\PriceLists;
 use Closure;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,8 @@ class SettingsPreviewService
 {
     /** Changed rows shown per list; the count of all of them is still reported. */
     private const SAMPLE = 40;
+
+    public function __construct(private readonly PriceListViewRepo $views) {}
 
     /**
      * @param list<string> $lists keys of PriceLists::LISTS to compare
@@ -66,16 +69,10 @@ class SettingsPreviewService
 
         foreach ($lists as $list) {
             $def = PriceLists::LISTS[$list];
-            $query = DB::table($def['table'])->orderBy($def['country']);
-
-            foreach ($def['order'] as $column) {
-                $query->orderBy($column);
-            }
-
             $snapshot[$list] = [];
 
-            foreach ($query->get() as $row) {
-                $snapshot[$list][(int) $row->id] = PriceLists::describe($list, $row) + ['country' => (string) $row->{$def['country']}];
+            foreach ($this->views->rows($def['table'], $def['country'], $def['order']) as $row) {
+                $snapshot[$list][(int)$row->id] = PriceLists::describe($list, $row) + ['country' => (string)$row->{$def['country']}];
             }
         }
 
@@ -95,7 +92,7 @@ class SettingsPreviewService
         $removed = 0;
 
         foreach ($after as $id => $row) {
-            if (! isset($before[$id])) {
+            if (!isset($before[$id])) {
                 $added++;
                 $rows[] = ['label' => $row['label'], 'before' => null, 'after' => $row['value']];
             } elseif ($before[$id]['value'] !== $row['value']) {
@@ -105,7 +102,7 @@ class SettingsPreviewService
         }
 
         foreach ($before as $id => $row) {
-            if (! isset($after[$id])) {
+            if (!isset($after[$id])) {
                 $removed++;
                 $rows[] = ['label' => $row['label'], 'before' => $row['value'], 'after' => null];
             }

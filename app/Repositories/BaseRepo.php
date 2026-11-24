@@ -58,6 +58,8 @@ abstract class BaseRepo implements Repository
 
     /**
      * Get a new query builder for the model.
+     *
+     * @return Builder<TModel>
      */
     protected function query(array $with = []): Builder
     {
@@ -198,6 +200,51 @@ abstract class BaseRepo implements Repository
     public function delete(int|string $id): bool
     {
         return $this->query()->findOrFail($id)->delete();
+    }
+
+    /**
+     * Delete the rows with these ids; $scope (column => value) keeps a caller to its own rows.
+     *
+     * @param array<int, int|string> $ids
+     * @param array<string, mixed> $scope
+     */
+    public function deleteByIds(array $ids, array $scope = []): void
+    {
+        if ($ids === []) {
+            return;
+        }
+
+        $this->query()->whereKey($ids)->where($scope)->delete();
+    }
+
+    /**
+     * The distinct non-null values of a column, sorted.
+     *
+     * @param array<int, string> $except Values to leave out
+     * @return array<int, mixed>
+     */
+    public function distinctValues(string $column, array $except = []): array
+    {
+        return $this->query()
+            ->whereNotNull($column)
+            ->when($except !== [], fn ($q) => $q->whereNotIn($column, $except))
+            ->distinct()
+            ->orderBy($column)
+            ->pluck($column)
+            ->all();
+    }
+
+    /**
+     * Keep rows created between the `date_from` and `date_to` of a filter array (either may be missing).
+     *
+     * @param Builder<TModel> $query
+     * @param array<string, mixed> $filters
+     */
+    protected function createdBetween(Builder $query, array $filters): void
+    {
+        $query
+            ->when(!empty($filters['date_from']), fn ($q) => $q->whereDate('created_at', '>=', $filters['date_from']))
+            ->when(!empty($filters['date_to']), fn ($q) => $q->whereDate('created_at', '<=', $filters['date_to']));
     }
 
     public function existsWithConditions(

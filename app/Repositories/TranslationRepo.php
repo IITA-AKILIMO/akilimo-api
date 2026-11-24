@@ -49,13 +49,4 @@ class TranslationRepo extends BaseRepo
 
         return $query->limit($limit)->get();
     }
-
-    public function deleteByIds(array $ids): void
-    {
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->query()->whereIn('id', $ids)->delete();
-    }
 }

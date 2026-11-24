@@ -9,6 +9,8 @@
 namespace App\Service;
 
 use App\Models\FertilizerType;
+use App\Repositories\FertilizerTypeRepo;
+use App\Repositories\PriceItemRepo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -22,12 +24,17 @@ use Illuminate\Support\Str;
  */
 class FertilizerTypeService
 {
+    public function __construct(
+        private readonly FertilizerTypeRepo $types,
+        private readonly PriceItemRepo $items,
+    ) {}
+
     /**
      * The code for a name: upper case letters and digits, joined by underscores.
      */
     public function codeFor(string $name): string
     {
-        return trim((string) preg_replace('/[^A-Z0-9]+/', '_', strtoupper(Str::ascii($name))), '_');
+        return trim((string)preg_replace('/[^A-Z0-9]+/', '_', strtoupper(Str::ascii($name))), '_');
     }
 
     /**
@@ -36,7 +43,7 @@ class FertilizerTypeService
      */
     public function labelFor(string $name): string
     {
-        return (string) preg_replace('/[^A-Za-z0-9]+/', '', Str::ascii($name));
+        return (string)preg_replace('/[^A-Za-z0-9]+/', '', Str::ascii($name));
     }
 
     /**
@@ -48,7 +55,7 @@ class FertilizerTypeService
         $candidate = $code;
         $n = 1;
 
-        while (FertilizerType::query()->where('type', $candidate)->exists()) {
+        while ($this->types->existsWithConditions(['type' => $candidate])) {
             $candidate = $code . '_' . (++$n);
         }
 
@@ -57,14 +64,15 @@ class FertilizerTypeService
 
     /**
      * @param array{name: string, weight?: int|null, label?: string|null, category?: string|null} $data
+     * @throws \Throwable
      */
     public function create(array $data): FertilizerType
     {
         return DB::transaction(function () use ($data) {
             $name = trim($data['name']);
-            $label = trim((string) ($data['label'] ?? '')) ?: $this->labelFor($name);
+            $label = trim((string)($data['label'] ?? '')) ?: $this->labelFor($name);
 
-            $type = FertilizerType::create([
+            $type = $this->types->create([
                 'type' => $this->uniqueCode($this->codeFor($name)),
                 'label' => $label,
                 'name' => $name,
@@ -72,10 +80,8 @@ class FertilizerTypeService
                 'category' => $data['category'] ?? 'OTHER',
             ]);
 
-            // A catalogue price needs its item in price_items (the database matches names without regard to case)
-            if (! DB::table('price_items')->where('item', $label)->exists()) {
-                DB::table('price_items')->insert(['item' => $label, 'unit' => 'per_bag', 'category' => 'FERTILIZER']);
-            }
+            // A catalogue price needs its item in price_items
+            $this->items->ensure($label, 'per_bag', 'FERTILIZER');
 
             return $type;
         });

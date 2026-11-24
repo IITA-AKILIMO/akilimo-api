@@ -12,9 +12,12 @@ use App\Auth\TokenAbility;
 use App\Enums\EnumUserRole;
 use App\Http\Middleware\RequireFarmerToken;
 use App\Mail\AccountCodeMail;
-use App\Models\ApiRequest;
-use App\Models\PersonalAccessToken;
 use App\Models\User;
+use App\Repositories\ApiKeyRepo;
+use App\Repositories\ApiRequestRepo;
+use App\Repositories\PersonalAccessTokenRepo;
+use App\Repositories\UserIdentityRepo;
+use App\Repositories\UserRepo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -28,13 +31,21 @@ use Illuminate\Support\Facades\Mail;
  */
 class FarmerAccountService
 {
+    public function __construct(
+        private readonly UserRepo $users,
+        private readonly PersonalAccessTokenRepo $tokens,
+        private readonly ApiRequestRepo $requests,
+        private readonly ApiKeyRepo $apiKeys,
+        private readonly UserIdentityRepo $identities,
+    ) {}
+
     /**
      * @param array{email: string, password: string, name?: string|null, device_token?: string|null} $data
      * @return array{user: User, token: string, expires_at: Carbon, claimed: int}
      */
     public function register(array $data): array
     {
-        $user = User::create([
+        $user = $this->users->create([
             'name' => $data['name'] ?? '',
             'username' => $this->freshUsername(),
             'email' => strtolower($data['email']),
@@ -56,7 +67,7 @@ class FarmerAccountService
      */
     public function login(string $email, string $password, ?string $deviceToken): ?array
     {
-        $user = User::where('email', strtolower($email))->first();
+        $user = $this->users->findByEmail(strtolower($email));
 
         if ($user === null || blank($user->password) || !Hash::check($password, $user->password)) {
             return null;
@@ -77,14 +88,7 @@ class FarmerAccountService
         $expiresAt = now()->addDays((int)config('auth.token_ttl_days', 30));
         $rawToken = bin2hex(random_bytes(32));
 
-        PersonalAccessToken::create([
-            'tokenable_type' => User::class,
-            'tokenable_id' => $user->id,
-            'name' => RequireFarmerToken::TOKEN_NAME,
-            'token' => hash('sha256', $rawToken),
-            'abilities' => TokenAbility::FARMER_ABILITIES,
-            'expires_at' => $expiresAt,
-        ]);
+        $this->tokens->issue(User::class, $user->id, RequireFarmerToken::TOKEN_NAME, hash('sha256', $rawToken), TokenAbility::FARMER_ABILITIES, $expiresAt);
 
         return ['user' => $user, 'token' => $rawToken, 'expires_at' => $expiresAt, 'claimed' => $claimed];
     }
@@ -97,10 +101,10 @@ class FarmerAccountService
     /** Record consent for an existing account and claim this phone's earlier advice. Returns the number of requests claimed. */
     public function recordConsent(User $user, ?string $deviceToken): int
     {
-        $user->forceFill([
+        $this->users->forceUpdate($user, [
             'consent_at' => now(),
             'consent_version' => config('farmer-accounts.consent_version'),
-        ])->save();
+        ]);
 
         return $this->claimDevice($user, $deviceToken);
     }
@@ -115,10 +119,7 @@ class FarmerAccountService
             return 0;
         }
 
-        return ApiRequest::query()
-            ->where('device_token', $deviceToken)
-            ->whereNull('user_id')
-            ->update(['user_id' => $user->id]);
+        return $this->requests->claimDevice($user->id, $deviceToken);
     }
 
     /**
@@ -138,13 +139,13 @@ class FarmerAccountService
 
     public function verifyEmail(string $email, string $code): bool
     {
-        $user = User::where('email', strtolower($email))->first();
+        $user = $this->users->findByEmail(strtolower($email));
 
         if ($user === null || !$this->consumeCode('verify', $user, $code)) {
             return false;
         }
 
-        $user->forceFill(['email_verified_at' => $user->email_verified_at ?? now()])->save();
+        $this->users->forceUpdate($user, ['email_verified_at' => $user->email_verified_at ?? now()]);
 
         return true;
     }
@@ -152,7 +153,7 @@ class FarmerAccountService
     /** Send a reset code if the address belongs to an account; the caller answers the same either way. */
     public function sendReset(string $email): void
     {
-        $user = User::where('email', strtolower($email))->first();
+        $user = $this->users->findByEmail(strtolower($email));
 
         if ($user !== null) {
             $this->sendEmailCode($user, AccountCodeMail::RESET);
@@ -162,18 +163,18 @@ class FarmerAccountService
     /** Set a new password with a valid code, and sign the account out everywhere. */
     public function resetPassword(string $email, string $code, string $password): bool
     {
-        $user = User::where('email', strtolower($email))->first();
+        $user = $this->users->findByEmail(strtolower($email));
 
         if ($user === null || !$this->consumeCode('reset', $user, $code)) {
             return false;
         }
 
         DB::transaction(function () use ($user, $password) {
-            $user->forceFill([
+            $this->users->forceUpdate($user, [
                 'password' => Hash::make($password),
                 // The code came to the inbox, so the address is proven
                 'email_verified_at' => $user->email_verified_at ?? now(),
-            ])->save();
+            ]);
 
             $this->revokeAllTokens($user);
         });
@@ -188,18 +189,18 @@ class FarmerAccountService
     public function deleteAccount(User $user): void
     {
         DB::transaction(function () use ($user) {
-            ApiRequest::where('user_id', $user->id)->update(['user_id' => null, 'device_token' => null]);
+            $this->requests->releaseAllForUser($user->id);
 
             $this->revokeAllTokens($user);
-            $user->apiKeys()->delete();
-            $user->identities()->delete();
-            $user->delete();
+            $this->apiKeys->deleteForUser($user->id);
+            $this->identities->deleteForUser($user->id);
+            $this->users->delete($user->id);
         });
     }
 
     public function revokeAllTokens(User $user): void
     {
-        PersonalAccessToken::where('tokenable_type', User::class)->where('tokenable_id', $user->id)->delete();
+        $this->tokens->deleteForOwner(User::class, $user->id);
     }
 
     /** @return array<string, mixed> */
@@ -253,7 +254,7 @@ class FarmerAccountService
     {
         do {
             $username = 'farmer_' . strtolower(str()->random(10));
-        } while (User::where('username', $username)->exists());
+        } while ($this->users->existsWithConditions(['username' => $username]));
 
         return $username;
     }

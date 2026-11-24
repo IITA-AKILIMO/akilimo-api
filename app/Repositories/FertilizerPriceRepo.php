@@ -29,16 +29,4 @@ class FertilizerPriceRepo extends BaseRepo
             ->orderBy('fertilizer_key')
             ->get();
     }
-
-    public function deleteByIds(array $ids, string $country): void
-    {
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->query()
-            ->whereIn('id', $ids)
-            ->where('country', $country)
-            ->delete();
-    }
 }
