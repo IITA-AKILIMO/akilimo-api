@@ -35,6 +35,7 @@ class FarmerAccountService
         private readonly UserRepo $users,
         private readonly PersonalAccessTokenRepo $tokens,
         private readonly ApiRequestRepo $requests,
+        private readonly AdviceAnonymiser $anonymiser,
         private readonly ApiKeyRepo $apiKeys,
         private readonly UserIdentityRepo $identities,
     ) {}
@@ -222,7 +223,7 @@ class FarmerAccountService
     public function deleteAccount(User $user): void
     {
         DB::transaction(function () use ($user) {
-            $this->requests->releaseAllForUser($user->id);
+            $this->anonymiser->releaseForUser($user->id);
 
             $this->revokeAllTokens($user);
             $this->apiKeys->deleteForUser($user->id);

@@ -9,6 +9,7 @@
 namespace App\Service;
 
 use App\Models\ApiRequest;
+use App\Repositories\ApiRequestRepo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
@@ -29,7 +30,20 @@ class AdviceAnonymiser
     /** Placeholder email domain: reserved by RFC 2606, so it never reaches a real mailbox. */
     private const EMAIL_DOMAIN = 'deleted.invalid';
 
-    public function __construct(private readonly RecommendationReportService $reports) {}
+    public function __construct(
+        private readonly RecommendationReportService $reports,
+        private readonly ApiRequestRepo $requests,
+    ) {}
+
+    /**
+     * Anonymise a farmer's saved advice: all of it, or only the given request ids (ids that are not theirs are skipped).
+     *
+     * @param list<string> $requestIds
+     */
+    public function releaseForUser(int $userId, array $requestIds = []): int
+    {
+        return $this->release($this->requests->forUser($userId, $requestIds));
+    }
 
     /** Anonymise every request the query matches; returns how many. */
     public function release(Builder $query): int

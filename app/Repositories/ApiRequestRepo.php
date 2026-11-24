@@ -9,7 +9,6 @@
 namespace App\Repositories;
 
 use App\Models\ApiRequest;
-use App\Service\AdviceAnonymiser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -104,43 +103,23 @@ class ApiRequestRepo extends BaseRepo
     }
 
     /**
-     * "Deletes" one saved item for a farmer: a soft delete. The row stays, because the requests are still needed for
-     * statistics, but it no longer belongs to anyone: user_id is set to null and the phone's device_token is cleared, exactly as
-     * when an account is deleted. The device_token must go too, otherwise the next sign-in from that phone would claim the
-     * item back.
-     */
-    public function releaseForUser(int $userId, string $requestId): bool
-    {
-        return $this->release($this->model->newQuery()->where('user_id', $userId)->where('request_id', $requestId)) > 0;
-    }
-
-    /**
-     * The same soft delete for several of a farmer's items at once. Ids that are not the farmer's, or no longer exist, are
-     * skipped without an error, so repeating a request is harmless. Returns how many rows were released.
+     * The saved advice that belongs to a farmer, narrowed to some of it when request ids are given. The query is what
+     * AdviceAnonymiser releases (a soft delete: the rows stay for statistics but no longer belong to anyone).
      *
      * @param list<string> $requestIds
+     * @return Builder<ApiRequest>
      */
-    public function releaseManyForUser(int $userId, array $requestIds): int
+    public function forUser(int $userId, array $requestIds = []): Builder
     {
-        return $this->release($this->model->newQuery()->where('user_id', $userId)->whereIn('request_id', $requestIds));
+        return $this->query()
+            ->where('user_id', $userId)
+            ->when($requestIds !== [], fn ($q) => $q->whereIn('request_id', $requestIds));
     }
 
     /** Give the advice a phone saved without an owner to a user. Only rows with no owner move; returns how many did. */
     public function claimDevice(int $userId, string $deviceToken): int
     {
         return $this->query()->where('device_token', $deviceToken)->whereNull('user_id')->update(['user_id' => $userId]);
-    }
-
-    /** The same soft delete for all of a farmer's saved advice. Returns how many rows were released. */
-    public function releaseAllForUser(int $userId): int
-    {
-        return $this->release($this->model->newQuery()->where('user_id', $userId));
-    }
-
-    private function release(Builder $query): int
-    {
-        // Also scrubs the personal details in the kept record and deletes its PDFs (see AdviceAnonymiser)
-        return app(AdviceAnonymiser::class)->release($query);
     }
 
     /** One saved recommendation, only when it belongs to this farmer. */
