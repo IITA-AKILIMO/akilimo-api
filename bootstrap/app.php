@@ -9,12 +9,14 @@
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateWithToken;
 use App\Http\Middleware\EnsureAdminRole;
+use App\Http\Middleware\EnsurePlaygroundEnabled;
 use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\JsonFormatResponse;
 use App\Http\Middleware\OptionalFarmerAuth;
 use App\Http\Middleware\RequireConsent;
 use App\Http\Middleware\RequireFarmerToken;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -45,10 +47,17 @@ return Application::configure(basePath: dirname(__DIR__))
             ]
         );
 
+        // The playground switch is checked before sign-in, so a switched-off playground answers 404, not a redirect
+        $middleware->prependToPriorityList(
+            before: AuthenticatesRequests::class,
+            prepend: EnsurePlaygroundEnabled::class,
+        );
+
         $middleware->alias([
             'auth' => Authenticate::class,
             'auth.token' => AuthenticateWithToken::class,
             'role' => EnsureAdminRole::class,
+            'playground' => EnsurePlaygroundEnabled::class,
             'farmer' => RequireFarmerToken::class,
             'farmer.consented' => RequireConsent::class,
             'farmer.optional' => OptionalFarmerAuth::class,
