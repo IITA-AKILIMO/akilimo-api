@@ -820,6 +820,58 @@ $rail-width:    72px;
     }
 }
 
+.login-btn--danger {
+    background: linear-gradient(135deg, #b3261e, #e0443a);
+    box-shadow: 0 2px 12px rgba(179, 38, 30, 0.45);
+
+    &:hover:not(:disabled) { box-shadow: 0 4px 20px rgba(179, 38, 30, 0.55); }
+}
+
+.login-note {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.62);
+    margin-bottom: 1.25rem;
+}
+
+.login-switch {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    margin: 1.25rem 0 0;
+
+    a {
+        color: rgba($aki-lime, 0.9);
+        font-weight: 500;
+        text-decoration: none;
+
+        &:hover { color: $aki-lime; text-decoration: underline; }
+    }
+}
+
+.login-hint {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+// Live username check on the sign-up form
+.login-status {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-height: 1.1em;
+
+    &--checking { color: rgba(255, 255, 255, 0.45); }
+    &--ok       { color: #86efac; }
+    &--error    { color: #fca5a5; }
+    &--hint     { color: rgba(228, 181, 90, 0.9); }
+}
+
+.login-input.is-success {
+    border-color: rgba(#86efac, 0.7);
+    box-shadow: 0 0 0 3px rgba(#86efac, 0.15);
+}
+
 .login-spinner {
     display: inline-block;
     width: 16px;

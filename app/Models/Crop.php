@@ -12,18 +12,12 @@ use App\Models\Base\Crop as BaseCrop;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Hand-written behaviour lives here, not in Base\Crop, which the model generator overwrites.
+ * Handwritten behaviour lives here, not in Base\Crop, which the model generator overwrites.
  *
  * @property list<string>|null $countries
  */
 class Crop extends BaseCrop
 {
-    /** `countries` is a JSON list of ISO codes; null means every country */
-    protected function casts(): array
-    {
-        return ['countries' => 'array'];
-    }
-
     /** Crops that are switched on */
     public function scopeActive(Builder $query): Builder
     {

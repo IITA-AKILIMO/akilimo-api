@@ -9,6 +9,7 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseModel;
+use App\Enums\PriceStatus;
 use App\Models\FertilizerType;
 use App\Models\PriceCatalogueHistory;
 use App\Models\User;
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $region
  * @property string|null $source
  * @property Carbon|null $source_date
- * @property string $status
+ * @property PriceStatus $status
  * @property int|null $submitted_by
  * @property float|null $subsidised_price
  * @property string $unit
@@ -83,8 +84,9 @@ class PriceCatalogue extends BaseModel
         'bag_kg' => 'int',
         'min_price' => 'float',
         'max_price' => 'float',
-        'source_date' => 'datetime',
-        'effective_from' => 'datetime',
+        'status' => PriceStatus::class,
+        'source_date' => 'date',
+        'effective_from' => 'date',
         'updated_by' => 'int',
         'submitted_by' => 'int',
     ];

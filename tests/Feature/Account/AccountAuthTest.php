@@ -40,7 +40,7 @@ function makeFarmer(string $password = 'long-enough-1', array $attributes = []):
         'email' => 'f_' . strtolower(str()->random(6)) . '@example.com',
         'password' => Hash::make($password),
         'consent_at' => now(),
-        'consent_version' => 'draft-1',
+        'consent_version' => config('farmer-accounts.consent_version'),
     ], $attributes));
 }
 
@@ -75,7 +75,7 @@ it('registers a farmer with consent and returns a farmer token', function () {
 
     $user = User::where('email', $payload['email'])->firstOrFail();
     expect($user->consent_at)->not->toBeNull()
-        ->and($user->consent_version)->toBe('draft-1')
+        ->and($user->consent_version)->toBe(config('farmer-accounts.consent_version'))
         ->and($user->role->value)->toBe('user');
 
     $token = PersonalAccessToken::where('token', hash('sha256', $response->json('token')))->firstOrFail();

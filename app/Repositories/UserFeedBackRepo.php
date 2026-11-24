@@ -28,58 +28,29 @@ class UserFeedBackRepo extends BaseRepo
         array $filters = [],
     ): LengthAwarePaginator {
         $allowed = ['created_at', 'akilimo_rec_rating', 'akilimo_useful_rating', 'user_type'];
-        $orderBy = in_array($orderBy, $allowed) ? $orderBy : 'created_at';
-        $direction = $direction === 'asc' ? 'asc' : 'desc';
 
-        $query = $this->model->newQuery();
-
-        if (!empty($filters['use_case'])) {
-            $query->where('use_case', $filters['use_case']);
-        }
-
-        if (!empty($filters['user_type'])) {
-            $query->where('user_type', $filters['user_type']);
-        }
-
-        if (!empty($filters['language'])) {
-            $query->where('language', $filters['language']);
-        }
-
-        if (!empty($filters['date_from'])) {
-            $query->whereDate('created_at', '>=', $filters['date_from']);
-        }
-
-        if (!empty($filters['date_to'])) {
-            $query->whereDate('created_at', '<=', $filters['date_to']);
-        }
-
-        if (!empty($filters['search'])) {
-            $term = $filters['search'];
-            $query->where('device_token', 'like', "%{$term}%");
-        }
-
-        return $query->orderBy($orderBy, $direction)->paginate($perPage);
+        return $this->paginateWithSort(
+            perPage: $perPage,
+            orderBy: in_array($orderBy, $allowed) ? $orderBy : 'created_at',
+            direction: $direction === 'asc' ? 'asc' : 'desc',
+            filters: [
+                'use_case' => $filters['use_case'] ?? null,
+                'user_type' => $filters['user_type'] ?? null,
+                'language' => $filters['language'] ?? null,
+            ],
+            search: $filters['search'] ?? null,
+            searchColumns: ['device_token'],
+            scope: fn ($q) => $this->createdBetween($q, $filters),
+        );
     }
 
     public function useCases(): array
     {
-        return $this->model->newQuery()
-            ->select('use_case')
-            ->whereNotNull('use_case')
-            ->distinct()
-            ->orderBy('use_case')
-            ->pluck('use_case')
-            ->all();
+        return $this->distinctValues('use_case');
     }
 
     public function languages(): array
     {
-        return $this->model->newQuery()
-            ->select('language')
-            ->whereNotNull('language')
-            ->distinct()
-            ->orderBy('language')
-            ->pluck('language')
-            ->all();
+        return $this->distinctValues('language');
     }
 }

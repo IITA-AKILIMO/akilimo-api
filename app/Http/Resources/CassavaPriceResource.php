@@ -8,7 +8,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\CassavaPrice;
+use App\Models\VwCassavaPrice;
 use App\Models\Currency;
 use App\Support\PriceMarker;
 use Illuminate\Http\Request;
@@ -31,7 +31,7 @@ class CassavaPriceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var CassavaPrice $cassavaPrice */
+        /** @var VwCassavaPrice $cassavaPrice */
         $cassavaPrice = $this->resource;
         $currencyResource = $this->currency ? CurrencyResource::make($this->currency) : null;
         $avgPrice = ($cassavaPrice->min_local_price + $cassavaPrice->max_local_price) / 2;

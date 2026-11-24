@@ -11,7 +11,7 @@ namespace App\Repositories;
 use App\Models\ApiKey;
 use App\Models\Base\ApiRequest;
 use App\Models\Base\Country;
-use App\Models\Base\Fertilizer;
+use App\Models\Base\VwFertilizer;
 use App\Models\Base\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
@@ -104,7 +104,7 @@ class ApiRequestStatsRepo extends BaseRepo
             'activeKeys' => (int)ApiKey::where('is_active', true)
                 ->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))
                 ->count(),
-            'totalFertilizers' => (int)Fertilizer::where('available', true)->count(),
+            'totalFertilizers' => (int)VwFertilizer::where('available', true)->count(),
             'totalCountries' => (int)Country::where('active', true)->count(),
         ];
     }
@@ -308,19 +308,19 @@ class ApiRequestStatsRepo extends BaseRepo
         // is edited on the Price catalogue page. 'source' narrows the catalogue to the rows that feed it.
         $catalogue = fn (callable $where) => fn () => $where(DB::table('price_catalogue')->where('status', 'active')->whereNull('region'));
         $lists = [
-            ['label' => 'Fertilizer prices', 'table' => 'fertilizer_prices', 'href' => '/admin/price-catalogue',
+            ['label' => 'Fertilizer prices', 'table' => 'vw_fertilizer_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('unit', 'per_bag')->whereNotNull('fertilizer_type'))],
-            ['label' => 'Cassava prices', 'table' => 'cassava_prices', 'href' => '/admin/price-catalogue',
+            ['label' => 'Cassava prices', 'table' => 'vw_cassava_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'cassUP'))],
-            ['label' => 'Maize prices', 'table' => 'maize_prices', 'href' => '/admin/price-catalogue',
+            ['label' => 'Maize prices', 'table' => 'vw_maize_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->whereIn('item', ['maize_grain', 'maize_freshCob']))],
-            ['label' => 'Potato prices', 'table' => 'potato_prices', 'href' => '/admin/price-catalogue',
+            ['label' => 'Potato prices', 'table' => 'vw_potato_prices', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'sweetPotato_tuber'))],
             ['label' => 'Starch prices', 'table' => 'starch_prices', 'href' => '/admin/starch-prices'],
             ['label' => 'Price catalogue', 'table' => 'price_catalogue', 'href' => '/admin/price-catalogue'],
-            ['label' => 'Investment amounts', 'table' => 'investment_amount', 'href' => '/admin/price-catalogue',
+            ['label' => 'Investment amounts', 'table' => 'vw_investment_amount', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->where('item', 'investment_amount'))],
-            ['label' => 'Operation costs', 'table' => 'operation_costs', 'href' => '/admin/price-catalogue',
+            ['label' => 'Operation costs', 'table' => 'vw_operation_costs', 'href' => '/admin/price-catalogue',
                 'source' => $catalogue(fn ($q) => $q->whereIn('item', DB::table('price_choice_operations')->select('item')))],
         ];
 

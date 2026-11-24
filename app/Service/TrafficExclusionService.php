@@ -9,9 +9,8 @@
 namespace App\Service;
 
 use App\Models\TrafficExclusion;
+use App\Repositories\TrafficExclusionRepo;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Throwable;
 
 /**
  * Marks api_requests as staff or test traffic (`excluded`) from the rules in traffic_exclusions,
@@ -45,12 +44,14 @@ class TrafficExclusionService
 
     private const DEVICE = "LOWER(COALESCE(device_token, ''))";
 
+    public function __construct(private readonly TrafficExclusionRepo $rules) {}
+
     /**
      * Recompute `excluded` for every request, or for one. Returns the number of rows that changed.
      */
     public function refresh(?int $requestId = null): int
     {
-        [$condition, $bindings] = $this->conditionSql(TrafficExclusion::active()->get());
+        [$condition, $bindings] = $this->conditionSql($this->rules->active());
         $flag = "(CASE WHEN {$condition} THEN 1 ELSE 0 END)";
 
         $sql = "UPDATE api_requests SET excluded = {$flag} WHERE excluded <> {$flag}";
@@ -60,7 +61,7 @@ class TrafficExclusionService
             $params[] = $requestId;
         }
 
-        return DB::update($sql, $params);
+        return $this->rules->updateRequestFlags($sql, $params);
     }
 
     /**
@@ -84,7 +85,7 @@ class TrafficExclusionService
             array_push($bindings, ...$ruleBindings);
         }
 
-        $row = (array)DB::selectOne('SELECT ' . implode(', ', $selects) . ' FROM api_requests', $bindings);
+        $row = $this->rules->requestCounts($selects, $bindings);
 
         return $rules->mapWithKeys(fn ($r) => [$r->id => (int)($row["r{$r->id}"] ?? 0)])->all();
     }
@@ -95,13 +96,7 @@ class TrafficExclusionService
      */
     public static function isValidPattern(string $pattern): bool
     {
-        try {
-            DB::selectOne("SELECT '' REGEXP ? AS ok", [$pattern]);
-
-            return true;
-        } catch (Throwable) {
-            return false;
-        }
+        return app(TrafficExclusionRepo::class)->patternIsValid($pattern);
     }
 
     /**

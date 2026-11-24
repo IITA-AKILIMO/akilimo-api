@@ -8,7 +8,7 @@
 
 namespace App\Models;
 
-use App\Core\Models\BaseModel;
+use App\Models\Base\FertilizerType as BaseFertilizerType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -23,33 +23,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $weight
  * @property string $category STRAIGHT, COMPOUND or OTHER (fertilizer_categories)
  */
-class FertilizerType extends BaseModel
+class FertilizerType extends BaseFertilizerType
 {
-    protected $table = 'fertilizer_types';
-
-    protected $primaryKey = 'type';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-
-    protected $casts = [
-        'weight' => 'int',
-    ];
-
-    protected $fillable = [
-        'type',
-        'label',
-        'name',
-        'weight',
-        'category',
-    ];
-
     /**
      * @return HasMany<CountryFertilizer, $this>
      */
     public function countries(): HasMany
     {
-        return $this->hasMany(CountryFertilizer::class, 'fertilizer_type', 'type');
+        return $this->countryFertilizers();
     }
 }

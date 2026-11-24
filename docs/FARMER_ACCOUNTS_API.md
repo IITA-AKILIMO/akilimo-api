@@ -19,6 +19,7 @@ app) and the owner's inputs (below) are open.
 | `POST /password/forgot`, `POST /password/reset` | none | `sensitive` | same answer for known and unknown addresses; a reset signs the account out everywhere |
 | `GET /history`, `GET /history/{request_id}` | farmer token + consent | `read` | only the caller's rows, newest first, `per_page` up to 100; the detail adds `result` |
 | `GET /history/ids` | farmer token + consent | `read` | the ids of all saved items, newest first (at most 5000, `meta.truncated` says when cut); an app compares them with its own copies and drops the ones deleted elsewhere |
+| `GET /history/{request_id}/report` | farmer token + consent | `read` | fresh signed PDF links for the caller's own saved advice, `{"data": {id, expires_at, url, files: [{name, url}]}}` (same shape as `report` in the compute answer and `GET /v1/recommendations/reports/{id}`); 404 when the id is not the caller's, was deleted or has no report |
 | `DELETE /history/{request_id}` | farmer token + consent | `write` | **soft delete**: the item leaves the account, the request stays for statistics unlinked (`user_id` null, `device_token` cleared) |
 | `POST /history/delete` | farmer token + consent | `write` | body `{"ids": [...]}`, up to 500: the same soft delete for several items at once (swipe and multi-select in the app); ids that are not the caller's or no longer exist are skipped; answers `deleted` |
 | `DELETE /history` | farmer token + consent | `sensitive` | the same **soft delete** for **all** the caller's saved advice; keeps the account; answers `deleted` (how many items left the account) |
@@ -62,7 +63,7 @@ set its variables in `.env`, add it to `FARMER_SOCIAL_PROVIDERS`, and add an aud
 | `GOOGLE_CLIENT_ID` | non-secret OAuth client IDs, comma separated (Android and web); also the allowed token audiences |
 | `<PROVIDER>_CLIENT_ID`, `<PROVIDER>_CLIENT_SECRET`, `<PROVIDER>_REDIRECT_URI` | per provider in `config/services.php`; the redirect URI defaults to `/` and the secret is optional, because the token flow uses neither; secrets never go to the app and are never committed |
 | `MAIL_MAILER` | verification and reset email use the Laravel mailer; in production they are only sent once it is not `log` (outside production they are sent) |
-| `FARMER_CONSENT_VERSION` | label stored with each consent; the final wording comes from the owner |
+| `FARMER_CONSENT_VERSION` | label stored with each consent (`v1` = the wording approved 2026-11-20, published as the privacy policy and terms on akilimo.org); bump it (`v2`, ...) when that wording changes; accounts that agreed to an older label are not asked again by the code |
 | `FARMER_RESET_TTL_MINUTES`, `FARMER_VERIFY_TTL_MINUTES` | code lifetimes (60 and 1440) |
 | `FARMER_CHECK_BREACHED_PASSWORDS` | reject breached passwords (calls the Have I Been Pwned range API); off by default |
 
@@ -84,7 +85,7 @@ Verification and reset codes are kept hashed in the cache and work once. Never l
 
 1. **Owner inputs (design section 8):** the hosted email service and a verified sending domain (then set `MAIL_MAILER`); the Google Cloud
    OAuth client IDs for `GOOGLE_CLIENT_ID` (Google sign-in is already on by default and starts working once it is set); the final consent and benefit wording
-   (then `FARMER_CONSENT_VERSION` and the app text). No claim such as "your data is never shared" is to be written unless it is given.
+   (the consent wording is approved as `v1`; see `docs/PRIVACY_AND_TERMS_DRAFT.md` and `docs/polices/`). No claim such as "your data is never shared" is to be written unless it is given.
 2. **Mobile app (`akilimo-mobile`, step 6): built, not yet run on a device.** Sign-up, sign-in, consent, reset password, email
    confirmation, saved-advice list (offline from Room), share, sign-out and account deletion; Google through Play Services
    `AuthorizationClient` (an **access token**); the token encrypted with an Android Keystore key. Still open there: try it on a phone against

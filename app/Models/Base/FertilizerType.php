@@ -59,6 +59,7 @@ class FertilizerType extends BaseModel
     ];
 
     protected $fillable = [
+        'type',
         'label',
         'name',
         'weight',

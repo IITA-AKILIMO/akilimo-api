@@ -11,7 +11,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\FarmerHistoryResource;
 use App\Models\User;
 use App\Repositories\ApiRequestRepo;
+use App\Service\AdviceAnonymiser;
 use App\Service\FarmerAccountService;
+use App\Service\RecommendationReportService;
 use App\Traits\HasPaginationParams;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +39,7 @@ class AccountHistoryController extends Controller
     public function __construct(
         private readonly ApiRequestRepo $requests,
         private readonly FarmerAccountService $accounts,
+        private readonly AdviceAnonymiser $anonymiser,
     ) {}
 
     /**
@@ -81,6 +84,21 @@ class AccountHistoryController extends Controller
     }
 
     /**
+     * Fresh PDF download links of one saved recommendation
+     *
+     * New signed links (same shape as `report` in the compute answer) for the report of the farmer's own saved advice, for when the
+     * links stored with it have expired. 404 when the id does not exist, belongs to someone else or was deleted, or has no report.
+     */
+    public function report(Request $request, string $requestId, RecommendationReportService $reports): JsonResponse
+    {
+        $row = $this->requests->findForUser($this->user($request)->id, $requestId);
+        $links = $row === null ? null : $reports->links($row->request_id);
+        abort_if($links === null, 404, 'This saved advice has no report.');
+
+        return response()->json(['data' => $links]);
+    }
+
+    /**
      * Remove one saved item
      *
      * A soft delete: the item disappears from the farmer's account, but the request is kept for statistics with the link to the
@@ -88,8 +106,8 @@ class AccountHistoryController extends Controller
      */
     public function destroy(Request $request, string $requestId): JsonResponse
     {
-        $released = $this->requests->releaseForUser($this->user($request)->id, $requestId);
-        abort_if(!$released, 404, 'Saved advice not found.');
+        $released = $this->anonymiser->releaseForUser($this->user($request)->id, [$requestId]);
+        abort_if($released === 0, 404, 'Saved advice not found.');
 
         return response()->json(['message' => 'Saved advice deleted.']);
     }
@@ -107,7 +125,7 @@ class AccountHistoryController extends Controller
             'ids.*' => ['required', 'uuid'],
         ]);
 
-        $deleted = $this->requests->releaseManyForUser($this->user($request)->id, array_values(array_unique($data['ids'])));
+        $deleted = $this->anonymiser->releaseForUser($this->user($request)->id, array_values(array_unique($data['ids'])));
 
         return response()->json(['message' => 'Saved advice deleted.', 'deleted' => $deleted]);
     }
@@ -120,7 +138,7 @@ class AccountHistoryController extends Controller
      */
     public function destroyAll(Request $request): JsonResponse
     {
-        $deleted = $this->requests->releaseAllForUser($this->user($request)->id);
+        $deleted = $this->anonymiser->releaseForUser($this->user($request)->id);
 
         return response()->json(['message' => 'All saved advice deleted.', 'deleted' => $deleted]);
     }

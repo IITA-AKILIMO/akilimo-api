@@ -47,7 +47,7 @@ class StarchFactory extends BaseModel
     protected $table = 'starch_factories';
 
     protected $casts = [
-        'factory_active' => 'bool',
+        'factory_active' => 'boolean',
         'sort_order' => 'int',
     ];
 

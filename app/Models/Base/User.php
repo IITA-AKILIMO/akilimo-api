@@ -9,9 +9,11 @@
 namespace App\Models\Base;
 
 use App\Core\Models\BaseUser;
+use App\Enums\EnumUserRole;
 use App\Models\ApiKey;
 use App\Models\ApiRequest;
 use App\Models\CountryReviewer;
+use App\Models\Message;
 use App\Models\PriceCatalogue;
 use App\Models\PriceCatalogueHistory;
 use App\Models\UserIdentity;
@@ -34,18 +36,20 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string $name
  * @property string|null $password
  * @property string|null $remember_token
- * @property string $role
+ * @property EnumUserRole $role
  * @property Carbon|null $updated_at
  * @property string $username
  * @property Collection|ApiKey[] $apiKeys
  * @property Collection|ApiRequest[] $apiRequests
  * @property Collection|CountryReviewer[] $countryReviewers
+ * @property Collection|Message[] $messages
  * @property Collection|PriceCatalogueHistory[] $priceCatalogueHistories
  * @property Collection|PriceCatalogue[] $priceCatalogues
  * @property Collection|UserIdentity[] $userIdentities
  * @property-read int|null $api_keys_count
  * @property-read int|null $api_requests_count
  * @property-read int|null $country_reviewers_count
+ * @property-read int|null $messages_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read int|null $price_catalogue_histories_count
@@ -77,6 +81,7 @@ class User extends BaseUser
     protected $table = 'users';
 
     protected $casts = [
+        'role' => EnumUserRole::class,
         'email_verified_at' => 'datetime',
         'consent_at' => 'datetime',
     ];
@@ -111,6 +116,11 @@ class User extends BaseUser
     public function countryReviewers(): HasMany
     {
         return $this->hasMany(CountryReviewer::class);
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'created_by');
     }
 
     public function priceCatalogueHistories(): HasMany

@@ -31,16 +31,4 @@ class StarchPriceRepo extends BaseRepo
             ->orderBy('price_class')
             ->get();
     }
-
-    public function deleteByIds(array $ids, int $factoryId): void
-    {
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->query()
-            ->whereIn('id', $ids)
-            ->where('starch_factory_id', $factoryId)
-            ->delete();
-    }
 }

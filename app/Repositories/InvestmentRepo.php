@@ -8,12 +8,12 @@
 
 namespace App\Repositories;
 
-use App\Models\InvestmentAmount;
+use App\Models\VwInvestmentAmount;
 
 class InvestmentRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return InvestmentAmount::class;
+        return VwInvestmentAmount::class;
     }
 }

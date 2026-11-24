@@ -5,6 +5,7 @@ export const SCENARIOS: {id: Scenario; icon: string; title: string; desc: string
     {id: 'IC',       icon: '🌽',  title: 'Intercropping',              desc: 'Should I grow cassava alongside maize or potato?'},
     {id: 'PP',       icon: '🌿',  title: 'Planting Practices',         desc: 'Land preparation methods and field operations'},
     {id: 'SPHS',     icon: '📅',  title: 'Planting Schedule',          desc: 'Optimal planting and harvest timing'},
+    {id: 'PDC',      icon: '🌾',  title: 'Planting Date & Cultivar',   desc: 'Best planting date and maize cultivar (Nigeria only)'},
     {id: 'COMPLETE', icon: '🗺️', title: 'Complete Farm Plan',         desc: 'All recommendations in one response'},
 ]
 

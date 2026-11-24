@@ -257,7 +257,7 @@ class PriceCatalogueController extends AdminController
 
         DB::transaction(function () use ($validated, $country, $actor) {
             if (!empty($validated['deleted_ids'])) {
-                $this->repo->deleteByIds($validated['deleted_ids'], $country);
+                $this->repo->deleteByIds($validated['deleted_ids'], ['country' => $country]);
             }
 
             foreach ($validated['rows'] as $row) {

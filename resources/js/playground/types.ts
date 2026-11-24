@@ -1,4 +1,6 @@
-export type Scenario = 'FR' | 'IC' | 'PP' | 'SPHS' | 'COMPLETE'
+import type {ApiResponse} from './result/types'
+
+export type Scenario = 'FR' | 'IC' | 'PP' | 'SPHS' | 'PDC' | 'COMPLETE'
 export type IntercropCrop = 'MAIZE' | 'POTATO'
 export type Step = 1 | 2 | 3 | 4 | 5
 
@@ -66,4 +68,44 @@ export interface FormState {
     harvestDate: string
     plantingDateWindow: string
     harvestDateWindow: string
+}
+
+// ── Signed-in endpoints ───────────────────────────────────────────────────────
+
+export interface ApiKey {
+    id: number
+    name: string
+    key_prefix: string
+    is_active: boolean
+    abilities: string[]
+    last_used_at: string | null
+    expires_at: string | null
+    created_at: string | null
+}
+
+/** A key as returned once at creation, with the secret */
+export interface NewKey extends ApiKey {
+    key: string
+}
+
+export type KeyType = 'api' | 'mcp'
+
+export interface HistoryFlags {
+    fr: boolean | null
+    ic: boolean | null
+    pp: boolean | null
+    sph: boolean | null
+    spp: boolean | null
+}
+
+export interface HistoryItem {
+    id: number
+    request_id: string
+    country_code: string | null
+    use_case: string | null
+    flags: HistoryFlags
+    duration_ms: number | null
+    created_at: string | null
+    /** plumber_response is the full ApiResponse envelope */
+    result: ApiResponse | null
 }

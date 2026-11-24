@@ -13,6 +13,7 @@ use App\Data\ComputeRequestData;
 use App\Data\FertilizerData;
 use App\Data\UserInfoData;
 use App\Exceptions\RecommendationException;
+use App\Mail\RecommendationReportMail;
 use App\Repositories\ApiRequestRepo;
 use App\Repositories\FertilizerRepo;
 use Carbon\Carbon;
@@ -22,6 +23,8 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class RecommendationService
@@ -70,7 +73,40 @@ class RecommendationService
             ? $this->reportService()->links($stored['id'], $stored['files'] ?? null)
             : null;
 
+        if ($result['report'] !== null) {
+            $this->sendReportEmail($droidRequest, $stored);
+        }
+
         return $result;
+    }
+
+    /**
+     * Email the PDF advice whenever the farmer gave an email address (user_info.send_email is not needed). Only reached with a
+     * report that is this farmer's own (see the owner check in compute()), so a cached report is never mailed to
+     * someone else. Queued; a failure to queue is logged and never fails the recommendation. The address is not logged.
+     *
+     * @param array{id: string, files?: array<int, string>} $stored
+     */
+    private function sendReportEmail(array $droidRequest, array $stored): void
+    {
+        $user = Arr::get($droidRequest, 'user_info', []);
+        $address = is_array($user) ? trim((string)($user['email_address'] ?? '')) : '';
+
+        if (filter_var($address, FILTER_VALIDATE_EMAIL) === false || !$this->reportService()->emailEnabled()) {
+            return;
+        }
+
+        try {
+            $attachments = $this->reportService()->attachments($stored['id'], $stored['files'] ?? []);
+            if ($attachments['files'] === []) {
+                return;
+            }
+
+            $lang = RecommendationReportMail::languageFor(Arr::get($droidRequest, 'compute_request.recommendations.lang'));
+            Mail::to($address)->send(new RecommendationReportMail($attachments['disk'], $attachments['files'], $lang));
+        } catch (\Throwable $e) {
+            Log::error('Recommendation report email could not be queued', ['report_id' => $stored['id'], 'error' => $e->getMessage()]);
+        }
     }
 
     private function reportService(): RecommendationReportService
@@ -132,6 +168,8 @@ class RecommendationService
             ['fertilizers' => $computedFertilizers],
         );
         $akilimoComputeData->returnPdf = $this->reportService()->enabled();
+        // This API emails the PDF (sendReportEmail); the compute service must not send a second one
+        $akilimoComputeData->sendEmail = false;
 
         // Generate a server-side UUID as the request correlation ID (#38).
         // The client-supplied device_token is stored separately for device-level queries.
@@ -194,10 +232,16 @@ class RecommendationService
 
             $this->updateRequestLogResponse($requestLog->id, $errorBody, $startedAt);
 
+            // The engine answers a rejected request as {status, data: {message, code}}
+            $code = Arr::get($responseBody, 'data.code', Arr::get($responseBody, 'code'));
+            if (is_string($code)) {
+                $errorBody['code'] = $code;
+            }
+
             throw new RecommendationException(
-                Arr::get($responseBody, 'message', 'Recommendation service returned an error'),
+                Arr::get($responseBody, 'message') ?? Arr::get($responseBody, 'data.message') ?? 'Recommendation service returned an error',
                 $statusCode,
-                $errorBody,
+                is_string($code) ? ['code' => $code] + $errorBody : $errorBody,
                 $ex
             );
         } catch (Exception $ex) {

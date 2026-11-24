@@ -1,4 +1,4 @@
-import {needsFertilizers, totalSteps} from './usePlaygroundForm'
+import {needsFertilizers, totalSteps} from './lib/scenario'
 import type {Step} from './types'
 
 interface Props {
@@ -6,6 +6,7 @@ interface Props {
     scenario: string
 }
 
+/** Progress through the wizard, as Bootstrap pills with a numbered (or ticked) badge. */
 export default function Stepper({step, scenario}: Readonly<Props>) {
     const maxStep = totalSteps(scenario)
 
@@ -18,22 +19,22 @@ export default function Stepper({step, scenario}: Readonly<Props>) {
     }
 
     return (
-        <div className="pg-steps">
-            {Array.from({length: maxStep}, (_, i) => i + 1).map((n, idx) => (
-                <div key={n} style={{display: 'flex', alignItems: 'center'}}>
-                    {idx > 0 && <div className="pg-step-connector"/>}
-                    <div className={`pg-step${step === n ? ' pg-step--active' : step > n ? ' pg-step--done' : ''}`}>
-                        <div className="pg-step-num">
-                            {step > n
-                                ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                       stroke="currentColor" strokeWidth="3" strokeLinecap="round"
-                                       strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                : n}
-                        </div>
-                        <span className="pg-step-label">{STEP_LABELS[n]}</span>
-                    </div>
-                </div>
-            ))}
-        </div>
+        <ol className="nav nav-pills nav-fill gap-2 mb-3 list-unstyled" aria-label="Progress">
+            {Array.from({length: maxStep}, (_, i) => i + 1).map((n) => {
+                const active = step === n
+                const done = step > n
+                return (
+                    <li key={n} className="nav-item" aria-current={active ? 'step' : undefined}>
+                        <span className={`nav-link d-flex align-items-center justify-content-center gap-2 px-2 ${active ? 'active' : done ? 'text-success' : 'text-body-secondary'}`}>
+                            <span className={`badge rounded-pill ${active ? 'text-bg-light' : done ? 'text-bg-success' : 'text-bg-secondary'}`}>
+                                {done ? '✓' : n}
+                            </span>
+                            <span className="d-none d-md-inline">{STEP_LABELS[n]}</span>
+                            {active && <span className="d-md-none">{STEP_LABELS[n]}</span>}
+                        </span>
+                    </li>
+                )
+            })}
+        </ol>
     )
 }

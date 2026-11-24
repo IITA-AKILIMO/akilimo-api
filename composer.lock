@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8afa4757e524d37ed69a3725d83032a1",
+    "content-hash": "797f6b0b46e9a14622d04cc875e17a58",
     "packages": [
         {
             "name": "angel-source-labs/laravel-expression-grammar",
@@ -227,16 +227,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.403.4",
+            "version": "3.403.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2d01207539928fe943a3f8d8981952b3655e2fc1"
+                "reference": "6e52905dabd868c1bc7fd491e0deec6f78a0f7d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2d01207539928fe943a3f8d8981952b3655e2fc1",
-                "reference": "2d01207539928fe943a3f8d8981952b3655e2fc1",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6e52905dabd868c1bc7fd491e0deec6f78a0f7d1",
+                "reference": "6e52905dabd868c1bc7fd491e0deec6f78a0f7d1",
                 "shasum": ""
             },
             "require": {
@@ -318,9 +318,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.403.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.403.5"
             },
-            "time": "2026-11-11T19:03:26+00:00"
+            "time": "2026-11-12T19:40:30+00:00"
         },
         {
             "name": "brick/math",
@@ -1656,16 +1656,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.2",
+            "version": "2.13.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "adee536f95101929f262b8c59e8a61472f347d58"
+                "reference": "6d3cd8285a97eaa352956a4ada92fa03ecce1c4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/adee536f95101929f262b8c59e8a61472f347d58",
-                "reference": "adee536f95101929f262b8c59e8a61472f347d58",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/6d3cd8285a97eaa352956a4ada92fa03ecce1c4e",
+                "reference": "6d3cd8285a97eaa352956a4ada92fa03ecce1c4e",
                 "shasum": ""
             },
             "require": {
@@ -1755,7 +1755,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.2"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.3"
             },
             "funding": [
                 {
@@ -1771,7 +1771,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-17T23:49:46+00:00"
+            "time": "2026-11-12T15:57:42+00:00"
         },
         {
             "name": "guzzlehttp/uri-template",
@@ -3687,6 +3687,91 @@
                 "source": "https://github.com/masgeek/artisan-toolkit/tree/develop"
             },
             "time": "2026-10-09T09:39:33+00:00"
+        },
+        {
+            "name": "masgeek/reliese-laravel-model-gen",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/masgeek/reliese-laravel-model-gen.git",
+                "reference": "9d35879d8280fbd70f44327ce42e89ccd0bd8a70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/masgeek/reliese-laravel-model-gen/zipball/9d35879d8280fbd70f44327ce42e89ccd0bd8a70",
+                "reference": "9d35879d8280fbd70f44327ce42e89ccd0bd8a70",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^4.0",
+                "illuminate/console": ">=5.1",
+                "illuminate/contracts": ">=5.1",
+                "illuminate/database": ">=5.1",
+                "illuminate/filesystem": ">=5.1",
+                "illuminate/support": ">=5.1",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.21",
+                "friendsofphp/php-cs-fixer": "^3",
+                "mockery/mockery": ">=1.4",
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^3",
+                "phpstan/phpstan": "^2",
+                "phpunit/phpunit": "^11"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Reliese\\Coders\\CodersServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Reliese\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "classmap": [
+                    "tests/TestCase.php"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "phpunit --no-coverage"
+                ],
+                "phpstan": [
+                    "phpstan analyse"
+                ],
+                "cs-check": [
+                    "php-cs-fixer check --diff"
+                ],
+                "cs-fix": [
+                    "php-cs-fixer fix"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cristian Llanos",
+                    "email": "cristianllanos@outlook.com"
+                }
+            ],
+            "description": "Reliese Components for Laravel Framework code generation.",
+            "homepage": "http://cristianllanos.com",
+            "keywords": [
+                "laravel",
+                "reliese"
+            ],
+            "support": {
+                "issues": "https://github.com/reliese/laravel/issues",
+                "source": "https://github.com/reliese/laravel"
+            },
+            "time": "2026-11-13T12:05:39+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -10730,74 +10815,6 @@
             "time": "2026-07-15T09:49:35+00:00"
         },
         {
-            "name": "masgeek/reliese-laravel-model-gen",
-            "version": "v2.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/masgeek/reliese-laravel-model-gen.git",
-                "reference": "11430abcd39b39a6ad56d2026767b214bd2df29d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/masgeek/reliese-laravel-model-gen/zipball/11430abcd39b39a6ad56d2026767b214bd2df29d",
-                "reference": "11430abcd39b39a6ad56d2026767b214bd2df29d",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/dbal": "^4.0",
-                "illuminate/console": ">=5.1",
-                "illuminate/contracts": ">=5.1",
-                "illuminate/database": ">=5.1",
-                "illuminate/filesystem": ">=5.1",
-                "illuminate/support": ">=5.1",
-                "php": "^8.2"
-            },
-            "require-dev": {
-                "fakerphp/faker": "^1.21",
-                "mockery/mockery": ">=1.4",
-                "orchestra/testbench": "^10.0",
-                "phpunit/phpunit": "^11"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Reliese\\Coders\\CodersServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Reliese\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "classmap": [
-                    "tests/TestCase.php"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Cristian Llanos",
-                    "email": "cristianllanos@outlook.com"
-                }
-            ],
-            "description": "Reliese Components for Laravel Framework code generation.",
-            "homepage": "http://cristianllanos.com",
-            "keywords": [
-                "laravel",
-                "reliese"
-            ],
-            "support": {
-                "issues": "https://github.com/reliese/laravel/issues",
-                "source": "https://github.com/reliese/laravel"
-            },
-            "time": "2026-10-06T07:48:51+00:00"
-        },
-        {
             "name": "masgeek/windows-ext-ignorer",
             "version": "0.1.6",
             "source": {
@@ -13753,8 +13770,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2",
-        "ext-pdo": "^8.2"
+        "php": "^8.3",
+        "ext-pdo": "^8.3"
     },
     "platform-dev": {},
     "platform-overrides": {

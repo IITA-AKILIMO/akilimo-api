@@ -12,7 +12,9 @@ use App\Enums\EnumUserRole;
 use App\Http\Requests\Admin\UserWebRequest;
 use App\Models\Country;
 use App\Models\User;
+use App\Repositories\CountryRepo;
 use App\Repositories\UserRepo;
+use App\Traits\HasPaginationParams;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -22,19 +24,23 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function __construct(protected UserRepo $repo) {}
+    use HasPaginationParams;
+
+    public function __construct(protected UserRepo $userRepo, protected CountryRepo $countryRepo)
+    {
+    }
 
     public function index(Request $request): Response
     {
-        $perPage = min((int)$request->get('per_page', 20), 100);
-        $orderBy = in_array($request->get('sort_by'), ['name', 'username', 'email', 'created_at'])
-            ? $request->get('sort_by')
-            : 'created_at';
-        $direction = $request->get('sort_dir') === 'asc' ? 'asc' : 'desc';
-        $search = trim((string)$request->get('search', ''));
-        $role = EnumUserRole::tryFrom((string)$request->get('role', ''))?->value ?? '';
+        $perPage = $this->getPerPage($request, 20);
+        $orderBy = $this->getOrderBy($request, ['name', 'username', 'email', 'created_at'], 'created_at');
+        $direction = $this->getSortDirection($request);
 
-        $paginator = $this->repo->paginateWithSort(
+
+        $search = trim((string)$request->input('search', ''));
+        $role = EnumUserRole::tryFrom((string)$request->input('role', ''))?->value ?? '';
+
+        $paginator = $this->userRepo->paginateWithSort(
             perPage: $perPage,
             orderBy: $orderBy,
             direction: $direction,
@@ -45,7 +51,7 @@ class UserController extends Controller
 
         return Inertia::render('Users/Index', [
             'users' => [
-                'data' => collect($paginator->items())->map(fn ($u) => [
+                'data' => collect($paginator->items())->map(fn($u) => [
                     'id' => $u->id,
                     'name' => $u->name,
                     'username' => $u->username,
@@ -80,7 +86,7 @@ class UserController extends Controller
     public function create(): Response
     {
         return Inertia::render('Users/Create', [
-            'countries' => $this->countryOptions(),
+            'countries' => $this->countryRepo->countryOptions(),
         ]);
     }
 
@@ -94,7 +100,7 @@ class UserController extends Controller
         unset($data['password_confirmation']);
 
         /** @var User $created */
-        $created = $this->repo->create($data);
+        $created = $this->userRepo->create($data);
         $created->countriesReviewed()->sync($reviewerCountries);
 
         return redirect()->route('admin.users.index')
@@ -104,7 +110,7 @@ class UserController extends Controller
     public function edit(int $user): Response
     {
         /** @var User $found */
-        $found = $this->repo->findOrFail($user);
+        $found = $this->userRepo->findOrFail($user);
 
         return Inertia::render('Users/Edit', [
             'user' => [
@@ -115,7 +121,7 @@ class UserController extends Controller
                 'role' => ($found->role ?? EnumUserRole::User)->value,
                 'reviewer_countries' => $found->countriesReviewed()->pluck('countries.code')->all(),
             ],
-            'countries' => $this->countryOptions(),
+            'countries' => $this->countryRepo->countryOptions(),
         ]);
     }
 
@@ -134,7 +140,7 @@ class UserController extends Controller
         unset($data['password_confirmation']);
 
         /** @var User|null $updated */
-        $updated = $this->repo->update($user, $data);
+        $updated = $this->userRepo->update($user, $data);
         if ($updated !== null && $reviewerCountries !== null) {
             $updated->countriesReviewed()->sync($reviewerCountries);
         }
@@ -143,21 +149,9 @@ class UserController extends Controller
             ->with('success', 'User updated successfully.');
     }
 
-    /**
-     * @return array<int, array{code: string, name: string}>
-     */
-    private function countryOptions(): array
-    {
-        return Country::query()
-            ->orderBy('name')
-            ->get(['code', 'name'])
-            ->map(fn (Country $c) => ['code' => $c->code, 'name' => $c->name])
-            ->all();
-    }
-
     public function destroy(int $user): RedirectResponse
     {
-        $this->repo->delete($user);
+        $this->userRepo->delete($user);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User deleted.');

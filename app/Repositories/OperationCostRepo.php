@@ -8,18 +8,18 @@
 
 namespace App\Repositories;
 
-use App\Models\OperationCost;
+use App\Models\VwOperationCost;
 use Illuminate\Database\Eloquent\Collection;
 
 class OperationCostRepo extends BaseRepo
 {
     protected function model(): string
     {
-        return OperationCost::class;
+        return VwOperationCost::class;
     }
 
     /**
-     * @return Collection<int, OperationCost>
+     * @return Collection<int, VwOperationCost>
      */
     public function forCountry(string $countryCode): Collection
     {
@@ -28,17 +28,5 @@ class OperationCostRepo extends BaseRepo
             ->orderBy('operation_type')
             ->orderBy('operation_name')
             ->get();
-    }
-
-    public function deleteByIds(array $ids, string $countryCode): void
-    {
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->query()
-            ->whereIn('id', $ids)
-            ->where('country_code', $countryCode)
-            ->delete();
     }
 }

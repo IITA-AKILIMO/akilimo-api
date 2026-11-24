@@ -121,4 +121,16 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Markdown mail theme
+    |--------------------------------------------------------------------------
+    | The AKILIMO brand theme: resources/views/vendor/mail/html/themes/akilimo.css
+    */
+
+    'markdown' => [
+        'theme' => 'akilimo',
+        'paths' => [resource_path('views/vendor/mail')],
+    ],
+
 ];

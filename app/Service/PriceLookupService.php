@@ -10,7 +10,13 @@ namespace App\Service;
 
 use App\Models\Currency;
 use App\Models\FertilizerType;
-use Illuminate\Support\Facades\DB;
+use App\Models\PriceItem;
+use App\Models\PriceUnit;
+use App\Repositories\CountryRepo;
+use App\Repositories\CurrencyRepo;
+use App\Repositories\FertilizerTypeRepo;
+use App\Repositories\PriceItemRepo;
+use App\Repositories\PriceUnitRepo;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Exists;
 
@@ -26,6 +32,14 @@ use Illuminate\Validation\Rules\Exists;
  */
 class PriceLookupService
 {
+    public function __construct(
+        private readonly CurrencyRepo $currencyRepo,
+        private readonly CountryRepo $countries,
+        private readonly FertilizerTypeRepo $types,
+        private readonly PriceItemRepo $priceItems,
+        private readonly PriceUnitRepo $priceUnits,
+    ) {}
+
     /**
      * Everything a price form needs, as Inertia props.
      *
@@ -51,7 +65,7 @@ class PriceLookupService
      */
     public function fertilizerTypes(): array
     {
-        return FertilizerType::query()->orderBy('name')->get(['type', 'name', 'label'])
+        return $this->types->forPriceForms()
             ->map(fn (FertilizerType $t) => ['type' => $t->type, 'name' => $t->name, 'label' => $t->label])
             ->all();
     }
@@ -63,12 +77,8 @@ class PriceLookupService
      */
     public function currencies(): array
     {
-        return Currency::query()
-            ->whereNotNull('currency_code')
-            ->orderBy('currency_code')
-            ->get(['currency_code', 'currency_name'])
-            ->unique('currency_code')
-            ->map(fn (Currency $c) => ['code' => (string) $c->currency_code, 'name' => (string) $c->currency_name])
+        return $this->currencyRepo->distinctByCode()
+            ->map(fn (Currency $c) => ['code' => (string)$c->currency_code, 'name' => (string)$c->currency_name])
             ->values()
             ->all();
     }
@@ -78,8 +88,8 @@ class PriceLookupService
      */
     public function units(): array
     {
-        return DB::table('price_units')->orderBy('sort_order')->orderBy('value')->get(['value', 'label'])
-            ->map(fn ($u) => ['value' => (string) $u->value, 'label' => (string) $u->label])
+        return $this->priceUnits->listing()
+            ->map(fn (PriceUnit $u) => ['value' => (string)$u->value, 'label' => (string)$u->label])
             ->all();
     }
 
@@ -91,9 +101,9 @@ class PriceLookupService
      */
     public function items(): array
     {
-        return DB::table('price_items')->orderBy('item')->get(['item', 'unit'])
+        return $this->priceItems->listing()
             ->sortBy('item', SORT_NATURAL | SORT_FLAG_CASE)
-            ->map(fn ($i) => ['item' => (string) $i->item, 'unit' => (string) $i->unit])
+            ->map(fn (PriceItem $i) => ['item' => (string)$i->item, 'unit' => (string)$i->unit])
             ->values()
             ->all();
     }
@@ -106,15 +116,10 @@ class PriceLookupService
     public function currencyByCountry(): array
     {
         // A country names its own currency (countries.currency_code); older rows that only link a currency to a country still count
-        $own = DB::table('countries')->whereNotNull('currency_code')->pluck('currency_code', 'code')->map(fn ($c) => (string) $c)->all();
+        $own = $this->countries->currencyCodes();
 
-        return $own + Currency::query()
-            ->whereNotNull('country_code')
-            ->whereNotNull('currency_code')
-            ->orderBy('id')
-            ->get(['country_code', 'currency_code'])
-            ->unique('country_code')
-            ->mapWithKeys(fn (Currency $c) => [(string) $c->country_code => (string) $c->currency_code])
+        return $own + $this->currencyRepo->linkedToCountries()
+            ->mapWithKeys(fn (Currency $c) => [(string)$c->country_code => (string)$c->currency_code])
             ->all();
     }
 
@@ -125,7 +130,7 @@ class PriceLookupService
      */
     public function canonicalItem(string $item): string
     {
-        return (string) (DB::table('price_items')->where('item', trim($item))->value('item') ?? $item);
+        return $this->priceItems->canonicalName(trim($item)) ?? $item;
     }
 
     public function unitRule(): Exists

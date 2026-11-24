@@ -11,9 +11,12 @@ namespace App\Service;
 use App\Auth\TokenAbility;
 use App\Models\ApiKey;
 use App\Models\User;
+use App\Repositories\ApiKeyRepo;
 
 class ApiKeyService
 {
+    public function __construct(private readonly ApiKeyRepo $keys) {}
+
     /**
      * Create a key for a user. The raw key is returned once; only its SHA-256 and the first
      * characters are stored, as AuthenticateWithToken expects.
@@ -25,7 +28,7 @@ class ApiKeyService
     {
         $raw = 'ak_' . bin2hex(random_bytes(16));
 
-        $key = ApiKey::create([
+        $key = $this->keys->create([
             'user_id' => $user->id,
             'name' => $name,
             'key_prefix' => substr($raw, 0, 12),
@@ -47,13 +50,13 @@ class ApiKeyService
             return null;
         }
 
-        $key = ApiKey::where('key_hash', hash('sha256', $raw))->with('user')->first();
+        $key = $this->keys->findByHash(hash('sha256', $raw));
 
         if ($key === null || !$key->isUsable() || !$key->can(TokenAbility::MCP_USE)) {
             return null;
         }
 
-        $key->forceFill(['last_used_at' => now()])->saveQuietly();
+        $this->keys->touchLastUsed($key);
 
         return $key;
     }
