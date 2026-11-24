@@ -1,61 +1,82 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex">
-    <title>Delete your AKILIMO account</title>
-    <style>
-        :root { color-scheme: light dark; --g: #006f45; }
-        body { font: 16px/1.5 system-ui, sans-serif; margin: 0; padding: 24px 16px; background: Canvas; color: CanvasText; }
-        main { max-width: 480px; margin: 0 auto; }
-        h1 { color: var(--g); font-size: 1.5rem; }
-        label { display: block; font-weight: 600; margin: 16px 0 4px; }
-        input { width: 100%; box-sizing: border-box; padding: 10px; font-size: 1rem; border: 1px solid #888; border-radius: 8px; }
-        button { margin-top: 16px; padding: 12px 20px; font-size: 1rem; border: 0; border-radius: 8px; background: var(--g); color: #fff; cursor: pointer; }
-        button.danger { background: #b3261e; }
-        .error { color: #b3261e; margin-top: 12px; }
-        .note { opacity: .75; font-size: .9rem; }
-    </style>
-</head>
-<body>
-<main>
-    <h1>Delete your AKILIMO account</h1>
+<x-auth-layout
+    title="Delete your AKILIMO account"
+    heading="Delete your AKILIMO account"
+    :subtitle="match ($step) {
+        'request' => 'Step 1 of 2: confirm your email address',
+        'confirm' => 'Step 2 of 2: enter the code we sent you',
+        default => null,
+    }"
+>
+    <x-slot:robots>noindex</x-slot:robots>
+
+    @if (!empty($unavailable))
+        <div class="alert alert-danger py-2 small" role="alert">
+            Email is not available right now. Delete your account in the app, or write to akilimo@cgiar.org.
+        </div>
+    @endif
+    @if (!empty($error))
+        <div class="alert alert-danger py-2 small" role="alert">{{ $error }}</div>
+    @endif
+    @if ($errors->any())
+        <div class="alert alert-danger py-2 small" role="alert">{{ $errors->first() }}</div>
+    @endif
 
     @if ($step === 'request')
-        <p>Enter the email address of your AKILIMO account. We send you a code to confirm it is yours.</p>
-        <p class="note">Your account and your saved advice are deleted for good. Advice you asked for before may be kept without your name, for statistics. You can also delete your account in the app: Settings, then Account.</p>
-        @if (!empty($unavailable))
-            <p class="error">Email is not available right now. Delete your account in the app, or write to akilimo@cgiar.org.</p>
-        @endif
-        @if ($errors->any())
-            <p class="error">{{ $errors->first() }}</p>
-        @endif
+        <p class="login-note">
+            Enter the email address of your AKILIMO account. We send you a code to confirm it is yours.
+            Your account and your saved advice are deleted for good. Advice you asked for before may be kept without your name, for statistics.
+            You can also delete your account in the app: Settings, then Account.
+        </p>
+
         <form method="POST" action="{{ route('account-deletion.request') }}">
             @csrf
-            <label for="email">Email address</label>
-            <input id="email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" required autofocus>
-            <button type="submit">Send me a code</button>
+            <div class="login-field">
+                <label for="email" class="login-label">Email address</label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    autofocus
+                    placeholder="you@example.com"
+                    value="{{ old('email') }}"
+                    class="login-input{{ $errors->has('email') ? ' is-error' : '' }}"
+                    required
+                />
+            </div>
+            <button type="submit" class="login-btn">Send me a code</button>
         </form>
     @elseif ($step === 'confirm')
-        <p>If that address has an AKILIMO account, we sent it a code. Enter the code to delete the account. This cannot be undone.</p>
-        @if (!empty($error))
-            <p class="error">{{ $error }}</p>
-        @endif
-        @if ($errors->any())
-            <p class="error">{{ $errors->first() }}</p>
-        @endif
+        <p class="login-note">
+            If that address has an AKILIMO account, we sent it a code. Enter the code to delete the account. This cannot be undone.
+        </p>
+
         <form method="POST" action="{{ route('account-deletion.confirm') }}">
             @csrf
             <input type="hidden" name="email" value="{{ $email }}">
-            <label for="code">Code from the email</label>
-            <input id="code" name="code" type="text" autocomplete="one-time-code" autocapitalize="characters" required autofocus>
-            <button type="submit" class="danger">Delete my account</button>
+            <div class="login-field">
+                <label for="code" class="login-label">Code from the email</label>
+                <input
+                    id="code"
+                    name="code"
+                    type="text"
+                    autocomplete="one-time-code"
+                    autocapitalize="characters"
+                    autofocus
+                    class="login-input{{ $errors->has('code') ? ' is-error' : '' }}"
+                    required
+                />
+            </div>
+            <button type="submit" class="login-btn login-btn--danger">Delete my account</button>
         </form>
-        <p class="note"><a href="{{ route('account-deletion.show') }}">Use a different address or ask for a new code</a></p>
+
+        <p class="login-switch">
+            <a href="{{ route('account-deletion.show') }}">Use a different address or ask for a new code</a>
+        </p>
     @else
-        <p>Your account has been deleted. Thank you for using AKILIMO.</p>
+        <div class="alert alert-success mb-0" role="alert">
+            Your account has been deleted. Thank you for using AKILIMO.
+        </div>
+        <p class="login-switch"><a href="/">Back to home</a></p>
     @endif
-</main>
-</body>
-</html>
+</x-auth-layout>
