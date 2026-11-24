@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 use App\Models\ApiRequest;
+use App\Service\AdviceAnonymiser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -138,7 +139,8 @@ class ApiRequestRepo extends BaseRepo
 
     private function release(Builder $query): int
     {
-        return $query->update(['user_id' => null, 'device_token' => null]);
+        // Also scrubs the personal details in the kept record and deletes its PDFs (see AdviceAnonymiser)
+        return app(AdviceAnonymiser::class)->release($query);
     }
 
     /** One saved recommendation, only when it belongs to this farmer. */
