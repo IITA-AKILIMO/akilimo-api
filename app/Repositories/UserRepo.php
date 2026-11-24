@@ -27,6 +27,11 @@ class UserRepo extends BaseRepo
         return $this->query()->where('username', $login)->orWhere('email', $login)->first();
     }
 
+    public function usernameExists(string $username): bool
+    {
+        return $this->query()->where('username', $username)->exists();
+    }
+
     public function findByEmail(string $email): ?User
     {
         return $this->query()->where('email', $email)->first();
