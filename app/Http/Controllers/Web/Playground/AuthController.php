@@ -64,7 +64,7 @@ class AuthController extends Controller
             return response()->json(['available' => false, 'message' => 'Only lowercase letters, numbers and underscores']);
         }
 
-        $taken = $this->users->usernameExists($username);
+        $taken = $this->users->existsWithConditions(['username' => $username]);
 
         return response()->json([
             'available' => !$taken,
