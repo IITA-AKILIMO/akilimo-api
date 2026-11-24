@@ -34,6 +34,6 @@ class AccountCodeMail extends Mailable
 
     public function content(): Content
     {
-        return new Content(text: 'mail.account-code');
+        return new Content(markdown: 'mail.account-code');
     }
 }
