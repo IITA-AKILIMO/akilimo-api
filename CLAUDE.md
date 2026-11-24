@@ -48,7 +48,7 @@ Client → ComputeRequest (validation) → RecommendationController
 - `RecommendationService` — orchestrates computation, handles caching (configurable TTL), logs all requests to `api_requests`, maps fertilizer data, transforms request/response.
 - `AkilimoComputeService` — HTTP client for the external Akilimo Compute service. Configurable via `config/akilimo-compute.php` (`base_url`, `endpoint`, `timeout` defaults to 120s, `retries` defaults to 3, `logging`).
 - `AuthService` — handles login (user lookup, password verification, token minting) and token revocation. Keep auth logic here; `AuthController` is thin.
-- `FarmerAccountService` — optional farmer accounts: register, login, consent, email verification and password reset codes (hashed, in the cache), claiming a phone's earlier advice by `device_token`, account deletion. `SocialSignInService` — Google and other providers through Laravel Socialite (access-token flow). Both are used by `AccountController` and `AccountHistoryController`; see `docs/FARMER_ACCOUNTS_API.md`.
+- `FarmerAccountService` — optional farmer accounts: register, login, consent, email verification and password reset codes (hashed, in the cache), claiming a phone's earlier advice by `device_token`, account deletion. `SocialSignInService` — Google and other providers through Laravel Socialite (access-token flow). Both are used by `AccountController` and `AccountHistoryController`; see `docs/FARMER_ACCOUNTS_API.md`. `MessageService` stores messages for the mobile app and pushes them to FCM topics through `Fcm\FcmClient` (HTTP v1, service account, no extra package); `GET /v1/messages` is how phones fetch what they missed; see `docs/MESSAGES_API.md`.
 
 **Repositories** (`app/Repositories/`) — Data access via `BaseRepo` (abstract, handles pagination/sorting/filtering). All repos implement `Contracts/Repository`. Don't bypass repositories to query models directly from controllers.
 
@@ -64,6 +64,7 @@ Client → ComputeRequest (validation) → RecommendationController
 - `GET /health` — comprehensive health check
 - `POST /v1/auth/login` — obtain bearer token
 - `POST /v1/account/register|login|google|social/{provider}|email/verify|password/forgot|password/reset` — optional farmer accounts (limiters `sensitive` and `auth`)
+- `GET /v1/messages` — messages for the mobile app's inbox by `country`, `language`, `since` (throttle 120/min); admins send with `POST /v1/admin/messages` (`write` ability)
 - Read-only reference data (`currencies`, `fertilizers`, `fertilizer-prices`, `maize-prices`, `cassava-prices`, `potato-prices`, `investment-amounts`, `operation-costs`, `starch-factories`, `starch-prices`, `default-prices`, `cassava-units`) — throttle 120/min
 
 **Protected — requires `Authorization: Bearer <token>` or `X-Api-Key: <key>`:**
@@ -208,6 +209,11 @@ AKILIMO_COMPUTE_LOGGING=       # Enable request/response logging (default: true)
 
 # Authentication
 AUTH_TOKEN_TTL_DAYS=30         # Bearer token lifetime in days
+
+# Push messages (config/fcm.php; see docs/MESSAGES_API.md)
+FCM_ENABLED=false              # true once a service account is set
+FCM_PROJECT_ID=                # Firebase project id
+FCM_CREDENTIALS=               # service account JSON: path or the JSON itself
 
 # Farmer accounts (config/farmer-accounts.php, config/services.php; see docs/FARMER_ACCOUNTS_API.md)
 FARMER_SOCIAL_PROVIDERS=google # default google (refused until GOOGLE_CLIENT_ID is set); e.g. google,facebook; blank = social sign-in off

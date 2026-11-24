@@ -29,16 +29,4 @@ class OperationCostRepo extends BaseRepo
             ->orderBy('operation_name')
             ->get();
     }
-
-    public function deleteByIds(array $ids, string $countryCode): void
-    {
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->query()
-            ->whereIn('id', $ids)
-            ->where('country_code', $countryCode)
-            ->delete();
-    }
 }

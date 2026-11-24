@@ -10,7 +10,8 @@ namespace App\Service;
 
 use App\Enums\EnumUserRole;
 use App\Models\User;
-use App\Models\UserIdentity;
+use App\Repositories\UserIdentityRepo;
+use App\Repositories\UserRepo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -35,7 +36,11 @@ class SocialSignInService
 
     public const EMAIL_UNVERIFIED = 'email_unverified';
 
-    public function __construct(private readonly FarmerAccountService $accounts) {}
+    public function __construct(
+        private readonly FarmerAccountService $accounts,
+        private readonly UserRepo $users,
+        private readonly UserIdentityRepo $identities,
+    ) {}
 
     public function enabled(string $provider): bool
     {
@@ -57,12 +62,12 @@ class SocialSignInService
         $email = $profile->getEmail() ? strtolower($profile->getEmail()) : null;
         $emailVerified = $this->emailVerified($profile);
 
-        $identity = UserIdentity::where('provider', $provider)->where('subject', $subject)->first();
+        $identity = $this->identities->findByProvider($provider, $subject);
         $user = $identity?->user;
 
         if ($user === null && $email !== null && $emailVerified) {
             // Link to an existing account only when the provider vouches for the address
-            $user = User::where('email', $email)->first();
+            $user = $this->users->findByEmail($email);
         }
 
         if ($user === null) {
@@ -72,14 +77,14 @@ class SocialSignInService
             if (!$consent) {
                 return self::CONSENT_REQUIRED;
             }
-            if (User::where('email', $email)->exists()) {
+            if ($this->users->existsWithConditions(['email' => $email])) {
                 // An unverified address that belongs to an account must not be taken over
                 return self::EMAIL_UNVERIFIED;
             }
         }
 
         $user = DB::transaction(function () use ($user, $provider, $subject, $email, $emailVerified, $consent, $profile) {
-            $user ??= User::create([
+            $user ??= $this->users->create([
                 'name' => (string)($profile->getName() ?? ''),
                 'username' => 'farmer_' . strtolower(str()->random(10)),
                 'email' => $email,
@@ -87,7 +92,7 @@ class SocialSignInService
                 'role' => EnumUserRole::User,
             ]);
 
-            UserIdentity::firstOrCreate(['provider' => $provider, 'subject' => $subject], ['user_id' => $user->id]);
+            $this->identities->link($provider, $subject, $user->id);
 
             if ($emailVerified && $user->email_verified_at === null && strtolower($user->email) === $email) {
                 $user->email_verified_at = now();

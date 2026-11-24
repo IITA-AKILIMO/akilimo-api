@@ -20,6 +20,16 @@ class PriceCatalogueRepo extends BaseRepo
         return PriceCatalogue::class;
     }
 
+    /** Is there a price for this item in this country, other than the row with $exceptId? */
+    public function existsFor(string $country, string $item, int|string|null $exceptId = null): bool
+    {
+        return $this->query()
+            ->where('country', $country)
+            ->where('item', $item)
+            ->when($exceptId !== null, fn ($q) => $q->whereKeyNot($exceptId))
+            ->exists();
+    }
+
     /**
      * @return Collection<int, PriceCatalogue>
      */
@@ -46,17 +56,5 @@ class PriceCatalogueRepo extends BaseRepo
             ->when($updatedSince, fn ($q) => $q->where('updated_at', '>', $updatedSince))
             ->orderBy('item')
             ->get();
-    }
-
-    public function deleteByIds(array $ids, string $country): void
-    {
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->query()
-            ->whereIn('id', $ids)
-            ->where('country', $country)
-            ->delete();
     }
 }

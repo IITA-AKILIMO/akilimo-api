@@ -10,10 +10,14 @@ namespace App\Service;
 
 use App\Enums\EnumUserRole;
 use App\Enums\PriceStatus;
-use App\Models\Country;
 use App\Models\PriceCatalogue;
 use App\Models\PriceCatalogueHistory;
 use App\Models\User;
+use App\Repositories\CountryRepo;
+use App\Repositories\CurrencyRepo;
+use App\Repositories\PriceCatalogueHistoryRepo;
+use App\Repositories\PriceCatalogueRepo;
+use App\Repositories\PriceItemRepo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -28,6 +32,14 @@ use Illuminate\Validation\ValidationException;
  */
 class PriceCatalogueService
 {
+    public function __construct(
+        private readonly PriceCatalogueRepo $prices,
+        private readonly PriceCatalogueHistoryRepo $history,
+        private readonly CountryRepo $countries,
+        private readonly CurrencyRepo $currencies,
+        private readonly PriceItemRepo $items,
+    ) {}
+
     /**
      * Create a row as a draft.
      */
@@ -35,12 +47,7 @@ class PriceCatalogueService
     {
         $data = $this->withDefaults($data);
 
-        $exists = PriceCatalogue::query()
-            ->where('country', $data['country'])
-            ->where('item', $data['item'])
-            ->exists();
-
-        if ($exists) {
+        if ($this->prices->existsFor($data['country'], $data['item'])) {
             throw ValidationException::withMessages([
                 'item' => 'A price for this item already exists in this country. Edit it instead.',
             ]);
@@ -50,7 +57,7 @@ class PriceCatalogueService
         $data['updated_by'] = $actor?->id;
         $data['submitted_by'] = null;
 
-        $price = PriceCatalogue::create($data);
+        $price = $this->prices->create($data);
 
         $this->record($price, 'created', $actor, null, $this->snapshot($price));
 
@@ -68,13 +75,7 @@ class PriceCatalogueService
             'item' => $price->item,
         ]);
 
-        $movedTo = PriceCatalogue::query()
-            ->where('country', $data['country'])
-            ->where('item', $data['item'])
-            ->whereKeyNot($price->getKey())
-            ->exists();
-
-        if ($movedTo) {
+        if ($this->prices->existsFor($data['country'], $data['item'], $price->getKey())) {
             throw ValidationException::withMessages([
                 'item' => 'A price for this item already exists in this country.',
             ]);
@@ -214,12 +215,7 @@ class PriceCatalogueService
             ]);
         }
 
-        $reviewers = Country::query()
-            ->where('code', $country)
-            ->first()
-            ?->reviewers()
-            ->pluck('users.id')
-            ->all() ?? [];
+        $reviewers = $this->countries->reviewerIds($country);
 
         if ($reviewers !== [] && !in_array($actor->id, $reviewers, true)) {
             throw ValidationException::withMessages([
@@ -239,7 +235,7 @@ class PriceCatalogueService
         $unit = $data['unit'] ?? null;
         if ($unit === null || $unit === '') {
             // The unit the item is priced in (price_items); anything unlisted is fertiliser, per bag
-            $unit = DB::table('price_items')->where('item', $item)->value('unit') ?? 'per_bag';
+            $unit = $this->items->unitOf($item) ?? 'per_bag';
         }
         $data['unit'] = $unit;
 
@@ -250,8 +246,8 @@ class PriceCatalogueService
         }
 
         if (($data['currency'] ?? null) === null || ($data['currency'] ?? '') === '') {
-            $data['currency'] = DB::table('countries')->where('code', $country)->value('currency_code')
-                ?? DB::table('currencies')->where('country_code', $country)->value('currency_code');
+            $data['currency'] = $this->countries->currencyCodeFor($country)
+                ?? $this->currencies->codeForCountry($country);
         }
 
         return $data;
@@ -263,7 +259,7 @@ class PriceCatalogueService
      */
     public function previousActiveSnapshot(PriceCatalogue $price): ?array
     {
-        foreach ($price->history()->latest('id')->get() as $entry) {
+        foreach ($this->history->forPrice($price->id) as $entry) {
             foreach ([$entry->new_values, $entry->old_values] as $snapshot) {
                 if (is_array($snapshot) && ($snapshot['status'] ?? null) === PriceStatus::Active->value) {
                     return $snapshot;
@@ -326,7 +322,7 @@ class PriceCatalogueService
         ?array $newValues = null,
         ?string $note = null,
     ): PriceCatalogueHistory {
-        return PriceCatalogueHistory::create([
+        return $this->history->create([
             'price_catalogue_id' => $price->id,
             'country' => $price->country,
             'item' => $price->item,

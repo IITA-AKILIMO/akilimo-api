@@ -9,6 +9,7 @@
 use App\Http\Controllers\Api\CassavaUnitsController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\FertilizerController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\PriceCatalogueController;
 use App\Http\Controllers\Api\StarchFactoryController;
 use App\Http\Controllers\Api\StarchPricesController;
@@ -28,6 +29,8 @@ Route::middleware(['throttle:admin-write', 'auth.token:write'])->prefix('v1/admi
     Route::apiResource('cassava-units', CassavaUnitsController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('translations', TranslationController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('price-catalogue', PriceCatalogueController::class)->only(['store', 'update', 'destroy']);
+    Route::get('messages', [MessageController::class, 'adminIndex']);
+    Route::post('messages', [MessageController::class, 'store']);
 });
 
 // ── Admin — user management (requires admin) ──────────────────────────────────
