@@ -1,7 +1,8 @@
 name: Publish Policies
 
-# Writes the privacy policy and terms of use (docs/polices/) into the web root of the server that serves akilimo.org, over SSH
-# (appleboy/ssh-action), so they appear at https://akilimo.org/akilimo-privacy-policy.html and https://akilimo.org/akilimo-terms.html.
+# Writes the privacy policy, the terms of use and their shared stylesheet (docs/polices/) into the web root of the server that serves akilimo.org, over SSH
+# (appleboy/ssh-action), so they appear at https://akilimo.org/akilimo-privacy-policy.html and https://akilimo.org/akilimo-terms.html
+# (both link to policy.css in the same folder).
 #
 # Repository secrets (Settings > Secrets and variables > Actions):
 #   SITE_SSH_KEY          private key of an SSH key pair whose public half is in ~/.ssh/authorized_keys of the deploy user on the server
@@ -16,6 +17,7 @@ on:
     branches: [develop]
     paths:
       - 'docs/polices/*.html'
+      - 'docs/polices/policy.css'
       - '.github/workflows/publish-policies.yml'
   workflow_dispatch:
 
@@ -40,10 +42,11 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "$WEB_ROOT" ]; then echo "::error::SITE_WEB_ROOT is not set (see the comments at the top of this workflow)"; exit 1; fi
-          for page in akilimo-privacy-policy.html akilimo-terms.html; do test -s "docs/polices/$page"; done
+          for page in akilimo-privacy-policy.html akilimo-terms.html policy.css; do test -s "docs/polices/$page"; done
           # base64 so the files travel safely inside the remote script
           echo "privacy=$(base64 -w0 docs/polices/akilimo-privacy-policy.html)" >> "$GITHUB_OUTPUT"
           echo "terms=$(base64 -w0 docs/polices/akilimo-terms.html)" >> "$GITHUB_OUTPUT"
+          echo "css=$(base64 -w0 docs/polices/policy.css)" >> "$GITHUB_OUTPUT"
 
       - name: Write the pages on the server
         uses: appleboy/ssh-action@v1.2.5
@@ -51,12 +54,13 @@ jobs:
           WEB_ROOT: ${{ vars.SITE_WEB_ROOT }}
           PRIVACY_B64: ${{ steps.pages.outputs.privacy }}
           TERMS_B64: ${{ steps.pages.outputs.terms }}
+          CSS_B64: ${{ steps.pages.outputs.css }}
         with:
           host: ${{ secrets.SITE_SSH_HOST }}
           username: ${{ secrets.SITE_SSH_USER }}
           port: ${{ vars.SITE_SSH_PORT || '22' }}
           key: ${{ secrets.SITE_SSH_KEY }}
-          envs: WEB_ROOT,PRIVACY_B64,TERMS_B64
+          envs: WEB_ROOT,PRIVACY_B64,TERMS_B64,CSS_B64
           script: |
             set -eu
             root="${WEB_ROOT%/}"
@@ -71,3 +75,4 @@ jobs:
             }
             write akilimo-privacy-policy.html "$PRIVACY_B64"
             write akilimo-terms.html "$TERMS_B64"
+            write policy.css "$CSS_B64"

@@ -6,225 +6,177 @@
     <meta name="description"
           content="Agricultural intelligence API delivering fertilizer, intercropping, and planting schedule recommendations for smallholder farmers across Africa.">
     <title>{{ config('app.name', 'AKILIMO API') }}</title>
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=dm-serif-display:400,400i|dm-sans:300,400,500,600&display=swap"
-          rel="stylesheet"/>
-
-    @vite(['resources/scss/welcome.scss'])
-
+    @include('partials.theme-head')
+    @viteReactRefresh
+    @vite(['resources/scss/public.scss', 'resources/js/theme-switcher.tsx'])
 </head>
 <body>
 
-{{-- Navigation --}}
-<nav class="nav">
-    <a href="/" class="nav-logo">
-        <span class="nav-logo-dot"></span>
-        {{ config('app.name', 'AKILIMO API') }}
-    </a>
-    <div class="nav-actions">
-        <x-button-panel/>
+<nav class="navbar bg-body border-bottom sticky-top">
+    <div class="container-xl">
+        <a href="/" class="navbar-brand me-auto" aria-label="AKILIMO home">
+            <img src="/images/akilimo_logo_colored.png" alt="" height="36" class="logo-on-light">
+            <img src="/images/akilimo_logo_white.png" alt="" height="36" class="logo-on-dark">
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <div data-theme-switcher></div>
+            <a href="/playground" class="btn btn-outline-secondary btn-sm">Playground</a>
+        </div>
     </div>
 </nav>
 
-{{-- Hero --}}
-<section class="hero">
-    <div class="hero-bg">
-        <div class="hero-grid"></div>
-    </div>
-    <div class="hero-content">
-        <div class="hero-eyebrow">
-            <span class="hero-eyebrow-dot"></span>
-            Agricultural Intelligence API
-        </div>
-        <h1 class="hero-title">
+<header class="aki-hero text-center py-5">
+    <div class="container-xl py-4">
+        <p class="aki-eyebrow text-white-50 mb-3">Agricultural Intelligence API</p>
+        <h1 class="display-4 fw-bold mb-3">
             Smart farming starts with<br><em>precise recommendations</em>
         </h1>
-        <p class="hero-sub">
+        <p class="lead text-white-50 mx-auto aki-lead">
             AKILIMO delivers data-driven fertilizer, intercropping, and planting
             schedule recommendations tailored to smallholder farmers across Africa.
         </p>
-        <div class="hero-actions">
-            <x-button-panel/>
-        </div>
+        <x-button-panel/>
     </div>
-</section>
+</header>
 
-{{-- Stats bar --}}
-<div class="stats-bar">
-    <div class="stats-bar-inner">
-        <div class="stat-item">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            <div>
-                <div class="stat-value">Bearer + API Key</div>
-                <div class="stat-label">Authentication methods</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-            <div>
-                <div class="stat-value">Multi-country</div>
-                <div class="stat-label">Regional coverage</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-            <div>
-                <div class="stat-value">Real-time Compute</div>
-                <div class="stat-label">With intelligent caching</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6"/>
-                <polyline points="8 6 2 12 8 18"/>
-            </svg>
-            <div>
-                <div class="stat-value">RESTful JSON</div>
-                <div class="stat-label">API standard</div>
-            </div>
+<div class="bg-body border-bottom">
+    <div class="container-xl py-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+            @foreach ([
+                ['Bearer + API Key', 'Authentication methods', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
+                ['Multi-country', 'Regional coverage', 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'],
+                ['Real-time Compute', 'With intelligent caching', 'M22 12h-4l-3 9L9 3l-3 9H2'],
+                ['RESTful JSON', 'API standard', 'M16 18l6-6-6-6M8 6l-6 6 6 6'],
+            ] as [$value, $label, $path])
+                <div class="col d-flex align-items-center gap-3">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round" class="text-primary flex-shrink-0" aria-hidden="true">
+                        <path d="{{ $path }}"/>
+                    </svg>
+                    <div>
+                        <div class="fw-semibold lh-sm">{{ $value }}</div>
+                        <div class="small text-body-secondary">{{ $label }}</div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 </div>
 
-{{-- Features --}}
-<section class="section">
-    <div class="section-inner">
-        <div class="section-label">Core Capabilities</div>
-        <h2 class="section-title">Everything farmers need to grow smarter</h2>
-        <p class="section-desc">
+<section class="py-5">
+    <div class="container-xl">
+        <p class="aki-eyebrow text-primary mb-2">Core Capabilities</p>
+        <h2 class="fw-bold mb-3">Everything farmers need to grow smarter</h2>
+        <p class="text-body-secondary mb-4 aki-lead">
             From soil nutrient analysis to seasonal planning, AKILIMO covers the full
             spectrum of agricultural intelligence for African smallholder farmers.
         </p>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon feature-icon--terra">🌱</div>
-                <h3 class="feature-title">Fertilizer Recommendations</h3>
-                <p class="feature-desc">Precise fertilizer types, quantities, and application timing based on crop type,
-                    soil data, and local market prices.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon feature-icon--green">🌿</div>
-                <h3 class="feature-title">Crop Intercropping</h3>
-                <p class="feature-desc">Optimized intercropping combinations for maize, cassava, and potatoes to
-                    maximise yield per hectare.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon feature-icon--harvest">📅</div>
-                <h3 class="feature-title">Planting Schedules</h3>
-                <p class="feature-desc">Data-driven planting calendars tailored to regional climate patterns and local
-                    market demand cycles.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon feature-icon--sage">🌍</div>
-                <h3 class="feature-title">Multi-country Support</h3>
-                <p class="feature-desc">Country-specific fertilizer catalogs, currencies, and commodity price data
-                    across multiple African nations.</p>
-            </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3">
+            @foreach ([
+                ['🌱', 'Fertilizer Recommendations', 'Precise fertilizer types, quantities, and application timing based on crop type, soil data, and local market prices.'],
+                ['🌿', 'Crop Intercropping', 'Optimized intercropping combinations for maize, cassava, and potatoes to maximise yield per hectare.'],
+                ['📅', 'Planting Schedules', 'Data-driven planting calendars tailored to regional climate patterns and local market demand cycles.'],
+                ['🌍', 'Multi-country Support', 'Country-specific fertilizer catalogs, currencies, and commodity price data across multiple African nations.'],
+            ] as [$icon, $title, $text])
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="fs-3 mb-2" aria-hidden="true">{{ $icon }}</div>
+                            <h3 class="h6 card-title">{{ $title }}</h3>
+                            <p class="card-text small text-body-secondary mb-0">{{ $text }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 </section>
 
-{{-- API Showcase --}}
-<section class="api-section">
-    <div class="api-layout">
-        <div>
-            <div class="section-label">Developer API</div>
-            <h2 class="section-title">Simple integration, powerful results</h2>
-            <p class="section-desc" style="margin-bottom:1.25rem;">
-                A single POST endpoint delivers complete farm recommendations.
-                Authenticate with a short-lived bearer token or a long-lived API key.
-            </p>
+<section class="bg-body-tertiary border-top border-bottom py-5">
+    <div class="container-xl">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <p class="aki-eyebrow text-primary mb-2">Developer API</p>
+                <h2 class="fw-bold mb-3">Simple integration, powerful results</h2>
+                <p class="text-body-secondary">
+                    A single POST endpoint delivers complete farm recommendations.
+                    Authenticate with a short-lived bearer token or a long-lived API key.
+                </p>
 
-            <div class="auth-methods">
-                <div class="auth-method">
-                    <div class="auth-method-icon">🔑</div>
+                <div class="d-flex gap-3 mt-4">
+                    <div class="fs-4" aria-hidden="true">🔑</div>
                     <div>
-                        <div class="auth-method-title">Bearer Token</div>
-                        <div class="auth-method-desc">
+                        <div class="fw-semibold">Bearer Token</div>
+                        <div class="small text-body-secondary">
                             Obtain via <code>POST /v1/auth/login</code>, then pass as
                             <code>Authorization: Bearer &lt;token&gt;</code> on every request.
                             Tokens expire after a configurable TTL.
                         </div>
                     </div>
                 </div>
-                <div class="auth-method">
-                    <div class="auth-method-icon">🗝️</div>
+                <div class="d-flex gap-3 mt-3">
+                    <div class="fs-4" aria-hidden="true">🗝️</div>
                     <div>
-                        <div class="auth-method-title">API Key</div>
-                        <div class="auth-method-desc">
+                        <div class="fw-semibold">API Key</div>
+                        <div class="small text-body-secondary">
                             Long-lived key with scoped abilities. Pass as <code>X-Api-Key: ak_…</code>.
                             Generated and managed through the admin panel.
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="code-block">
-            <div class="code-header">
-                <div class="code-dot" style="background:#ff5f57"></div>
-                <div class="code-dot" style="background:#febc2e"></div>
-                <div class="code-dot" style="background:#28c840"></div>
+            <div class="col-lg-6">
+                <div class="aki-terminal" role="img" aria-label="Example request to the compute endpoint">
+                    <div class="aki-terminal-bar" aria-hidden="true">
+                        <span class="aki-terminal-dot aki-terminal-dot--red"></span>
+                        <span class="aki-terminal-dot aki-terminal-dot--yellow"></span>
+                        <span class="aki-terminal-dot aki-terminal-dot--green"></span>
+                    </div>
+<pre><span class="c-comment"># Compute farm recommendations</span>
+<span class="c-method">POST</span> <span class="c-url">/v1/recommendations/compute</span>
+<span class="c-key">Authorization:</span> <span class="c-str">Bearer &lt;token&gt;</span>
+<span class="c-key">Content-Type:</span> <span class="c-str">application/json</span>
+
+{
+  <span class="c-key">"country"</span>: <span class="c-str">"NG"</span>,
+  <span class="c-key">"use_case"</span>: <span class="c-str">"FR"</span>,
+  <span class="c-key">"crop_type"</span>: <span class="c-str">"maize"</span>,
+  <span class="c-key">"farm_size"</span>: <span class="c-num">2.5</span>,
+  <span class="c-key">"currency"</span>: <span class="c-str">"NGN"</span>,
+  <span class="c-key">"fertilizer_list"</span>: [
+    {
+      <span class="c-key">"key"</span>: <span class="c-str">"urea"</span>,
+      <span class="c-key">"selected"</span>: <span class="c-bool">true</span>,
+      <span class="c-key">"weight"</span>: <span class="c-num">50</span>,
+      <span class="c-key">"price"</span>: <span class="c-num">12000</span>
+    }
+  ]
+}
+
+<span class="c-comment"># ← Returns optimised fertilizer rates,</span>
+<span class="c-comment">#   intercrop options &amp; planting calendar</span></pre>
+                </div>
             </div>
-            <div class="code-body"><span class="cc"># Compute farm recommendations</span>
-                <span class="cm">POST</span> <span class="cu">/v1/recommendations/compute</span>
-                <span class="chk">Authorization:</span> <span class="chv">Bearer &lt;token&gt;</span>
-                <span class="chk">Content-Type:</span> <span class="chv">application/json</span>
-                {
-                    <span class="ck">"country"</span>: <span class="cs">"NG"</span>,
-                    <span class="ck">"use_case"</span>: <span class="cs">"FR"</span>,
-                    <span class="ck">"crop_type"</span>: <span class="cs">"maize"</span>,
-                    <span class="ck">"farm_size"</span>: <span class="cn">2.5</span>,
-                    <span class="ck">"currency"</span>: <span class="cs">"NGN"</span>,
-                    <span class="ck">"fertilizer_list"</span>: [
-                        {
-                            <span class="ck">"key"</span>: <span class="cs">"urea"</span>,
-                            <span class="ck">"selected"</span>: <span class="cb">true</span>,
-                            <span class="ck">"weight"</span>: <span class="cn">50</span>,
-                            <span class="ck">"price"</span>: <span class="cn">12000</span>
-                        }
-                    ]
-                }
-                <span class="cc"># ← Returns optimised fertilizer rates,</span>
-                <span class="cc">#   intercrop options &amp; planting calendar</span></div>
         </div>
     </div>
 </section>
 
-{{-- CTA --}}
-<section class="cta-section">
-    <div class="cta-inner">
-        <h2 class="cta-title">Ready to get started?</h2>
-        <p class="cta-desc">
+<section class="aki-cta text-center py-5">
+    <div class="container-xl py-3">
+        <h2 class="fw-bold mb-3">Ready to get started?</h2>
+        <p class="text-white-50 mx-auto aki-lead mb-0">
             Try the API instantly in the playground — no account needed.
             Or sign in to the admin panel to manage data and generate API keys.
         </p>
-        <div class="cta-actions">
-            <x-button-panel/>
-        </div>
+        <x-button-panel/>
     </div>
 </section>
 
-{{-- Footer --}}
-<footer class="footer">
-    <p>
-        &copy; {{ date('Y') }} {{ config('app.name', 'AKILIMO API') }}
-        &mdash; Agricultural recommendations for smallholder farmers
-    </p>
+<footer class="border-top py-4 text-center small text-body-secondary">
+    &copy; {{ date('Y') }} {{ config('app.name', 'AKILIMO API') }}
+    &mdash; Agricultural recommendations for smallholder farmers
 </footer>
 
 </body>

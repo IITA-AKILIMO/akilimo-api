@@ -1,0 +1,90 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// AKILIMO — public pages (the welcome page). Bootstrap components on the same
+// build as the admin area (app.scss), so buttons, cards, grid, forms, the theme
+// switch and both colour modes are the admin's. Only what Bootstrap has no
+// component for is written here: the hero, the call to action and the terminal.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@import 'app';
+
+// Dark forest hero and call to action: the brand gradient, white text
+.aki-hero,
+.aki-cta {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+}
+
+.aki-hero {
+    background: linear-gradient(160deg, $aki-sidebar-bg 0%, $aki-green-dark 60%, $aki-green 100%);
+
+    // Faint grid texture
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    }
+
+    > .container-xl { position: relative; }
+
+    em { font-style: normal; color: $aki-lime; }
+}
+
+.aki-cta { background: linear-gradient(135deg, $aki-green-dark, $aki-green); }
+
+.aki-eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.aki-lead { max-width: 40rem; }
+
+// The request sample is a dark terminal in either colour mode
+.aki-terminal {
+    background: $aki-sidebar-bg;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: $box-shadow-lg;
+
+    &-bar {
+        display: flex;
+        gap: 6px;
+        padding: 0.7rem 0.9rem;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    &-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+
+        &--red { background: #ff5f57; }
+        &--yellow { background: #febc2e; }
+        &--green { background: #28c840; }
+    }
+
+    pre {
+        margin: 0;
+        padding: 1rem 1.25rem 1.25rem;
+        font-family: $font-mono;
+        font-size: 0.8125rem;
+        line-height: 1.7;
+        color: #d4dbd7;
+        overflow-x: auto;
+    }
+
+    .c-comment { color: #6b7d73; }
+    .c-method { color: $aki-lime; font-weight: 600; }
+    .c-url { color: #7dd3fc; }
+    .c-key { color: #93c5fd; }
+    .c-str { color: #fcd34d; }
+    .c-num { color: #fda4af; }
+    .c-bool { color: #c4b5fd; }
+}

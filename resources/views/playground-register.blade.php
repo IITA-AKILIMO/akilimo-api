@@ -1,48 +1,13 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Sign up — {{ config('app.name', 'AKILIMO API') }}</title>
-    @include('partials.theme-head')
-    @viteReactRefresh
-    @vite(['resources/scss/playground.scss'])
-</head>
-<body>
-
-<nav class="pg-nav pg-nav--glass">
-    <a href="/" class="pg-nav-brand">
-        <img src="/images/akilimo_logo_white.png" alt="Akilimo" class="pg-nav-brand-logo pg-nav-brand-logo--auth">
-    </a>
-    <span class="pg-nav-badge">Playground</span>
-</nav>
-
-<div class="pg-auth-wrap">
-    <div class="pg-auth-slides" aria-hidden="true">
-        <div class="pg-auth-slide pg-auth-slide--1"></div>
-        <div class="pg-auth-slide pg-auth-slide--2"></div>
-        <div class="pg-auth-slide pg-auth-slide--3"></div>
-        <div class="pg-auth-slide pg-auth-slide--4"></div>
-    </div>
-    <div class="pg-auth-overlay"></div>
-    <div class="pg-auth-card">
-        <div class="pg-auth-heading">
-            <h1 class="pg-auth-title">Create an account</h1>
-            <p class="pg-auth-sub">Get access to the API playground</p>
-        </div>
-
-        @if ($errors->any())
-            <div class="pg-auth-alert">
-                {{ $errors->first() }}
-            </div>
-        @endif
+<x-auth-layout title="Sign up" heading="Create an account" subtitle="Get access to the API playground">
+    @if ($errors->any())
+        <div class="alert alert-danger py-2 small" role="alert">{{ $errors->first() }}</div>
+    @endif
 
         <form method="POST" action="/playground/register" novalidate id="register-form">
             @csrf
 
-            <div class="pg-auth-field">
-                <label for="name" class="pg-auth-label">Full name</label>
+            <div class="login-field">
+                <label for="name" class="login-label">Full name</label>
                 <input
                     id="name"
                     name="name"
@@ -50,89 +15,88 @@
                     autocomplete="name"
                     autofocus
                     value="{{ old('name') }}"
-                    class="pg-auth-input{{ $errors->has('name') ? ' pg-auth-input--error' : '' }}"
+                    class="login-input{{ $errors->has('name') ? ' is-error' : '' }}"
                     required
                 />
                 @error('name')
-                    <span class="pg-auth-error">{{ $message }}</span>
+                    <span class="login-error">{{ $message }}</span>
                 @enderror
             </div>
 
-            <div class="pg-auth-field">
-                <label for="username" class="pg-auth-label">Username</label>
+            <div class="login-field">
+                <label for="username" class="login-label">Username</label>
                 <input
                     id="username"
                     name="username"
                     type="text"
                     autocomplete="username"
                     value="{{ old('username') }}"
-                    class="pg-auth-input{{ $errors->has('username') ? ' pg-auth-input--error' : '' }}"
+                    class="login-input{{ $errors->has('username') ? ' is-error' : '' }}"
                     placeholder="e.g. john_doe"
                     required
                 />
-                <span class="pg-auth-username-status" id="username-status" aria-live="polite"></span>
-                <span class="pg-auth-hint">Lowercase letters, numbers and underscores only</span>
+                <span class="login-status" id="username-status" aria-live="polite"></span>
+                <span class="login-hint">Lowercase letters, numbers and underscores only</span>
                 @error('username')
-                    <span class="pg-auth-error">{{ $message }}</span>
+                    <span class="login-error">{{ $message }}</span>
                 @enderror
             </div>
 
-            <div class="pg-auth-field">
-                <label for="email" class="pg-auth-label">Email address</label>
+            <div class="login-field">
+                <label for="email" class="login-label">Email address</label>
                 <input
                     id="email"
                     name="email"
                     type="email"
                     autocomplete="email"
                     value="{{ old('email') }}"
-                    class="pg-auth-input{{ $errors->has('email') ? ' pg-auth-input--error' : '' }}"
+                    class="login-input{{ $errors->has('email') ? ' is-error' : '' }}"
                     required
                 />
                 @error('email')
-                    <span class="pg-auth-error">{{ $message }}</span>
+                    <span class="login-error">{{ $message }}</span>
                 @enderror
             </div>
 
-            <div class="pg-auth-field">
-                <label for="password" class="pg-auth-label">Password</label>
+            <div class="login-field">
+                <label for="password" class="login-label">Password</label>
                 <input
                     id="password"
                     name="password"
                     type="password"
                     autocomplete="new-password"
-                    class="pg-auth-input{{ $errors->has('password') ? ' pg-auth-input--error' : '' }}"
+                    class="login-input{{ $errors->has('password') ? ' is-error' : '' }}"
                     required
                 />
                 @error('password')
-                    <span class="pg-auth-error">{{ $message }}</span>
+                    <span class="login-error">{{ $message }}</span>
                 @enderror
             </div>
 
-            <div class="pg-auth-field">
-                <label for="password_confirmation" class="pg-auth-label">Confirm password</label>
+            <div class="login-field">
+                <label for="password_confirmation" class="login-label">Confirm password</label>
                 <input
                     id="password_confirmation"
                     name="password_confirmation"
                     type="password"
                     autocomplete="new-password"
-                    class="pg-auth-input{{ $errors->has('password_confirmation') ? ' pg-auth-input--error' : '' }}"
+                    class="login-input{{ $errors->has('password_confirmation') ? ' is-error' : '' }}"
                     required
                 />
                 @error('password_confirmation')
-                    <span class="pg-auth-error">{{ $message }}</span>
+                    <span class="login-error">{{ $message }}</span>
                 @enderror
             </div>
 
-            <button type="submit" class="pg-auth-btn" id="submit-btn">Create account</button>
+            <button type="submit" class="login-btn" id="submit-btn">Create account</button>
         </form>
 
-        <p class="pg-auth-switch">
+        <p class="login-switch">
             Already have an account?
             <a href="/playground/login">Sign in</a>
         </p>
-    </div>
-</div>
 
+    <x-slot:scripts>
 <script>
 (function () {
     const input   = document.getElementById('username')
@@ -145,24 +109,24 @@
     let isAvailable   = false
 
     function setState(state, message) {
-        input.classList.remove('pg-auth-input--error', 'pg-auth-input--success')
-        status.className = 'pg-auth-username-status'
+        input.classList.remove('is-error', 'is-success')
+        status.className = 'login-status'
 
         if (state === 'checking') {
-            status.classList.add('pg-auth-username-status--checking')
+            status.classList.add('login-status--checking')
             status.textContent = 'Checking…'
         } else if (state === 'available') {
-            input.classList.add('pg-auth-input--success')
-            status.classList.add('pg-auth-username-status--ok')
+            input.classList.add('is-success')
+            status.classList.add('login-status--ok')
             status.textContent = '✓ ' + message
             isAvailable = true
         } else if (state === 'taken') {
-            input.classList.add('pg-auth-input--error')
-            status.classList.add('pg-auth-username-status--error')
+            input.classList.add('is-error')
+            status.classList.add('login-status--error')
             status.textContent = '✕ ' + message
             isAvailable = false
         } else if (state === 'invalid') {
-            status.classList.add('pg-auth-username-status--hint')
+            status.classList.add('login-status--hint')
             status.textContent = message
             isAvailable = false
         } else {
@@ -223,6 +187,5 @@
     })
 })()
 </script>
-
-</body>
-</html>
+    </x-slot:scripts>
+</x-auth-layout>

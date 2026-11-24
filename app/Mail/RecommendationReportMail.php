@@ -56,7 +56,7 @@ class RecommendationReportMail extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
-        return new Content(view: 'mail.recommendation-report', with: ['body' => __('report_mail.body')]);
+        return new Content(markdown: 'mail.recommendation-report', with: ['body' => __('report_mail.body')]);
     }
 
     /** @return array<int, Attachment> */
