@@ -133,5 +133,5 @@ register and login. The app sends nothing new to `compute` except the Bearer hea
    test client ID in config and stays off.
 7. **Where it is built:** `new-akilimo-api` (this repo) for the API, `akilimo-mobile` for the app. *(Assumed from the plan; not asked separately.)*
 
-**Update 2026-11-20:** the privacy policy and terms wording is approved (consent label `v1`; pages in `docs/polices/`, published to akilimo.org by `.github/workflows/publish-policies.yml`). Still open: the benefit wording shown in the app.
+**Update 2026-11-20:** the privacy policy and terms wording is approved (consent label `v1`; pages in `docs/policies/`, published to akilimo.org by `.github/workflows/publish-policies.yml`). Still open: the benefit wording shown in the app.
 No claim such as "your data is never shared" is to be written unless it is given.

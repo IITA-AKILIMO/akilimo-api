@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Phase 1 of the price catalogue (docs/PRICE_CATALOGUE_DESIGN.md).
+ * Phase 1 of the price catalogue (docs/archive/PRICE_CATALOGUE_DESIGN.md).
  *
  * Extends the existing `default_prices` table in place so the engine's current
  * sync keeps working, and adds an audit trail for every change.

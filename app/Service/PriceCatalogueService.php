@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Owns the price catalogue review workflow (docs/PRICE_CATALOGUE_DESIGN.md):
+ * Owns the price catalogue review workflow (docs/archive/PRICE_CATALOGUE_DESIGN.md):
  * drafts, activation, the ±30 % second review and the audit trail.
  *
  * There is one row per (country, item) and its `status` is the row's lifecycle.

@@ -12,7 +12,7 @@ AKILIMO prices live in three places that are maintained separately and drift apa
 | API `price_catalogue`, `starch_prices` | One value per country and item; starch prices by class | Recommendations engine, via `refresh_prices.R` → SQLite (`R/akilimo_db.R`); used e.g. to fill missing fertiliser costs (`R/fertilizers.R`) |
 | Hardcoded in the engine (`R/AkilimoMain.R`) | Labour defaults (`default_lmo_costs`, NG and TZ only), maize 50/cob and 230/kg, sweet potato 120,000 and 384,000/t | Engine only |
 
-Consequences seen in the November 2026 price review ([docs/data/price-review-2026-11.md](data/price-review-2026-11.md)):
+Consequences seen in the November 2026 price review ([docs/data/price-review-2026-11.md](../data/price-review-2026-11.md)):
 
 - **Stale values.** Fertiliser defaults are 1.3–7× below market (NG urea ₦7,500 against ~₦32,500–50,500).
 - **Stale price options.** In all five countries the options farmers pick from are far from current market prices. The allowed ranges are equally out of date, but nothing enforces them: the app ignores them, and its "Exact price" option accepts any value.

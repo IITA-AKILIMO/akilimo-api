@@ -8,7 +8,7 @@ Everything you need to get the project running locally, understand the codebase,
 
 | Tool | Version |
 |------|---------|
-| PHP | 8.3+ |
+| PHP | 8.3+ (CI and the production image run 8.4) |
 | Composer | 2.x |
 | Node.js | 20+ |
 | MariaDB | 11.2+ (or Docker) |
@@ -184,7 +184,7 @@ This generates: controller, repository, resource, resource collection, and inser
 
 ## Writing Tests
 
-Tests use **Pest** with an SQLite in-memory database (configured in `phpunit.xml`).
+Tests use **Pest** against MariaDB (the tests need database views and generated columns, so SQLite does not work). Point `.env.testing` (gitignored) at a disposable test database: `RefreshDatabase` wipes it, so never aim it at your dev database.
 
 Protected routes require authentication. Use the `actingAsApiUser()` helper from `TestCase`:
 
@@ -240,9 +240,10 @@ php artisan admin:regenerate-api-key --username=otheradmin
 
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| `unit-test.yml` | Every push | Full Pest suite on PHP 8.3 with SQLite |
+| `unit-test.yml` | Every push and pull request | Code style check, then the Pest suite on PHP 8.4 with a MariaDB 11.2 service |
 | `quality-checks.yml` | `develop` branch | Coverage report + SonarQube gate |
 | `docker-build.yml` | `main`/`develop` | Builds and pushes `iita/akilimo-api` Docker image |
+| `publish-policies.yml` | `develop`, when `docs/policies/` changes | Copies the privacy policy and terms to the akilimo.org web root over SSH |
 
 All workflows are in `.github/workflows/`.
 
