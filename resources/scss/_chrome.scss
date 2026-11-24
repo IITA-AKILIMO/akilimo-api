@@ -1,0 +1,148 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// AKILIMO — the page chrome every public page shares: the logo swap for dark
+// mode, the top bar (brand stripe, badge, theme switch) and the switch itself.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@import 'brand';
+
+// The coloured logo's lettering is dark; the white one replaces it in dark mode.
+.logo-on-dark { display: none; }
+@include dark-theme {
+    .logo-on-light { display: none; }
+    .logo-on-dark { display: block; }
+}
+
+// ── Layout ─────────────────────────────────────────────────────────────────────
+// Top bar, matching the admin header: plain surface, brand stripe, badge, theme switch.
+.pg-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    min-height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.375rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    @media (min-width: 768px) { padding: 0.375rem 1.5rem; }
+
+    // Thin brand stripe at the very top
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--brand-gradient);
+    }
+
+    &-brand {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+
+        // The PNGs are 16:9 with a lot of padding around the mark.
+        &-logo {
+            height: 44px;
+            width: auto;
+            margin: 0 -0.5rem;
+            object-fit: contain;
+        }
+    }
+
+    &-badge {
+        font-size: 0.625rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: $aki-green-dark;
+        background: $primary-bg-subtle;
+        padding: 0.2rem 0.55rem;
+        border-radius: $radius-pill;
+
+        @include dark-theme {
+            color: $dark-primary-text;
+            background: $dark-primary-bg-subtle;
+        }
+
+        // On a phone the logo, theme switch and sign-out need the room
+        @media (max-width: 479.98px) { display: none; }
+    }
+
+    &-user {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-left: auto;
+
+        @media (max-width: 479.98px) { gap: 0.5rem; }
+
+        &-name {
+            font-family: $font-body;
+            font-size: 0.8375rem;
+            color: var(--text-secondary);
+
+            @media (max-width: 575.98px) { display: none; }
+        }
+    }
+
+    &-signout {
+        font-family: $font-body;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: $radius-sm;
+        padding: 0.3rem 0.7rem;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+        &:hover {
+            color: var(--forest);
+            border-color: var(--forest);
+            background: var(--surface-alt);
+        }
+    }
+}
+
+// The admin's Light / Dark / System switch (components/ThemeSwitcher.tsx uses
+// Bootstrap's button-group classes; the playground has no Bootstrap, so they
+// are styled here to look the same).
+.theme-switcher {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: $radius-sm;
+    overflow: hidden;
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 30px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.15s, background 0.15s;
+
+        & + .btn { border-left: 1px solid var(--border); }
+        &:hover { color: var(--text-primary); background: var(--surface-alt); }
+        &.active { color: #fff; background: $gray-600; }
+
+        @include dark-theme {
+            &.active { color: $gray-900; background: $dark-secondary-color; }
+        }
+    }
+}
+

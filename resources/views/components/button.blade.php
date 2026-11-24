@@ -1,10 +1,10 @@
 @props([
     'href' => '#',
-    'variant' => 'terra', // terra, primary, outline
+    'variant' => 'primary', // any Bootstrap button variant: primary, light, outline-light, outline-secondary, ...
     'icon' => null,
 ])
 
-<a href="{{ $href }}" class="btn btn-{{ $variant }}">
+<a href="{{ $href }}" {{ $attributes->class(['btn', "btn-{$variant}"]) }}>
     @if($icon)
         {!! $icon !!}
     @endif
