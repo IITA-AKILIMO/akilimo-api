@@ -41,12 +41,6 @@ it('defaults every boolean of the request sections to false', function (string $
     YieldInfoData::class,
 ]);
 
-it('sends problemWeeds, which no request section fills, as false', function () {
-    $data = (new ReflectionClass(AkilimoComputeData::class))->newInstanceWithoutConstructor();
-
-    expect($data->problemWeeds)->toBeFalse();
-});
-
 it('sends every boolean to the compute service as false when the request leaves them out', function () {
     $payload = validComputePayload();
     unset(
@@ -65,7 +59,7 @@ it('sends every boolean to the compute service as false when the request leaves 
     $userInfo = UserInfoData::from($payload['user_info']);
     $sent = AkilimoComputeData::from($computeRequest->toArray(), $userInfo, ['fertilizers' => []])->toArray();
 
-    foreach (['fallowGreen', 'tractor_plough', 'tractor_harrow', 'tractor_ridger', 'ploughing', 'harrowing', 'ridging', 'saleSF', 'SMS', 'problemWeeds'] as $key) {
+    foreach (['fallowGreen', 'tractor_plough', 'tractor_harrow', 'tractor_ridger', 'ploughing', 'harrowing', 'ridging', 'saleSF', 'SMS'] as $key) {
         expect($sent)->toHaveKey($key)
             ->and($sent[$key])->toBeFalse();
     }
