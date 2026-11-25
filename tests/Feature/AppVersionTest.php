@@ -60,7 +60,7 @@ it('leaves a blank message and store url as null', function () {
 
 it('filters by platform and rejects an unknown one', function () {
     $this->getJson('/api/v1/app/version?platform=android')->assertOk()->assertJsonStructure(['data' => ['android']]);
-    $this->getJson('/api/v1/app/version?platform=ios')->assertStatus(422);
+    $this->getJson('/api/v1/app/version?platform=windows')->assertStatus(422);
 });
 
 it('lets an admin store the version gate, which then overrides the defaults', function () {
