@@ -20,6 +20,7 @@ require __DIR__ . '/api/auth.php';            // login, logout, API keys, MCP ke
 require __DIR__ . '/api/account.php';         // optional farmer accounts and saved history
 require __DIR__ . '/api/reference.php';       // public reference data
 require __DIR__ . '/api/coverage.php';        // supported area
+require __DIR__ . '/api/app.php';             // mobile app minimum and latest version code
 require __DIR__ . '/api/recommendations.php'; // compute, reports, recommendation list
 require __DIR__ . '/api/feedback.php';        // user feedback and translations
 require __DIR__ . '/api/admin.php';           // lookup data CRUD, user management
