@@ -43,3 +43,20 @@ it('sends false for operations that are not done instead of leaving them out', f
         ->and($payload['harrowing'])->toBeFalse()
         ->and($payload['ridging'])->toBeFalse();
 });
+
+it('sends the farm methods to the compute service in lower case', function () {
+    $payload = validComputePayload();
+    $payload['compute_request']['methods'] = [
+        'method_ploughing' => 'MANUAL',
+        'method_harrowing' => ' Tractor ',
+        'method_ridging' => 'NA',
+        'method_weeding' => null,
+    ];
+
+    $computeRequest = ComputeRequestData::from($payload['compute_request']);
+    $sent = AkilimoComputeData::from($computeRequest->toArray(), UserInfoData::from($payload['user_info']), ['fertilizers' => []])->toArray();
+
+    expect($sent['method_ploughing'])->toBe('manual')
+        ->and($sent['method_harrowing'])->toBe('tractor')
+        ->and($sent['method_ridging'])->toBe('NA');
+});
