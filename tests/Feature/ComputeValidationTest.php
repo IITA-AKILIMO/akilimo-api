@@ -177,6 +177,15 @@ it('accepts gender F', function () {
     $this->postJson('/api/v1/recommendations/compute', $payload)->assertOk();
 });
 
+it('accepts gender NA (prefer not to answer)', function () {
+    Http::fake(['*' => Http::response(plumberSuccessResponse(), 200)]);
+
+    $payload = computePayload();
+    $payload['user_info']['gender'] = 'NA';
+
+    $this->postJson('/api/v1/recommendations/compute', $payload)->assertOk();
+});
+
 // ---------------------------------------------------------------------------
 // fertilizer_list — must be present, items must have required fields
 // ---------------------------------------------------------------------------
