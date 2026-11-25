@@ -17,9 +17,9 @@ class InterCroppingData extends Data
 {
     public ?string $interCroppedCrop;
 
-    public bool $interCroppingMaizeRec;
+    public bool $interCroppingMaizeRec = false;
 
-    public bool $interCroppingPotatoRec;
+    public bool $interCroppingPotatoRec = false;
 
     public function isRecommended(): bool
     {

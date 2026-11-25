@@ -19,5 +19,5 @@ class FallowData extends Data
 
     public float $fallowHeight;
 
-    public bool $fallowGreen;
+    public bool $fallowGreen = false;
 }

@@ -189,7 +189,10 @@ class AkilimoComputeData extends Data
     public bool $ploughing;
 
     #[MapOutputName('problemWeeds')]
-    public bool $problemWeeds;
+    // No request section fills it; without a default it would be left out of the payload and the compute service fails
+    // with "missing value where TRUE/FALSE needed". (A default on the other booleans would override the values the
+    // request sections give them, which AkilimoComputeData::from() takes from several sources.)
+    public bool $problemWeeds = false;
 
     #[MapOutputName('ridging')]
     public bool $ridging;

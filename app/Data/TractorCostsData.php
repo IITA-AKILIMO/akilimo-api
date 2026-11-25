@@ -15,11 +15,11 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapInputName(SnakeCaseMapper::class)]
 class TractorCostsData extends Data
 {
-    public bool $tractorPlough;
+    public bool $tractorPlough = false;
 
-    public bool $tractorHarrow;
+    public bool $tractorHarrow = false;
 
-    public bool $tractorRidger;
+    public bool $tractorRidger = false;
 
     public string $costLmoAreaBasis;
 
