@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string|null $language
  * @property Carbon|null $pushed_at
+ * @property string|null $recipient_device_token
+ * @property int|null $recipient_user_id
  * @property string|null $target
  * @property string $title
  * @property EnumMessageType $type
@@ -42,6 +44,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereLanguage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message wherePushedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereRecipientDeviceToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereRecipientUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereTarget($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereType($value)
@@ -58,9 +62,14 @@ class Message extends BaseModel
     protected $casts = [
         'id' => 'string',
         'type' => EnumMessageType::class,
+        'recipient_user_id' => 'int',
         'expires_at' => 'datetime',
         'pushed_at' => 'datetime',
         'created_by' => 'int',
+    ];
+
+    protected $hidden = [
+        'recipient_device_token',
     ];
 
     protected $fillable = [
@@ -70,6 +79,8 @@ class Message extends BaseModel
         'title',
         'body',
         'target',
+        'recipient_device_token',
+        'recipient_user_id',
         'expires_at',
         'pushed_at',
         'created_by',
@@ -77,6 +88,6 @@ class Message extends BaseModel
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'recipient_user_id');
     }
 }

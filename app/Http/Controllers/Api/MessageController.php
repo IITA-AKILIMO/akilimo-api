@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MessageRequest;
+use App\Http\Resources\AdminMessageResource;
 use App\Http\Resources\MessageResource;
 use App\Repositories\MessageRepo;
 use App\Service\MessageService;
@@ -70,7 +71,7 @@ class MessageController extends Controller
     {
         $perPage = min(max((int)$request->integer('per_page', 25), 1), 100);
 
-        return MessageResource::collection(
+        return AdminMessageResource::collection(
             $this->messageRepo->paginateWithSort(perPage: $perPage, orderBy: 'created_at', direction: 'desc'),
         );
     }
@@ -78,15 +79,15 @@ class MessageController extends Controller
     /**
      * Send a message (admin)
      *
-     * Stores a message for the mobile app and announces it through FCM to the country and language topics. A push that
-     * cannot be sent never loses the message: phones still receive it through the sync. `push` in the answer says what
-     * happened: `sent`, `disabled` (FCM not configured), `no_audience` (no country or language, stored for the sync only)
-     * or `failed`.
+     * Stores a message for the mobile app and queues its push through FCM to the country and language topics. The push is
+     * never sent during this request: a queue worker sends it, and a push that cannot be sent never loses the message,
+     * because phones still receive it through the sync. `push` in the answer says what was done: `queued`, `disabled`
+     * (FCM not configured) or `no_audience` (no country or language, stored for the sync only).
      *
      * With `recipients` (`[{type: "user", id: 12}, {type: "device", id: "<device_token>"}]`) the message is private: one
      * message per recipient, pushed to each of their registered phones (`country` and `language` are not allowed).
-     * `data` is then a list, `push` is `sent` when at least one phone was pushed (else the first reason a push did not
-     * go) and `devices` counts the phones pushed. `no_audience` here means no registered phone.
+     * `data` is then a list, `push` is `queued` when at least one phone was queued (else the first reason nothing was
+     * queued) and `devices` counts the phones queued. `no_audience` here means no registered phone.
      */
     public function store(MessageRequest $request): JsonResponse
     {
@@ -96,7 +97,7 @@ class MessageController extends Controller
             $result = $this->messageService->publishPrivate($data, $request->user()?->id);
 
             return response()->json([
-                'data' => MessageResource::collection($result['messages']),
+                'data' => AdminMessageResource::collection($result['messages']),
                 'push' => $result['push'],
                 'devices' => $result['devices'],
                 'message' => 'Messages created.',
@@ -109,7 +110,7 @@ class MessageController extends Controller
          * @status 201
          */
         return response()->json([
-            'data' => new MessageResource($result['message']),
+            'data' => new AdminMessageResource($result['message']),
             'push' => $result['push'],
             'message' => 'Message created.',
         ], 201);

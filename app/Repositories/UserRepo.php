@@ -8,8 +8,10 @@
 
 namespace App\Repositories;
 
+use App\Enums\EnumUserRole;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * @extends BaseRepo<User>
@@ -43,6 +45,45 @@ class UserRepo extends BaseRepo
         $user->forceFill($attributes)->save();
 
         return $user;
+    }
+
+    /** Whether the id belongs to a farmer account (role user), not an admin or partner. */
+    public function isFarmer(int|string $id): bool
+    {
+        return $this->query()->whereKey($id)->where('role', EnumUserRole::User)->exists();
+    }
+
+    /**
+     * Farmer accounts matching a search on name, e-mail or user name, or whose id is in $alsoIds (found by another
+     * route, such as the phone number of their advice requests). Wildcards in the search are taken literally.
+     *
+     * @param array<int, int> $alsoIds
+     * @return Collection<int, User>
+     */
+    public function searchFarmers(string $term, array $alsoIds, int $limit): Collection
+    {
+        $like = '%' . addcslashes($term, '%_\\') . '%';
+
+        return $this->query()->where('role', EnumUserRole::User)
+            ->where(fn ($w) => $w->where('name', 'like', $like)->orWhere('email', 'like', $like)->orWhere('username', 'like', $like)
+                ->orWhereIn('id', $alsoIds))
+            ->orderBy('name')->limit($limit)->get();
+    }
+
+    /**
+     * Farmers who agreed to the terms (consent_at) under a different consent version than the current one, limited to
+     * the given account ids (the ones with a phone registered for push).
+     *
+     * @param array<int, int> $userIds
+     * @return Collection<int, User>
+     */
+    public function farmersOnOlderConsent(string $version, array $userIds): Collection
+    {
+        return $this->query()->where('role', EnumUserRole::User)
+            ->whereNotNull('consent_at')
+            ->where(fn ($q) => $q->whereNull('consent_version')->orWhere('consent_version', '!=', $version))
+            ->whereIn('id', $userIds)
+            ->get();
     }
 
     public function paginateWithSearch(

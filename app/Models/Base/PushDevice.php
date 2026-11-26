@@ -29,6 +29,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $user_id
  * @property User|null $user
  *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereAppVersion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereDeviceToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereFcmToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereLastSeenAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice wherePlatform($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PushDevice whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class PushDevice extends BaseModel
@@ -38,6 +53,11 @@ class PushDevice extends BaseModel
     protected $casts = [
         'user_id' => 'int',
         'last_seen_at' => 'datetime',
+    ];
+
+    protected $hidden = [
+        'device_token',
+        'fcm_token',
     ];
 
     protected $fillable = [

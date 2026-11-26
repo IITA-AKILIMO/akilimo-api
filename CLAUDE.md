@@ -48,7 +48,7 @@ Client → ComputeRequest (validation) → RecommendationController
 - `RecommendationService` — orchestrates computation, handles caching (configurable TTL), logs all requests to `api_requests`, maps fertilizer data, transforms request/response.
 - `AkilimoComputeService` — HTTP client for the external Akilimo Compute service. Configurable via `config/akilimo-compute.php` (`base_url`, `endpoint`, `timeout` defaults to 120s, `retries` defaults to 3, `logging`).
 - `AuthService` — handles login (user lookup, password verification, token minting) and token revocation. Keep auth logic here; `AuthController` is thin.
-- `FarmerAccountService` — optional farmer accounts: register, login, consent, email verification and password reset codes (hashed, in the cache), claiming a phone's earlier advice by `device_token`, account deletion. `SocialSignInService` — Google and other providers through Laravel Socialite (access-token flow). Both are used by `AccountController` and `AccountHistoryController`; see `docs/FARMER_ACCOUNTS_API.md`. `MessageService` stores messages for the mobile app and pushes them to FCM topics, or to individual phones (`publishPrivate`: a farmer account or a `device_token` as recipient, one push per registered `push_devices` row), through `Fcm\FcmClient` (HTTP v1, service account, no extra package; it deletes tokens FCM reports UNREGISTERED). `PushDeviceService`/`PushDeviceRepo` keep `push_devices` (`PUT|DELETE /v1/devices`). `GET /v1/messages` is how phones fetch what they missed and never returns a private message to anyone but its recipient; see `docs/MESSAGES_API.md`.
+- `FarmerAccountService` — optional farmer accounts: register, login, consent, email verification and password reset codes (hashed, in the cache), claiming a phone's earlier advice by `device_token`, account deletion. `SocialSignInService` — Google and other providers through Laravel Socialite (access-token flow). Both are used by `AccountController` and `AccountHistoryController`; see `docs/FARMER_ACCOUNTS_API.md`. `MessageService` stores messages for the mobile app and queues their push (`JobsPushMessage`, the only code that calls FCM) to FCM topics, or to individual phones (`publishPrivate`: a farmer account or a `device_token` as recipient, one push per registered `push_devices` row), through `Fcm\FcmClient` (HTTP v1, service account, no extra package; it deletes tokens FCM reports UNREGISTERED). `PushDeviceService`/`PushDeviceRepo` keep `push_devices` (`PUT|DELETE /v1/devices`). `GET /v1/messages` is how phones fetch what they missed and never returns a private message to anyone but its recipient; see `docs/MESSAGES_API.md`.
 
 **Repositories** (`app/Repositories/`) — Data access via `BaseRepo` (abstract, handles pagination/sorting/filtering). All repos implement `Contracts/Repository`. Don't bypass repositories to query models directly from controllers.
 
@@ -215,10 +215,12 @@ AKILIMO_COMPUTE_LOGGING=       # Enable request/response logging (default: true)
 # Authentication
 AUTH_TOKEN_TTL_DAYS=30         # Bearer token lifetime in days
 
-# Push messages (config/fcm.php; see docs/MESSAGES_API.md)
+# Push messages (config/fcm.php; see docs/MESSAGES_API.md). Every push is a queued job (App\Jobs\PushMessage): a queue worker must run
 FCM_ENABLED=false              # true once a service account is set
 FCM_PROJECT_ID=                # Firebase project id
-FCM_CREDENTIALS=               # service account JSON: path or the JSON itself
+FCM_CREDENTIALS=               # service account JSON: path (quote it if it has spaces) or the JSON itself; check with php artisan fcm:check
+FARMER_NOTIFICATIONS_ENABLED=true            # config/farmer-notifications.php: notices when an admin changes prices, fertilizers, starch factories or app versions
+FARMER_NOTIFICATIONS_DEBOUNCE_MINUTES=10     # one notice per kind and country for a batch of edits
 
 # Farmer accounts (config/farmer-accounts.php, config/services.php; see docs/FARMER_ACCOUNTS_API.md)
 FARMER_SOCIAL_PROVIDERS=google # default google (refused until GOOGLE_CLIENT_ID is set); e.g. google,facebook; blank = social sign-in off

@@ -22,6 +22,13 @@ const TARGET_LABEL: Record<string, string> = {
     inbox: 'Messages',
 }
 
+const PUSH_BADGE: Record<AppMessage['push_status'], { label: string; className: string }> = {
+    queued: { label: 'Queued', className: 'bg-info text-dark' },
+    pushed: { label: 'Pushed', className: 'bg-success' },
+    failed: { label: 'Failed', className: 'bg-danger' },
+    not_pushed: { label: 'Not pushed', className: 'bg-light text-dark border' },
+}
+
 function RecipientPicker({ selected, onChange }: { selected: MessageRecipient[]; onChange: (r: MessageRecipient[]) => void }) {
     const [query, setQuery] = useState('')
     const [results, setResults] = useState<MessageRecipient[]>([])
@@ -224,7 +231,7 @@ export default function MessagesIndex({ messages, types, targets }: Props) {
                                             <div className="small text-body-secondary text-truncate">{m.body}</div>
                                         </td>
                                         <td>{m.recipient ?? `${m.country ?? 'All countries'} · ${m.language ?? 'all languages'}`}</td>
-                                        <td>{m.pushed_at ? <span className="badge bg-success">Sent</span> : <span className="badge bg-light text-dark border">Not pushed</span>}</td>
+                                        <td><span className={`badge ${PUSH_BADGE[m.push_status].className}`} title={m.push_error ?? undefined}>{PUSH_BADGE[m.push_status].label}</span></td>
                                     </tr>
                                 ))}
                             </tbody>

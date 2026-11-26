@@ -61,6 +61,23 @@ class PushDeviceRepo extends BaseRepo
         return $this->query()->where('device_token', 'like', addcslashes($prefix, '%_\\') . '%')->limit($limit)->get();
     }
 
+    public function findByDeviceToken(string $deviceToken): ?PushDevice
+    {
+        return $this->query()->where('device_token', $deviceToken)->first();
+    }
+
+    /** Ids of every farmer account that has at least one phone registered. @return array<int, int> */
+    public function userIdsWithDevices(): array
+    {
+        return $this->query()->whereNotNull('user_id')->distinct()->pluck('user_id')->map(fn ($id) => (int)$id)->all();
+    }
+
+    /** The language of the phone the farmer used most recently, or null. */
+    public function languageOfUser(int $userId): ?string
+    {
+        return $this->query()->where('user_id', $userId)->orderByDesc('last_seen_at')->value('language');
+    }
+
     public function userIdOf(string $deviceToken): ?int
     {
         $id = $this->query()->where('device_token', $deviceToken)->value('user_id');

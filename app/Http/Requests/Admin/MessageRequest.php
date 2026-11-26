@@ -9,9 +9,8 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\EnumMessageType;
-use App\Enums\EnumUserRole;
-use App\Models\User;
 use App\Repositories\PushDeviceRepo;
+use App\Repositories\UserRepo;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -67,7 +66,7 @@ class MessageRequest extends FormRequest
                     continue; // the field rules report it
                 }
                 $found = match ($recipient['type']) {
-                    'user' => User::query()->whereKey((string)$recipient['id'])->where('role', EnumUserRole::User)->exists(),
+                    'user' => app(UserRepo::class)->isFarmer((string)$recipient['id']),
                     'device' => app(PushDeviceRepo::class)->hasDeviceToken((string)$recipient['id']),
                     default => true,
                 };

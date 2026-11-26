@@ -135,4 +135,29 @@ class ApiRequestRepo extends BaseRepo
     {
         return $this->distinctValues('use_case', ['NA']);
     }
+
+    /**
+     * Ids of the accounts whose advice requests carry a phone number like $term.
+     *
+     * @return array<int, int>
+     */
+    public function userIdsByPhone(string $term): array
+    {
+        $like = '%' . addcslashes($term, '%_\\') . '%';
+
+        return $this->query()->whereNotNull('user_id')->where('phone_number', 'like', $like)
+            ->distinct()->pluck('user_id')->map(fn ($id) => (int)$id)->all();
+    }
+
+    /**
+     * The phone number of each account's latest request that has one.
+     *
+     * @param array<int, int> $userIds
+     * @return array<int, string> phone number by user id
+     */
+    public function latestPhones(array $userIds): array
+    {
+        return $this->query()->whereIn('user_id', $userIds)->whereNotNull('phone_number')->orderBy('created_at')
+            ->get(['user_id', 'phone_number'])->mapWithKeys(fn ($row) => [(int)$row->user_id => (string)$row->phone_number])->all();
+    }
 }

@@ -9,13 +9,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\EnumMessageType;
-use App\Enums\EnumUserRole;
 use App\Http\Requests\Admin\MessageRequest;
-use App\Models\ApiRequest;
 use App\Models\Message;
 use App\Models\PushDevice;
 use App\Models\User;
+use App\Repositories\ApiRequestRepo;
+use App\Repositories\MessageRepo;
 use App\Repositories\PushDeviceRepo;
+use App\Repositories\UserRepo;
 use App\Service\MessageService;
 use App\Service\PushDeviceService;
 use Illuminate\Http\JsonResponse;
@@ -31,26 +32,26 @@ use Inertia\Response;
 class MessageController extends AdminController
 {
     private const array PUSH_RESULT = [
-        'sent' => 'Message saved and sent to phones.',
+        'queued' => 'Message saved. The push is queued and goes out as soon as a queue worker runs it.',
         'disabled' => 'Message saved. Push is switched off, so phones get it the next time they open the app.',
         'no_audience' => 'Message saved. It has no country or language, so phones get it the next time they open the app.',
-        'failed' => 'Message saved, but the push failed. Phones get it the next time they open the app.',
     ];
 
     private const array PRIVATE_PUSH_RESULT = [
-        'sent' => 'Messages saved and sent to %d phone(s).',
+        'queued' => 'Messages saved. The push to %d phone(s) is queued and goes out as soon as a queue worker runs it.',
         'disabled' => 'Messages saved. Push is switched off, so recipients get them the next time they open the app.',
         'no_audience' => 'Messages saved. None of the recipients has a phone registered for push, so they get them the next time they open the app.',
-        'failed' => 'Messages saved, but the push failed. Recipients get them the next time they open the app.',
     ];
 
-    public function __construct(protected MessageService $service, protected PushDeviceService $devices, protected PushDeviceRepo $deviceRepo) {}
+    public function __construct(protected MessageService $service, protected PushDeviceService $devices, protected PushDeviceRepo $deviceRepo,
+        protected MessageRepo $messageRepo,
+        protected UserRepo $userRepo,
+        protected ApiRequestRepo $requestRepo,
+    ) {}
 
     public function index(Request $request): Response
     {
-        $paginator = Message::query()->latest('created_at')
-            ->paginate(min(max((int)$request->integer('per_page', 15), 1), 100))
-            ->withQueryString();
+        $paginator = $this->messageRepo->latestPaginated(min(max((int)$request->integer('per_page', 15), 1), 100));
 
         return Inertia::render('Messages/Index', [
             'messages' => [
@@ -63,6 +64,8 @@ class MessageController extends AdminController
                     'language' => $m->language,
                     'target' => $m->target,
                     'recipient' => $m->recipient_user_id ? 'Account #' . $m->recipient_user_id : ($m->recipient_device_token ? 'Device ' . substr($m->recipient_device_token, 0, 8) . '****' : null),
+                    'push_status' => $m->push_status->value,
+                    'push_error' => $m->push_error,
                     'pushed_at' => $m->pushed_at?->toIso8601String(),
                     'expires_at' => $m->expires_at?->toIso8601String(),
                     'created_at' => $m->created_at?->toIso8601String(),
@@ -95,13 +98,13 @@ class MessageController extends AdminController
             $result = $this->service->publishPrivate($data, $request->user()?->id);
 
             return redirect()->route('admin.messages.index')
-                ->with($result['push'] === 'failed' ? 'error' : 'success', sprintf(self::PRIVATE_PUSH_RESULT[$result['push']], $result['devices']));
+                ->with('success', sprintf(self::PRIVATE_PUSH_RESULT[$result['push']], $result['devices']));
         }
 
         $result = $this->service->publish($data, $request->user()?->id);
 
         return redirect()->route('admin.messages.index')
-            ->with($result['push'] === 'failed' ? 'error' : 'success', self::PUSH_RESULT[$result['push']]);
+            ->with('success', self::PUSH_RESULT[$result['push']]);
     }
 
     /**
@@ -114,15 +117,8 @@ class MessageController extends AdminController
         if (mb_strlen($q) < 2) {
             return response()->json(['data' => []]);
         }
-        $escaped = addcslashes($q, '%_\\');
-
-        $users = User::query()->where('role', EnumUserRole::User)
-            ->where(fn ($w) => $w->where('name', 'like', "%{$escaped}%")->orWhere('email', 'like', "%{$escaped}%")->orWhere('username', 'like', "%{$escaped}%")
-                ->orWhereIn('id', ApiRequest::query()->whereNotNull('user_id')->where('phone_number', 'like', "%{$escaped}%")->select('user_id')))
-            ->orderBy('name')->limit(10)->get();
-
-        $phones = ApiRequest::query()->whereIn('user_id', $users->modelKeys())->whereNotNull('phone_number')->orderBy('created_at')
-            ->get(['user_id', 'phone_number'])->groupBy('user_id')->map(fn ($rows) => $rows->last()->phone_number);
+        $users = $this->userRepo->searchFarmers($q, $this->requestRepo->userIdsByPhone($q), 10);
+        $phones = $this->requestRepo->latestPhones($users->modelKeys());
 
         $rows = $users->map(fn (User $u) => [
             'type' => 'user',

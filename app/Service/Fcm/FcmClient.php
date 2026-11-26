@@ -68,6 +68,36 @@ class FcmClient
         }
     }
 
+    /** The service account's e-mail address (for diagnostics; the key itself is never exposed), or null when the credentials are unusable. */
+    public function serviceAccountEmail(): ?string
+    {
+        return $this->credentials()['client_email'] ?? null;
+    }
+
+    /**
+     * Asks FCM to validate a message without delivering it (`validate_only`): proves the key signs, Google issues a
+     * token, FCM is reachable and the project accepts the request. With a token as target it also proves that token is
+     * known to the project.
+     *
+     * @param array{topic: string}|array{condition: string}|array{token: string} $target
+     *
+     * @throws RuntimeException with FCM's answer when it refuses
+     */
+    public function validate(array $target): void
+    {
+        $response = Http::withToken($this->accessToken())
+            ->timeout((int)config('fcm.timeout'))
+            ->acceptJson()
+            ->post(
+                'https://fcm.googleapis.com/v1/projects/' . config('fcm.project_id') . '/messages:send',
+                ['validate_only' => true, 'message' => [...$target, 'data' => ['check' => '1']]],
+            );
+
+        if ($response->failed()) {
+            throw new RuntimeException('FCM refused the check (' . $response->status() . '): ' . $response->body());
+        }
+    }
+
     /**
      * Sends one data message to one phone. Returns false when FCM reports the token as UNREGISTERED: the phone is then
      * removed from `push_devices` (the app registers again on its next start).

@@ -8,8 +8,10 @@
 
 namespace App\Repositories;
 
+use App\Enums\PushStatus;
 use App\Models\Message;
 use Carbon\CarbonInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,6 +22,34 @@ class MessageRepo extends BaseRepo
     protected function model(): string
     {
         return Message::class;
+    }
+
+    /** Messages newest first, for the admin list. */
+    public function latestPaginated(int $perPage): LengthAwarePaginator
+    {
+        return $this->query()->latest('created_at')->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * Records the outcome of a push job. The outcomes rank: a message that reached any phone stays pushed, a failure
+     * only replaces queued or not pushed, and not pushed only replaces queued, so jobs for several phones of one message
+     * finishing in any order leave the best result. One conditional UPDATE, safe when jobs run in parallel.
+     */
+    public function markPush(string $id, PushStatus $status, ?string $error = null): void
+    {
+        $replaces = match ($status) {
+            PushStatus::Pushed => null,
+            PushStatus::Failed => [PushStatus::Queued->value, PushStatus::NotPushed->value],
+            default => [PushStatus::Queued->value],
+        };
+
+        $this->query()->whereKey($id)
+            ->when($replaces !== null, fn ($q) => $q->whereIn('push_status', $replaces))
+            ->update([
+                'push_status' => $status->value,
+                'push_error' => $status === PushStatus::Pushed ? null : ($error !== null ? mb_substr($error, 0, 255) : null),
+                ...($status === PushStatus::Pushed ? ['pushed_at' => now()] : []),
+            ]);
     }
 
     /**

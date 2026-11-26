@@ -7,13 +7,19 @@
  */
 
 use App\Enums\EnumUserRole;
+use App\Enums\PushStatus;
+use App\Jobs\PushMessage;
 use App\Models\ApiRequest;
+use App\Models\Country;
 use App\Models\Message;
 use App\Models\PersonalAccessToken;
 use App\Models\PushDevice;
 use App\Models\User;
+use App\Repositories\MessageRepo;
+use App\Repositories\PushDeviceRepo;
 use App\Service\Fcm\FcmClient;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
@@ -201,7 +207,7 @@ it('stores a private message per recipient and pushes every phone of an account'
     $this->postJson('/api/v1/admin/messages', [
         'type' => 'advice', 'title' => 'Hello', 'body' => 'Private',
         'recipients' => [['type' => 'user', 'id' => $farmer->id], ['type' => 'device', 'id' => $single->device_token]],
-    ])->assertCreated()->assertJsonPath('push', 'sent')->assertJsonPath('devices', 3)->assertJsonCount(2, 'data');
+    ])->assertCreated()->assertJsonPath('push', 'queued')->assertJsonPath('devices', 3)->assertJsonCount(2, 'data');
 
     expect(Message::where('recipient_user_id', $farmer->id)->sole()->pushed_at)->not->toBeNull()
         ->and(Message::where('recipient_device_token', $single->device_token)->count())->toBe(1);
@@ -214,15 +220,19 @@ it('keeps the message when a private push fails or no phone is registered', func
     $nobody = pushFarmer('No Phone');
     pushDevice(['user_id' => $farmer->id]);
     Http::fake(['oauth2.googleapis.com/*' => Http::response(['access_token' => 'at'], 200), 'fcm.googleapis.com/*' => Http::response(['error' => 'down'], 500)]);
+    Queue::fake();
     $this->actingAsApiUser();
     $body = ['type' => 'advice', 'title' => 'T', 'body' => 'B'];
 
     $this->postJson('/api/v1/admin/messages', [...$body, 'recipients' => [['type' => 'user', 'id' => $farmer->id]]])
-        ->assertCreated()->assertJsonPath('push', 'failed')->assertJsonPath('devices', 0);
+        ->assertCreated()->assertJsonPath('push', 'queued')->assertJsonPath('devices', 1);
+    Queue::assertPushed(PushMessage::class, 1);
+    Http::assertNothingSent();
     $this->postJson('/api/v1/admin/messages', [...$body, 'recipients' => [['type' => 'user', 'id' => $nobody->id]]])
         ->assertCreated()->assertJsonPath('push', 'no_audience');
 
     expect(Message::count())->toBe(2)->and(Message::whereNotNull('pushed_at')->count())->toBe(0);
+    Queue::assertPushed(PushMessage::class, 1); // nothing was queued for the farmer without a phone
 });
 
 it('stores a private message and reports disabled when push is off', function () {
@@ -293,4 +303,99 @@ it('counts distinct phones for the chosen recipients and sends private messages 
 it('keeps non-admins out of the recipient search', function () {
     $partner = User::create(['name' => 'P', 'username' => 'p_' . Str::random(6), 'email' => 'p_' . Str::random(6) . '@example.com', 'password' => bcrypt('x'), 'role' => EnumUserRole::Partner]);
     $this->actingAs($partner)->getJson('/admin/messages/recipients?q=abc')->assertRedirect();
+});
+
+// ── php artisan fcm:check ────────────────────────────────────────────────────
+
+it('fcm:check says push is off when FCM is not enabled', function () {
+    config(['fcm.enabled' => false]);
+
+    $this->artisan('fcm:check')->expectsOutputToContain('FCM_ENABLED is false')->assertFailed();
+});
+
+it('fcm:check reports unusable credentials', function () {
+    config(['fcm.enabled' => true, 'fcm.project_id' => 'p', 'fcm.credentials' => 'not-a-key']);
+
+    $this->artisan('fcm:check')->expectsOutputToContain('could not be loaded')->assertFailed();
+
+    config(['fcm.credentials' => '{"client_email":"only@this"}']);
+    $this->artisan('fcm:check')->expectsOutputToContain('not a service account key')->assertFailed();
+});
+
+it('fcm:check validates without delivering, then checks and sends to a phone', function () {
+    enableFcm();
+    $device = pushDevice();
+    Http::fake(['oauth2.googleapis.com/*' => Http::response(['access_token' => 'at'], 200), 'fcm.googleapis.com/*' => Http::response(['name' => 'ok'], 200)]);
+
+    $this->artisan('fcm:check')->expectsOutputToContain('FCM is ready')->assertSuccessful();
+    Http::assertSent(fn ($r) => str_contains($r->url(), 'messages:send') && $r['validate_only'] === true && $r['message']['topic'] === 'fcm_connectivity_check');
+
+    $this->artisan('fcm:check', ['--device' => $device->device_token])->expectsOutputToContain('token is accepted')->assertSuccessful();
+    $this->artisan('fcm:check', ['--device' => $device->device_token, '--send' => true])->expectsOutputToContain('queued for that phone')->assertSuccessful();
+    Http::assertSent(fn ($r) => str_contains($r->url(), 'messages:send') && ($r['message']['token'] ?? null) === $device->fcm_token && !isset($r['validate_only']));
+});
+
+it('fcm:check fails with the FCM answer when FCM refuses', function () {
+    enableFcm();
+    Http::fake(['oauth2.googleapis.com/*' => Http::response(['access_token' => 'at'], 200), 'fcm.googleapis.com/*' => Http::response(['error' => ['status' => 'PERMISSION_DENIED']], 403)]);
+
+    $this->artisan('fcm:check')->expectsOutputToContain('PERMISSION_DENIED')->assertFailed();
+});
+
+// ── push_status follows what the push job really did ─────────────────────────
+
+it('stores the push status from the start: queued, or not pushed with the reason', function () {
+    Queue::fake();
+    Country::query()->where('code', 'TZ')->exists() || Country::create(['code' => 'TZ', 'name' => 'Tanzania', 'active' => true, 'sort_order' => 1]);
+    config(['fcm.enabled' => false]);
+    $this->actingAsApiUser();
+    $off = $this->postJson('/api/v1/admin/messages', ['type' => 'reminder', 'title' => 'T', 'body' => 'B', 'country' => 'TZ'])->assertCreated();
+    $none = $this->postJson('/api/v1/admin/messages', ['type' => 'reminder', 'title' => 'T', 'body' => 'B'])->assertCreated();
+    enableFcm();
+    $queued = $this->postJson('/api/v1/admin/messages', ['type' => 'reminder', 'title' => 'T', 'body' => 'B', 'country' => 'TZ'])->assertCreated();
+
+    expect(Message::find($off->json('data.id')))->push_status->value->toBe('not_pushed')->push_error->toBe('FCM is not configured.')
+        ->and(Message::find($none->json('data.id'))->push_status->value)->toBe('not_pushed')
+        ->and(Message::find($queued->json('data.id'))->push_status->value)->toBe('queued');
+    $queued->assertJsonPath('data.push_status', 'queued');
+
+    // Phones never see it
+    expect($this->getJson('/api/v1/messages')->json('data.0'))->not->toHaveKey('push_status');
+});
+
+it('marks a message pushed when the job succeeds, failed when it gives up and not pushed when the phone is gone', function () {
+    enableFcm();
+    Http::fake(['oauth2.googleapis.com/*' => Http::response(['access_token' => 'at'], 200), 'fcm.googleapis.com/*' => Http::sequence()->push(['name' => 'ok'], 200)->push(['error' => 'down'], 500)]);
+    $run = fn (PushMessage $job) => $job->handle(app(FcmClient::class), app(MessageRepo::class), app(PushDeviceRepo::class));
+    $topic = fn () => Message::create(['type' => 'advice', 'title' => 'T', 'body' => 'B', 'country' => 'TZ', 'push_status' => 'queued']);
+
+    $ok = $topic();
+    $run(new PushMessage($ok->id));
+    expect($ok->fresh())->push_status->value->toBe('pushed')->pushed_at->not->toBeNull();
+
+    $bad = $topic();
+    $job = new PushMessage($bad->id);
+    try {
+        $run($job);
+    } catch (Throwable $e) {
+        $job->failed($e);
+    }
+    expect($bad->fresh())->push_status->value->toBe('failed')->push_error->toContain('FCM send failed');
+
+    $private = Message::create(['type' => 'advice', 'title' => 'T', 'body' => 'B', 'recipient_user_id' => pushFarmer()->id, 'push_status' => 'queued']);
+    $run(new PushMessage($private->id, 99999));
+    expect($private->fresh())->push_status->value->toBe('not_pushed')->push_error->toBe('The phone is no longer registered.');
+});
+
+it('lets the best outcome win when jobs for several phones of one message finish in any order', function () {
+    $repo = app(MessageRepo::class);
+    $message = Message::create(['type' => 'advice', 'title' => 'T', 'body' => 'B', 'push_status' => 'queued']);
+
+    $repo->markPush($message->id, PushStatus::Failed, 'down');
+    $repo->markPush($message->id, PushStatus::NotPushed, 'gone');   // does not replace a failure
+    expect($message->fresh()->push_status->value)->toBe('failed');
+
+    $repo->markPush($message->id, PushStatus::Pushed);
+    $repo->markPush($message->id, PushStatus::Failed, 'late failure'); // nothing replaces pushed
+    expect($message->fresh())->push_status->value->toBe('pushed')->push_error->toBeNull();
 });

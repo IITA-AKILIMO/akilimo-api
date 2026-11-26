@@ -170,6 +170,10 @@ export interface AppMessage {
     target: string | null
     /** Who a private message is for (masked), or null for a broadcast */
     recipient: string | null
+    /** What became of the push: queued, pushed, failed or not_pushed */
+    push_status: 'queued' | 'pushed' | 'failed' | 'not_pushed'
+    /** Why a push failed or was not sent */
+    push_error: string | null
     pushed_at: string | null
     expires_at: string | null
     created_at: string | null
