@@ -14,4 +14,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class Message extends BaseMessage
 {
     use HasUuids;
+
+    // Columns the generated base model does not know yet (see CLAUDE.md, "Models"): the private recipient of a message
+    public function __construct(array $attributes = [])
+    {
+        $this->mergeFillable(['recipient_device_token', 'recipient_user_id']);
+        $this->mergeCasts(['recipient_user_id' => 'int']);
+        parent::__construct($attributes);
+    }
 }

@@ -137,6 +137,7 @@ export const navigation: NavSection[] = [
         heading: 'Mobile app',
         items: [
             { label: 'App versions', href: '/admin/app-versions', icon: 'phone', roles: ADMIN },
+            { label: 'Messages', href: '/admin/messages', icon: 'phone', roles: ADMIN },
         ],
     },
     {

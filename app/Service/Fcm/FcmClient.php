@@ -8,20 +8,23 @@
 
 namespace App\Service\Fcm;
 
+use App\Repositories\PushDeviceRepo;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 /**
- * Sends data-only messages to FCM topics with the HTTP v1 API. No device tokens are involved: the app subscribes itself to
- * `country_<CODE>` and `lang_<code>` (see docs/MESSAGES_API.md). The access token comes from a service account: a signed
+ * Sends data-only messages with the HTTP v1 API, to FCM topics (the app subscribes itself to `country_<CODE>` and
+ * `lang_<code>`) or to one phone's registration token (see docs/MESSAGES_API.md). A token FCM reports as UNREGISTERED
+ * (app uninstalled, token expired) is removed from `push_devices`. The access token comes from a service account: a signed
  * JWT exchanged at Google's token endpoint, cached until shortly before it expires. Needs ext-openssl, no extra package.
  */
 class FcmClient
 {
-    private const TOKEN_CACHE_KEY = 'fcm.access_token';
+    private const string TOKEN_CACHE_KEY = 'fcm.access_token';
 
-    private const TOKEN_TTL_SECONDS = 3300;
+    private const int TOKEN_TTL_SECONDS = 3300;
 
     public function isConfigured(): bool
     {
@@ -58,17 +61,64 @@ class FcmClient
      */
     public function send(array $target, array $data): void
     {
-        $response = Http::withToken($this->accessToken())
+        $response = $this->post($target, $data);
+
+        if ($response->failed()) {
+            throw new RuntimeException('FCM send failed (' . $response->status() . '): ' . $response->body());
+        }
+    }
+
+    /**
+     * Sends one data message to one phone. Returns false when FCM reports the token as UNREGISTERED: the phone is then
+     * removed from `push_devices` (the app registers again on its next start).
+     *
+     * @param array<string, string|null> $data
+     *
+     * @throws RuntimeException when FCM refuses the message for another reason or the access token cannot be obtained
+     */
+    public function sendToToken(string $fcmToken, array $data): bool
+    {
+        $response = $this->post(['token' => $fcmToken], $data);
+
+        if ($response->successful()) {
+            return true;
+        }
+        if ($this->isUnregistered($response)) {
+            app(PushDeviceRepo::class)->deleteByFcmToken($fcmToken);
+
+            return false;
+        }
+
+        throw new RuntimeException('FCM send failed (' . $response->status() . '): ' . $response->body());
+    }
+
+    /**
+     * @param array{topic: string}|array{condition: string}|array{token: string} $target
+     * @param array<string, string|null> $data
+     */
+    private function post(array $target, array $data): Response
+    {
+        return Http::withToken($this->accessToken())
             ->timeout((int)config('fcm.timeout'))
             ->acceptJson()
             ->post(
                 'https://fcm.googleapis.com/v1/projects/' . config('fcm.project_id') . '/messages:send',
                 ['message' => [...$target, 'data' => array_map('strval', array_filter($data, fn ($v) => $v !== null)), 'android' => ['priority' => 'HIGH']]],
             );
+    }
 
-        if ($response->failed()) {
-            throw new RuntimeException('FCM send failed (' . $response->status() . '): ' . $response->body());
+    private function isUnregistered(Response $response): bool
+    {
+        if ($response->status() !== 404 && $response->status() !== 400) {
+            return false;
         }
+        foreach ((array)$response->json('error.details', []) as $detail) {
+            if (($detail['errorCode'] ?? null) === 'UNREGISTERED') {
+                return true;
+            }
+        }
+
+        return $response->json('error.status') === 'NOT_FOUND';
     }
 
     private function accessToken(): string
