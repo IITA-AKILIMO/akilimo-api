@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(MigrationsEnded::class, function () {
             $views = app(ViewRebuilder::class);
 
-            if (! $views->hasPrefixedViews()) {
+            if (!$views->hasPrefixedViews()) {
                 return;
             }
 

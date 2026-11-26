@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PriceCatalogue extends BasePriceCatalogue
 {
-
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

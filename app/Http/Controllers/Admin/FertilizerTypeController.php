@@ -56,7 +56,7 @@ class FertilizerTypeController extends AdminController
     private function categories(): array
     {
         return DB::table('fertilizer_categories')->orderBy('sort_order')->get(['value', 'label'])
-            ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all();
+            ->map(fn ($c) => ['value' => (string)$c->value, 'label' => (string)$c->label])->all();
     }
 
     public function store(FertilizerTypeRequest $request): RedirectResponse

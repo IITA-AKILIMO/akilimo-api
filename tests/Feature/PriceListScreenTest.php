@@ -48,7 +48,7 @@ it('shows the lists the app reads, with the label a client displays for each cho
             ->where('items.meta.total', 5)                       // four bands and the exact-price row
             ->where('items.data.0.label', 'Exact price')         // words, not -1
             ->where('items.data.1.label', '7,200 – 9,600 ₦')     // what the app shows, with the currency
-            ->where('items.data.1.average', fn ($v) => (float) $v === 8400.0));
+            ->where('items.data.1.average', fn ($v) => (float)$v === 8400.0));
 });
 
 it('labels the zero and negative rows as words in the fertilizer and investment lists', function () {
@@ -112,7 +112,7 @@ it('searches the lists that have a name to search by, and pages them', function 
     // a priced fertilizer has its choices and the "I don't know" and "Exact price" rows
     $this->actingAs($admin)->get('/admin/price-lists?list=fertilizer&search=dap')
         ->assertInertia(fn (Assert $page) => $page
-            ->where('searchPlaceholder', fn ($p) => str_contains((string) $p, 'fertilizer key'))
+            ->where('searchPlaceholder', fn ($p) => str_contains((string)$p, 'fertilizer key'))
             ->where('items.meta.total', fn ($total) => $total >= 3)
             ->where('items.data', fn ($rows) => collect($rows)->every(fn ($r) => $r['fertilizer_key'] === 'DAP_NG')));
 

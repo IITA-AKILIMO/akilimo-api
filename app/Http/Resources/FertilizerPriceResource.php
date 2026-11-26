@@ -13,7 +13,6 @@ use App\Models\VwFertilizerPrice;
 use App\Support\PriceMarker;
 use App\Utils\CurrencyConversion;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -24,8 +23,7 @@ class FertilizerPriceResource extends BaseJsonResource
     public function __construct(
         $resource,
         private readonly ?Currency $currency,
-    )
-    {
+    ) {
         parent::__construct($resource);
     }
 

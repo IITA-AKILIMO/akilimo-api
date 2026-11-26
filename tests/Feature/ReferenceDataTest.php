@@ -33,7 +33,7 @@ it('lists every settings table on the hub', function () {
     $this->actingAs(referenceAdmin())->get('/admin/reference')
         ->assertInertia(fn (Assert $page) => $page
             ->component('Reference/Hub')
-            ->has('tables', count(array_filter(ReferenceTables::all(), fn (array $d) => ! isset($d['area']))))
+            ->has('tables', count(array_filter(ReferenceTables::all(), fn (array $d) => !isset($d['area']))))
             ->where('tables.0.slug', 'price-units')
             ->where('tables.0.rows', 5)
             // fertilizer and unit lists are tabs under Catalogue, not cards here
@@ -76,7 +76,7 @@ it('pages a long table and keeps the filters in the page links', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->where('items.meta.current_page', 2)
             ->where('items.meta.total', 25)                      // the 24 added and maize_grain, which is per kg too
-            ->where('items.links.next', fn ($url) => str_contains((string) $url, 'unit=per_kg')));
+            ->where('items.links.next', fn ($url) => str_contains((string)$url, 'unit=per_kg')));
 
     // the page size is held to a sensible range
     $this->actingAs($admin)->get('/admin/reference/price-items?per_page=100000')
@@ -96,7 +96,7 @@ it('searches a table and filters it by a choice, offering only values it holds',
             ->where('items.data.0.unit', 'per_kg')
             ->where('selectFilters.0.key', 'unit')
             ->where('selectFilters.0.options', fn ($options) => collect($options)->pluck('value')->contains('per_kg')
-                && ! collect($options)->pluck('value')->contains('per_litre')));
+                && !collect($options)->pluck('value')->contains('per_litre')));
 
     $this->actingAs($admin)->get('/admin/reference/price-items?search=zzzz-nothing')
         ->assertInertia(fn (Assert $page) => $page->where('items.meta.total', 0)->has('items.data', 0));
@@ -192,7 +192,7 @@ it('changes the app price lists when a rule is edited', function () {
 
     $after = DB::table('vw_cassava_prices')->where('min_local_price', '>', 0)->max('max_local_price');
 
-    expect((float) $before)->toBe(14000.0)->and((float) $after)->toBe(16000.0);
+    expect((float)$before)->toBe(14000.0)->and((float)$after)->toBe(16000.0);
 });
 
 function previewCatalogue(): void
@@ -207,7 +207,7 @@ function previewCatalogue(): void
 
 it('previews what a changed step would do, and saves nothing', function () {
     previewCatalogue();
-    $steps = fn () => DB::table('price_choice_steps')->orderBy('step_order')->pluck('change_pct')->map(fn ($v) => (float) $v)->all();
+    $steps = fn () => DB::table('price_choice_steps')->orderBy('step_order')->pluck('change_pct')->map(fn ($v) => (float)$v)->all();
     $maxBefore = DB::table('vw_cassava_prices')->max('max_local_price');
 
     $response = $this->actingAs(referenceAdmin())
@@ -288,7 +288,7 @@ it('previews a changed unit quantity on the maize list only', function () {
     $changed = collect($response->json('lists'))->filter(fn ($l) => $l['changed'] > 0)->pluck('key')->all();
 
     expect($changed)->toBe(['maize'])
-        ->and((int) DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(1000);   // unchanged: per tonne
+        ->and((int)DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(1000);   // unchanged: per tonne
 });
 
 it('says when a change would alter nothing', function () {

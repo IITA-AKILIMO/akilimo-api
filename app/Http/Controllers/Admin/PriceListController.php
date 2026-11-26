@@ -43,7 +43,7 @@ class PriceListController extends AdminController
         }
         // The label needs the columns it is worked out from, whether or not the table shows them
         foreach (['price_per_bag', 'min_local_price', 'max_local_price', 'investment_amount', 'min_cost', 'max_cost'] as $needed) {
-            if (! array_key_exists($needed, $def['columns']) && $this->hasColumn($def['table'], $needed)) {
+            if (!array_key_exists($needed, $def['columns']) && $this->hasColumn($def['table'], $needed)) {
                 $select[] = $needed;
             }
         }
@@ -74,7 +74,7 @@ class PriceListController extends AdminController
         }
 
         $symbols = $this->symbols();
-        $paginator = $query->paginate((int) min(100, max(10, (int) $request->get('per_page', 25))))->withQueryString();
+        $paginator = $query->paginate((int)min(100, max(10, (int)$request->get('per_page', 25))))->withQueryString();
 
         return Inertia::render('PriceLists/Index', [
             'lists' => collect(PriceLists::LISTS)->map(fn ($d, $key) => ['key' => $key, 'title' => $d['title']])->values(),
@@ -84,9 +84,9 @@ class PriceListController extends AdminController
             'hasMarkers' => $marker !== null,
             'columns' => collect($def['columns'])->map(fn ($label, $key) => ['key' => $key, 'label' => $label])->values(),
             'items' => $this->paginateShape($paginator, function ($row) use ($list, $def, $symbols) {
-                $country = (string) $row->{$def['country']};
+                $country = (string)$row->{$def['country']};
 
-                return (array) $row + ['label' => PriceLists::label($list, $row, $symbols[$country] ?? null)];
+                return (array)$row + ['label' => PriceLists::label($list, $row, $symbols[$country] ?? null)];
             }),
         ]);
     }
@@ -103,7 +103,7 @@ class PriceListController extends AdminController
             ->orderBy('id')
             ->get(['country_code', 'currency_symbol', 'currency_code'])
             ->unique('country_code')
-            ->mapWithKeys(fn ($c) => [(string) $c->country_code => (string) ($c->currency_symbol ?: $c->currency_code)])
+            ->mapWithKeys(fn ($c) => [(string)$c->country_code => (string)($c->currency_symbol ?: $c->currency_code)])
             ->all();
     }
 

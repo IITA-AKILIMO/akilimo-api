@@ -30,7 +30,7 @@ class TrafficExclusionSeeder extends Seeder
 
             DB::table('traffic_exclusions')->insert($key + [
                 'note' => $row['note'],
-                'active' => (bool) $row['active'],
+                'active' => (bool)$row['active'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

@@ -23,12 +23,12 @@ class CassavaUnitsSeeder extends Seeder
     {
         foreach ($this->csvRows('cassava_units.csv') as $row) {
             DB::table('cassava_units')->insertOrIgnore([
-                'id' => (int) $row['id'],
-                'unit_weight' => (int) $row['unit_weight'],
+                'id' => (int)$row['id'],
+                'unit_weight' => (int)$row['unit_weight'],
                 'label' => $row['label'],
-                'sort_order' => (int) $row['sort_order'],
+                'sort_order' => (int)$row['sort_order'],
                 'description' => $row['description'],
-                'is_active' => (bool) $row['is_active'],
+                'is_active' => (bool)$row['is_active'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

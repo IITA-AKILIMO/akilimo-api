@@ -19,9 +19,7 @@ use Illuminate\View\View;
  */
 class AccountDeletionController extends Controller
 {
-    public function __construct(private readonly FarmerAccountService $accounts)
-    {
-    }
+    public function __construct(private readonly FarmerAccountService $accounts) {}
 
     public function show(): View
     {

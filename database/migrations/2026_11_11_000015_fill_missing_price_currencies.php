@@ -5,6 +5,7 @@
  *
  * For licence information, see the LICENCE file.
  */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -47,8 +48,8 @@ return new class extends Migration {
     public function down(): void
     {
         foreach (DB::table('default_price_history')->where('action', 'updated')->where('note', self::NOTE)->get() as $entry) {
-            $new = json_decode((string) $entry->new_values, true);
-            $old = json_decode((string) $entry->old_values, true);
+            $new = json_decode((string)$entry->new_values, true);
+            $old = json_decode((string)$entry->old_values, true);
             $price = $entry->default_price_id === null ? null : DB::table('default_prices')->where('id', $entry->default_price_id)->first();
 
             // Only a price still carrying the currency this migration gave it

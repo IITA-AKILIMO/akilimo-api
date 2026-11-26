@@ -28,7 +28,7 @@ it('pages the exclusion rules instead of loading all of them', function () {
 
     for ($i = 1; $i <= 30; $i++) {
         DB::table('traffic_exclusions')->insert([
-            'field' => 'phone', 'match_type' => 'starts_with', 'value' => '2547' . str_pad((string) $i, 2, '0', STR_PAD_LEFT),
+            'field' => 'phone', 'match_type' => 'starts_with', 'value' => '2547' . str_pad((string)$i, 2, '0', STR_PAD_LEFT),
             'note' => $i <= 5 ? 'zz-paging-marker' : null, 'active' => true, 'created_at' => now(), 'updated_at' => now(),
         ]);
     }
@@ -39,7 +39,7 @@ it('pages the exclusion rules instead of loading all of them', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->has('rules', 10)
             ->where('pagination.meta.total', $total)
-            ->where('pagination.meta.last_page', (int) ceil($total / 10))
+            ->where('pagination.meta.last_page', (int)ceil($total / 10))
             ->where('pagination.meta.per_page', 10));
 
     // the count follows the filter, and a page past the end is empty

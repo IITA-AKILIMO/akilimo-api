@@ -43,7 +43,7 @@ class ViewRebuilder
         sort($files);
 
         foreach ($files as $file) {
-            $sql = trim((string) preg_replace('/^\s*--.*$/m', '', (string) file_get_contents($file)));
+            $sql = trim((string)preg_replace('/^\s*--.*$/m', '', (string)file_get_contents($file)));
 
             if ($sql !== '') {
                 $definitions[pathinfo($file, PATHINFO_FILENAME)] = $sql;
@@ -68,7 +68,7 @@ class ViewRebuilder
     public function existingViews(): array
     {
         return array_map(
-            fn ($row) => (string) $row->name,
+            fn ($row) => (string)$row->name,
             DB::select('SELECT table_name AS name FROM information_schema.views WHERE table_schema = DATABASE() ORDER BY table_name'),
         );
     }
@@ -99,7 +99,7 @@ class ViewRebuilder
                 }
             }
 
-            if (! $progress) {
+            if (!$progress) {
                 break;
             }
         }
@@ -111,8 +111,8 @@ class ViewRebuilder
      * What is wrong with the views, changing nothing.
      *
      * @return array{missing: list<string>, broken: array<string, string>, unknown: list<string>, unprefixed: list<string>}
-     *         missing: has a file, no view; broken: the view no longer works (a table or column it reads is gone);
-     *         unknown: a vw_ view with no file; unprefixed: a view without the vw_ prefix
+     *                                                                                                                      missing: has a file, no view; broken: the view no longer works (a table or column it reads is gone);
+     *                                                                                                                      unknown: a vw_ view with no file; unprefixed: a view without the vw_ prefix
      */
     public function check(): array
     {
@@ -132,7 +132,7 @@ class ViewRebuilder
             'missing' => array_values(array_diff($files, $existing)),
             'broken' => $broken,
             'unknown' => array_values(array_filter(array_diff($existing, $files), fn (string $name) => str_starts_with($name, self::PREFIX))),
-            'unprefixed' => array_values(array_filter($existing, fn (string $name) => ! str_starts_with($name, self::PREFIX))),
+            'unprefixed' => array_values(array_filter($existing, fn (string $name) => !str_starts_with($name, self::PREFIX))),
         ];
     }
 }

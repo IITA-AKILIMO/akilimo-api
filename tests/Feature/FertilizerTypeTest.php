@@ -118,7 +118,6 @@ it('makes the database refuse a use case that is not in the list', function () {
         ->toThrow(QueryException::class);
 });
 
-
 it('classifies a fertiliser by category, defaulting to OTHER, and refuses an unknown category', function () {
     $admin = typeAdmin();
 
@@ -154,7 +153,6 @@ it('does not let a category that fertilisers use be removed', function () {
     expect(fn () => DB::table('fertilizer_categories')->where('value', 'STRAIGHT')->delete())->toThrow(QueryException::class);
 });
 
-
 it('edits a fertiliser itself: name, weight and category, but never the code or label', function () {
     $admin = typeAdmin();
     FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50, 'category' => 'OTHER']);
@@ -184,7 +182,6 @@ it('saves the category picked on the country form on the fertiliser', function (
 
     expect(FertilizerType::find('UREA')->category)->toBe('STRAIGHT');
 });
-
 
 it('lists only the fertilizers that have an active price in their country', function () {
     $priced = FertilizerType::create(['type' => 'UREA', 'label' => 'urea', 'name' => 'Urea', 'weight' => 50, 'category' => 'STRAIGHT']);

@@ -8,11 +8,10 @@
 
 namespace App\Http\Resources;
 
-use App\Support\PriceMarker;
 use App\Models\Currency;
 use App\Models\VwInvestmentAmount;
+use App\Support\PriceMarker;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @mixin VwInvestmentAmount
@@ -22,8 +21,7 @@ class InvestmentAmountResource extends BaseJsonResource
     public function __construct(
         $resource,
         private readonly ?Currency $currency = null,
-    )
-    {
+    ) {
         parent::__construct($resource);
     }
 

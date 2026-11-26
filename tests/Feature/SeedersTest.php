@@ -75,7 +75,7 @@ it('can be run again without changing what is there', function () {
     $this->seed(DatabaseSeeder::class);
 
     expect([DB::table('price_catalogue')->count(), DB::table('country_fertilizers')->count(), DB::table('starch_factories')->count()])->toBe($before)
-        ->and((float) DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('price'))->toBe(51000.0)
+        ->and((float)DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('price'))->toBe(51000.0)
         ->and(DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('status'))->toBe('active')
         ->and(DB::table('crops')->where('crop_key', 'maize')->value('name'))->toBe('Maize (edited)');
 });
@@ -83,6 +83,6 @@ it('can be run again without changing what is there', function () {
 it('seeds the corrected Tanzanian weeding prices', function () {
     $this->seed(DatabaseSeeder::class);
 
-    expect((float) DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding1')->value('price'))->toBe(60000.0)
-        ->and((float) DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding2')->value('price'))->toBe(45000.0);
+    expect((float)DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding1')->value('price'))->toBe(60000.0)
+        ->and((float)DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding2')->value('price'))->toBe(45000.0);
 });

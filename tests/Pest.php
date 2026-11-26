@@ -7,6 +7,7 @@
  */
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /*
@@ -193,7 +194,7 @@ function seedCurrencies(array $rows): void
     $rows = isset($rows['currency_code']) ? [$rows] : $rows;
 
     foreach ($rows as $row) {
-        \Illuminate\Support\Facades\DB::table('currencies')->updateOrInsert(['currency_code' => $row['currency_code']], $row);
+        DB::table('currencies')->updateOrInsert(['currency_code' => $row['currency_code']], $row);
     }
 }
 
@@ -203,7 +204,7 @@ function seedCurrencies(array $rows): void
  */
 function seedCassavaCrop(): void
 {
-    \Illuminate\Support\Facades\DB::table('crops')->insertOrIgnore([
+    DB::table('crops')->insertOrIgnore([
         'id' => 1,
         'crop_key' => 'cassava',
         'name' => 'Cassava',

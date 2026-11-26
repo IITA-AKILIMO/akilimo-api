@@ -43,7 +43,7 @@ return new class extends Migration {
         $seen = [];
 
         foreach (DB::table('fertilizers')->orderBy('id')->get() as $row) {
-            $key = strtolower((string) $row->type);
+            $key = strtolower((string)$row->type);
 
             if (isset($seen[$key])) {
                 continue;
