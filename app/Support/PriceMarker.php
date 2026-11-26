@@ -32,7 +32,7 @@ final class PriceMarker
      */
     public static function describe(float|int|string|null $price): ?string
     {
-        $value = (float) $price;
+        $value = (float)$price;
 
         return match (true) {
             $value < 0.0 => self::EXACT,
@@ -56,13 +56,13 @@ final class PriceMarker
      */
     public static function labelForRange(float|int|string|null $min, float|int|string|null $max, ?string $symbol = null): string
     {
-        $words = self::describe(((float) $min + (float) $max) / 2);
+        $words = self::describe(((float)$min + (float)$max) / 2);
 
         if ($words !== null) {
             return $words;
         }
 
-        $range = (float) $min === (float) $max ? self::amount($min) : self::amount($min) . ' – ' . self::amount($max);
+        $range = (float)$min === (float)$max ? self::amount($min) : self::amount($min) . ' – ' . self::amount($max);
 
         return trim($range . ' ' . $symbol);
     }
@@ -72,6 +72,6 @@ final class PriceMarker
      */
     public static function amount(float|int|string|null $value): string
     {
-        return rtrim(rtrim(number_format((float) $value, 2, '.', ','), '0'), '.');
+        return rtrim(rtrim(number_format((float)$value, 2, '.', ','), '0'), '.');
     }
 }

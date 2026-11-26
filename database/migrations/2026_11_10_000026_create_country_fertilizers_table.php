@@ -42,7 +42,7 @@ return new class extends Migration {
         $taken = [];
 
         foreach (DB::table('fertilizers')->orderBy('id')->get() as $row) {
-            $pair = strtolower((string) $row->type) . '|' . strtolower((string) $row->country);
+            $pair = strtolower((string)$row->type) . '|' . strtolower((string)$row->country);
 
             // one row per type and country; the data has no repeats today
             if (isset($taken[$pair])) {
@@ -56,9 +56,9 @@ return new class extends Migration {
                 'fertilizer_type' => DB::table('fertilizer_types')->where('type', $row->type)->value('type'),
                 'country' => $row->country,
                 'use_case' => $row->use_case ?? 'ALL',
-                'cis' => (int) $row->cis,
-                'cim' => (int) $row->cim,
-                'available' => (int) $row->available,
+                'cis' => (int)$row->cis,
+                'cim' => (int)$row->cim,
+                'available' => (int)$row->available,
                 'sort_order' => $row->sort_order,
                 'created_at' => $row->created_at ?? now(),
                 'updated_at' => $row->updated_at ?? now(),

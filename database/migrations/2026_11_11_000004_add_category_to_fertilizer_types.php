@@ -5,6 +5,7 @@
  *
  * For licence information, see the LICENCE file.
  */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ return new class extends Migration {
         });
 
         foreach (DB::table('fertilizer_types')->pluck('type') as $type) {
-            $code = strtoupper((string) $type);
+            $code = strtoupper((string)$type);
             $base = preg_replace('/_\d+$/', '', $code);
 
             $category = match (true) {
@@ -52,4 +53,3 @@ return new class extends Migration {
         });
     }
 };
-

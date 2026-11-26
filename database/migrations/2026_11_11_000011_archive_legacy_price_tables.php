@@ -5,6 +5,7 @@
  *
  * For licence information, see the LICENCE file.
  */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -41,16 +42,16 @@ return new class extends Migration {
         });
 
         foreach (self::TABLES as $name) {
-            if (! Schema::hasTable($name)) {
+            if (!Schema::hasTable($name)) {
                 continue;
             }
 
-            $definition = (array) DB::selectOne("SHOW CREATE TABLE `{$name}`");
+            $definition = (array)DB::selectOne("SHOW CREATE TABLE `{$name}`");
             $rows = DB::table($name)->get();
 
             DB::table('legacy_table_archive')->insert([
                 'table_name' => $name,
-                'definition' => (string) ($definition['Create Table'] ?? ''),
+                'definition' => (string)($definition['Create Table'] ?? ''),
                 'row_count' => $rows->count(),
                 'row_data' => $rows->toJson(JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION),
             ]);

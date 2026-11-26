@@ -102,7 +102,7 @@ class FertilizerController extends AdminController
     private function useCases(): array
     {
         return DB::table('fertilizer_use_cases')->orderBy('sort_order')->get(['value', 'label'])
-            ->map(fn ($u) => ['value' => (string) $u->value, 'label' => (string) $u->label])
+            ->map(fn ($u) => ['value' => (string)$u->value, 'label' => (string)$u->label])
             ->all();
     }
 
@@ -114,7 +114,7 @@ class FertilizerController extends AdminController
     private function categories(): array
     {
         return DB::table('fertilizer_categories')->orderBy('sort_order')->get(['value', 'label'])
-            ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all();
+            ->map(fn ($c) => ['value' => (string)$c->value, 'label' => (string)$c->label])->all();
     }
 
     /**

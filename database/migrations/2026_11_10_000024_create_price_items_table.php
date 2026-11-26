@@ -61,7 +61,7 @@ return new class extends Migration {
         // Items already in the catalogue keep the unit they have, when it is a known unit
         $seen = array_change_key_case($items, CASE_LOWER);
         foreach (DB::table('default_prices')->select('item', 'unit')->distinct()->get() as $row) {
-            if (! isset($seen[strtolower($row->item)]) && in_array($row->unit, $units, true)) {
+            if (!isset($seen[strtolower($row->item)]) && in_array($row->unit, $units, true)) {
                 $items[$row->item] = $row->unit;
                 $seen[strtolower($row->item)] = $row->unit;
             }
@@ -71,7 +71,7 @@ return new class extends Migration {
         // The database compares names without regard to case, so UREA and urea are one item.
         $lower = array_change_key_case($items, CASE_LOWER);
         foreach (DB::table('fertilizers')->whereNotNull('fertilizer_label')->distinct()->pluck('fertilizer_label') as $label) {
-            if (! isset($lower[strtolower($label)])) {
+            if (!isset($lower[strtolower($label)])) {
                 $items[$label] = 'per_bag';
                 $lower[strtolower($label)] = 'per_bag';
             }

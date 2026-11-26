@@ -21,6 +21,12 @@ class CountryRepo extends BaseRepo
         return Country::class;
     }
 
+    /** The country's name (English) for its code, or null when unknown */
+    public function nameOf(string $code): ?string
+    {
+        return $this->query()->where('code', strtoupper($code))->value('name');
+    }
+
     /**
      * Currency code of every country that names one, by country code.
      *

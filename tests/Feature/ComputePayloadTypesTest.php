@@ -6,11 +6,12 @@
  * For licence information, see the LICENCE file.
  */
 
+use Database\Seeders\FertilizerSeeder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->seed(FertilizerSeeder::class);
     Cache::flush();
 });
 

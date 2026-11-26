@@ -10,6 +10,8 @@ use App\Enums\EnumUserRole;
 use App\Models\TrafficExclusion;
 use App\Models\User;
 use App\Service\TrafficExclusionService;
+use Database\Seeders\FertilizerSeeder;
+use Database\Seeders\TrafficExclusionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,8 +19,8 @@ use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function () {
     $this->withoutVite();
-    $this->seed(\Database\Seeders\TrafficExclusionSeeder::class);
-    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->seed(TrafficExclusionSeeder::class);
+    $this->seed(FertilizerSeeder::class);
 });
 
 function exclusionUser(EnumUserRole $role): User

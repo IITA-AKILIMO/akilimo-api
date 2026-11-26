@@ -27,7 +27,7 @@ it('lists the units maize grain is sold in, with the 100 kg bag as the default',
     $response = $this->getJson('/api/v1/maize-units')->assertOk();
 
     expect(collect($response->json('data'))->pluck('label')->all())->toBe(['ONE_KG', 'FIFTY_KG', 'HUNDRED_KG', 'THOUSAND_KG'])
-        ->and(collect($response->json('data'))->pluck('unit_weight')->map(fn ($w) => (float) $w)->all())->toBe([1.0, 50.0, 100.0, 1000.0])
+        ->and(collect($response->json('data'))->pluck('unit_weight')->map(fn ($w) => (float)$w)->all())->toBe([1.0, 50.0, 100.0, 1000.0])
         ->and(collect($response->json('data'))->where('default', true)->pluck('label')->all())->toBe(['HUNDRED_KG'])
         ->and($response->json('data.2.description'))->toContain('100 kg');
 });
@@ -50,9 +50,9 @@ it('offers only the units that are switched on, in order', function () {
 });
 
 it('prices maize grain per tonne, so a client converts it to the unit the farmer chose', function () {
-    expect((int) DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(1000)
+    expect((int)DB::table('price_choice_units')->where('item', 'maize_grain')->value('quantity'))->toBe(1000)
         // fresh cob is per cob, not per weight
-        ->and((int) DB::table('price_choice_units')->where('item', 'maize_freshCob')->value('quantity'))->toBe(1);
+        ->and((int)DB::table('price_choice_units')->where('item', 'maize_freshCob')->value('quantity'))->toBe(1);
 
     // average x weight / 1000: a tonne price of 230,000 is 23,000 per 100 kg bag
     $tonne = 230000;

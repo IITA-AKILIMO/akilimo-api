@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->decimal('band_half_pct', 6, 2);   // half the width of a range-list band, in % of the reference
         });
 
-        $steps = array_values((array) config('price_catalogue.choice_steps'));
+        $steps = array_values((array)config('price_catalogue.choice_steps'));
         sort($steps);
         $half = count($steps) > 1
             ? min(array_map(fn ($i) => $steps[$i + 1] - $steps[$i], range(0, count($steps) - 2))) / 2

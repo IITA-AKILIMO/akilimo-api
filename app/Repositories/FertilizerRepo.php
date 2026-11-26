@@ -9,8 +9,9 @@
 namespace App\Repositories;
 
 use App\Models\CountryFertilizer;
-use App\Models\VwFertilizer;
 use App\Models\FertilizerType;
+use App\Models\VwFertilizer;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +49,7 @@ class FertilizerRepo extends BaseRepo
      * price matches by the fertilizer type, or by the catalogue label for a price
      * that is not linked to a type yet.
      *
-     * @return \Closure(\Illuminate\Database\Eloquent\Builder<VwFertilizer>): void
+     * @return \Closure(Builder<VwFertilizer>): void
      */
     public function onlyWithActivePrice(): \Closure
     {
@@ -103,7 +104,7 @@ class FertilizerRepo extends BaseRepo
      */
     public function delete(int|string $id): bool
     {
-        return (bool) CountryFertilizer::findOrFail($id)->delete();
+        return (bool)CountryFertilizer::findOrFail($id)->delete();
     }
 
     /**

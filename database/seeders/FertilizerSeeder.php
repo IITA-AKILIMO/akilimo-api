@@ -29,7 +29,7 @@ class FertilizerSeeder extends Seeder
                 'type' => $row['type'],
                 'label' => $row['label'],
                 'name' => $row['name'],
-                'weight' => (int) $row['weight'],
+                'weight' => (int)$row['weight'],
                 'category' => $row['category'] ?? 'OTHER',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -37,7 +37,7 @@ class FertilizerSeeder extends Seeder
 
             // A catalogue price names its item, and a fertilizer's item is its label (per bag)
             if ($row['label'] !== null) {
-                if (! DB::table('price_items')->where('item', $row['label'])->exists()) {
+                if (!DB::table('price_items')->where('item', $row['label'])->exists()) {
                     DB::table('price_items')->insert(['item' => $row['label'], 'unit' => 'per_bag', 'category' => 'FERTILIZER']);
                 } else {
                     // already there from a migration, before there was a fertilizer to say what it is
@@ -48,14 +48,14 @@ class FertilizerSeeder extends Seeder
 
         foreach ($this->csvRows('country_fertilizers.csv') as $row) {
             DB::table('country_fertilizers')->insertOrIgnore([
-                'id' => (int) $row['id'],
+                'id' => (int)$row['id'],
                 'fertilizer_type' => $row['fertilizer_type'],
                 'country' => $row['country'],
                 'use_case' => $row['use_case'],
-                'cis' => (bool) $row['cis'],
-                'cim' => (bool) $row['cim'],
-                'available' => (bool) $row['available'],
-                'sort_order' => (int) $row['sort_order'],
+                'cis' => (bool)$row['cis'],
+                'cim' => (bool)$row['cim'],
+                'available' => (bool)$row['available'],
+                'sort_order' => (int)$row['sort_order'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

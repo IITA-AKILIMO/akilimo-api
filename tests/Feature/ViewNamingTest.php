@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 it('names every database view with the vw_ prefix', function () {
     $views = collect(DB::select('SELECT table_name AS name FROM information_schema.views WHERE table_schema = DATABASE()'))
         ->pluck('name')
-        ->map(fn ($name) => (string) $name);
+        ->map(fn ($name) => (string)$name);
 
     expect($views)->not->toBeEmpty();
     expect($views->reject(fn (string $name) => str_starts_with($name, 'vw_'))->values()->all())
@@ -23,7 +23,7 @@ it('names every database view with the vw_ prefix', function () {
 it('keeps the eight price and fertilizer views under their new names', function () {
     $views = collect(DB::select('SELECT table_name AS name FROM information_schema.views WHERE table_schema = DATABASE()'))
         ->pluck('name')
-        ->map(fn ($name) => (string) $name)
+        ->map(fn ($name) => (string)$name)
         ->sort()
         ->values()
         ->all();
@@ -44,6 +44,6 @@ it('has no table or view left under a name the views used to have', function () 
     foreach (['fertilizers', 'fertilizer_prices', 'cassava_prices', 'potato_prices', 'maize_prices', 'investment_amount', 'operation_costs', 'price_bands'] as $old) {
         $found = DB::selectOne('SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = ?', [$old]);
 
-        expect((int) $found->n)->toBe(0, "{$old} should not exist any more");
+        expect((int)$found->n)->toBe(0, "{$old} should not exist any more");
     }
 });

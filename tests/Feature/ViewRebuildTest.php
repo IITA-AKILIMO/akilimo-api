@@ -58,7 +58,7 @@ it('reports a view a changed table has broken, keeps it as it was, and rebuilds 
         File::put($dir . '/vw_tmp_check.sql', "-- a test view\nCREATE OR REPLACE VIEW `vw_tmp_check` AS\nselect a, b from tmp_view_source;\n");
 
         expect($views->rebuild())->toBe(['rebuilt' => ['vw_tmp_check'], 'failed' => []]);
-        expect((array) DB::table('vw_tmp_check')->first())->toBe(['a' => 1, 'b' => 2]);
+        expect((array)DB::table('vw_tmp_check')->first())->toBe(['a' => 1, 'b' => 2]);
 
         // a column the view reads is dropped: the view stops working, and the check says so
         DB::statement('ALTER TABLE tmp_view_source DROP COLUMN b');
@@ -75,7 +75,7 @@ it('reports a view a changed table has broken, keeps it as it was, and rebuilds 
         expect($views->rebuild()['failed'])->toBe([]);
         // (the real views have no file in this temporary folder, so only the view under test is judged)
         expect($views->check()['missing'])->toBe([])->and($views->check()['broken'])->toBe([]);
-        expect((array) DB::table('vw_tmp_check')->first())->toBe(['a' => 1]);
+        expect((array)DB::table('vw_tmp_check')->first())->toBe(['a' => 1]);
     } finally {
         DB::statement('DROP VIEW IF EXISTS vw_tmp_check');
         DB::statement('DROP TABLE IF EXISTS tmp_view_source');

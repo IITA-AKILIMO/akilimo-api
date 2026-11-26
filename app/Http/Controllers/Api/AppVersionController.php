@@ -47,6 +47,7 @@ class AppVersionController extends Controller
      * Stores `min_supported`, `latest`, `message` or `store_url` for a platform (android by default); fields left out keep
      * their value. The Android publish workflow sends only `latest` after an upload; raise `min_supported` to force an update.
      * A `latest` below the minimum is raised to it.
+     *
      * @throws \Throwable
      */
     public function update(AppVersionUpdateRequest $request): JsonResponse

@@ -14,13 +14,12 @@ use Illuminate\Support\Str;
 class CurrencyConversion
 {
     public function convertPriceToLocalCurrency(
-        float       $minUsd,
-        float       $maxUsd,
+        float $minUsd,
+        float $maxUsd,
         CurrencyDto $currency,
-        float       $currencyRate = 1,
-        float       $nearestValue = 1000,
-    ): string
-    {
+        float $currencyRate = 1,
+        float $nearestValue = 1000,
+    ): string {
         $min = $this->roundToNearestSpecifiedValue(
             $this->convertToSpecifiedCurrencyValue($minUsd, $currencyRate),
             $nearestValue
@@ -36,12 +35,11 @@ class CurrencyConversion
     }
 
     public function convertToSpecifiedCurrency(
-        float       $amount,
-        float       $currencyRate,
-        float       $nearestValue,
+        float $amount,
+        float $currencyRate,
+        float $nearestValue,
         CurrencyDto $currencyDto,
-    ): float
-    {
+    ): float {
         if (Str::isMatch($currencyDto->currency_code, 'USD')) {
             return $amount;
         }

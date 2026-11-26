@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->unsignedInteger('step');
         });
 
-        foreach ((array) config('price_catalogue.rounding') as $currency => $step) {
+        foreach ((array)config('price_catalogue.rounding') as $currency => $step) {
             DB::table('price_choice_rounding')->insert(['currency' => $currency, 'step' => $step]);
         }
     }

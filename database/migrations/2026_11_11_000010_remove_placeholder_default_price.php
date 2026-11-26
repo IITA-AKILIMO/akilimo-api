@@ -33,7 +33,7 @@ return new class extends Migration {
                 'country' => $row->country,
                 'item' => $row->item,
                 'action' => 'deleted',
-                'old_values' => json_encode((array) $row),
+                'old_values' => json_encode((array)$row),
                 'new_values' => null,
                 'note' => self::NOTE,
                 'created_at' => now(),
@@ -49,10 +49,10 @@ return new class extends Migration {
         $entries = DB::table('default_price_history')->where('action', 'deleted')->where('note', self::NOTE)->get();
 
         foreach ($entries as $entry) {
-            $row = json_decode((string) $entry->old_values, true);
+            $row = json_decode((string)$entry->old_values, true);
 
             // Put it back only if its id and (country, item) are free
-            if (! is_array($row) || DB::table('default_prices')->where('id', $row['id'])->exists()
+            if (!is_array($row) || DB::table('default_prices')->where('id', $row['id'])->exists()
                 || DB::table('default_prices')->where('country', $row['country'])->where('item', $row['item'])->exists()) {
                 continue;
             }

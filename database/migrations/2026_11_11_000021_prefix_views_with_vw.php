@@ -56,23 +56,23 @@ return new class extends Migration {
         foreach ($names as $old => $new) {
             $row = DB::selectOne('SELECT COUNT(*) AS n FROM information_schema.views WHERE table_schema = ? AND table_name = ?', [$schema, $old]);
 
-            if ((int) $row->n === 0) {
+            if ((int)$row->n === 0) {
                 continue;
             }
 
-            $sql = (string) ((array) DB::selectOne("SHOW CREATE VIEW `{$old}`"))['Create View'];
+            $sql = (string)((array)DB::selectOne("SHOW CREATE VIEW `{$old}`"))['Create View'];
 
             // Another view is named after FROM or JOIN (through any opening brackets), with or without the
             // schema in front; a column or an alias of the same name (investment_amount) is never changed
             foreach ($names as $from => $to) {
-                $sql = (string) preg_replace(
+                $sql = (string)preg_replace(
                     '/(\b(?:from|join)\s*\(*\s*(?:`' . preg_quote($schema, '/') . '`\.)?)`' . preg_quote($from, '/') . '`/i',
                     '$1`' . $to . '`',
                     $sql,
                 );
             }
 
-            $sql = (string) preg_replace('/\bVIEW `' . preg_quote($old, '/') . '`/', "VIEW `{$new}`", $sql, 1);
+            $sql = (string)preg_replace('/\bVIEW `' . preg_quote($old, '/') . '`/', "VIEW `{$new}`", $sql, 1);
             $definitions[$old] = $sql;
         }
 
@@ -98,7 +98,7 @@ return new class extends Migration {
                 }
             }
 
-            if (! $created) {
+            if (!$created) {
                 throw new RuntimeException('Could not recreate the views: ' . implode('; ', array_map(
                     fn ($name) => $name . ' (' . ($lastError[$name] ?? '?') . ')',
                     array_keys($pending),

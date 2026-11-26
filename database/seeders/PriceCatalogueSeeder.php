@@ -29,22 +29,22 @@ class PriceCatalogueSeeder extends Seeder
         foreach ($this->csvRows('price_catalogue.csv') as $row) {
             // A fertilizer is only linked when it exists (a price for one that is not sold stays unlinked)
             $type = $row['fertilizer_type'];
-            if ($type !== null && ! DB::table('fertilizer_types')->where('type', $type)->exists()) {
+            if ($type !== null && !DB::table('fertilizer_types')->where('type', $type)->exists()) {
                 $type = null;
             }
 
             DB::table('price_catalogue')->insertOrIgnore([
-                'id' => (int) $row['id'],
+                'id' => (int)$row['id'],
                 'country' => $row['country'],
                 'region' => $row['region'],
                 'item' => $row['item'],
                 'fertilizer_type' => $type,
-                'price' => (float) $row['price'],
-                'subsidised_price' => $row['subsidised_price'] === null ? null : (float) $row['subsidised_price'],
+                'price' => (float)$row['price'],
+                'subsidised_price' => $row['subsidised_price'] === null ? null : (float)$row['subsidised_price'],
                 'unit' => $row['unit'],
-                'bag_kg' => $row['bag_kg'] === null ? null : (int) $row['bag_kg'],
-                'min_price' => $row['min_price'] === null ? null : (float) $row['min_price'],
-                'max_price' => $row['max_price'] === null ? null : (float) $row['max_price'],
+                'bag_kg' => $row['bag_kg'] === null ? null : (int)$row['bag_kg'],
+                'min_price' => $row['min_price'] === null ? null : (float)$row['min_price'],
+                'max_price' => $row['max_price'] === null ? null : (float)$row['max_price'],
                 'status' => $row['status'] ?? 'draft',
                 'source' => $row['source'],
                 'source_date' => $row['source_date'],

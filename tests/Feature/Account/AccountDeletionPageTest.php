@@ -12,10 +12,10 @@ use App\Models\ApiRequest;
 use App\Models\User;
 use App\Service\AdviceAnonymiser;
 use App\Service\FarmerAccountService;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 function deletionUser(array $attributes = []): User
 {

@@ -5,6 +5,7 @@
  *
  * For licence information, see the LICENCE file.
  */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ return new class extends Migration {
         $fertilizers = array_map('strtolower', DB::table('fertilizer_types')->whereNotNull('label')->pluck('label')->all());
 
         foreach (DB::table('price_items')->pluck('item') as $item) {
-            $name = strtolower((string) $item);
+            $name = strtolower((string)$item);
 
             $category = match (true) {
                 // A label or, for a price item named a little differently (NPK201216, FOMIIMBURA), the NPK and FOMI families

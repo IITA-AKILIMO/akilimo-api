@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MessageRequest;
+use App\Http\Resources\AdminMessageResource;
 use App\Http\Resources\MessageResource;
 use App\Repositories\MessageRepo;
 use App\Service\MessageService;
@@ -30,13 +31,15 @@ class MessageController extends Controller
      *
      * What the mobile app fetches during its sync: messages for the given country and language (and those for everyone),
      * not expired, oldest first, from `since` on (inclusive; a repeat is harmless because the app stores each id once).
-     * Pass the `created_at` of the last message received as the next `since`.
+     * Pass the `created_at` of the last message received as the next `since`. With `device_token`, messages addressed to
+     * that phone (or to the farmer account it is signed in to) are included; they are never returned to anyone else.
      *
      * @unauthenticated
      */
     #[QueryParameter(name: 'country', description: 'Two-letter country code, e.g. TZ.', type: 'string')]
     #[QueryParameter(name: 'language', description: 'Language code, e.g. sw.', type: 'string')]
     #[QueryParameter(name: 'since', description: 'ISO 8601 time; only messages created at or after it.', type: 'string')]
+    #[QueryParameter(name: 'device_token', description: "The phone's install id; adds the messages private to it or to the account it is signed in to.", type: 'string')]
     #[QueryParameter(name: 'limit', description: 'Most messages to return (1 to 200, default 100).', type: 'int')]
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -44,6 +47,7 @@ class MessageController extends Controller
             'country' => ['nullable', 'string', 'size:2', 'regex:/^[A-Za-z]{2}$/'],
             'language' => ['nullable', 'string', 'regex:/^[A-Za-z]{2,3}$/'],
             'since' => ['nullable', 'date'],
+            'device_token' => ['nullable', 'string', 'max:255'],
             'limit' => ['nullable', 'integer', 'min:1', 'max:200'],
         ]);
 
@@ -52,6 +56,7 @@ class MessageController extends Controller
             language: isset($query['language']) ? strtolower($query['language']) : null,
             since: isset($query['since']) ? now()->parse($query['since']) : null,
             limit: (int)($query['limit'] ?? 100),
+            deviceToken: $query['device_token'] ?? null,
         );
 
         return MessageResource::collection($messages);
@@ -66,7 +71,7 @@ class MessageController extends Controller
     {
         $perPage = min(max((int)$request->integer('per_page', 25), 1), 100);
 
-        return MessageResource::collection(
+        return AdminMessageResource::collection(
             $this->messageRepo->paginateWithSort(perPage: $perPage, orderBy: 'created_at', direction: 'desc'),
         );
     }
@@ -74,20 +79,38 @@ class MessageController extends Controller
     /**
      * Send a message (admin)
      *
-     * Stores a message for the mobile app and announces it through FCM to the country and language topics. A push that
-     * cannot be sent never loses the message: phones still receive it through the sync. `push` in the answer says what
-     * happened: `sent`, `disabled` (FCM not configured), `no_audience` (no country or language, stored for the sync only)
-     * or `failed`.
+     * Stores a message for the mobile app and queues its push through FCM to the country and language topics. The push is
+     * never sent during this request: a queue worker sends it, and a push that cannot be sent never loses the message,
+     * because phones still receive it through the sync. `push` in the answer says what was done: `queued`, `disabled`
+     * (FCM not configured) or `no_audience` (no country or language, stored for the sync only).
+     *
+     * With `recipients` (`[{type: "user", id: 12}, {type: "device", id: "<device_token>"}]`) the message is private: one
+     * message per recipient, pushed to each of their registered phones (`country` and `language` are not allowed).
+     * `data` is then a list, `push` is `queued` when at least one phone was queued (else the first reason nothing was
+     * queued) and `devices` counts the phones queued. `no_audience` here means no registered phone.
      */
     public function store(MessageRequest $request): JsonResponse
     {
-        $result = $this->messageService->publish($request->validated(), $request->user()?->id);
+        $data = $request->validated();
+
+        if (!empty($data['recipients'])) {
+            $result = $this->messageService->publishPrivate($data, $request->user()?->id);
+
+            return response()->json([
+                'data' => AdminMessageResource::collection($result['messages']),
+                'push' => $result['push'],
+                'devices' => $result['devices'],
+                'message' => 'Messages created.',
+            ], 201);
+        }
+
+        $result = $this->messageService->publish($data, $request->user()?->id);
 
         /**
          * @status 201
          */
         return response()->json([
-            'data' => new MessageResource($result['message']),
+            'data' => new AdminMessageResource($result['message']),
             'push' => $result['push'],
             'message' => 'Message created.',
         ], 201);

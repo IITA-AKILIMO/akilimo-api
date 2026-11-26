@@ -11,6 +11,7 @@ use App\Enums\PriceStatus;
 use App\Models\PriceCatalogue;
 use App\Models\PriceCatalogueHistory;
 use App\Models\User;
+use App\Service\FertilizerTypeService;
 use App\Service\PriceCatalogueService;
 use Database\Seeders\PriceCatalogueSeeder;
 use Illuminate\Support\Facades\DB;
@@ -246,7 +247,6 @@ it('saves a country basis and assigns reviewers from the admin', function () {
     expect(DB::table('country_reviewers')->where('country', 'NG')->count())->toBe(1);
 });
 
-
 it('deactivates a price: it goes back to draft, is no longer served and is recorded', function () {
     $admin = catalogueAdmin();
     $price = catalogueDraft();
@@ -284,7 +284,6 @@ it('keeps price deactivation to admins who may review the country', function () 
     expect($price->fresh()->status)->toBe(PriceStatus::Active);
 });
 
-
 it('gives every price a category from its item and filters the Price catalogue by it', function () {
     $admin = catalogueAdmin();
 
@@ -317,14 +316,13 @@ it('gives every price a category from its item and filters the Price catalogue b
 });
 
 it('classifies a new fertilizer as a fertilizer price item, and any other new item as OTHER', function () {
-    app(\App\Service\FertilizerTypeService::class)->create(['name' => 'Nafaka Super', 'weight' => 50]);
+    app(FertilizerTypeService::class)->create(['name' => 'Nafaka Super', 'weight' => 50]);
 
     expect(DB::table('price_items')->where('item', 'NafakaSuper')->value('category'))->toBe('FERTILIZER');
 
     DB::table('price_items')->insert(['item' => 'herbicide', 'unit' => 'per_kg']);
     expect(DB::table('price_items')->where('item', 'herbicide')->value('category'))->toBe('OTHER');
 });
-
 
 it('keeps a deleted price in the history, from the admin and from the API', function () {
     $admin = catalogueAdmin();
@@ -350,12 +348,11 @@ it('refuses a price for a country that does not exist', function () {
     ])->assertSessionHasErrors('country');
 });
 
-
 it('has a model named for its table, with the history linked through price_catalogue_id', function () {
     $price = catalogueDraft();
 
-    expect((new \App\Models\PriceCatalogue())->getTable())->toBe('price_catalogue')
-        ->and($price)->toBeInstanceOf(\App\Models\PriceCatalogue::class)
+    expect((new PriceCatalogue)->getTable())->toBe('price_catalogue')
+        ->and($price)->toBeInstanceOf(PriceCatalogue::class)
         ->and($price->history()->count())->toBe(1)
         ->and($price->history->first()->priceCatalogue->is($price))->toBeTrue();
 });

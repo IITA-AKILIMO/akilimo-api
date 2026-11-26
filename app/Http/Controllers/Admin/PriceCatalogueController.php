@@ -53,18 +53,18 @@ class PriceCatalogueController extends AdminController
         );
 
         // The database matches item names without regard to case, so the lookup does too
-        $categoryOf = DB::table('price_items')->pluck('category', 'item')->mapWithKeys(fn ($c, $i) => [strtolower((string) $i) => (string) $c]);
+        $categoryOf = DB::table('price_items')->pluck('category', 'item')->mapWithKeys(fn ($c, $i) => [strtolower((string)$i) => (string)$c]);
 
         return Inertia::render('PriceCatalogue/Index', [
             'filters' => $values,
             'categories' => DB::table('price_categories')->orderBy('sort_order')->get(['value', 'label'])
-                ->map(fn ($c) => ['value' => (string) $c->value, 'label' => (string) $c->label])->all(),
+                ->map(fn ($c) => ['value' => (string)$c->value, 'label' => (string)$c->label])->all(),
             'items' => $this->paginateShape($paginator, fn (PriceCatalogue $f) => [
                 'id' => $f->id,
                 'country' => $f->country,
                 'region' => $f->region,
                 'item' => $f->item,
-                'category' => $categoryOf[strtolower((string) $f->item)] ?? 'OTHER',
+                'category' => $categoryOf[strtolower((string)$f->item)] ?? 'OTHER',
                 'price' => $f->price,
                 'subsidised_price' => $f->subsidised_price,
                 'unit' => $f->unit,

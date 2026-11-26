@@ -10,7 +10,6 @@ namespace App\Http\Resources;
 
 use App\Models\VwOperationCost;
 use App\Support\PriceMarker;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
 /**
@@ -48,9 +47,9 @@ class OperationCostResource extends BaseJsonResource
             /** Whether the record is active */
             'is_active' => $this->is_active,
             /** Timestamp when created */
-            'created_at' =>$this->formatDate($this->created_at),
+            'created_at' => $this->formatDate($this->created_at),
             /** Timestamp when last updated */
-            'updated_at' =>$this->formatDate($this->updated_at),
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

@@ -9,6 +9,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Observers\FarmerNoticeObservers;
 use App\Support\ViewRebuilder;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
@@ -37,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('viewApiDocs', fn (?User $user) => true);
 
         $this->rebuildViewsAfterMigrations();
+
+        // Admin changes that farmers should hear about (queued, see config/farmer-notifications.php)
+        FarmerNoticeObservers::register();
     }
 
     /**
@@ -50,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(MigrationsEnded::class, function () {
             $views = app(ViewRebuilder::class);
 
-            if (! $views->hasPrefixedViews()) {
+            if (!$views->hasPrefixedViews()) {
                 return;
             }
 

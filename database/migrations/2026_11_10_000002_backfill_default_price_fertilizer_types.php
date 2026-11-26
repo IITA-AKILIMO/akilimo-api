@@ -30,11 +30,11 @@ return new class extends Migration {
             $candidates = $fertilizers->get($price->country, collect());
             $item = $this->normalise($price->item);
 
-            $matches = $candidates->filter(fn ($f) => strcasecmp((string) $f->fertilizer_label, $price->item) === 0);
+            $matches = $candidates->filter(fn ($f) => strcasecmp((string)$f->fertilizer_label, $price->item) === 0);
 
             if ($matches->isEmpty()) {
                 $matches = $candidates->filter(function ($f) use ($item, $price) {
-                    $key = $this->normalise(preg_replace('/_' . preg_quote($price->country, '/') . '$/', '', (string) $f->fertilizer_key));
+                    $key = $this->normalise(preg_replace('/_' . preg_quote($price->country, '/') . '$/', '', (string)$f->fertilizer_key));
 
                     return $key !== '' && $item !== '' && (str_starts_with($item, $key) || str_starts_with($key, $item));
                 });
@@ -53,6 +53,6 @@ return new class extends Migration {
 
     private function normalise(string $value): string
     {
-        return strtoupper((string) preg_replace('/[^A-Za-z0-9]/', '', $value));
+        return strtoupper((string)preg_replace('/[^A-Za-z0-9]/', '', $value));
     }
 };
