@@ -152,6 +152,14 @@ export interface Currency {
     name_plural?: string
 }
 
+export interface AppVersion {
+    platform: string
+    min_supported: number
+    latest: number
+    message: string | null
+    store_url: string | null
+}
+
 export interface CassavaUnit {
     id: number
     label: string

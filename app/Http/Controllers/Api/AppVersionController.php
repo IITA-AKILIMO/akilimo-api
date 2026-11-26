@@ -25,7 +25,7 @@ class AppVersionController extends Controller
      *
      * The oldest and the newest version code of the mobile app, per platform. A phone running a version code below
      * `min_supported` must update before it can be used; one below `latest` is only offered the update. `message` and
-     * `store_url` are optional. The values come from configuration, so the minimum is raised without a deploy of the app.
+     * `store_url` are optional. The values come from the database, so the minimum is raised without a deploy of the app.
      *
      * @unauthenticated
      */

@@ -9,6 +9,7 @@
 use App\Enums\EnumUserRole;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
+use App\Http\Controllers\Admin\AppVersionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\RequestLogController;
@@ -48,6 +49,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::resource('users', UserController::class)
             ->except(['show'])
             ->parameters(['users' => 'user']);
+
+        // Which mobile app versions are current, and which are no longer allowed to run
+        Route::get('app-versions', [AppVersionController::class, 'index'])->name('app-versions.index');
+        Route::put('app-versions/{platform}', [AppVersionController::class, 'update'])->name('app-versions.update');
 
         // Prices and fertilizers, then reference data and other lookup lists
         require __DIR__ . '/admin/pricing.php';
