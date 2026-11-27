@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\DB;
  */
 return new class extends Migration {
     private const SOURCE_NG = 'Proxy, no listing for this grade (2026-11-27): Indorama ex-Kaduna price of the nearest NPK grade per 50 kg. Check with a supplier.';
+
     private const SOURCE_GH = 'Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found. Check with MoFA.';
+
     private const SOURCE_BI = 'ABP Burundi 2023: farmer pays this per 25 kg bag under the subsidy; the official figure in 2025-26 is about 33,000 (FORSC). Confirm the 2026 price.';
 
     /** [country, item, old price, new price, new subsidised price, source, source date, confidence] */
