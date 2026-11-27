@@ -151,6 +151,21 @@ it('uses the subsidised price only when the country basis is subsidised', functi
         ->and(viewOptions('UREA_RW'))->toBe([35000.0, 45000.0, 55000.0, 65000.0]);
 });
 
+it('tells the app whether the fertilizer prices are subsidised, from the country basis', function () {
+    viewCountry('TZ', 'subsidised');
+    viewCountry('RW', 'open_market');
+    viewFertilizer('TZ', 'urea', 'UREA_TZ');
+    viewFertilizer('RW', 'urea', 'UREA_RW');
+    viewPrice(['subsidised_price' => 30000]);
+    viewPrice(['country' => 'RW', 'fertilizer_type' => 'UREA', 'currency' => 'RWF']);
+
+    $basis = fn (string $country) => collect($this->getJson("/api/v1/fertilizer-prices/country/{$country}?per_page=100")->json('data'))
+        ->pluck('price_basis')->unique()->values()->all();
+
+    expect($basis('TZ'))->toBe(['subsidised'])
+        ->and($basis('RW'))->toBe(['open_market']);
+});
+
 it('serves only active, national, effective prices that have a fertiliser key', function () {
     viewCountry('TZ');
     foreach (['DAP', 'MOP', 'TSP', 'CAN', 'SSP'] as $label) {

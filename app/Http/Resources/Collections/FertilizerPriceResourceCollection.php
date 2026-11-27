@@ -10,6 +10,7 @@ namespace App\Http\Resources\Collections;
 
 use App\Http\Enums\EnumCountry;
 use App\Http\Resources\FertilizerPriceResource;
+use App\Models\Country;
 use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -35,11 +36,17 @@ class FertilizerPriceResourceCollection extends ResourceCollection
             ->get()
             ->keyBy('currency_code');
 
-        return $this->collection->map(function ($item) use ($currencies, $request) {
+        // Likewise the price basis of each country on the page, so the app can say whether the prices are subsidised
+        $bases = Country::whereIn('code', $this->collection->pluck('country')->unique()->values()->all())
+            ->pluck('default_price_basis', 'code');
+
+        return $this->collection->map(function ($item) use ($currencies, $bases, $request) {
             $currencyCode = EnumCountry::fromCode($item->country)->currency();
             $currency = $currencies->get($currencyCode);
 
-            return (new FertilizerPriceResource($item, $currency))->toArray($request);
+            $basis = $bases->get($item->country) ?? config('price_catalogue.default_basis');
+
+            return (new FertilizerPriceResource($item, $currency, $basis))->toArray($request);
         })->toArray();
     }
 }

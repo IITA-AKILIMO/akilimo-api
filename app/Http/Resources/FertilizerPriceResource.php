@@ -8,6 +8,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\PriceBasis;
 use App\Models\Currency;
 use App\Models\VwFertilizerPrice;
 use App\Support\PriceMarker;
@@ -23,6 +24,7 @@ class FertilizerPriceResource extends BaseJsonResource
     public function __construct(
         $resource,
         private readonly ?Currency $currency,
+        private readonly PriceBasis $priceBasis = PriceBasis::OpenMarket,
     ) {
         parent::__construct($resource);
     }
@@ -60,6 +62,8 @@ class FertilizerPriceResource extends BaseJsonResource
             'currency' => $currencyResource,
             /** Sort order for display */
             'sort_order' => $this->sort_order,
+            /** Which price the options are built from: `subsidised` (programme farmer price) or `open_market`; the country's default price basis */
+            'price_basis' => $this->priceBasis->value,
             /** Price per bag */
             'price_per_bag' => $this->price_per_bag,
             /** Converted price range; the words "I don't know" or "Exact price" for those two rows */
