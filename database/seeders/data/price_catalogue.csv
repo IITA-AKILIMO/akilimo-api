@@ -34,10 +34,10 @@ id,country,region,item,fertilizer_type,price,subsidised_price,unit,bag_kg,min_pr
 33,TZ,,weeding1,,60000,,per_acre,,,,active,,,,,TZS
 34,TZ,,weeding2,,45000,,per_acre,,,,active,,,,,TZS
 35,TZ,,cassUP,,180000,,per_tonne,,,,active,,,,,TZS
-36,RW,,urea,UREA,28200,,per_bag,50,,,active,,,,,RWF
+36,RW,,urea,UREA,99000,54500,per_bag,50,,,active,"MINAGRI 2026/27 fertiliser prices (The New Times, AllAfrica 3 Jul 2026): retail per kg x 50; subsidised = farmer price after the subsidy",2026-07-03,medium,,RWF
 37,RW,,MOP,MOP,27900,,per_bag,50,,,active,,,,,RWF
-38,RW,,DAP,DAP,31650,,per_bag,50,,,active,,,,,RWF
-39,RW,,NPK171717,,35650,,per_bag,50,,,active,,,,,RWF
+38,RW,,DAP,DAP,97500,53000,per_bag,50,,,active,"MINAGRI 2026/27 fertiliser prices (The New Times, AllAfrica 3 Jul 2026): retail per kg x 50; subsidised = farmer price after the subsidy",2026-07-03,medium,,RWF
+39,RW,,NPK171717,,93050,52700,per_bag,50,,,active,"MINAGRI 2026/27 fertiliser prices (The New Times, AllAfrica 3 Jul 2026): retail per kg x 50; subsidised = farmer price after the subsidy",2026-07-03,medium,,RWF
 40,RW,,cassUP,,75000,,per_tonne,,,,active,,,,,RWF
 41,GH,,urea,UREA,142,,per_bag,50,,,active,,,,,GHS
 42,GH,,NPK112221,NPK_11_22_21,160,,per_bag,50,,,active,,,,,GHS

@@ -61,6 +61,9 @@ Sources: [Indorama price list](https://www.indoramafertilizers.com/article/33/fe
 TFRA prices are unsubsidised wholesale indicative prices; the subsidised farmer price for 2025/26 was not found. Sources: TFRA price notices for [urea](https://www.tfra.go.tz/uploads/documents/sw-1757666513-UREA.pdf), [CAN](https://www.tfra.go.tz/uploads/documents/sw-1757666780-CAN.pdf), [DAP](https://www.tfra.go.tz/uploads/documents/sw-1757668067-DAP.pdf), [MOP](https://www.tfra.go.tz/uploads/documents/sw-1757667149-MOP.pdf), [NPKs](https://www.tfra.go.tz/uploads/documents/sw-1757667893-NPKs.pdf), [TSP](https://www.tfra.go.tz/uploads/documents/sw-1757667964-TSP.pdf); [IPP Media](https://www.ippmedia.com/the-guardian/business/read/hopes-for-farmers-as-cassava-prices-increase-in-tanga-2024-04-23-115602), [The Citizen](https://thecitizen.co.tz/tanzania/news/national/agriculture-mechanisation-bashe-wants-private-dealers-registered-4769146), [Selina Wamucii cassava](https://www.selinawamucii.com/insights/prices/tanzania/cassava/), [Selina Wamucii sweet potatoes](https://www.selinawamucii.com/insights/prices/tanzania/sweet-potatoes/).
 
 ### Rwanda (RWF)
+
+**Applied 2026-11-27** (migration `2026_11_27_000001`): urea, DAP and NPK 17-17-17 now hold the full price, with the subsidised farmer price in `subsidised_price`. The rest of this country is not applied.
+
 | Item | Stored | Researched, season 2027A (subsidised farmer / full price) | Date | Conf. |
 |---|---|---|---|---|
 | urea | 28,200 | ~54,500 / 99,000 | Jul 2026 | H |
