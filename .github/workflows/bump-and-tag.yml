@@ -18,6 +18,15 @@ jobs:
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v7
+
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3.4.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+
       - name: Generate Tag
         id: tag_version
         uses: masgeek/github-tag-action@4
