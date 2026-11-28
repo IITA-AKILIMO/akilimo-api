@@ -27,6 +27,9 @@ The range is the lowest to highest option, apart from the `0` "I don't know" and
 ## By country
 
 ### Nigeria (NGN)
+
+**Applied 2026-11-27** (migration `2026_11_27_000002`): NPK 17-17-17 and 20-12-16 (stored 7,800 and 8,000) now use Indorama's ex-Kaduna price for the nearest grade, 50,300 and 44,400, low confidence. Urea, NPK 15-15-15, 20-10-10, MOP, DAP and CAN are drafts already waiting for review; TSP and SSP have no price found and are unchanged. March to July 2026 press puts urea at about 36,600-51,000.
+
 | Item | Stored | Researched | Date | Conf. |
 |---|---|---|---|---|
 | urea | 7,500 | 32,500–37,700 ex-plant; ~50,500 retail | 2026 | M |
@@ -61,6 +64,9 @@ Sources: [Indorama price list](https://www.indoramafertilizers.com/article/33/fe
 TFRA prices are unsubsidised wholesale indicative prices; the subsidised farmer price for 2025/26 was not found. Sources: TFRA price notices for [urea](https://www.tfra.go.tz/uploads/documents/sw-1757666513-UREA.pdf), [CAN](https://www.tfra.go.tz/uploads/documents/sw-1757666780-CAN.pdf), [DAP](https://www.tfra.go.tz/uploads/documents/sw-1757668067-DAP.pdf), [MOP](https://www.tfra.go.tz/uploads/documents/sw-1757667149-MOP.pdf), [NPKs](https://www.tfra.go.tz/uploads/documents/sw-1757667893-NPKs.pdf), [TSP](https://www.tfra.go.tz/uploads/documents/sw-1757667964-TSP.pdf); [IPP Media](https://www.ippmedia.com/the-guardian/business/read/hopes-for-farmers-as-cassava-prices-increase-in-tanga-2024-04-23-115602), [The Citizen](https://thecitizen.co.tz/tanzania/news/national/agriculture-mechanisation-bashe-wants-private-dealers-registered-4769146), [Selina Wamucii cassava](https://www.selinawamucii.com/insights/prices/tanzania/cassava/), [Selina Wamucii sweet potatoes](https://www.selinawamucii.com/insights/prices/tanzania/sweet-potatoes/).
 
 ### Rwanda (RWF)
+
+**Applied 2026-11-27** (migration `2026_11_27_000001`): urea, DAP and NPK 17-17-17 now hold the full price, with the subsidised farmer price in `subsidised_price`. The rest of this country is not applied.
+
 | Item | Stored | Researched, season 2027A (subsidised farmer / full price) | Date | Conf. |
 |---|---|---|---|---|
 | urea | 28,200 | ~54,500 / 99,000 | Jul 2026 | H |
@@ -74,6 +80,9 @@ TFRA prices are unsubsidised wholesale indicative prices; the subsidised farmer 
 Sources: [allAfrica (2027A prices)](https://allafrica.com/stories/202607030438.html), [Umunota](https://umunota.com/?p=77885), [The New Times (subsidies)](https://www.newtimes.co.rw/article/28400/news/agriculture/rwf75bn-in-agric-subsidies-this-is-how-much-farmers-will-pay), [The New Times (cassava prices)](https://www.newtimes.co.rw/article/170587/News/cassava-farmers-decry-low-prices), [TangaBid/Esoko](https://www.tangabid.com/market/prices/?product=9), [KT Press](https://www.ktpress.rw/2017/09/cassava-farmers-condition-kinazi-factory-to-pay-on-spot/), [The EastAfrican](https://www.theeastafrican.co.ke/tea/rwanda-today/kinazi-factory-losing-out-as-traders-offer-more-for-cassava--1311324).
 
 ### Ghana (GHS)
+
+**Applied 2026-11-27** (same migration): the six NPK grades (stored 146-160) now hold 420 per 50 kg, from an undated retailer listing inside the 400-550 range of 2023; low confidence, and no dated 2026 cedi price exists. Urea (142) is unchanged: nothing current was found. Programme farmers get fertiliser free in 2026.
+
 | Item | Stored | Researched | Date | Conf. |
 |---|---|---|---|---|
 | NPK, all grades | 146–160 | 400–550 open market; 410–420 online retailer | 2023; listing undated | M/L |
@@ -87,6 +96,9 @@ Sources: [allAfrica (2027A prices)](https://allafrica.com/stories/202607030438.h
 Sources: [GNA](https://gna.org.gh/2023/09/farmers-decry-high-farm-inputs-prices-as-pfj-ends/), [Ghana Chemicals](https://ghanachemicalsltd.com/product/npk-20-10-10/), [AGRA Price & Policy Monitor](https://agra.org/wp-content/uploads/2022/08/Price-and-Policy-Monitor-July-edition-4.pdf), [Ecofin](https://www.ecofinagency.com/news-agriculture/2403-54025-ghana-drops-fertilizer-subsidies-for-free-distribution-amid-price-spike), [Further Africa](https://furtherafrica.com/2022/02/15/ifdc-commits-to-make-fertilizer-affordable-in-ghana/), [Citi Newsroom](https://www.citinewsroom.com/2026/04/channel-one-tv-market-price-barometer-tomatoes-cassava-among-high-priced-staples/), [Graphic Online](https://www.graphic.com.gh/business/business-news/cost-of-maize-up-600-in-5-years-threatens-food-security.html), [Fairtrade](https://www.fairtrade.net/content/dam/fairtrade/global/why-we-do-it/living-income/living-income-reference-prices/Fairtrade-Living-Income-Reference-Prices-Cocoa-Ghana-Cote-dIvoire-2025-explanatory-note.pdf).
 
 ### Burundi (BIF)
+
+**Applied 2026-11-27** (same migration): the three FOMI blends keep their full price (it already matches the 2023 cost of a 25 kg bag, and the catalogue already says 25 kg) and gain the farmer's subsidised price, 31,000, 28,000 and 33,000 per 25 kg. A civil-society report gives about 33,000 for 2025-26, so the order of magnitude holds, but the official 2026 price was not found.
+
 | Item | Stored (labelled 50 kg) | Researched, per **25 kg** bag (full cost / farmer pays) | Date | Conf. |
 |---|---|---|---|---|
 | FOMI-Imbura | 85,390 | 86,408 / 31,000 | Sep 2023 | M |
@@ -110,6 +122,6 @@ The official rate is ~2,910–3,000 BIF/USD against a parallel premium of about 
 
 1. Ask each country team for current subsidised and open-market fertiliser prices, and decide which one the default represents.
 2. Fix the Burundi fertiliser bag size: store prices per 25 kg, or convert them to 50 kg.
-3. Bring the `fertilizer_prices` options up to date (NG, TZ, RW, GH, BI), ideally by generating them from the catalogue (phase 3 of `docs/PRICE_CATALOGUE_DESIGN.md`) and keeping the `0` and negative marker rows.
+3. Bring the `fertilizer_prices` options up to date (NG, TZ, RW, GH, BI), ideally by generating them from the catalogue (phase 3 of `docs/archive/PRICE_CATALOGUE_DESIGN.md`) and keeping the `0` and negative marker rows.
 4. ~~Update Tanzania's fertiliser defaults from the TFRA notices; they are the only high-confidence official series found.~~ **Done** in `87721bc` (TFRA September 2025 national averages, rounded to 100 TZS).
 5. Get field prices for cassava roots and labour before changing `cassUP` or labour defaults.

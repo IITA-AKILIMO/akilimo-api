@@ -6,6 +6,7 @@
  * For licence information, see the LICENCE file.
  */
 
+use App\Http\Controllers\Api\AppVersionController;
 use App\Http\Controllers\Api\CassavaUnitsController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\FertilizerController;
@@ -31,6 +32,7 @@ Route::middleware(['throttle:admin-write', 'auth.token:write'])->prefix('v1/admi
     Route::apiResource('price-catalogue', PriceCatalogueController::class)->only(['store', 'update', 'destroy']);
     Route::get('messages', [MessageController::class, 'adminIndex']);
     Route::post('messages', [MessageController::class, 'store']);
+    Route::put('app/version', [AppVersionController::class, 'update']);
 });
 
 // ── Admin — user management (requires admin) ──────────────────────────────────

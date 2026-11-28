@@ -57,7 +57,7 @@ return new class extends Migration {
                 }
             }
 
-            if (! $created) {
+            if (!$created) {
                 throw new RuntimeException('Could not recreate the views: ' . implode(', ', array_keys($pending)));
             }
         }
@@ -73,8 +73,8 @@ return new class extends Migration {
         $all = [];
 
         foreach (DB::select('SELECT table_name AS name FROM information_schema.views WHERE table_schema = DATABASE()') as $view) {
-            $row = (array) DB::selectOne('SHOW CREATE VIEW `' . $view->name . '`');
-            $all[(string) $view->name] = (string) $row['Create View'];
+            $row = (array)DB::selectOne('SHOW CREATE VIEW `' . $view->name . '`');
+            $all[(string)$view->name] = (string)$row['Create View'];
         }
 
         $affected = [];

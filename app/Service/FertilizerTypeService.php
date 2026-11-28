@@ -64,6 +64,7 @@ class FertilizerTypeService
 
     /**
      * @param array{name: string, weight?: int|null, label?: string|null, category?: string|null} $data
+     *
      * @throws \Throwable
      */
     public function create(array $data): FertilizerType

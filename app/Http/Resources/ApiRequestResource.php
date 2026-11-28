@@ -9,7 +9,6 @@
 namespace App\Http\Resources;
 
 use App\Models\ApiRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin ApiRequest */
 class ApiRequestResource extends BaseJsonResource

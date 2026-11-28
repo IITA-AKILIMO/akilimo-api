@@ -16,6 +16,7 @@ use App\Models\CountryReviewer;
 use App\Models\Message;
 use App\Models\PriceCatalogue;
 use App\Models\PriceCatalogueHistory;
+use App\Models\PushDevice;
 use App\Models\UserIdentity;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -45,6 +46,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property Collection|Message[] $messages
  * @property Collection|PriceCatalogueHistory[] $priceCatalogueHistories
  * @property Collection|PriceCatalogue[] $priceCatalogues
+ * @property Collection|PushDevice[] $pushDevices
  * @property Collection|UserIdentity[] $userIdentities
  * @property-read int|null $api_keys_count
  * @property-read int|null $api_requests_count
@@ -54,6 +56,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read int|null $notifications_count
  * @property-read int|null $price_catalogue_histories_count
  * @property-read int|null $price_catalogues_count
+ * @property-read int|null $push_devices_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @property-read int|null $user_identities_count
@@ -120,7 +123,7 @@ class User extends BaseUser
 
     public function messages(): HasMany
     {
-        return $this->hasMany(Message::class, 'created_by');
+        return $this->hasMany(Message::class, 'recipient_user_id');
     }
 
     public function priceCatalogueHistories(): HasMany
@@ -131,6 +134,11 @@ class User extends BaseUser
     public function priceCatalogues(): HasMany
     {
         return $this->hasMany(PriceCatalogue::class, 'updated_by');
+    }
+
+    public function pushDevices(): HasMany
+    {
+        return $this->hasMany(PushDevice::class);
     }
 
     public function userIdentities(): HasMany

@@ -9,8 +9,10 @@
 use App\Enums\EnumUserRole;
 use App\Models\PriceCatalogue;
 use App\Models\User;
+use App\Service\PriceCatalogueService;
 use App\Service\PriceLookupService;
 use Illuminate\Support\Facades\DB;
+use Inertia\Testing\AssertableInertia;
 use Inertia\Testing\AssertableInertia as Assert;
 
 function lookupAdmin(): User
@@ -120,7 +122,7 @@ it('applies the same lists to the batch forms', function () {
 });
 
 it('takes the default unit for an item from the database', function () {
-    $price = app(\App\Service\PriceCatalogueService::class)->createDraft(
+    $price = app(PriceCatalogueService::class)->createDraft(
         ['country' => 'NG', 'item' => 'cassUP', 'price' => 12000, 'currency' => 'NGN'],
         lookupAdmin(),
     );
@@ -129,14 +131,13 @@ it('takes the default unit for an item from the database', function () {
 
     DB::table('price_items')->where('item', 'cassUP')->update(['unit' => 'per_kg']);
 
-    $other = app(\App\Service\PriceCatalogueService::class)->createDraft(
+    $other = app(PriceCatalogueService::class)->createDraft(
         ['country' => 'TZ', 'item' => 'cassUP', 'price' => 180000, 'currency' => 'TZS'],
         lookupAdmin(),
     );
 
     expect($other->unit)->toBe('per_kg');
 });
-
 
 it('gives every country its own currency and defaults a price to it', function () {
     seedCurrencies(['country_code' => null, 'country' => null, 'currency_name' => 'West African CFA franc', 'currency_code' => 'XOF', 'currency_symbol' => 'CFA']);
@@ -149,7 +150,7 @@ it('gives every country its own currency and defaults a price to it', function (
     expect($byCountry['SN'])->toBe('XOF')->and($byCountry['BJ'])->toBe('XOF');
 
     // a price saved without a currency takes its country's
-    $price = app(\App\Service\PriceCatalogueService::class)->createDraft(['country' => 'SN', 'item' => 'urea', 'price' => 100], null);
+    $price = app(PriceCatalogueService::class)->createDraft(['country' => 'SN', 'item' => 'urea', 'price' => 100], null);
     expect($price->currency)->toBe('XOF');
 });
 
@@ -157,7 +158,7 @@ it('picks a country currency from the currencies list in the admin', function ()
     $admin = lookupAdmin();
 
     $this->actingAs($admin)->get('/admin/countries/create')
-        ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page->has('currencies', DB::table('currencies')->count()));
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('currencies', DB::table('currencies')->count()));
 
     $this->actingAs($admin)->post('/admin/countries', ['code' => 'KE', 'name' => 'Kenya', 'currency_code' => 'NOPE', 'default_price_basis' => 'open_market'])
         ->assertSessionHasErrors('currency_code');

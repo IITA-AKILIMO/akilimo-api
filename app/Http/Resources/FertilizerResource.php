@@ -11,7 +11,6 @@ namespace App\Http\Resources;
 use App\Http\Enums\EnumCountry;
 use App\Models\VwFertilizer;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @mixin VwFertilizer

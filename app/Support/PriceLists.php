@@ -93,7 +93,7 @@ final class PriceLists
         return match ($list) {
             'fertilizer' => PriceMarker::labelForPrice($row->price_per_bag, $symbol),
             'cassava', 'potato', 'maize' => PriceMarker::labelForRange($row->min_local_price, $row->max_local_price, $symbol),
-            'investment' => (float) $row->investment_amount === 0.0 ? PriceMarker::EXACT_AMOUNT : PriceMarker::labelForPrice($row->investment_amount, $symbol),
+            'investment' => (float)$row->investment_amount === 0.0 ? PriceMarker::EXACT_AMOUNT : PriceMarker::labelForPrice($row->investment_amount, $symbol),
             'operations' => PriceMarker::labelForRange($row->min_cost, $row->max_cost),
         };
     }
@@ -112,12 +112,12 @@ final class PriceLists
                 'value' => self::number($row->price_per_bag),
             ],
             'cassava', 'potato' => [
-                'label' => "{$row->country} " . ((float) $row->min_local_price < 0 ? 'exact price' : 'band ' . ($row->id % 10)),
-                'value' => (float) $row->min_local_price < 0 ? 'exact' : self::number($row->min_local_price) . ' – ' . self::number($row->max_local_price),
+                'label' => "{$row->country} " . ((float)$row->min_local_price < 0 ? 'exact price' : 'band ' . ($row->id % 10)),
+                'value' => (float)$row->min_local_price < 0 ? 'exact' : self::number($row->min_local_price) . ' – ' . self::number($row->max_local_price),
             ],
             'maize' => [
-                'label' => "{$row->country} {$row->produce_type} " . ((float) $row->min_local_price < 0 ? 'exact price' : 'band ' . ($row->id % 10)),
-                'value' => (float) $row->min_local_price < 0 ? 'exact' : self::number($row->min_local_price) . ' – ' . self::number($row->max_local_price),
+                'label' => "{$row->country} {$row->produce_type} " . ((float)$row->min_local_price < 0 ? 'exact price' : 'band ' . ($row->id % 10)),
+                'value' => (float)$row->min_local_price < 0 ? 'exact' : self::number($row->min_local_price) . ' – ' . self::number($row->max_local_price),
             ],
             'investment' => [
                 'label' => "{$row->country} amount " . $row->sort_order,
@@ -135,6 +135,6 @@ final class PriceLists
      */
     private static function number(mixed $value): string
     {
-        return rtrim(rtrim(number_format((float) $value, 2, '.', ','), '0'), '.');
+        return rtrim(rtrim(number_format((float)$value, 2, '.', ','), '0'), '.');
     }
 }

@@ -5,10 +5,10 @@ id,country,region,item,fertilizer_type,price,subsidised_price,unit,bag_kg,min_pr
 4,NG,,NPK201010,,48000,,per_bag,50,,,draft,"IFDC Global Fertilizer Markets Today, 2 Jun 2026: Nigeria wholesale NPK 20-10-10 per 50 kg",2026-06-02,medium,,NGN
 5,NG,,NPK151515,NPK_15_15_15,46900,,per_bag,50,,,draft,"Indorama ex-Kaduna price list, NPK 15-15-15 per 50 kg (undated page, read 2026-11-11)",,low,,NGN
 6,NG,,TSP,TSP,13250,,per_bag,50,,,active,,,,,NGN
-7,NG,,NPK171717,,7800,,per_bag,50,,,active,,,,,NGN
+7,NG,,NPK171717,,50300,,per_bag,50,,,active,"Proxy, no 17-17-17 listing (2026-11-27): Indorama ex-Kaduna NPK 15-15-15 per 50 kg. Check with a supplier.",2026-11-27,low,,NGN
 8,NG,,CAN,CAN,39500,,per_bag,50,,,draft,"Farmsquare 2025 guide: CAN average 37,000 to 42,000 per 50 kg (2025, not 2026)",,low,,NGN
 9,NG,,SSP,SSP,22364,,per_bag,50,,,active,,,,,NGN
-10,NG,,NPK201216,NPK_20_12_16_MG_2,8000,,per_bag,50,,,active,,,,,NGN
+10,NG,,NPK201216,NPK_20_12_16_MG_2,44400,,per_bag,50,,,active,"Proxy, no 20-12-16 listing (2026-11-27): Indorama ex-Kaduna NPK 20-10-10 per 50 kg. Check with a supplier.",2026-11-27,low,,NGN
 11,NG,,manual_ploughing,,17000,,per_acre,,,,active,,,,,NGN
 12,NG,,manual_ridging,,12000,,per_acre,,,,active,,,,,NGN
 13,NG,,tractor_ploughing,,6000,,per_acre,,,,active,,,,,NGN
@@ -34,22 +34,22 @@ id,country,region,item,fertilizer_type,price,subsidised_price,unit,bag_kg,min_pr
 33,TZ,,weeding1,,60000,,per_acre,,,,active,,,,,TZS
 34,TZ,,weeding2,,45000,,per_acre,,,,active,,,,,TZS
 35,TZ,,cassUP,,180000,,per_tonne,,,,active,,,,,TZS
-36,RW,,urea,UREA,28200,,per_bag,50,,,active,,,,,RWF
+36,RW,,urea,UREA,99000,54500,per_bag,50,,,active,"MINAGRI 2026/27 fertiliser prices (The New Times, AllAfrica 3 Jul 2026): retail per kg x 50; subsidised = farmer price after the subsidy",2026-07-03,medium,,RWF
 37,RW,,MOP,MOP,27900,,per_bag,50,,,active,,,,,RWF
-38,RW,,DAP,DAP,31650,,per_bag,50,,,active,,,,,RWF
-39,RW,,NPK171717,,35650,,per_bag,50,,,active,,,,,RWF
+38,RW,,DAP,DAP,97500,53000,per_bag,50,,,active,"MINAGRI 2026/27 fertiliser prices (The New Times, AllAfrica 3 Jul 2026): retail per kg x 50; subsidised = farmer price after the subsidy",2026-07-03,medium,,RWF
+39,RW,,NPK171717,,93050,52700,per_bag,50,,,active,"MINAGRI 2026/27 fertiliser prices (The New Times, AllAfrica 3 Jul 2026): retail per kg x 50; subsidised = farmer price after the subsidy",2026-07-03,medium,,RWF
 40,RW,,cassUP,,75000,,per_tonne,,,,active,,,,,RWF
 41,GH,,urea,UREA,142,,per_bag,50,,,active,,,,,GHS
-42,GH,,NPK112221,NPK_11_22_21,160,,per_bag,50,,,active,,,,,GHS
-43,GH,,NPK251010,NPK_25_10_10,150,,per_bag,50,,,active,,,,,GHS
-44,GH,,NPK152020,NPK_15_20_20,156,,per_bag,50,,,active,,,,,GHS
-45,GH,,NPK201010,NPK_20_10_10,146,,per_bag,50,,,active,,,,,GHS
-46,GH,,NPK23105,NPK_23_10_5,146,,per_bag,50,,,active,,,,,GHS
-47,GH,,NPK123017,NPK_12_30_17,160,,per_bag,50,,,active,,,,,GHS
+42,GH,,NPK112221,NPK_11_22_21,420,,per_bag,50,,,active,"Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found, Feed Ghana gives programme fertiliser free. Check with MoFA.",2026-11-27,low,,GHS
+43,GH,,NPK251010,NPK_25_10_10,420,,per_bag,50,,,active,"Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found, Feed Ghana gives programme fertiliser free. Check with MoFA.",2026-11-27,low,,GHS
+44,GH,,NPK152020,NPK_15_20_20,420,,per_bag,50,,,active,"Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found, Feed Ghana gives programme fertiliser free. Check with MoFA.",2026-11-27,low,,GHS
+45,GH,,NPK201010,NPK_20_10_10,420,,per_bag,50,,,active,"Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found, Feed Ghana gives programme fertiliser free. Check with MoFA.",2026-11-27,low,,GHS
+46,GH,,NPK23105,NPK_23_10_5,420,,per_bag,50,,,active,"Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found, Feed Ghana gives programme fertiliser free. Check with MoFA.",2026-11-27,low,,GHS
+47,GH,,NPK123017,NPK_12_30_17,420,,per_bag,50,,,active,"Undated retailer listing of NPK 20-10-10 (Ghana Chemicals), within the 400-550 open-market range of GNA 2023; grade proxy. No dated 2026 cedi price found, Feed Ghana gives programme fertiliser free. Check with MoFA.",2026-11-27,low,,GHS
 48,GH,,cassUP,,450,,per_tonne,,,,active,,,,,GHS
-49,BI,,FOMIIMBURA,FOM_II_MBUR,85390,,per_bag,25,,,active,,,,,BIF
-50,BI,,FOMIBAGARA,FOM_I_BAGARA,77600,,per_bag,25,,,active,,,,,BIF
-51,BI,,FOMITOTAHAZA,FOM_I_TOTA_HAZA,77600,,per_bag,25,,,active,,,,,BIF
+49,BI,,FOMIIMBURA,FOM_II_MBUR,85390,31000,per_bag,25,,,active,"ABP Burundi 2023: farmer pays this per 25 kg bag under the subsidy; the official figure in 2025-26 is about 33,000 (FORSC), parallel market far higher. Confirm the 2026 price.",2023-09-15,medium,,BIF
+50,BI,,FOMIBAGARA,FOM_I_BAGARA,77600,28000,per_bag,25,,,active,"ABP Burundi 2023: farmer pays this per 25 kg bag under the subsidy; the official figure in 2025-26 is about 33,000 (FORSC), parallel market far higher. Confirm the 2026 price.",2023-09-15,medium,,BIF
+51,BI,,FOMITOTAHAZA,FOM_I_TOTA_HAZA,77600,33000,per_bag,25,,,active,"ABP Burundi 2023: farmer pays this per 25 kg bag under the subsidy; the official figure in 2025-26 is about 33,000 (FORSC), parallel market far higher. Confirm the 2026 price.",2023-09-15,low,,BIF
 52,BI,,cassUP,,700000,,per_tonne,,,,active,,,,,BIF
 55,RW,,manual_ploughing,,20000,,per_acre,,,,draft,"Desk research 2026-11-08: 2,000 RWF/day x 10 person-days",2026-11-08,low,,RWF
 56,RW,,manual_ridging,,16000,,per_acre,,,,draft,"Desk research 2026-11-08: 2,000 RWF/day x 8 person-days",2026-11-08,low,,RWF
@@ -71,3 +71,4 @@ id,country,region,item,fertilizer_type,price,subsidised_price,unit,bag_kg,min_pr
 72,TZ,,investment_amount,,57550,,per_acre,,,,active,Backfilled from the investment_amount list: its smallest amount per acre,2026-11-11,low,,TZS
 73,NG,,NPK201226,NPK_20_12_26,44400,,per_bag,50,,,draft,"PROXY, no 20:12:26 listing found: Indorama ex-Kaduna price for NPK 20-10-10, 50 kg (web search 2026-11-11). Check with a supplier.",,low,,NGN
 74,BI,,DOLOMITE,DOLOMITE,19000,5000,per_bag,50,,,draft,"ABP Burundi, 2024A season preparations: two 25 kg bags 19,000 FBu, farmer pays 5,000 FBu (2023 subsidised sale). Check the current subsidy.",2023-09-15,low,,BIF
+75,RW,,investment_amount,,26000,,per_acre,,,,active,"Desk research 2026-11-27: about 25 kg of NPK 17:17:17 per acre (about 62 kg/ha, near RAB's 50 kg/ha DAP rate for cassava) at the 2026/27 farmer price of about RWF 1,054/kg (retail RWF 1,861 less RWF 807 subsidy). The list offers 1, 2, 3, 4 and 6 times this. Estimate: confirm with the Rwanda team.",2026-11-27,low,,RWF

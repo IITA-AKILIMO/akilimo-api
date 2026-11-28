@@ -29,7 +29,7 @@ return new class extends Migration {
         foreach (self::FIXES as $item => [$wrong, $right]) {
             $row = DB::table('price_catalogue')->where('country', 'TZ')->where('item', $item)->first();
 
-            if ($row === null || (float) $row->price !== (float) $wrong) {
+            if ($row === null || (float)$row->price !== (float)$wrong) {
                 continue;
             }
 
@@ -43,7 +43,7 @@ return new class extends Migration {
         foreach (self::FIXES as $item => [$wrong, $right]) {
             $row = DB::table('price_catalogue')->where('country', 'TZ')->where('item', $item)->first();
 
-            if ($row === null || (float) $row->price !== (float) $right) {
+            if ($row === null || (float)$row->price !== (float)$right) {
                 continue;
             }
 

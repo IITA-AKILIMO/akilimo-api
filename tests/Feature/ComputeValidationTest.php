@@ -6,10 +6,11 @@
  * For licence information, see the LICENCE file.
  */
 
+use Database\Seeders\FertilizerSeeder;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->seed(FertilizerSeeder::class);
     $this->actingAsApiUser();
 });
 
@@ -173,6 +174,15 @@ it('accepts gender F', function () {
 
     $payload = computePayload();
     $payload['user_info']['gender'] = 'F';
+
+    $this->postJson('/api/v1/recommendations/compute', $payload)->assertOk();
+});
+
+it('accepts gender NA (prefer not to answer)', function () {
+    Http::fake(['*' => Http::response(plumberSuccessResponse(), 200)]);
+
+    $payload = computePayload();
+    $payload['user_info']['gender'] = 'NA';
 
     $this->postJson('/api/v1/recommendations/compute', $payload)->assertOk();
 });

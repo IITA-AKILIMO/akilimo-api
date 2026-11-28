@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
  * produce_prices was a second, generic copy of the range price lists (cassava,
  * maize, potato per country). Nothing read it: no route, screen or query, only a
  * seeder and a model, both removed with it. The app's lists are the views and
- * tables named for each crop (docs/PRICE_TABLES_REVIEW.md).
+ * tables named for each crop (docs/archive/PRICE_TABLES_REVIEW.md).
  *
  * down() recreates the empty table; its rows were a copy of data held elsewhere.
  */

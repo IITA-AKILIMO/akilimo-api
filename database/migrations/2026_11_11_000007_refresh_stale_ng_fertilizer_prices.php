@@ -60,7 +60,7 @@ return new class extends Migration {
             $row = DB::table('default_prices')->where('country', 'NG')->where('item', $item)->first();
 
             // Only a row still at the stale value; a price someone already changed is theirs
-            if ($row === null || (float) $row->price !== (float) $old) {
+            if ($row === null || (float)$row->price !== (float)$old) {
                 continue;
             }
 
@@ -94,7 +94,7 @@ return new class extends Migration {
             $row = DB::table('default_prices')->where('country', 'NG')->where('item', $item)->first();
 
             // Restore the old value only on a row still as this migration left it
-            if ($row === null || (float) $row->price !== (float) $new || $row->status !== 'draft' || $row->source !== $source) {
+            if ($row === null || (float)$row->price !== (float)$new || $row->status !== 'draft' || $row->source !== $source) {
                 continue;
             }
 

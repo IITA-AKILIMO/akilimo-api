@@ -9,8 +9,10 @@
 use App\Enums\EnumUserRole;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ApiKeyController;
+use App\Http\Controllers\Admin\AppVersionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeedbackController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\RequestLogController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +50,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'role:' . EnumUs
         Route::resource('users', UserController::class)
             ->except(['show'])
             ->parameters(['users' => 'user']);
+
+        // Which mobile app versions are current, and which are no longer allowed to run
+        Route::get('app-versions', [AppVersionController::class, 'index'])->name('app-versions.index');
+        Route::put('app-versions/{platform}', [AppVersionController::class, 'update'])->name('app-versions.update');
+        // Messages for the mobile app's inbox, pushed through FCM
+        Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
+        Route::get('messages/recipients', [MessageController::class, 'recipients'])->name('messages.recipients');
+        Route::get('messages/audience', [MessageController::class, 'audience'])->name('messages.audience');
+        Route::post('messages', [MessageController::class, 'store'])->middleware('throttle:write')->name('messages.store');
 
         // Prices and fertilizers, then reference data and other lookup lists
         require __DIR__ . '/admin/pricing.php';

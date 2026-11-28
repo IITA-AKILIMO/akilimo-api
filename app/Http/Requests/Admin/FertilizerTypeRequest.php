@@ -48,7 +48,7 @@ class FertilizerTypeRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            $name = (string) $this->input('name');
+            $name = (string)$this->input('name');
 
             if ($name !== '' && app(FertilizerTypeService::class)->codeFor($name) === '') {
                 $validator->errors()->add('name', 'The name must contain letters or digits.');

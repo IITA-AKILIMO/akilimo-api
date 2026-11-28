@@ -26,7 +26,7 @@ it('seeds the fertilizers, crops, units, rules and prices on a new database', fu
         ->and(DB::table('cassava_units')->count())->toBe(4)
         ->and(DB::table('traffic_exclusions')->count())->toBe(4)
         ->and(DB::table('starch_factories')->count())->toBe(12)
-        ->and(DB::table('price_catalogue')->count())->toBe(72)
+        ->and(DB::table('price_catalogue')->count())->toBe(73)
         ->and(DB::table('vw_fertilizers')->count())->toBe(38);
 
     // every fertilizer's catalogue label can be priced, as a fertilizer
@@ -36,6 +36,22 @@ it('seeds the fertilizers, crops, units, rules and prices on a new database', fu
     // the countries have their currencies
     expect(DB::table('countries')->where('code', 'NG')->value('currency_code'))->toBe('NGN')
         ->and(DB::table('countries')->where('code', 'BI')->value('currency_code'))->toBe('BIF');
+});
+
+it('gives every country that has fertilizer prices an investment amount list, Rwanda included', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    // the reference amount per acre (RWF 26,000), then 0 ("exact amount") and 1, 2, 3, 4 and 6 times it
+    $rwanda = DB::table('vw_investment_amount')->where('country', 'RW')->orderBy('sort_order')
+        ->pluck('investment_amount')->map(fn ($a) => (float)$a)->all();
+
+    expect($rwanda)->toBe([0.0, 26000.0, 52000.0, 78000.0, 104000.0, 156000.0])
+        ->and(DB::table('price_catalogue')->where('country', 'RW')->where('item', 'investment_amount')->value('currency'))->toBe('RWF');
+
+    foreach (['BI', 'GH', 'NG', 'RW', 'TZ'] as $country) {
+        expect(DB::table('vw_investment_amount')->where('country', $country)->where('investment_amount', '>', 0)->count())
+            ->toBeGreaterThan(0, "{$country} has no investment amounts");
+    }
 });
 
 it('keeps the ids the app and the price lists refer to', function () {
@@ -51,7 +67,7 @@ it('keeps the ids the app and the price lists refer to', function () {
 
     // price rows keep their ids too, because the option lists are built from them (id x 10 + step)
     expect(DB::table('price_catalogue')->where('id', 55)->value('item'))->toBe('manual_ploughing')
-        ->and(DB::table('price_catalogue')->max('id'))->toBe(74);
+        ->and(DB::table('price_catalogue')->max('id'))->toBe(75);
 });
 
 it('lists a fertilizer only once it has an active price, and links the prices to their fertilizers', function () {
@@ -75,7 +91,7 @@ it('can be run again without changing what is there', function () {
     $this->seed(DatabaseSeeder::class);
 
     expect([DB::table('price_catalogue')->count(), DB::table('country_fertilizers')->count(), DB::table('starch_factories')->count()])->toBe($before)
-        ->and((float) DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('price'))->toBe(51000.0)
+        ->and((float)DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('price'))->toBe(51000.0)
         ->and(DB::table('price_catalogue')->where('country', 'NG')->where('item', 'urea')->value('status'))->toBe('active')
         ->and(DB::table('crops')->where('crop_key', 'maize')->value('name'))->toBe('Maize (edited)');
 });
@@ -83,6 +99,6 @@ it('can be run again without changing what is there', function () {
 it('seeds the corrected Tanzanian weeding prices', function () {
     $this->seed(DatabaseSeeder::class);
 
-    expect((float) DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding1')->value('price'))->toBe(60000.0)
-        ->and((float) DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding2')->value('price'))->toBe(45000.0);
+    expect((float)DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding1')->value('price'))->toBe(60000.0)
+        ->and((float)DB::table('price_catalogue')->where('country', 'TZ')->where('item', 'weeding2')->value('price'))->toBe(45000.0);
 });

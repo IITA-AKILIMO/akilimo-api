@@ -72,7 +72,7 @@ class ReferenceDataController extends AdminController
             $query->orderBy($column);
         }
 
-        $paginator = $query->paginate((int) min(100, max(10, (int) $request->get('per_page', 20))))->withQueryString();
+        $paginator = $query->paginate((int)min(100, max(10, (int)$request->get('per_page', 20))))->withQueryString();
 
         return Inertia::render('Reference/Index', [
             'resource' => $this->present($def),
@@ -85,7 +85,7 @@ class ReferenceDataController extends AdminController
                     'key' => $name,
                     'label' => $field['label'],
                     'options' => DB::table($def['table'])->whereNotNull($name)->distinct()->orderBy($name)->pluck($name)
-                        ->map(fn ($v) => ['value' => (string) $v, 'label' => (string) $v])->all(),
+                        ->map(fn ($v) => ['value' => (string)$v, 'label' => (string)$v])->all(),
                 ];
             })->values()->all(),
             'items' => $this->paginateShape($paginator, function ($row) use ($def, $keys) {
@@ -249,12 +249,12 @@ class ReferenceDataController extends AdminController
      */
     private function keyFromRequest(array $def, Request $request): array
     {
-        $given = (array) $request->query('key', []);
+        $given = (array)$request->query('key', []);
         $key = [];
 
         foreach ($this->keyNames($def) as $name) {
             abort_unless(isset($given[$name]) && is_scalar($given[$name]), 404);
-            $key[$name] = (string) $given[$name];
+            $key[$name] = (string)$given[$name];
         }
 
         return $key;
@@ -281,7 +281,7 @@ class ReferenceDataController extends AdminController
         $rules = [];
 
         foreach ($def['fields'] as $field) {
-            if (($field['key'] ?? false) && ! $includeKeys) {
+            if (($field['key'] ?? false) && !$includeKeys) {
                 continue;
             }
 
@@ -303,7 +303,7 @@ class ReferenceDataController extends AdminController
      */
     private function timestamps(array $def, bool $creating): array
     {
-        if (! ($def['timestamps'] ?? false)) {
+        if (!($def['timestamps'] ?? false)) {
             return [];
         }
 
@@ -324,12 +324,12 @@ class ReferenceDataController extends AdminController
             'description' => $def['description'],
             'warning' => $def['warning'] ?? null,
             'createUrl' => $def['create_url'] ?? null,
-            'canPreview' => ! empty($def['previews']),
+            'canPreview' => !empty($def['previews']),
             'fields' => collect($def['fields'])->map(fn ($f) => [
                 'name' => $f['name'],
                 'label' => $f['label'],
                 'type' => $f['type'],
-                'key' => (bool) ($f['key'] ?? false),
+                'key' => (bool)($f['key'] ?? false),
                 'required' => in_array('required', $f['rules'], true),
                 'help' => $f['help'] ?? null,
                 'step' => $f['step'] ?? null,
@@ -362,8 +362,8 @@ class ReferenceDataController extends AdminController
                 ->orderBy($from['value'])
                 ->get()
                 ->map(fn ($o) => [
-                    'value' => (string) $o->{$from['value']},
-                    'label' => $labelColumn === $from['value'] ? (string) $o->{$from['value']} : $o->{$from['value']} . ' — ' . $o->{$labelColumn},
+                    'value' => (string)$o->{$from['value']},
+                    'label' => $labelColumn === $from['value'] ? (string)$o->{$from['value']} : $o->{$from['value']} . ' — ' . $o->{$labelColumn},
                 ])
                 ->all();
         }

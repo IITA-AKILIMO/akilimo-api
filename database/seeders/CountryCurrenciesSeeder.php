@@ -25,7 +25,7 @@ class CountryCurrenciesSeeder extends Seeder
         $known = DB::table('currencies')->pluck('currency_code')->all();
 
         foreach ($this->csvRows('country_currencies.csv') as $row) {
-            if (! in_array($row['currency'], $known, true)) {
+            if (!in_array($row['currency'], $known, true)) {
                 continue;
             }
 

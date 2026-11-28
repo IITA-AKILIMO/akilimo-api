@@ -48,7 +48,7 @@ Client → ComputeRequest (validation) → RecommendationController
 - `RecommendationService` — orchestrates computation, handles caching (configurable TTL), logs all requests to `api_requests`, maps fertilizer data, transforms request/response.
 - `AkilimoComputeService` — HTTP client for the external Akilimo Compute service. Configurable via `config/akilimo-compute.php` (`base_url`, `endpoint`, `timeout` defaults to 120s, `retries` defaults to 3, `logging`).
 - `AuthService` — handles login (user lookup, password verification, token minting) and token revocation. Keep auth logic here; `AuthController` is thin.
-- `FarmerAccountService` — optional farmer accounts: register, login, consent, email verification and password reset codes (hashed, in the cache), claiming a phone's earlier advice by `device_token`, account deletion. `SocialSignInService` — Google and other providers through Laravel Socialite (access-token flow). Both are used by `AccountController` and `AccountHistoryController`; see `docs/FARMER_ACCOUNTS_API.md`. `MessageService` stores messages for the mobile app and pushes them to FCM topics through `Fcm\FcmClient` (HTTP v1, service account, no extra package); `GET /v1/messages` is how phones fetch what they missed; see `docs/MESSAGES_API.md`.
+- `FarmerAccountService` — optional farmer accounts: register, login, consent, email verification and password reset codes (hashed, in the cache), claiming a phone's earlier advice by `device_token`, account deletion. `SocialSignInService` — Google and other providers through Laravel Socialite (access-token flow). Both are used by `AccountController` and `AccountHistoryController`; see `docs/FARMER_ACCOUNTS_API.md`. `MessageService` stores messages for the mobile app and queues their push (`JobsPushMessage`, the only code that calls FCM) to FCM topics, or to individual phones (`publishPrivate`: a farmer account or a `device_token` as recipient, one push per registered `push_devices` row), through `Fcm\FcmClient` (HTTP v1, service account, no extra package; it deletes tokens FCM reports UNREGISTERED). `PushDeviceService`/`PushDeviceRepo` keep `push_devices` (`PUT|DELETE /v1/devices`). `GET /v1/messages` is how phones fetch what they missed and never returns a private message to anyone but its recipient; see `docs/MESSAGES_API.md`.
 
 **Repositories** (`app/Repositories/`) — Data access via `BaseRepo` (abstract, handles pagination/sorting/filtering). All repos implement `Contracts/Repository`. Don't bypass repositories to query models directly from controllers.
 
@@ -64,7 +64,8 @@ Client → ComputeRequest (validation) → RecommendationController
 - `GET /health` — comprehensive health check
 - `POST /v1/auth/login` — obtain bearer token
 - `POST /v1/account/register|login|google|social/{provider}|email/verify|password/forgot|password/reset` — optional farmer accounts (limiters `sensitive` and `auth`)
-- `GET /v1/messages` — messages for the mobile app's inbox by `country`, `language`, `since` (throttle 120/min); admins send with `POST /v1/admin/messages` (`write` ability)
+- `GET /v1/messages` — messages for the mobile app's inbox by `country`, `language`, `since` and `device_token` (private messages only for that phone or its account; throttle 120/min); admins send with `POST /v1/admin/messages` (`write` ability; `recipients` makes a message private)
+- `PUT|DELETE /v1/devices` — register or remove a phone's FCM token (limiter `write`; `farmer.optional` links it to a signed-in farmer)
 - Read-only reference data (`currencies`, `fertilizers`, `fertilizer-prices`, `maize-prices`, `cassava-prices`, `potato-prices`, `investment-amounts`, `operation-costs`, `starch-factories`, `starch-prices`, `default-prices`, `cassava-units`) — throttle 120/min
 
 **Protected — requires `Authorization: Bearer <token>` or `X-Api-Key: <key>`:**
@@ -198,7 +199,7 @@ No PHP code changes are required.
 - `quality-checks.yml` — Pest with coverage + SonarQube gate (develop branch)
 - `auto-approve.yml` — approves pull requests opened by bots (Dependabot, the release bot) only after the `UnitTests` workflow succeeded, from this repository only, with `hmarr/auto-approve-action` and a GitHub App token (`APP_CLIENT_ID` variable, `APP_PRIVATE_KEY` secret; `actions/create-github-app-token@v3.3.0` takes the App's client ID). The allowed bot logins come from the `ALLOWED_BOTS` environment variable of the workflow (a space-separated list of bare bot names, default `github-actions dependabot munywele-bot`; `name`, `name[bot]` and `app/name` all match in any letter case, and GitHub must also report the author as a bot; set a repository variable `ALLOWED_BOTS` to override the list without editing the file). Human pull requests are never auto-approved. It replaced `pull-request-automation.yml`, which approved every pull request not opened by masgeek the moment it opened, without waiting for any check
 - `docker-build.yml` — builds and pushes `iita/akilimo-api` image (main/develop)
-- `publish-policies.yml` — writes the privacy policy and terms (`docs/polices/*.html`) to the akilimo.org WordPress web root over SSH (`appleboy/ssh-action`) on pushes to develop; needs secrets `SITE_SSH_KEY`, `SITE_SSH_HOST`, `SITE_SSH_USER` and variable `SITE_WEB_ROOT` (optional `SITE_SSH_PORT`)
+- `publish-policies.yml` — writes the privacy policy and terms (`docs/policies/*.html`) to the akilimo.org WordPress web root over SSH (`appleboy/ssh-action`) on pushes to develop; needs secrets `SITE_SSH_KEY`, `SITE_SSH_HOST`, `SITE_SSH_USER` and variable `SITE_WEB_ROOT` (optional `SITE_SSH_PORT`)
 
 ## Environment Configuration
 
@@ -214,16 +215,18 @@ AKILIMO_COMPUTE_LOGGING=       # Enable request/response logging (default: true)
 # Authentication
 AUTH_TOKEN_TTL_DAYS=30         # Bearer token lifetime in days
 
-# Push messages (config/fcm.php; see docs/MESSAGES_API.md)
+# Push messages (config/fcm.php; see docs/MESSAGES_API.md). Every push is a queued job (App\Jobs\PushMessage): a queue worker must run
 FCM_ENABLED=false              # true once a service account is set
 FCM_PROJECT_ID=                # Firebase project id
-FCM_CREDENTIALS=               # service account JSON: path or the JSON itself
+FCM_CREDENTIALS=               # service account JSON: path (quote it if it has spaces) or the JSON itself; check with php artisan fcm:check
+FARMER_NOTIFICATIONS_ENABLED=true            # config/farmer-notifications.php: notices when an admin changes prices, fertilizers, starch factories or app versions
+FARMER_NOTIFICATIONS_DEBOUNCE_MINUTES=10     # one notice per kind and country for a batch of edits
 
 # Farmer accounts (config/farmer-accounts.php, config/services.php; see docs/FARMER_ACCOUNTS_API.md)
 FARMER_SOCIAL_PROVIDERS=google # default google (refused until GOOGLE_CLIENT_ID is set); e.g. google,facebook; blank = social sign-in off
 GOOGLE_CLIENT_ID=              # non-secret OAuth client IDs (comma separated); also the allowed token audiences
                                # <PROVIDER>_CLIENT_SECRET and <PROVIDER>_REDIRECT_URI exist for every provider (optional)
-FARMER_CONSENT_VERSION=v1      # label stored with each consent (users.consent_version, 20 characters at most); bump it (v2, ...) whenever the approved privacy policy or terms change in a way farmers agree to, see docs/PRIVACY_AND_TERMS_DRAFT.md
+FARMER_CONSENT_VERSION=v1      # label stored with each consent (users.consent_version, 20 characters at most); bump it (v2, ...) whenever the approved privacy policy or terms change in a way farmers agree to, pages in docs/policies/
 # Verification and reset email go through MAIL_MAILER; in production they stay off while it is "log"
 DEFAULT_ADMIN_PASSWORD=        # Required for AdminUserSeeder
 

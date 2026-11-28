@@ -30,9 +30,9 @@ class UserInfoData extends Data
 
     public string $gender;
 
-    public bool $sendEmail;
+    public bool $sendEmail = false;
 
-    public bool $sendSms;
+    public bool $sendSms = false;
 
     public string $userName;
 

@@ -104,7 +104,7 @@ class CountryController extends AdminController
     private function currencies(): array
     {
         return DB::table('currencies')->orderBy('currency_code')->get(['currency_code', 'currency_name'])
-            ->map(fn ($c) => ['value' => (string) $c->currency_code, 'label' => $c->currency_code . ' — ' . $c->currency_name])
+            ->map(fn ($c) => ['value' => (string)$c->currency_code, 'label' => $c->currency_code . ' — ' . $c->currency_name])
             ->all();
     }
 

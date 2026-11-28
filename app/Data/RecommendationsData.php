@@ -15,13 +15,13 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapInputName(SnakeCaseMapper::class)]
 class RecommendationsData extends Data
 {
-    public bool $fertilizerRec;
+    public bool $fertilizerRec = false;
 
-    public bool $plantingPracticesRec;
+    public bool $plantingPracticesRec = false;
 
-    public bool $scheduledPlantingRec;
+    public bool $scheduledPlantingRec = false;
 
-    public bool $scheduledHarvestRec;
+    public bool $scheduledHarvestRec = false;
 
     /** Planting date and cultivar advice (PDC): the compute service has it for NG maize only */
     public bool $plantingDateCultivarRec = false;

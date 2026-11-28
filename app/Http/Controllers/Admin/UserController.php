@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\EnumUserRole;
 use App\Http\Requests\Admin\UserWebRequest;
-use App\Models\Country;
 use App\Models\User;
 use App\Repositories\CountryRepo;
 use App\Repositories\UserRepo;
@@ -26,16 +25,13 @@ class UserController extends Controller
 {
     use HasPaginationParams;
 
-    public function __construct(protected UserRepo $userRepo, protected CountryRepo $countryRepo)
-    {
-    }
+    public function __construct(protected UserRepo $userRepo, protected CountryRepo $countryRepo) {}
 
     public function index(Request $request): Response
     {
         $perPage = $this->getPerPage($request, 20);
         $orderBy = $this->getOrderBy($request, ['name', 'username', 'email', 'created_at'], 'created_at');
         $direction = $this->getSortDirection($request);
-
 
         $search = trim((string)$request->input('search', ''));
         $role = EnumUserRole::tryFrom((string)$request->input('role', ''))?->value ?? '';
@@ -51,7 +47,7 @@ class UserController extends Controller
 
         return Inertia::render('Users/Index', [
             'users' => [
-                'data' => collect($paginator->items())->map(fn($u) => [
+                'data' => collect($paginator->items())->map(fn ($u) => [
                     'id' => $u->id,
                     'name' => $u->name,
                     'username' => $u->username,

@@ -85,7 +85,7 @@ Verification and reset codes are kept hashed in the cache and work once. Never l
 
 1. **Owner inputs (design section 8):** the hosted email service and a verified sending domain (then set `MAIL_MAILER`); the Google Cloud
    OAuth client IDs for `GOOGLE_CLIENT_ID` (Google sign-in is already on by default and starts working once it is set); the final consent and benefit wording
-   (the consent wording is approved as `v1`; see `docs/PRIVACY_AND_TERMS_DRAFT.md` and `docs/polices/`). No claim such as "your data is never shared" is to be written unless it is given.
+   (the consent wording is approved as `v1`; pages in `docs/policies/`, published by `.github/workflows/publish-policies.yml`; bump `FARMER_CONSENT_VERSION` when the wording changes). No claim such as "your data is never shared" is to be written unless it is given.
 2. **Mobile app (`akilimo-mobile`, step 6): built, not yet run on a device.** Sign-up, sign-in, consent, reset password, email
    confirmation, saved-advice list (offline from Room), share, sign-out and account deletion; Google through Play Services
    `AuthorizationClient` (an **access token**); the token encrypted with an Android Keystore key. Still open there: try it on a phone against
@@ -94,3 +94,4 @@ Verification and reset codes are kept hashed in the cache and work once. Never l
 3. **Other providers:** an audience check for each one before it is switched on.
 4. **Later:** move the playground history from `device_token = 'playground-<id>'` to `user_id`; keep `user_id` and `device_token` out of
    any public export of `api_requests` (the rows kept after an account deletion still hold the farm location and answers).
+5. **Saved PDF reports are not deleted with the advice.** Deleting saved advice or an account only clears `user_id` and `device_token` on the request; the stored PDF (name, masked phone number, farm location) stays on the reports disk until `AKILIMO_REPORTS_KEEP_DAYS` removes it, and the published privacy policy says so. To change that, call `RecommendationReportService::forget()` from the release and account deletion paths, then update the policy text and bump `FARMER_CONSENT_VERSION`.

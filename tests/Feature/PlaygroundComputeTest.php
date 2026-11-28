@@ -8,6 +8,7 @@
 
 use App\Enums\EnumUserRole;
 use App\Models\User;
+use Database\Seeders\FertilizerSeeder;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 
 // The compute service needs a fertilizer catalogue for the country; migrations no longer seed one
 beforeEach(function () {
-    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->seed(FertilizerSeeder::class);
 });
 
 function playgroundUser(): User

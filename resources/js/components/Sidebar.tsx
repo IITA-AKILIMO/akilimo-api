@@ -46,6 +46,7 @@ const ICONS = {
     scale:        ['M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1zM2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z', 'M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2'],
     factory:      ['M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z', 'M17 18h1M12 18h1M7 18h1'],
     translate:    ['M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10', 'M14 18h7'],
+    phone:        ['M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z', 'M12 18h.01'],
     search:       ['M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', 'M21 21l-4.35-4.35'],
     signOut:      ['M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75'],
 } satisfies Record<string, string[]>
@@ -130,6 +131,13 @@ export const navigation: NavSection[] = [
         heading: 'Content',
         items: [
             { label: 'Translations', href: '/admin/translations', icon: 'translate', roles: ADMIN },
+        ],
+    },
+    {
+        heading: 'Mobile app',
+        items: [
+            { label: 'App versions', href: '/admin/app-versions', icon: 'phone', roles: ADMIN },
+            { label: 'Messages', href: '/admin/messages', icon: 'phone', roles: ADMIN },
         ],
     },
     {

@@ -15,9 +15,9 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapInputName(SnakeCaseMapper::class)]
 class OperationsDoneData extends Data
 {
-    public bool $ploughingDone;
+    public bool $ploughingDone = false;
 
-    public bool $harrowingDone;
+    public bool $harrowingDone = false;
 
-    public bool $ridgingDone;
+    public bool $ridgingDone = false;
 }

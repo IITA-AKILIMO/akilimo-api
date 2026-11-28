@@ -44,7 +44,7 @@ class ExportCurrencyData extends Command
 
     public function handle(): int
     {
-        if (! class_exists(ResourceBundle::class)) {
+        if (!class_exists(ResourceBundle::class)) {
             $this->error('The PHP intl extension is needed.');
 
             return self::FAILURE;
@@ -63,7 +63,7 @@ class ExportCurrencyData extends Command
         foreach ($region['CurrencyMap'] as $code => $entries) {
             foreach ($entries as $entry) {
                 if ($entry->get('to') === null && $entry->get('tender') !== false) {
-                    $current[(string) $code][] = (string) $entry->get('id');
+                    $current[(string)$code][] = (string)$entry->get('id');
                 }
             }
         }
@@ -89,12 +89,12 @@ class ExportCurrencyData extends Command
         foreach ($codes as $code) {
             $names = $english['Currencies'][$code] ?? null;
             $plural = $english['CurrencyPlurals'][$code] ?? null;
-            $name = $names === null ? $code : (string) $names->get(1);
+            $name = $names === null ? $code : (string)$names->get(1);
             $currencies[] = [
                 $code,
                 $name,
-                $names === null ? $code : (string) $names->get(0),
-                $plural === null ? $name : (string) ($plural->get('other') ?? $name),
+                $names === null ? $code : (string)$names->get(0),
+                $plural === null ? $name : (string)($plural->get('other') ?? $name),
             ];
         }
 

@@ -5,6 +5,7 @@
  *
  * For licence information, see the LICENCE file.
  */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -51,7 +52,7 @@ return new class extends Migration {
                 || DB::table('starch_prices')->where('currency', $code)->exists()
                 || (Schema::hasColumn('countries', 'currency_code') && DB::table('countries')->where('currency_code', $code)->exists());
 
-            if (! $used) {
+            if (!$used) {
                 DB::table('currencies')->where('currency_code', $code)->where('created_at', self::ADDED_AT)->delete();
             }
         }

@@ -152,6 +152,44 @@ export interface Currency {
     name_plural?: string
 }
 
+export interface AppVersion {
+    platform: string
+    min_supported: number
+    latest: number
+    message: string | null
+    store_url: string | null
+}
+
+export interface AppMessage {
+    id: string
+    type: string
+    title: string
+    body: string
+    country: string | null
+    language: string | null
+    target: string | null
+    /** Who a private message is for (masked), or null for a broadcast */
+    recipient: string | null
+    /** What became of the push: queued, pushed, failed or not_pushed */
+    push_status: 'queued' | 'pushed' | 'failed' | 'not_pushed'
+    /** Why a push failed or was not sent */
+    push_error: string | null
+    pushed_at: string | null
+    expires_at: string | null
+    created_at: string | null
+}
+
+/** A farmer account or one phone an admin can address a message to */
+export interface MessageRecipient {
+    type: 'user' | 'device'
+    /** Account id, or the phone's device_token */
+    id: string
+    label: string
+    detail: string
+    /** Phones registered for push that this recipient reaches */
+    devices: number
+}
+
 export interface CassavaUnit {
     id: number
     label: string

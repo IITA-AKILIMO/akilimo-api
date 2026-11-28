@@ -40,7 +40,7 @@ return new class extends Migration {
         // Anything else already in use keeps working; its label is the value until someone names it
         $known = array_change_key_case($cases, CASE_LOWER);
         foreach (DB::table('country_fertilizers')->whereNotNull('use_case')->distinct()->pluck('use_case') as $value) {
-            if (! isset($known[strtolower($value)])) {
+            if (!isset($known[strtolower($value)])) {
                 $cases[$value] = $value;
                 $known[strtolower($value)] = $value;
             }

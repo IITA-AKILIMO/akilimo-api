@@ -21,7 +21,8 @@ class UserInfoRules
             'user_info.user_name' => ['required', 'string', 'max:255'],
             'user_info.first_name' => ['required', 'string', 'max:255'],
             'user_info.last_name' => ['required', 'string', 'max:255'],
-            'user_info.gender' => ['required', 'in:M,F'],
+            // NA = "prefer not to answer" (the mobile app sends it); the stats count it as not recorded
+            'user_info.gender' => ['required', 'in:M,F,NA'],
             'user_info.email_address' => ['nullable', 'email'],
             'user_info.farm_name' => ['nullable', 'string', 'max:255'],
             'user_info.send_sms' => ['boolean'],

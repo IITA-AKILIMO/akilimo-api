@@ -10,5 +10,4 @@ namespace App\Models;
 
 use App\Models\Base\UserIdentity as BaseUserIdentity;
 
-class UserIdentity extends BaseUserIdentity {
-}
+class UserIdentity extends BaseUserIdentity {}

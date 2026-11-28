@@ -7,12 +7,13 @@
  */
 
 use App\Models\ApiRequest;
+use Database\Seeders\FertilizerSeeder;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\FertilizerSeeder::class);
+    $this->seed(FertilizerSeeder::class);
     $this->actingAsApiUser();
 });
 

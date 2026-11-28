@@ -5,6 +5,7 @@
  *
  * For licence information, see the LICENCE file.
  */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -31,12 +32,12 @@ return new class extends Migration {
         $archived = DB::table('legacy_table_archive')->pluck('row_count', 'table_name');
 
         foreach (self::TABLES as $name) {
-            if (! Schema::hasTable($name)) {
+            if (!Schema::hasTable($name)) {
                 continue;
             }
 
             // Never drop a table whose copy is missing or short, so a rollback can always bring it back
-            if (! isset($archived[$name]) || (int) $archived[$name] !== DB::table($name)->count()) {
+            if (!isset($archived[$name]) || (int)$archived[$name] !== DB::table($name)->count()) {
                 throw new RuntimeException("{$name} is not fully archived in legacy_table_archive; refusing to drop it.");
             }
         }
@@ -49,15 +50,15 @@ return new class extends Migration {
     public function down(): void
     {
         foreach (DB::table('legacy_table_archive')->get() as $archive) {
-            $name = (string) $archive->table_name;
+            $name = (string)$archive->table_name;
 
             if (Schema::hasTable($name)) {
                 continue;
             }
 
-            DB::statement((string) $archive->definition);
+            DB::statement((string)$archive->definition);
 
-            foreach (array_chunk(json_decode((string) $archive->row_data, true) ?: [], 200) as $chunk) {
+            foreach (array_chunk(json_decode((string)$archive->row_data, true) ?: [], 200) as $chunk) {
                 DB::table($name)->insert($chunk);
             }
         }

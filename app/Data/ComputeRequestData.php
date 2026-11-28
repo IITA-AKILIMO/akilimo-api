@@ -46,6 +46,21 @@ class ComputeRequestData extends Data
 
     public float $maxInvestment;
 
+    /**
+     * The compute service compares the farm methods in lower case ("manual", "tractor"), but clients send them in
+     * any case ("MANUAL"). The "NA" it uses for "not applicable" is kept as it is.
+     */
+    private static function method(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = trim($value);
+
+        return strtoupper($value) === 'NA' ? 'NA' : strtolower($value);
+    }
+
     public function toArray(): array
     {
         return [
@@ -109,10 +124,10 @@ class ComputeRequestData extends Data
             'ridging' => $this->operationsDone->ridgingDone,
 
             // Methods
-            'methodPloughing' => $this->methods->methodPloughing,
-            'methodHarrowing' => $this->methods->methodHarrowing,
-            'methodRidging' => $this->methods->methodRidging,
-            'methodWeeding' => $this->methods->methodWeeding,
+            'methodPloughing' => self::method($this->methods->methodPloughing),
+            'methodHarrowing' => self::method($this->methods->methodHarrowing),
+            'methodRidging' => self::method($this->methods->methodRidging),
+            'methodWeeding' => self::method($this->methods->methodWeeding),
 
             // YieldInfo
             'currentFieldYield' => $this->yieldInfo->currentFieldYield,

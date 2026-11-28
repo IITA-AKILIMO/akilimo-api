@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Imports the labour-cost review candidates in docs/data/labour_costs_candidates.csv
  * as draft rows, so country teams start from the November 2026 desk research
- * instead of an empty list (docs/PRICE_CATALOGUE_DESIGN.md, phase 1).
+ * instead of an empty list (docs/archive/PRICE_CATALOGUE_DESIGN.md, phase 1).
  *
  * They stay out of GET /v1/prices and GET /v1/default-prices until a reviewer
  * activates them. Existing rows are never overwritten: the import only adds

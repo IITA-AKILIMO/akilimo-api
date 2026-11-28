@@ -40,7 +40,7 @@ class TrafficExclusionController extends AdminController
             ->when($values['active'] !== '', fn ($q) => $q->where('active', $values['active'] === '1'))
             ->orderByDesc('active')
             ->orderBy('id')
-            ->paginate((int) min(100, max(10, (int) $request->get('per_page', 25))))
+            ->paginate((int)min(100, max(10, (int)$request->get('per_page', 25))))
             ->withQueryString();
         // The rules on this page; how many requests each matches is worked out for these only
         $rules = $paginator->getCollection();
